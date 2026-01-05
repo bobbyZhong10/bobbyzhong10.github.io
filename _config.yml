@@ -23,9 +23,9 @@ baidu_site_verification  :  # get baidu_site_verification from https://ziyuan.ba
 author:
   name             : "Yunzhou (Bobby) Zhong"
   avatar           : "images/android-chrome-512x512.png"
-  bio              : "University of Pennsylvania"
+  bio              : ""
   location         : "Philadelphia, PA"
-  employer         :
+  employer         : "UPenn"
   pubmed           : 
   googlescholar    : "https://scholar.google.com/citations?user=6YaV4FYAAAAJ&hl"
   email            : "bobbyzyz@sas.upenn.edu"
