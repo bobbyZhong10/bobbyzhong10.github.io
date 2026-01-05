@@ -3,35 +3,5 @@ main:
   - title: "About Me"
     url: "/#about-me"
 
-  - title: "News"
-    url: "/#-news"
-
-  - title: "Publications"
-    url: "/#publications"
-
-  - title: "Working Papers"
-    url: "/#working-papers"
-
-  - title: "Work in Process"
-    url: "/#work-in-process"
-
-  - title: "Educations"
-    url: "/#educations"
-
-  - title: "Invited Talks"
-    url: "/#invited-talks"
-
-  - title: "Honors and Awards"
-    url: "/#honors-and-awards"
-
-  - title: "Teaching"
-    url: "/#teaching"
-
-  - title: "Services"
-    url: "/#services"
-
-  - title: "Media"
-    url: "/#media"
-
   - title: "CV"
     url: "/#cv"
