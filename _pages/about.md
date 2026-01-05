@@ -37,8 +37,7 @@ My research focuses on how large language models (LLMs) and other emerging techn
 
 - Humanizing Digital Communication: How Anthropomorphic Emojis Drive Information Dissemination, **Yunzhou Zhong**, [Philip Tin Yun Lee](https://ef.hksyu.edu/about-us/staff-list/detail/lee-tin-yun), [Bingjie Deng](https://scholar.xjtlu.edu.cn/en/persons/BingjieDeng/), under 1st round review at Information & Management
 
-- **Social Interaction and Volatility Clustering in Chinese Market**,  
-  **Yunzhou Zhong**, Undergraduate Thesis, *XJTLU Best Student Final Year Project (thesis) Award*  
+- Social Interaction and Volatility Clustering in Chinese Market, **Yunzhou Zhong**, Undergraduate Thesis, *XJTLU Best Student Final Year Project (thesis) Award*
   <span style="margin-left:0">Supervised by [Prof. Xuezhong He](https://scholar.xjtlu.edu.cn/en/persons/XuezhongHe/)</span>
 
 # Work in Process
