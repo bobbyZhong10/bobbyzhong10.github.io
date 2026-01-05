@@ -30,8 +30,8 @@ My research examines how generative artificial intelligence, including large lan
 - **Topics:** Online Platform, Social Media, Reputation, Generative AI & FinTech, Algorithms & User Behaviors
 
 # 🔥 News
-- 2025.08 : &nbsp;🎉 I joined the Master of Behavioral Decision Science at the University of Pennsylvania
-- 2025.07 : &nbsp;🎉 I won the Best Student Final Year Project (Thesis) Award at XJTLU
+- 2025.08 : I joined the Master of Behavioral Decision Science at the University of Pennsylvania &nbsp;🎉 
+- 2025.07 : I won the Best Student Final Year Project (Thesis) Award at XJTLU &nbsp;🎉
 
 # Conference Proceedings
 - *[Evaluating the Impact of Anthropomorphic Emojis on Digital Sustainability Content Engagement]([https://github.com](https://aisel.aisnet.org/pacis2025/hci/hci/3/))*, **Yunzhou Zhong**, [Philip Tin Yun Lee](https://ef.hksyu.edu/about-us/staff-list/detail/lee-tin-yun), [Bingjie Deng](https://scholar.xjtlu.edu.cn/en/persons/BingjieDeng/), **29th Pacific-Asia Conference on Information Systems (PACIS 2025)**
@@ -47,13 +47,13 @@ My research examines how generative artificial intelligence, including large lan
 - **Yunzhou Zhong** and [Bingjie Deng](https://scholar.xjtlu.edu.cn/en/persons/BingjieDeng/), *How Are We Mobilized to Express on Social Media? Identity, Persuasion and Social Norms in Commenting*, early version submit to AOM 2026
 - **Yunzhou Zhong** and [Bingjie Deng](https://scholar.xjtlu.edu.cn/en/persons/BingjieDeng/), *The impact of preference recommendation on user decision confidence in online platforms*, early version submit to AMCIS 2026
 
-# Educations
-- 2025.08 - now, Master of Behavioral and Decision Science, **University of Pennsylvania**
-- 2021.09 - 2025.07, BSc (Hons) Information Management and Information Systems, **Xi'an Jiaotong-Liverpool University (XJTLU) & University of Liverpool**
-
 # Presentations
 - *Too Neat to Be True? Bias and Consumer Response with AI-Generated Review Summaries*, INFORMS Annual Meeting (Atlanta, GA), 2025.10
 - *Evaluating the Impact of Anthropomorphic Emojis on Digital Sustainability Content Engagement*, 29th Pacific-Asia Conference on Information Systems (Kuala Lumpur, Malaysia), 2025.07
+
+# Educations
+- 2025.08 - now, Master of Behavioral and Decision Science, **University of Pennsylvania**
+- 2021.09 - 2025.07, BSc (Hons) Information Management and Information Systems, **Xi'an Jiaotong-Liverpool University (XJTLU) & University of Liverpool**
 
 # Honors and Awards
 - *Professional Student Travel Grant*, University of Pennsylvania, 2025
@@ -61,7 +61,7 @@ My research examines how generative artificial intelligence, including large lan
 - *Best Practices Scholarship for National Top Undergraduate Programs*, Xi'an Jiaotong-Liverpool University, 2022 and 2024
 
 # Teaching
-- **Teaching Assistant:** Data Analysis and Visualization, Business Analysis Summer School, International Business School Suzhou, Xi'an Jiaotong-Liverpool University, 2023.8 and 2024.8
+- **Teaching Assistant:** *Data Analysis and Visualization*, Business Analysis Summer School, International Business School Suzhou, Xi'an Jiaotong-Liverpool University, 2023.8 and 2024.8
 
 # Services
 - **Conference Reviewer:** ICIS, ECIS, ACM CHI
