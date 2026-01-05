@@ -25,12 +25,12 @@ My research focuses on how large language models (LLMs) and other emerging techn
 
 
 # 🔥 News
-- *2025.09* : &nbsp;🎉 I joined the Master of Behavioral Decision Science at the University of Pennsylvania
+- *2025.08* : &nbsp;🎉 I joined the Master of Behavioral Decision Science at the University of Pennsylvania
 - *2025.07* : &nbsp;🎉 I won the Best Student Final Year Project (Thesis) Award at XJTLU
 
 # Publications 
 
-- [Evaluating the Impact of Anthropomorphic Emojis on Digital Sustainability Content Engagement]([https://github.com](https://aisel.aisnet.org/pacis2025/hci/hci/3/)), **Yunzhou Zhong**, [Philip Tin Yun Lee](https://ef.hksyu.edu/about-us/staff-list/detail/lee-tin-yun), [Bingjie Deng](https://scholar.xjtlu.edu.cn/en/persons/BingjieDeng/), **PACIS 2025**
+- [Evaluating the Impact of Anthropomorphic Emojis on Digital Sustainability Content Engagement]([https://github.com](https://aisel.aisnet.org/pacis2025/hci/hci/3/)), **Yunzhou Zhong**, [Philip Tin Yun Lee](https://ef.hksyu.edu/about-us/staff-list/detail/lee-tin-yun), [Bingjie Deng](https://scholar.xjtlu.edu.cn/en/persons/BingjieDeng/), **29th Pacific-Asia Conference on Information Systems (PACIS 2025)**
 
 # Working Papers
 - Too Neat to Be True? Discrepancy and Consumer Response with AI-Generated Review Summaries, [Simin Li](https://siminli.wp.tulane.edu/), [Jiding Zhang](https://jidingz.github.io/), **Yunzhou Zhong**
@@ -48,12 +48,12 @@ My research focuses on how large language models (LLMs) and other emerging techn
 
 # Invited Talks
 - *Too Neat to Be True? Bias and Consumer Response with AI-Generated Review Summaries*, INFORMS Annual Meeting (Atlanta, GA), *2025.10*
-- *Evaluating the Impact of Anthropomorphic Emojis on Digital Sustainability Content Engagement*, 29th Pacific-Asia Conference on Information System (Kuala Lumpur, Malaysia), *2025.07*
+- *Evaluating the Impact of Anthropomorphic Emojis on Digital Sustainability Content Engagement*, 29th Pacific-Asia Conference on Information Systems (Kuala Lumpur, Malaysia), *2025.07*
 
 # Honors and Awards
-- Professional Student Travel Grant, University of Pennsylvania, 2025
-- XJTLU Best Student Final Year Project (thesis) Award (1/893), 2025
-- Best Practices Scholarship for National Top Undergraduate Programs, 2022 and 2024 (two times)
+- Professional Student Travel Grant, University of Pennsylvania, *2025*
+- Best Student Final Year Project (thesis) Award (1/893), Xi'an Jiaotong-Liverpool University, *2025*
+- Best Practices Scholarship for National Top Undergraduate Programs, Xi'an Jiaotong-Liverpool University, *2022 and 2024 (two times)*
 
 # Teaching
 - **Teaching Assistant:** Data Analysis and Visualization, Business Analysis Summer School, International Business School Suzhou, Xi'an Jiaotong-Liverpool University, *2023.8 and 2024.8*
