@@ -25,8 +25,8 @@ My research focuses on how large language models (LLMs) and other emerging techn
 
 
 # 🔥 News
-- *2025.09*: &nbsp;🎉 I joined the Master of Behavioral Decision Science at the University of Pennsylvania
-- *2025.07*: &nbsp;🎉 I won the Best Student Final Year Project (Thesis) Award at XJTLU
+- *2025.09* : &nbsp;🎉 I joined the Master of Behavioral Decision Science at the University of Pennsylvania
+- *2025.07* : &nbsp;🎉 I won the Best Student Final Year Project (Thesis) Award at XJTLU
 
 # Publications 
 
