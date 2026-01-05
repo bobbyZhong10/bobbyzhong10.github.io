@@ -67,4 +67,4 @@ I am currently seeking a research assistantship at a North American business sch
 - **Cover News封面新闻：** [These students from Xi'an Jiaotong-Liverpool University have received offers from prestigious universities around the world](https://m.thecover.cn/news_details.html?from=web&eid=RiG%2BC%2BD9y3eH90qSdq8Jkw==&timestamp=1751616591928) (in Chinese)
 
 # CV
-You can find my CV [here](https://drive.google.com/file/d/1dUabk_jFrImTuo6MdvGb93OICIFRqovD/view?usp=sharing).
+You can find my CV [here](https://drive.google.com/file/d/1dUabk_jFrImTuo6MdvGb93OICIFRqovD/view?usp=sharing)
