@@ -40,6 +40,7 @@ My research focuses on how large language models (LLMs) and other emerging techn
 - Social Interaction and Volatility Clustering in Chinese Market, **Yunzhou Zhong**, Undergraduate Thesis, XJTLU Best Student Final Year Project (thesis) Award, supervised by [Prof. Xuezhong He](https://scholar.xjtlu.edu.cn/en/persons/XuezhongHe/)
 
 # Work in Process
+- **Yunzhou Zhong** and [Bingjie Deng](https://scholar.xjtlu.edu.cn/en/persons/BingjieDeng/). How Are We Mobilized to Express on Social Media? Identity, Persuasion and Social Norms in Commenting, early version submit to AOM 2026
 
 # Educations
 - *2025.08 - now*, Master of Behavioral and Decision Science, **University of Pennsylvania**
