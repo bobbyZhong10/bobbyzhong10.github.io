@@ -65,3 +65,6 @@ I am currently seeking a research assistantship at a North American business sch
 - **XJTLU：** [From Xi'an Jiaotong-Liverpool University to the University of Pennsylvania: Academic Pursuers of Light in the AI Er](https://mp.weixin.qq.com/s/x1SpJWJhELNXBWKqHGpJ2Q) (in Chinese)
 - **CNWest西部网：** [Students of Xi'an Jiaotong-Liverpool University: Exploring the World and Unlocking New Life Models](http://m.cnwest.com/jyzx/a/2025/06/19/23138666.html) (in Chinese)
 - **Cover News封面新闻：** [These students from Xi'an Jiaotong-Liverpool University have received offers from prestigious universities around the world](https://m.thecover.cn/news_details.html?from=web&eid=RiG%2BC%2BD9y3eH90qSdq8Jkw==&timestamp=1751616591928) (in Chinese)
+
+# CV
+You can find my CV [here](https://drive.google.com/file/d/1dUabk_jFrImTuo6MdvGb93OICIFRqovD/view?usp=sharing).
