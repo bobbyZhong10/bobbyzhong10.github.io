@@ -21,7 +21,7 @@ I am a student in the ninth cohort of the Master of Behavioral and Decision Scie
 
 My research focuses on how large language models (LLMs) and other emerging technologies are deployed on online platforms and how they systematically shape human behavior and digital interactions. I am particularly interested in the underlying mechanisms through which these technologies operate across different platform contexts, as well as how micro-level cues, such as linguistic framing, tags, and emojis influence online word-of-mouth, user engagement, and reputation formation. Methodologically, I combine machine learning, text analysis, econometric modeling, and both online and laboratory experiments to identify and test the behavioral mechanisms underlying these phenomena.
 
-I am currently seeking a research assistantship at a North American business school and exploring PhD opportunities for Fall 2027 entry in Information Systems, empirical and behavioral Operations Management, or Quantitative Marketing. I welcome opportunities to connect with scholars whose research interests align with mine.
+*I am currently seeking a research assistantship at a North American business school and exploring **PhD opportunities for Fall 2027 entry** in **Information Systems, empirical and behavioral Operations Management, or Quantitative Marketing**. I welcome opportunities to connect with scholars whose research interests align with mine.*
 
 
 # 🔥 News
@@ -61,10 +61,10 @@ I am currently seeking a research assistantship at a North American business sch
 - **Conference Reviewer:** ICIS, ECIS, ACM CHI
 
 # Media
-- **Spring City Evening春城晚报：** [At Xi'an Jiaotong-Liverpool University, students from Yunnan step onto the international stage](https://mp.weixin.qq.com/s/tvOALj0JaE_xZWm96g70fA) (in Chinese)
+- **Spring City Evening 春城晚报：** [At Xi'an Jiaotong-Liverpool University, students from Yunnan step onto the international stage](https://mp.weixin.qq.com/s/tvOALj0JaE_xZWm96g70fA) (in Chinese)
 - **XJTLU：** [From Xi'an Jiaotong-Liverpool University to the University of Pennsylvania: Academic Pursuers of Light in the AI Er](https://mp.weixin.qq.com/s/x1SpJWJhELNXBWKqHGpJ2Q) (in Chinese)
-- **CNWest西部网：** [Students of Xi'an Jiaotong-Liverpool University: Exploring the World and Unlocking New Life Models](http://m.cnwest.com/jyzx/a/2025/06/19/23138666.html) (in Chinese)
-- **Cover News封面新闻：** [These students from Xi'an Jiaotong-Liverpool University have received offers from prestigious universities around the world](https://m.thecover.cn/news_details.html?from=web&eid=RiG%2BC%2BD9y3eH90qSdq8Jkw==&timestamp=1751616591928) (in Chinese)
+- **CNWest 西部网：** [Students of Xi'an Jiaotong-Liverpool University: Exploring the World and Unlocking New Life Models](http://m.cnwest.com/jyzx/a/2025/06/19/23138666.html) (in Chinese)
+- **Cover News 封面新闻：** [These students from Xi'an Jiaotong-Liverpool University have received offers from prestigious universities around the world](https://m.thecover.cn/news_details.html?from=web&eid=RiG%2BC%2BD9y3eH90qSdq8Jkw==&timestamp=1751616591928) (in Chinese)
 
 # CV
 You can find my CV [here](https://drive.google.com/file/d/1dUabk_jFrImTuo6MdvGb93OICIFRqovD/view?usp=sharing)
