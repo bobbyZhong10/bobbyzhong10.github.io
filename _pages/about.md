@@ -28,8 +28,7 @@ My research focuses on how large language models (LLMs) and other emerging techn
 - *2025.08* : &nbsp;🎉 I joined the Master of Behavioral Decision Science at the University of Pennsylvania
 - *2025.07* : &nbsp;🎉 I won the Best Student Final Year Project (Thesis) Award at XJTLU
 
-# Publications 
-
+# Conference Proceedings
 - [Evaluating the Impact of Anthropomorphic Emojis on Digital Sustainability Content Engagement]([https://github.com](https://aisel.aisnet.org/pacis2025/hci/hci/3/)), **Yunzhou Zhong**, [Philip Tin Yun Lee](https://ef.hksyu.edu/about-us/staff-list/detail/lee-tin-yun), [Bingjie Deng](https://scholar.xjtlu.edu.cn/en/persons/BingjieDeng/), **29th Pacific-Asia Conference on Information Systems (PACIS 2025)**
 
 # Working Papers
@@ -47,7 +46,7 @@ My research focuses on how large language models (LLMs) and other emerging techn
 - *2025.08 - now*, Master of Behavioral and Decision Science, **University of Pennsylvania**
 - *2021.09 - 2025.07*, BSc (Hons) Information Management and Information Systems, **Xi'an Jiaotong-Liverpool University (XJTLU) & University of Liverpool**
 
-# Invited Talks
+# Presentations
 - *Too Neat to Be True? Bias and Consumer Response with AI-Generated Review Summaries*, INFORMS Annual Meeting (Atlanta, GA), *2025.10*
 - *Evaluating the Impact of Anthropomorphic Emojis on Digital Sustainability Content Engagement*, 29th Pacific-Asia Conference on Information Systems (Kuala Lumpur, Malaysia), *2025.07*
 
