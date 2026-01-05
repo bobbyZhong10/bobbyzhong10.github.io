@@ -25,7 +25,7 @@ I am currently seeking a research assistantship at a North American business sch
 
 
 # 🔥 News
-- *2025.09*: &nbsp;🎉 I joined the Master of Behavioral Decision Science at the University of Pennsylvania.
+- *2025.09*: &nbsp;🎉 I joined the Master of Behavioral Decision Science at the University of Pennsylvania
 - *2025.07*: &nbsp;🎉 I won the Best Student Final Year Project (Thesis) Award at XJTLU
 
 # Publications 
