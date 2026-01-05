@@ -23,7 +23,7 @@ My academic training has taken place in interdisciplinary research settings span
 
 My research examines how generative artificial intelligence, including large language models (LLMs), and related digital technologies are deployed on online platforms to reshape information environments and influence outcomes in digital markets. I study the mechanisms through which these technologies transform how information is generated, filtered, and presented across different platform contexts, and how micro-level information cues such as linguistic framing, tags, and emojis shape online word-of-mouth, user engagement, and reputation formation. Methodologically, I combine machine learning and text analysis with econometric modeling, as well as online and laboratory experiments, to identify and test the behavioral mechanisms through which changes in information structure translate into observable market and interaction outcomes.
 
-💡 *I am currently exploring **PhD opportunities at business schools for Fall 2027 entry** in **Information Systems, Empirical Operations Management, or Quantitative Marketing**. I welcome opportunities to connect with scholars whose research interests align with mine.*
+💡 *I am currently exploring **US PhD opportunities at business schools for Fall 2027 entry** in **Information Systems, Empirical Operations Management, or Quantitative Marketing**. I welcome opportunities to connect with scholars whose research interests align with mine.*
 
 # Research Interests
 - **Methods:** Machine Learning, Text Analysis, Econometrics, Laboratory/Field Experiments, LLM Annotation
