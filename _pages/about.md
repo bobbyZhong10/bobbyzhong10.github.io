@@ -17,42 +17,51 @@ redirect_from:
 
 <span class='anchor' id='about-me'></span>
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus ornare aliquet ipsum, ac tempus justo dapibus sit amet. Suspendisse condimentum, libero vel tempus mattis, risus risus vulputate libero, elementum fermentum mi neque vel nisl. Maecenas facilisis maximus dignissim. Curabitur mattis vulputate dui, tincidunt varius libero luctus eu. Mauris mauris nulla, scelerisque eget massa id, tincidunt congue felis. Sed convallis tempor ipsum rhoncus viverra. Pellentesque nulla orci, accumsan volutpat fringilla vitae, maximus sit amet tortor. Aliquam ultricies odio ut volutpat scelerisque. Donec nisl nisl, porttitor vitae pharetra quis, fringilla sed mi. Fusce pretium dolor ut aliquam consequat. Cras volutpat, tellus accumsan mattis molestie, nisl lacus tempus massa, nec malesuada tortor leo vel quam. Aliquam vel ex consectetur, vehicula leo nec, efficitur eros. Donec convallis non urna quis feugiat.
+I am a student in the ninth cohort of the Master of Behavioral and Decision Sciences at the University of Pennsylvania. I received my BSc (Hons) in Information Management and Information Systems from Xi’an Jiaotong-Liverpool University (XJTLU) and the University of Liverpool in 2025. My research has been presented at major international conferences, including PACIS and INFORMS, and I have served as a reviewer for conferences such as ICIS, ECIS, and ACM CHI.
 
-My research interest includes neural machine translation and computer vision. I have published more than 100 papers at the top international AI conferences with total <a href='https://scholar.google.com/citations?user=DhtAFkwAAAAJ'>google scholar citations <strong><span id='total_cit'>260000+</span></strong></a> (You can also use google scholar badge <a href='https://scholar.google.com/citations?user=DhtAFkwAAAAJ'><img src="https://img.shields.io/endpoint?url={{ url | url_encode }}&logo=Google%20Scholar&labelColor=f6f6f6&color=9cf&style=flat&label=citations"></a>).
+My research focuses on how large language models (LLMs) and other emerging technologies are deployed on online platforms and how they systematically shape human behavior and digital interactions. I am particularly interested in the underlying mechanisms through which these technologies operate across different platform contexts, as well as how micro-level cues—such as linguistic framing, tags, and emojis—influence online word-of-mouth, user engagement, and reputation formation. Methodologically, I combine machine learning, text analysis, econometric modeling, and both online and laboratory experiments to identify and test the behavioral mechanisms underlying these phenomena.
+
+I am currently seeking a research assistantship at a North American business school and exploring PhD opportunities for Fall 2027 entry in Information Systems, empirical and behavioral Operations Management, or Quantitative Marketing. I welcome opportunities to connect with scholars whose research interests align with mine.
 
 
 # 🔥 News
-- *2022.02*: &nbsp;🎉🎉 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus ornare aliquet ipsum, ac tempus justo dapibus sit amet. 
-- *2022.02*: &nbsp;🎉🎉 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus ornare aliquet ipsum, ac tempus justo dapibus sit amet. 
+- *2025.09*: &nbsp;🎉🎉 I joined the Master of Behavioral Decision Science at the University of Pennsylvania.
+- *2025.07*: &nbsp;🎉🎉 I won the Best Student Final Year Project (Thesis) Award at XJTLU
 
-# 📝 Publications 
+# Publications 
 
-<div class='paper-box'><div class='paper-box-image'><div><div class="badge">CVPR 2016</div><img src='images/500x300.png' alt="sym" width="100%"></div></div>
-<div class='paper-box-text' markdown="1">
+- [Evaluating the Impact of Anthropomorphic Emojis on Digital Sustainability Content Engagement]([https://github.com](https://aisel.aisnet.org/pacis2025/hci/hci/3/)), **Yunzhou Zhong**, [Philip Tin Yun Lee](https://ef.hksyu.edu/about-us/staff-list/detail/lee-tin-yun), [Bingjie Deng](https://scholar.xjtlu.edu.cn/en/persons/BingjieDeng/), **PACIS 2025**
 
-[Deep Residual Learning for Image Recognition](https://openaccess.thecvf.com/content_cvpr_2016/papers/He_Deep_Residual_Learning_CVPR_2016_paper.pdf)
+# Working Papers
+- Too Neat to Be True? Discrepancy and Consumer Response with AI-Generated Review Summaries, [Simin Li](https://siminli.wp.tulane.edu/), [Jiding Zhang](https://jidingz.github.io/), **Yunzhou Zhong**
 
-**Kaiming He**, Xiangyu Zhang, Shaoqing Ren, Jian Sun
+- Humanizing Digital Communication: How Anthropomorphic Emojis Drive Information Dissemination, **Yunzhou Zhong**, [Philip Tin Yun Lee](https://ef.hksyu.edu/about-us/staff-list/detail/lee-tin-yun), [Bingjie Deng](https://scholar.xjtlu.edu.cn/en/persons/BingjieDeng/), under 1st round review at Information & Management
 
-[**Project**](https://scholar.google.com/citations?view_op=view_citation&hl=zh-CN&user=DhtAFkwAAAAJ&citation_for_view=DhtAFkwAAAAJ:ALROH1vI_8AC) <strong><span class='show_paper_citations' data='DhtAFkwAAAAJ:ALROH1vI_8AC'></span></strong>
-- Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus ornare aliquet ipsum, ac tempus justo dapibus sit amet. 
-</div>
-</div>
+- Social Interaction and Volatility Clustering in Chinese Market, **Yunzhou Zhong**, Undergraduate Thesis, XJTLU Best Student Final Year Project (thesis) Award, supervised by [Prof. Xuezhong He](https://scholar.xjtlu.edu.cn/en/persons/XuezhongHe/)
 
-- [Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus ornare aliquet ipsum, ac tempus justo dapibus sit amet](https://github.com), A, B, C, **CVPR 2020**
+# Work in Process
 
-# 🎖 Honors and Awards
-- *2021.10* Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus ornare aliquet ipsum, ac tempus justo dapibus sit amet. 
-- *2021.09* Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus ornare aliquet ipsum, ac tempus justo dapibus sit amet. 
+# Educations
+- *2025.08 - now*, Master of Behavioral and Decision Science | University of Pennsylvania 
+- *2021.09 - 2025.07*, BSc (Hons) Information Management and Information Systems | Xi'an Jiaotong-Liverpool University (XJTLU) & University of Liverpool
 
-# 📖 Educations
-- *2019.06 - 2022.04 (now)*, Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus ornare aliquet ipsum, ac tempus justo dapibus sit amet. 
-- *2015.09 - 2019.06*, Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus ornare aliquet ipsum, ac tempus justo dapibus sit amet. 
+# Invited Talks
+- *2025.10*, Too Neat to Be True? Bias and Consumer Response with AI-Generated Review Summaries | INFORMS Annual Meeting | Atlanta, GA
+- *2025.07*, Evaluating the Impact of Anthropomorphic Emojis on Digital Sustainability Content Engagement |29th Pacific-Asia Conference on Information System | Kuala Lumpur, Malaysia
 
-# 💬 Invited Talks
-- *2021.06*, Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus ornare aliquet ipsum, ac tempus justo dapibus sit amet. 
-- *2021.03*, Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus ornare aliquet ipsum, ac tempus justo dapibus sit amet.  \| [\[video\]](https://github.com/)
+# Honors and Awards
+- *2025.11* Professional Student Travel Grant, University of Pennsylvania 
+- *2025.07* XJTLU Best Student Final Year Project (thesis) Award (1/893)
+- *2022 and 2024 (two times)* Best Practices Scholarship for National Top Undergraduate Programs
 
-# 💻 Internships
-- *2019.05 - 2020.02*, [Lorem](https://github.com/), China.
+# Teaching
+- *Teaching Assistant:* Data Analysis and Visualization, Business Analysis Summer School, International Business School Suzhou, Xi'an Jiaotong-Liverpool University, 2023.8 and 2024.8
+
+# Services
+- *Conference Reviewer:* ICIS, ECIS, ACM CHI
+
+# Media
+- *Spring City Evening春城晚报：* [At Xi'an Jiaotong-Liverpool University, students from Yunnan step onto the international stage](https://mp.weixin.qq.com/s/tvOALj0JaE_xZWm96g70fA) (in Chinese)
+- *XJTLU：* [From Xi'an Jiaotong-Liverpool University to the University of Pennsylvania: Academic Pursuers of Light in the AI Er](https://mp.weixin.qq.com/s/x1SpJWJhELNXBWKqHGpJ2Q) (in Chinese)
+- *CNWest西部网：* [Students of Xi'an Jiaotong-Liverpool University: Exploring the World and Unlocking New Life Models](http://m.cnwest.com/jyzx/a/2025/06/19/23138666.html) (in Chinese)
+- *Cover News封面新闻：* [These students from Xi'an Jiaotong-Liverpool University have received offers from prestigious universities around the world](https://m.thecover.cn/news_details.html?from=web&eid=RiG%2BC%2BD9y3eH90qSdq8Jkw==&timestamp=1751616591928) (in Chinese)
