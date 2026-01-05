@@ -25,8 +25,8 @@ I am currently seeking a research assistantship at a North American business sch
 
 
 # 🔥 News
-- *2025.09*: &nbsp;🎉🎉 I joined the Master of Behavioral Decision Science at the University of Pennsylvania.
-- *2025.07*: &nbsp;🎉🎉 I won the Best Student Final Year Project (Thesis) Award at XJTLU
+- *2025.09*: &nbsp;🎉 I joined the Master of Behavioral Decision Science at the University of Pennsylvania.
+- *2025.07*: &nbsp;🎉 I won the Best Student Final Year Project (Thesis) Award at XJTLU
 
 # Publications 
 
@@ -42,26 +42,26 @@ I am currently seeking a research assistantship at a North American business sch
 # Work in Process
 
 # Educations
-- *2025.08 - now*, Master of Behavioral and Decision Science | University of Pennsylvania 
-- *2021.09 - 2025.07*, BSc (Hons) Information Management and Information Systems | Xi'an Jiaotong-Liverpool University (XJTLU) & University of Liverpool
+- *2025.08 - now*, Master of Behavioral and Decision Science, **University of Pennsylvania**
+- *2021.09 - 2025.07*, BSc (Hons) Information Management and Information Systems, **Xi'an Jiaotong-Liverpool University (XJTLU) & University of Liverpool**
 
 # Invited Talks
-- *2025.10*, Too Neat to Be True? Bias and Consumer Response with AI-Generated Review Summaries | INFORMS Annual Meeting | Atlanta, GA
-- *2025.07*, Evaluating the Impact of Anthropomorphic Emojis on Digital Sustainability Content Engagement |29th Pacific-Asia Conference on Information System | Kuala Lumpur, Malaysia
+- *Too Neat to Be True? Bias and Consumer Response with AI-Generated Review Summaries*, INFORMS Annual Meeting (Atlanta, GA), *2025.10*
+- *Evaluating the Impact of Anthropomorphic Emojis on Digital Sustainability Content Engagement*, 29th Pacific-Asia Conference on Information System (Kuala Lumpur, Malaysia), *2025.07*
 
 # Honors and Awards
-- *2025.11* Professional Student Travel Grant, University of Pennsylvania 
-- *2025.07* XJTLU Best Student Final Year Project (thesis) Award (1/893)
-- *2022 and 2024 (two times)* Best Practices Scholarship for National Top Undergraduate Programs
+- Professional Student Travel Grant, University of Pennsylvania, 2025
+- XJTLU Best Student Final Year Project (thesis) Award (1/893), 2025
+- Best Practices Scholarship for National Top Undergraduate Programs, 2022 and 2024 (two times)
 
 # Teaching
-- *Teaching Assistant:* Data Analysis and Visualization, Business Analysis Summer School, International Business School Suzhou, Xi'an Jiaotong-Liverpool University, 2023.8 and 2024.8
+- **Teaching Assistant:** Data Analysis and Visualization, Business Analysis Summer School, International Business School Suzhou, Xi'an Jiaotong-Liverpool University, *2023.8 and 2024.8*
 
 # Services
-- *Conference Reviewer:* ICIS, ECIS, ACM CHI
+- **Conference Reviewer:** ICIS, ECIS, ACM CHI
 
 # Media
-- *Spring City Evening春城晚报：* [At Xi'an Jiaotong-Liverpool University, students from Yunnan step onto the international stage](https://mp.weixin.qq.com/s/tvOALj0JaE_xZWm96g70fA) (in Chinese)
-- *XJTLU：* [From Xi'an Jiaotong-Liverpool University to the University of Pennsylvania: Academic Pursuers of Light in the AI Er](https://mp.weixin.qq.com/s/x1SpJWJhELNXBWKqHGpJ2Q) (in Chinese)
-- *CNWest西部网：* [Students of Xi'an Jiaotong-Liverpool University: Exploring the World and Unlocking New Life Models](http://m.cnwest.com/jyzx/a/2025/06/19/23138666.html) (in Chinese)
-- *Cover News封面新闻：* [These students from Xi'an Jiaotong-Liverpool University have received offers from prestigious universities around the world](https://m.thecover.cn/news_details.html?from=web&eid=RiG%2BC%2BD9y3eH90qSdq8Jkw==&timestamp=1751616591928) (in Chinese)
+- **Spring City Evening春城晚报：** [At Xi'an Jiaotong-Liverpool University, students from Yunnan step onto the international stage](https://mp.weixin.qq.com/s/tvOALj0JaE_xZWm96g70fA) (in Chinese)
+- **XJTLU：** [From Xi'an Jiaotong-Liverpool University to the University of Pennsylvania: Academic Pursuers of Light in the AI Er](https://mp.weixin.qq.com/s/x1SpJWJhELNXBWKqHGpJ2Q) (in Chinese)
+- **CNWest西部网：** [Students of Xi'an Jiaotong-Liverpool University: Exploring the World and Unlocking New Life Models](http://m.cnwest.com/jyzx/a/2025/06/19/23138666.html) (in Chinese)
+- **Cover News封面新闻：** [These students from Xi'an Jiaotong-Liverpool University have received offers from prestigious universities around the world](https://m.thecover.cn/news_details.html?from=web&eid=RiG%2BC%2BD9y3eH90qSdq8Jkw==&timestamp=1751616591928) (in Chinese)
