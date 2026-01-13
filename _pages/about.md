@@ -44,7 +44,7 @@ My research examines how generative artificial intelligence, including large lan
 - *Social Interaction and Volatility Clustering in Chinese Market*, **Yunzhou Zhong**, Undergraduate Thesis, **XJTLU Best Student Final Year Project (thesis) Award**, supervised by [Prof. Xuezhong He](https://scholar.xjtlu.edu.cn/en/persons/XuezhongHe/)
 
 # Work in Process
-- **Yunzhou Zhong** and [Bingjie Deng](https://scholar.xjtlu.edu.cn/en/persons/BingjieDeng/), *How Are We Mobilized to Express on Social Media? Identity, Persuasion and Social Norms in Commenting*, early version submit to AOM 2026
+- **Yunzhou Zhong** and [Bingjie Deng](https://scholar.xjtlu.edu.cn/en/persons/BingjieDeng/), *How Are We Mobilized to Express on Social Media? Identity, Persuasion, and Social Norms*, early version submit to AOM 2026
 - **Yunzhou Zhong** and [Bingjie Deng](https://scholar.xjtlu.edu.cn/en/persons/BingjieDeng/), *The impact of preference recommendation on user decision confidence in online platforms*, early version submit to AMCIS 2026
 
 # Presentations
