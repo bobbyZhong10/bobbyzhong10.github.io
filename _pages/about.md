@@ -68,7 +68,7 @@ My research examines how generative artificial intelligence, including large lan
 - **Teaching Assistant:** *Data Analysis and Visualization*, Business Analysis Summer School, International Business School Suzhou, Xi'an Jiaotong-Liverpool University, 2023.8 and 2024.8
 
 # Services
-- **Conference Reviewer:** ICIS, ECIS, ACM CHI
+- **Conference Reviewer:** ICIS, ECIS, AOM Annual Meeting, ACM CHI
 
 # CV
 You can find my CV [here](https://drive.google.com/file/d/1dUabk_jFrImTuo6MdvGb93OICIFRqovD/view?usp=sharing)
