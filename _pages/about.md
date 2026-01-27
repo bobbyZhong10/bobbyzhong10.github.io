@@ -45,7 +45,7 @@ My research examines how generative artificial intelligence, including large lan
 
 # Work in Process
 - **Yunzhou Zhong** and [Bingjie Deng](https://scholar.xjtlu.edu.cn/en/persons/BingjieDeng/), *How Are We Mobilized to Express on Social Media? Identity, Persuasion, and Social Norms*, early version submit to AOM 2026
-- **Yunzhou Zhong** and [Bingjie Deng](https://scholar.xjtlu.edu.cn/en/persons/BingjieDeng/), *The impact of preference recommendation on user decision confidence in online platforms*, early version submit to AMCIS 2026
+- **Yunzhou Zhong** and [Bingjie Deng](https://scholar.xjtlu.edu.cn/en/persons/BingjieDeng/), *When Personalization Backfires: Skepticism and Decision Confidence in Platform-Mediated Information*, early version submit to AMCIS 2026
 
 # Presentations
 - *Too Neat to Be True? Bias and Consumer Response with AI-Generated Review Summaries*, INFORMS Annual Meeting (Atlanta, GA), 2025.10
