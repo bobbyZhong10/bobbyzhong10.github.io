@@ -27,7 +27,7 @@ My research examines how generative artificial intelligence, including large lan
 
 # Research Interests
 - **Methods:** Machine Learning, Text Analysis, Econometrics, Laboratory/Field Experiments, LLM Annotation
-- **Topics:** Online Platform, Social Media, Reputation, Generative AI & FinTech, Algorithms & User Behaviors
+- **Topics:** Digital Platforms, Social Media, Reputation, Generative AI & FinTech, Algorithms & User Behaviors
 
 # 🔥 News
 - 2025.08 : I joined the Master of Behavioral Decision Science at the University of Pennsylvania &nbsp;🎉 
