@@ -26,7 +26,7 @@ My research examines how generative artificial intelligence, including large lan
 💡 *I am currently exploring **US PhD opportunities at business schools for Fall 2027 entry** in **Information Systems**. Also willing to learn about the opportunities of Empirical Operations Management, or Quantitative Marketing. I welcome opportunities to connect with scholars whose research interests align with mine.*
 
 # Research Interests
-- **Methods:** Machine Learning, Text Analysis, Econometrics, Laboratory/Field Experiments, LLM Annotation
+- **Methods:** Econometrics, Machine Learning, Laboratory/Field Experiments, Text Analysis, LLM Annotation
 - **Topics:** Digital Platforms, Social Media, Reputation, Generative AI & FinTech, Algorithms & User Behaviors
 
 # 🔥 News
