@@ -269,26 +269,6 @@ a,
     background: var(--site-text) !important;
 }
 
-.page__content {
-    max-width: 72ch;
-    font-size: 1.02rem;
-    line-height: 1.72;
-}
-
-.page__content p {
-    margin-bottom: 0.95rem;
-}
-
-.page__content ul,
-.page__content ol {
-    margin-bottom: 1rem;
-    padding-left: 1.1rem;
-}
-
-.page__content li + li {
-    margin-top: 0.18rem;
-}
-
 .page__content h1 {
     margin-bottom: 1rem;
 }
@@ -310,16 +290,23 @@ a,
     padding: 0.75rem 0.55rem 0.65rem;
     border: 1px solid var(--site-border);
     border-radius: 10px;
+    overflow: hidden;
 }
 
 .author__avatar img {
     box-shadow: 0 1px 0 rgba(0, 0, 0, 0.04);
 }
 
+.author__urls {
+    max-width: 100%;
+}
+
 .author__urls li {
     display: flex;
     align-items: center;
     gap: 0.32rem;
+    white-space: normal;
+    overflow-wrap: anywhere;
 }
 
 .author__urls li i {
