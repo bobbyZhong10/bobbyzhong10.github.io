@@ -126,6 +126,12 @@ html[data-theme="dark"] {
     --site-masthead: #0f172a;
 }
 
+html,
+html[data-theme="dark"],
+html[data-theme="light"] {
+    background-color: var(--site-bg);
+}
+
 body,
 .greedy-nav,
 .page,
@@ -133,6 +139,14 @@ body,
 .author__urls-wrapper {
     background-color: var(--site-bg);
     color: var(--site-text);
+}
+
+.masthead__menu {
+    position: relative;
+}
+
+.greedy-nav {
+    width: 100%;
 }
 
 .masthead {
@@ -181,7 +195,7 @@ a,
     padding-right: 3rem;
 }
 
-.greedy-nav .theme-toggle-btn {
+.theme-toggle-btn {
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -196,15 +210,16 @@ a,
     text-decoration: none;
 }
 
-.greedy-nav .masthead-theme-toggle {
+.masthead-theme-toggle {
     position: absolute;
-    right: 2rem;
+    right: 0.25rem;
     top: 50%;
     transform: translateY(-50%);
     margin: 0;
+    z-index: 30;
 }
 
-.greedy-nav .theme-toggle-btn:hover {
+.theme-toggle-btn:hover {
     background: rgba(128, 128, 128, 0.14);
 }
 
