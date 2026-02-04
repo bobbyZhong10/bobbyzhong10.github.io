@@ -307,9 +307,22 @@ a,
     white-space: nowrap;
 }
 
-.author__urls li i {
-    width: 1rem;
+.author__urls li > i {
+    width: 1.1rem;
     text-align: center;
+    flex: 0 0 1.1rem;
+}
+
+.author__urls li > a {
+    display: inline-flex;
+    align-items: center;
+}
+
+.author__urls li > a i {
+    width: 1.1rem;
+    text-align: center;
+    flex: 0 0 1.1rem;
+    margin-right: 0.22rem;
 }
 
 .sidebar .author__urls li {
