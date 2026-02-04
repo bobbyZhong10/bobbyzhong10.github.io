@@ -199,14 +199,18 @@ a,
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    margin: 0 0 0 1rem;
-    padding: 0.4rem 0.6rem;
-    border: 1px solid var(--site-border);
+    width: 1.7rem;
+    height: 1.7rem;
+    margin: 0;
+    padding: 0;
+    border: 1px solid var(--site-text);
     border-radius: 999px;
     background: transparent;
     color: var(--site-text);
     cursor: pointer;
     line-height: 1;
+    font-size: 0.9rem;
+    font-family: "Source Serif 4", serif;
     text-decoration: none;
 }
 
@@ -220,10 +224,24 @@ a,
 }
 
 .theme-toggle-btn:hover {
-    background: rgba(128, 128, 128, 0.14);
+    background: var(--site-text);
+    color: var(--site-bg);
 }
 
 .visitor-map {
     margin-top: 2rem;
     text-align: center;
+}
+
+.author__urls i,
+.author__urls .fa,
+.author__urls .fab,
+.author__urls .fas,
+.author__urls .ai,
+.author__urls_sm i,
+.author__urls_sm .fa,
+.author__urls_sm .fab,
+.author__urls_sm .fas,
+.author__urls_sm .ai {
+    color: var(--site-text) !important;
 }
