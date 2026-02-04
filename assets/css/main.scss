@@ -177,11 +177,14 @@ a,
     border-color: var(--site-masthead) transparent;
 }
 
-.masthead__menu-item--theme {
-    width: 1%;
+.greedy-nav .visible-links {
+    padding-right: 3rem;
 }
 
-.theme-toggle-btn {
+.greedy-nav .theme-toggle-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
     margin: 0 0 0 1rem;
     padding: 0.4rem 0.6rem;
     border: 1px solid var(--site-border);
@@ -190,9 +193,18 @@ a,
     color: var(--site-text);
     cursor: pointer;
     line-height: 1;
+    text-decoration: none;
 }
 
-.theme-toggle-btn:hover {
+.greedy-nav .masthead-theme-toggle {
+    position: absolute;
+    right: 2rem;
+    top: 50%;
+    transform: translateY(-50%);
+    margin: 0;
+}
+
+.greedy-nav .theme-toggle-btn:hover {
     background: rgba(128, 128, 128, 0.14);
 }
 
