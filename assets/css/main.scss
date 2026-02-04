@@ -112,7 +112,7 @@ h1:before, .anchor:before {
     --site-bg: #ffffff;
     --site-text: #111111;
     --site-muted: #4a4a4a;
-    --site-link: #005bbb;
+    --site-link: #011f5b;
     --site-border: #dcdcdc;
     --site-masthead: #ffffff;
 }
@@ -121,7 +121,7 @@ html[data-theme="dark"] {
     --site-bg: #111827;
     --site-text: #f3f4f6;
     --site-muted: #cbd5e1;
-    --site-link: #93c5fd;
+    --site-link: #011f5b;
     --site-border: #334155;
     --site-masthead: #0f172a;
 }
@@ -266,7 +266,7 @@ a,
 .masthead__menu-item--active a:before {
     transform: scaleX(1) !important;
     height: 2px !important;
-    background: var(--site-text) !important;
+    background: var(--site-link) !important;
 }
 
 .page__content h1 {
@@ -298,8 +298,8 @@ a,
 
 @include breakpoint($large) {
     .profile_box {
-        width: calc(100% + 0.35rem);
-        margin-left: -0.175rem;
+        width: calc(100% + 0.5rem);
+        margin-left: -0.25rem;
     }
 }
 
@@ -361,5 +361,13 @@ a,
     margin-top: 0.55rem;
     color: var(--site-text);
     opacity: 0.86;
+    font-size: 0.9rem;
+}
+
+.site-copyright {
+    text-align: center;
+    padding: 1.2rem 0 1.4rem;
+    color: var(--site-text);
+    opacity: 0.82;
     font-size: 0.9rem;
 }
