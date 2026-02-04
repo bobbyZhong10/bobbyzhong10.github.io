@@ -20,7 +20,8 @@
     }
     setTheme(current);
 
-    btn.addEventListener('click', function() {
+    btn.addEventListener('click', function(event) {
+      event.preventDefault();
       var next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
       setTheme(next);
     });

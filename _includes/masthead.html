@@ -7,13 +7,11 @@
           {% for link in site.data.navigation.main %}
             <li class="masthead__menu-item"><a href="{{ link.url | relative_url }}">{{ link.title }}</a></li>
           {% endfor %}
-          <li class="masthead__menu-item masthead__menu-item--theme">
-            <button id="theme-toggle" class="theme-toggle-btn" type="button" aria-label="Toggle theme">
-              <i id="theme-toggle-icon" class="fas fa-moon" aria-hidden="true"></i>
-            </button>
-          </li>
         </ul>
         <ul class="hidden-links hidden"></ul>
+        <a id="theme-toggle" class="theme-toggle-btn masthead-theme-toggle" href="#" aria-label="Toggle theme">
+          <i id="theme-toggle-icon" class="fas fa-moon" aria-hidden="true"></i>
+        </a>
       </nav>
     </div>
   </div>
