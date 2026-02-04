@@ -1,0 +1,31 @@
+<script src="{{ '/assets/js/main.min.js' | relative_url }}"></script>
+<script>
+  (function() {
+    var root = document.documentElement;
+    var btn = document.getElementById('theme-toggle');
+    var icon = document.getElementById('theme-toggle-icon');
+    if (!btn || !icon) return;
+
+    function setTheme(theme) {
+      root.setAttribute('data-theme', theme);
+      localStorage.setItem('theme', theme);
+      icon.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+      btn.setAttribute('aria-label', theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
+    }
+
+    var current = root.getAttribute('data-theme');
+    if (current !== 'dark' && current !== 'light') {
+      current = 'light';
+      root.setAttribute('data-theme', current);
+    }
+    setTheme(current);
+
+    btn.addEventListener('click', function() {
+      var next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      setTheme(next);
+    });
+  })();
+</script>
+
+{% include analytics.html %}
+{% include fetch_google_scholar_stats.html %}
