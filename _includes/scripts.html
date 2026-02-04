@@ -9,7 +9,7 @@
     function setTheme(theme) {
       root.setAttribute('data-theme', theme);
       localStorage.setItem('theme', theme);
-      icon.className = theme === 'dark' ? 'fas fa-sun' : 'fas fa-moon';
+      icon.textContent = theme === 'dark' ? '☀️' : '🌙';
       btn.setAttribute('aria-label', theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
     }
 
@@ -20,8 +20,7 @@
     }
     setTheme(current);
 
-    btn.addEventListener('click', function(event) {
-      event.preventDefault();
+    btn.addEventListener('click', function() {
       var next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
       setTheme(next);
     });
