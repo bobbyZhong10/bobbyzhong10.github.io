@@ -228,6 +228,17 @@ a,
     color: var(--site-bg);
 }
 
+@include breakpoint($large) {
+    .sidebar {
+        width: 22%;
+    }
+
+    .page {
+        width: 74%;
+        margin-left: 4%;
+    }
+}
+
 .visitor-map {
     margin-top: 2rem;
     text-align: center;
