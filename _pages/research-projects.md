@@ -8,8 +8,8 @@ author_profile: true
 # Research and Projects
 
 
-*“Much of what the IS field is about relates to information processing for decision making. With the advent of the Internet and all its evolving technologies, the decision-making IS environments have proliferated and expanded in complexity, reaching billions of individuals and consumers. These environments are characterized by increasing information richness and interactive decision making, often resulting in economic transactions: crowdsourcing and collective intelligence, electronic marketplaces, personalization and recommendation systems, synthetic and virtual environments of augmented reality, games and gamification, just to name a few.“*
-                                                                                      —— MIS Quarterly, 2013
+*“Much of what the IS field is about relates to information processing for decision making. With the advent of the Internet and all its evolving technologies, the decision-making IS environments have proliferated and expanded in complexity, reaching billions of individuals and consumers. These environments are characterized by increasing information richness and interactive decision making, often resulting in economic transactions: crowdsourcing and collective intelligence, electronic marketplaces, personalization and recommendation systems, synthetic and virtual environments of augmented reality, games and gamification, just to name a few.”*
+<div align="right">—— MIS Quarterly, 2013</div>
 
 ## Research Interests
 
