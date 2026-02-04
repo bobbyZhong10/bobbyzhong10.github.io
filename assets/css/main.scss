@@ -286,27 +286,25 @@ a,
     margin-bottom: 0.45rem;
 }
 
+.author__name {
+    white-space: nowrap;
+}
+
 .profile_box {
     padding: 0.75rem 0.55rem 0.65rem;
     border: 1px solid var(--site-border);
     border-radius: 10px;
-    overflow: hidden;
 }
 
 .author__avatar img {
     box-shadow: 0 1px 0 rgba(0, 0, 0, 0.04);
 }
 
-.author__urls {
-    max-width: 100%;
-}
-
 .author__urls li {
     display: flex;
     align-items: center;
     gap: 0.32rem;
-    white-space: normal;
-    overflow-wrap: anywhere;
+    white-space: nowrap;
 }
 
 .author__urls li i {
