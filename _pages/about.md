@@ -18,19 +18,12 @@ My research examines how generative artificial intelligence and related digital 
 
 💡 *I am currently exploring **US PhD opportunities at business schools for Fall 2027 entry** in **Information Systems**. Also willing to learn about the opportunities of Empirical Operations Management, or Quantitative Marketing. I welcome opportunities to connect with scholars whose research interests align with mine.*
 
-## Education
-
-- 2025.08 - now, Master of Behavioral and Decision Science, **University of Pennsylvania**
-- 2021.09 - 2025.07, BSc (Hons) Information Management and Information Systems, **Xi'an Jiaotong-Liverpool University (XJTLU) & University of Liverpool**
-
-## PhD Level Courses
-
-- **OIDD 9550 Research Seminar in Information Systems**, Spring 2026 (in process), Instructor: Prof. Lynn Wu, *Wharton School*
-- **STAT 5200 Applied Econometrics I**, Fall 2026 (plan), Instructor: Prof. Min Chul Shin, *Wharton School*
-
 ## News
 
-- 2025.08: I joined the Master of Behavioral Decision Science at the University of Pennsylvania 🎉
-- 2025.07: I won the Best Student Final Year Project (Thesis) Award at XJTLU 🎉
+- 2025.11: I received a student travel grant from the University of Pennsylvania
+- 2025.10: I participated in INFORMS and CIST for the first time, and presented on the preliminary content of the AIGS work at INFORMS
+- 2025.08: I joined the Master of Behavioral Decision Science at the University of Pennsylvania 
+- 2025.07: I won the Best Student Final Year Project (Thesis) Award at XJTLU
+- 2025.07: My first IS paper was presented at PACIS
 
 <script type='text/javascript' id='mapmyvisitors' src='https://mapmyvisitors.com/map.js?cl=ffffff&w=300&t=n&d=TA8pmEL4G-sfNd8cPpO5EpflMiKxnDDIwjKdS5HqpDw&co=2d78ad&ct=ffffff&cmo=3acc3a&cmn=ff5353'></script>
