@@ -33,4 +33,4 @@ My research examines how generative artificial intelligence, including large lan
 - 2025.08: I joined the Master of Behavioral Decision Science at the University of Pennsylvania 🎉
 - 2025.07: I won the Best Student Final Year Project (Thesis) Award at XJTLU 🎉
 
-<a href='https://mapmyvisitors.com/web/1c2bg'  title='Visit tracker'><img src='https://mapmyvisitors.com/map.png?cl=ffffff&w=300&t=n&d=TA8pmEL4G-sfNd8cPpO5EpflMiKxnDDIwjKdS5HqpDw&co=2d78ad&ct=f5eaaa'/></a>
+<script type='text/javascript' id='mapmyvisitors' src='https://mapmyvisitors.com/map.js?cl=ffffff&w=300&t=n&d=TA8pmEL4G-sfNd8cPpO5EpflMiKxnDDIwjKdS5HqpDw&co=2d78ad&ct=ffffff&cmo=3acc3a&cmn=ff5353'></script>
