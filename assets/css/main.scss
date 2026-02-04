@@ -121,7 +121,7 @@ html[data-theme="dark"] {
     --site-bg: #111827;
     --site-text: #f3f4f6;
     --site-muted: #cbd5e1;
-    --site-link: #011f5b;
+    --site-link: #cbd5e1;
     --site-border: #334155;
     --site-masthead: #0f172a;
 }
@@ -361,13 +361,5 @@ a,
     margin-top: 0.55rem;
     color: var(--site-text);
     opacity: 0.86;
-    font-size: 0.9rem;
-}
-
-.site-copyright {
-    text-align: center;
-    padding: 1.2rem 0 1.4rem;
-    color: var(--site-text);
-    opacity: 0.82;
     font-size: 0.9rem;
 }
