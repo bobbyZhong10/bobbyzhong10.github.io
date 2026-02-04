@@ -1,0 +1,202 @@
+---
+---
+
+/*
+ *    Minimal Mistakes Jekyll Theme
+ *
+ *  - Michael Rose
+ *  - mademistakes.com
+ *  - https://twitter.com/mmistakes
+ *
+*/
+
+@import "vendor/breakpoint/breakpoint"; // media query mixins
+@import "variables";
+@import "mixins";
+@import "vendor/susy/susy";
+
+@import "reset";
+@import "base";
+
+@import "utilities";
+@import "animations";
+@import "tables";
+@import "buttons";
+@import "notices";
+@import "masthead";
+@import "navigation";
+@import "footer";
+@import "syntax";
+
+@import "forms";
+
+@import "page";
+@import "archive";
+@import "sidebar";
+
+@import "vendor/font-awesome/fontawesome";
+@import "vendor/font-awesome/solid";
+@import "vendor/font-awesome/brands";
+@import "vendor/magnific-popup/magnific-popup";
+@import "print";
+
+.paper-box {
+    display: flex;
+    justify-content: left;
+    align-items: center;
+    flex-direction: row;
+    flex-wrap: wrap;
+    border-bottom: 1px #efefef solid;
+    padding: 2em 0 2em 0;
+    
+
+    .paper-box-image{
+        justify-content: center;
+        display: flex;
+        width: 100%;
+        order: 2;
+        img {
+            max-width: 400px;
+            box-shadow: 3px 3px 6px #888;
+            object-fit: cover;
+        }
+    }
+    
+    .paper-box-text{
+        max-width: 100%;
+        order: 1;
+    }
+    
+    @include breakpoint($medium) {
+        .paper-box-image{
+            justify-content: left;
+            min-width: 200px;
+            max-width: 40%;
+            order: 1;
+        }
+        
+        .paper-box-text{
+            justify-content: left;
+            padding-left: 2em;
+            max-width: 60%;
+            order: 2;
+        }
+
+    }
+
+
+}
+
+$scroll_offset : 2em;
+h1:before, .anchor:before { 
+    content: ''; 
+    display: block; 
+    position: relative; 
+    width: 0; 
+    height: $scroll_offset; 
+    margin-top: -$scroll_offset;
+}
+
+.badge {
+    padding-left: 1rem;
+    padding-right: 1rem;
+    position: absolute;
+    margin-top: .5em;
+    margin-left: -.5em;
+    color: white;
+    background-color: #00369f;
+    font-size: .8em;
+}
+
+:root {
+    --site-bg: #ffffff;
+    --site-text: #111111;
+    --site-muted: #4a4a4a;
+    --site-link: #005bbb;
+    --site-border: #dcdcdc;
+    --site-masthead: #ffffff;
+}
+
+html[data-theme="dark"] {
+    --site-bg: #111827;
+    --site-text: #f3f4f6;
+    --site-muted: #cbd5e1;
+    --site-link: #93c5fd;
+    --site-border: #334155;
+    --site-masthead: #0f172a;
+}
+
+body,
+.greedy-nav,
+.page,
+.sidebar,
+.author__urls-wrapper {
+    background-color: var(--site-bg);
+    color: var(--site-text);
+}
+
+.masthead {
+    background-color: var(--site-masthead);
+    border-bottom-color: var(--site-border);
+}
+
+.page__content,
+.page__content p,
+.page__content li,
+.author__content,
+.author__urls li {
+    color: var(--site-text);
+}
+
+.page__content h1,
+.page__content h2,
+.page__content h3,
+.page__content h4,
+.page__content h5,
+.page__content h6,
+.author__name {
+    color: var(--site-text);
+}
+
+a,
+.author__urls a,
+.greedy-nav a {
+    color: var(--site-link);
+}
+
+.greedy-nav .hidden-links {
+    background: var(--site-masthead);
+    border-color: var(--site-border);
+}
+
+.greedy-nav .hidden-links:before {
+    border-color: var(--site-border) transparent;
+}
+
+.greedy-nav .hidden-links:after {
+    border-color: var(--site-masthead) transparent;
+}
+
+.masthead__menu-item--theme {
+    width: 1%;
+}
+
+.theme-toggle-btn {
+    margin: 0 0 0 1rem;
+    padding: 0.4rem 0.6rem;
+    border: 1px solid var(--site-border);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--site-text);
+    cursor: pointer;
+    line-height: 1;
+}
+
+.theme-toggle-btn:hover {
+    background: rgba(128, 128, 128, 0.14);
+}
+
+.visitor-map {
+    margin-top: 2rem;
+    text-align: center;
+}
