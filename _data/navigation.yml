@@ -1,7 +1,16 @@
 # main links links
 main:
-  - title: "About Me"
-    url: "/#about-me"
+  - title: "Home"
+    url: "/"
+
+  - title: "Research and Projects"
+    url: "/research-projects/"
+
+  - title: "Awards and Services"
+    url: "/awards-services/"
+
+  - title: "Teaching"
+    url: "/teaching/"
 
   - title: "CV"
-    url: "/#cv"
+    url: "/cv/"
