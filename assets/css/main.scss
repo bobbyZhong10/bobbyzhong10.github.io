@@ -228,17 +228,6 @@ a,
     color: var(--site-bg);
 }
 
-@include breakpoint($large) {
-    .sidebar {
-        width: 22%;
-    }
-
-    .page {
-        width: 74%;
-        margin-left: 4%;
-    }
-}
-
 .visitor-map {
     margin-top: 2rem;
     text-align: center;
@@ -321,6 +310,10 @@ a,
 .author__urls li i {
     width: 1.1rem;
     text-align: center;
+}
+
+.sidebar .author__urls li {
+    font-size: 0.9rem;
 }
 
 .cv-actions {
