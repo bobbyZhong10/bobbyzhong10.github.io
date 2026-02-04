@@ -5,7 +5,14 @@
         <button><div class="navicon"></div></button>
         <ul class="visible-links">
           {% for link in site.data.navigation.main %}
-            <li class="masthead__menu-item"><a href="{{ link.url | relative_url }}">{{ link.title }}</a></li>
+            {% assign current_url = page.url | replace: "index.html", "" %}
+            {% assign is_active = false %}
+            {% if current_url == link.url %}
+              {% assign is_active = true %}
+            {% endif %}
+            <li class="masthead__menu-item{% if is_active %} masthead__menu-item--active{% endif %}">
+              <a href="{{ link.url | relative_url }}"{% if is_active %} aria-current="page"{% endif %}>{{ link.title }}</a>
+            </li>
           {% endfor %}
         </ul>
         <ul class="hidden-links hidden"></ul>
