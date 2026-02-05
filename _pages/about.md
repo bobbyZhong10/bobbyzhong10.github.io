@@ -20,8 +20,8 @@ My research examines how generative artificial intelligence and related digital 
 
 ## News
 
-- 2025.11: I received a student travel grant from the University of Pennsylvania
-- 2025.10: I participated in INFORMS and CIST for the first time, and presented on the preliminary content of the AIGS work at INFORMS
+- 2025.11: I received the Professional Student Individual Grants from the University of Pennsylvania
+- 2025.10: I participated my first INFORMS and CIST, and presented on the preliminary results of the AIGS work at INFORMS
 - 2025.08: I joined the Master of Behavioral Decision Science at the University of Pennsylvania 
 - 2025.07: I won the Best Student Final Year Project (Thesis) Award at XJTLU
 - 2025.07: My first IS paper was presented at PACIS
