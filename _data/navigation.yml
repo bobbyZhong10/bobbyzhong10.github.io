@@ -6,6 +6,9 @@ main:
   - title: "Research and Projects"
     url: "/research-projects/"
 
+  - title: "Education"
+    url: "/education/"
+
   - title: "Awards and Services"
     url: "/awards-services/"
 
