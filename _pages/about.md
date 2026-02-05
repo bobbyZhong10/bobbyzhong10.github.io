@@ -26,4 +26,4 @@ My research examines how generative artificial intelligence and related digital 
 - 2025.07: I won the Best Student Final Year Project (Thesis) Award at XJTLU
 - 2025.07: My first IS paper was presented at PACIS
 
-<script type='text/javascript' id='mapmyvisitors' src='https://mapmyvisitors.com/map.js?cl=011f5b&w=250&t=m&d=TA8pmEL4G-sfNd8cPpO5EpflMiKxnDDIwjKdS5HqpDw&co=ffffff&cmo=eda879&cmn=990000&ct=011f5b'></script>
+<script type="text/javascript" id="clstr_globe" src="//clustrmaps.com/globe.js?d=EflkrirZfRTVknrDdfUrj6J3kad22tbwvOvXE6x0rmo"></script>
