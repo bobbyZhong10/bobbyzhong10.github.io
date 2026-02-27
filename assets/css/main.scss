@@ -109,29 +109,29 @@ h1:before, .anchor:before {
 }
 
 :root {
-    --site-bg: #f7f4ef;
-    --site-surface: #fffdfa;
-    --site-surface-strong: #f2ebe3;
+    --site-bg: #f3f6fa;
+    --site-surface: #fdfefe;
+    --site-surface-strong: #edf2f8;
     --site-text: #171717;
     --site-muted: #5f5b56;
     --site-link: #011f5b;
     --site-link-hover: #990000;
     --site-border: #dbd1c5;
     --site-border-strong: #c4b7a8;
-    --site-masthead: rgba(247, 244, 239, 0.94);
+    --site-masthead: rgba(243, 246, 250, 0.94);
     --site-accent: #990000;
     --site-accent-soft: rgba(153, 0, 0, 0.08);
     --site-shadow: 0 18px 45px rgba(1, 31, 91, 0.08);
     --page-head-gap: 0.92rem;
     --page-first-card-gap: 0.95rem;
-    --glass-bg: color-mix(in srgb, #ffffff 68%, var(--site-surface));
-    --glass-bg-strong: color-mix(in srgb, #ffffff 78%, var(--site-surface));
-    --glass-border: color-mix(in srgb, var(--site-link) 16%, var(--site-border));
-    --glass-border-strong: color-mix(in srgb, var(--site-link) 26%, var(--site-border));
-    --glass-highlight: rgba(255, 255, 255, 0.64);
-    --glass-sheen: rgba(255, 255, 255, 0.36);
-    --glass-shadow: 0 16px 36px rgba(1, 31, 91, 0.08), 0 1px 0 rgba(255, 255, 255, 0.5) inset;
-    --glass-blur: 10px;
+    --glass-bg: color-mix(in srgb, #ffffff 78%, var(--site-surface));
+    --glass-bg-strong: color-mix(in srgb, #ffffff 88%, var(--site-surface));
+    --glass-border: color-mix(in srgb, var(--site-link) 20%, var(--site-border));
+    --glass-border-strong: color-mix(in srgb, var(--site-link) 32%, var(--site-border));
+    --glass-highlight: rgba(255, 255, 255, 0.78);
+    --glass-sheen: rgba(255, 255, 255, 0.48);
+    --glass-shadow: 0 18px 42px rgba(1, 31, 91, 0.1), 0 1px 0 rgba(255, 255, 255, 0.65) inset;
+    --glass-blur: 12px;
 }
 
 html[data-theme="dark"] {
@@ -148,14 +148,14 @@ html[data-theme="dark"] {
     --site-accent: #d06a6a;
     --site-accent-soft: rgba(208, 106, 106, 0.16);
     --site-shadow: 0 24px 50px rgba(0, 0, 0, 0.32);
-    --glass-bg: color-mix(in srgb, #253247 74%, var(--site-surface));
-    --glass-bg-strong: color-mix(in srgb, #2c3c53 82%, var(--site-surface));
-    --glass-border: color-mix(in srgb, #a5b8d8 18%, var(--site-border));
-    --glass-border-strong: color-mix(in srgb, #bdd0f2 26%, var(--site-border));
-    --glass-highlight: rgba(226, 236, 255, 0.18);
-    --glass-sheen: rgba(213, 228, 255, 0.12);
-    --glass-shadow: 0 18px 42px rgba(0, 0, 0, 0.36), 0 1px 0 rgba(220, 232, 255, 0.08) inset;
-    --glass-blur: 12px;
+    --glass-bg: color-mix(in srgb, #2a3950 78%, var(--site-surface));
+    --glass-bg-strong: color-mix(in srgb, #334661 86%, var(--site-surface));
+    --glass-border: color-mix(in srgb, #b3c8eb 24%, var(--site-border));
+    --glass-border-strong: color-mix(in srgb, #c9dbf7 34%, var(--site-border));
+    --glass-highlight: rgba(226, 236, 255, 0.24);
+    --glass-sheen: rgba(213, 228, 255, 0.16);
+    --glass-shadow: 0 20px 46px rgba(0, 0, 0, 0.4), 0 1px 0 rgba(220, 232, 255, 0.12) inset;
+    --glass-blur: 14px;
 }
 
 html,
@@ -176,8 +176,9 @@ body,
 body {
     position: relative;
     background:
-      radial-gradient(circle at top left, rgba(1, 31, 91, 0.06), transparent 32%),
-      radial-gradient(circle at top right, rgba(153, 0, 0, 0.06), transparent 24%),
+      radial-gradient(circle at top left, rgba(1, 31, 91, 0.05), transparent 34%),
+      radial-gradient(circle at top right, rgba(153, 0, 0, 0.04), transparent 26%),
+      linear-gradient(180deg, color-mix(in srgb, #ffffff 42%, var(--site-bg)), var(--site-bg)),
       var(--site-bg);
 }
 
