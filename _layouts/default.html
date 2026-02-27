@@ -9,7 +9,9 @@ layout: compress
     {% include head/custom.html %}
   </head>
 
-  <body>
+  {% assign current_url = page.url | replace: "index.html", "" %}
+  {% assign page_slug = current_url | replace: "/", " " | strip | replace: " ", "-" %}
+  <body class="page-shell{% if current_url == "/" %} page-home{% else %} page-inner{% endif %}{% if page_slug != "" %} page-{{ page_slug }}{% endif %}">
 
     {% include browser-upgrade.html %}
     {% include masthead.html %}
@@ -27,7 +29,6 @@ layout: compress
       </article>
     </div>
 
-    {% assign current_url = page.url | replace: "index.html", "" %}
     {% if current_url == "/" %}
       <footer class="site-copyright" role="contentinfo">© 2025-2026 Bobby Zhong</footer>
     {% endif %}

@@ -122,6 +122,8 @@ h1:before, .anchor:before {
     --site-accent: #990000;
     --site-accent-soft: rgba(153, 0, 0, 0.08);
     --site-shadow: 0 18px 45px rgba(1, 31, 91, 0.08);
+    --network-node: rgba(1, 31, 91, 0.18);
+    --network-edge: rgba(153, 0, 0, 0.12);
 }
 
 html[data-theme="dark"] {
@@ -138,6 +140,8 @@ html[data-theme="dark"] {
     --site-accent: #d06a6a;
     --site-accent-soft: rgba(208, 106, 106, 0.16);
     --site-shadow: 0 24px 50px rgba(0, 0, 0, 0.32);
+    --network-node: rgba(243, 215, 215, 0.2);
+    --network-edge: rgba(208, 106, 106, 0.22);
 }
 
 html,
@@ -156,10 +160,49 @@ body,
 }
 
 body {
+    position: relative;
     background:
       radial-gradient(circle at top left, rgba(1, 31, 91, 0.06), transparent 32%),
       radial-gradient(circle at top right, rgba(153, 0, 0, 0.06), transparent 24%),
       var(--site-bg);
+}
+
+.page-home::before,
+.page-home::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.page-home::before {
+    background-image:
+      radial-gradient(circle at 12% 20%, var(--network-node) 1.1px, transparent 1.2px),
+      radial-gradient(circle at 24% 12%, var(--network-node) 0.9px, transparent 1px),
+      radial-gradient(circle at 40% 18%, var(--network-node) 1px, transparent 1.1px),
+      radial-gradient(circle at 62% 10%, var(--network-node) 0.95px, transparent 1.05px),
+      radial-gradient(circle at 80% 16%, var(--network-node) 1.1px, transparent 1.2px),
+      radial-gradient(circle at 18% 34%, var(--network-node) 0.9px, transparent 1px),
+      radial-gradient(circle at 73% 32%, var(--network-node) 1px, transparent 1.1px);
+    opacity: 0.45;
+}
+
+.page-home::after {
+    background-image:
+      linear-gradient(112deg, transparent 12%, var(--network-edge) 12.2%, transparent 12.45%),
+      linear-gradient(101deg, transparent 23%, var(--network-edge) 23.18%, transparent 23.34%),
+      linear-gradient(96deg, transparent 34%, var(--network-edge) 34.16%, transparent 34.32%),
+      linear-gradient(106deg, transparent 47%, var(--network-edge) 47.2%, transparent 47.36%),
+      linear-gradient(98deg, transparent 61%, var(--network-edge) 61.16%, transparent 61.3%);
+    opacity: 0.3;
+}
+
+#main,
+.masthead,
+.site-copyright {
+    position: relative;
+    z-index: 1;
 }
 
 .masthead__menu {
@@ -653,6 +696,18 @@ html[data-theme="dark"] #theme-toggle-icon {
     box-shadow: var(--site-shadow);
 }
 
+.content-card::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: linear-gradient(118deg, transparent 36%, color-mix(in srgb, var(--site-link) 26%, transparent) 48%, transparent 60%);
+    opacity: 0;
+    transform: translateX(-18%);
+    transition: opacity 0.26s ease, transform 0.32s ease;
+    pointer-events: none;
+}
+
 .content-card:first-of-type {
     margin-top: 0.9rem;
 }
@@ -661,6 +716,34 @@ html[data-theme="dark"] #theme-toggle-icon {
     margin-top: 0;
     padding-bottom: 0.55rem;
     border-bottom: 1px solid var(--site-border) !important;
+}
+
+.page-research-projects .content-card:hover::after {
+    opacity: 0.5;
+    transform: translateX(18%);
+}
+
+.page-research-projects .content-card {
+    overflow: hidden;
+}
+
+.page-research-projects .content-card:hover {
+    border-color: color-mix(in srgb, var(--site-link) 40%, var(--site-border));
+}
+
+.page-research-projects .content-card ul {
+    position: relative;
+    margin-left: 0.2rem;
+}
+
+.page-research-projects .content-card ul::before {
+    content: "";
+    position: absolute;
+    left: -0.62rem;
+    top: 0.34rem;
+    bottom: 0.34rem;
+    width: 1px;
+    background: linear-gradient(180deg, color-mix(in srgb, var(--site-link) 30%, transparent), transparent);
 }
 
 .content-card ul,
