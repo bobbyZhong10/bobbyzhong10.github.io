@@ -2,6 +2,10 @@
   <div class="masthead__inner-wrap">
     <div class="masthead__menu">
       <nav id="site-nav" class="greedy-nav">
+        <a class="site-brand" href="{{ '/' | relative_url }}">
+          <span class="site-brand__mark">Penn</span>
+          <span class="site-brand__text">{{ site.title }}</span>
+        </a>
         <button><div class="navicon"></div></button>
         <ul class="visible-links">
           {% for link in site.data.navigation.main %}
