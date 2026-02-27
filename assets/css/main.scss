@@ -755,6 +755,7 @@ html[data-theme="dark"] #theme-toggle-icon {
 
 .page-research-projects .content-card--research-focus ul {
     display: grid;
+    grid-template-columns: 1fr;
     gap: 0.75rem;
     margin-left: 0;
     padding-left: 0;
@@ -769,6 +770,7 @@ html[data-theme="dark"] #theme-toggle-icon {
     margin: 0;
     padding: 0.62rem 0.72rem;
     border: 1px solid color-mix(in srgb, var(--site-link) 22%, var(--site-border));
+    border-left-width: 3px;
     border-radius: 12px;
     background: transparent;
 }
@@ -806,12 +808,6 @@ html[data-theme="dark"] #theme-toggle-icon {
 .page-research-projects .content-card--research-focus ul {
     margin-left: 0;
     position: static;
-}
-
-@include breakpoint($medium) {
-    .page-research-projects .content-card--research-focus ul {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
-    }
 }
 
 .content-card ul,

@@ -15,8 +15,8 @@ author_profile: true
 <section class="content-card content-card--research-focus" markdown="1">
 ## Research Interests
 
-- **Methods:** Econometrics, Machine Learning, Text Analysis, Laboratory/Field Experiments, LLM Annotation
 - **Topics:** Digital Platforms, Social Media, Reputation, Generative AI & FinTech, Algorithms & User Behaviors
+- **Methods:** Econometrics, Machine Learning, Text Analysis, Laboratory/Field Experiments, LLM Annotation
 </section>
 
 <section class="content-card" markdown="1">
