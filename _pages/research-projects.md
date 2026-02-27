@@ -38,7 +38,7 @@ author_profile: true
 
 - **Yunzhou Zhong** and [Bingjie Deng](https://scholar.xjtlu.edu.cn/en/persons/BingjieDeng/), *How Are We Mobilized to Express on Social Media? Identity, Persuasion, and Social Norms*, early version submit to AOM 2026
 - **Yunzhou Zhong** and [Bingjie Deng](https://scholar.xjtlu.edu.cn/en/persons/BingjieDeng/), *When Personalization Backfires: Skepticism and Decision Confidence in Platform-Mediated Information*, early version submit to AMCIS 2026
-- - **Yunzhou Zhong** and [Bingjie Deng](https://scholar.xjtlu.edu.cn/en/persons/BingjieDeng/), *Competing Signals in Platform Observability: State-Dependent Dominance Across Engagement Traces*, early version submit to SCECR 2026
+- **Yunzhou Zhong** and [Bingjie Deng](https://scholar.xjtlu.edu.cn/en/persons/BingjieDeng/), *Competing Signals in Platform Observability: State-Dependent Dominance Across Engagement Traces*, early version submit to SCECR 2026
 </section>
 
 <section class="content-card" markdown="1">
