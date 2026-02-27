@@ -17,7 +17,7 @@ My academic training spans interdisciplinary research in information systems, fi
 My research examines how generative artificial intelligence and related digital technologies reshape information environments and economic outcomes on digital platforms. I investigate how AI-driven content generation, aggregation, and filtering reconfigure the visibility and distribution of user-generated information, and how micro-level information cues such as linguistic framing, tags, and emojis interact with these changes to influence online word-of-mouth, user engagement, and reputation formation. Methodologically, I combine econometric with machine learning and LLM annotation, as well as online and flied experiments.
 
 <div class="phd-callout">
-  <p>💡 <em>I am currently exploring <strong>US PhD opportunities at business schools for Fall 2027 entry</strong> in <strong>Information Systems</strong>. Also willing to learn about the opportunities of Empirical Operations Management, or Quantitative Marketing. I welcome opportunities to connect with scholars whose research interests align with mine.</em></p>
+  <p>I am currently exploring <strong>US PhD opportunities at business schools for Fall 2027 entry</strong> in <strong>Information Systems</strong>. Also willing to learn about the opportunities of Empirical Operations Management, or Quantitative Marketing. I welcome opportunities to connect with scholars whose research interests align with mine.</p>
 </div>
 
 <section class="home-section">
