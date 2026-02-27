@@ -724,14 +724,50 @@ html[data-theme="dark"] #theme-toggle-icon {
     overflow: hidden;
 }
 
-.page-research-projects .content-card:first-of-type {
-    border-color: color-mix(in srgb, var(--site-link) 32%, var(--site-border));
+.page-research-projects .content-card--research-focus {
+    border-color: color-mix(in srgb, var(--site-link) 45%, var(--site-border));
     background:
-      linear-gradient(180deg, color-mix(in srgb, var(--site-link) 5%, var(--site-surface)), var(--site-surface));
+      linear-gradient(180deg, color-mix(in srgb, var(--site-link) 8%, var(--site-surface)), var(--site-surface));
 }
 
-.page-research-projects .content-card:first-of-type::before {
-    opacity: 0.9;
+.page-research-projects .content-card--research-focus::before {
+    height: 3px;
+    opacity: 0.95;
+}
+
+.page-research-projects .content-card--research-focus > h2 {
+    margin-bottom: 0.9rem;
+}
+
+.page-research-projects .content-card--research-focus ul {
+    display: grid;
+    gap: 0.75rem;
+    margin-left: 0;
+    padding-left: 0;
+}
+
+.page-research-projects .content-card--research-focus ul::before {
+    display: none;
+}
+
+.page-research-projects .content-card--research-focus li {
+    list-style: none;
+    margin: 0;
+    padding: 0.62rem 0.72rem;
+    border: 1px solid color-mix(in srgb, var(--site-link) 20%, var(--site-border));
+    border-radius: 12px;
+    background: color-mix(in srgb, var(--site-surface) 85%, var(--site-link) 15%);
+}
+
+.page-research-projects .content-card--research-focus li::marker {
+    content: "";
+}
+
+.page-research-projects .content-card--research-focus strong {
+    display: inline-block;
+    margin-right: 0.35rem;
+    color: var(--site-link);
+    letter-spacing: 0.02em;
 }
 
 .page-research-projects .content-card:hover {
@@ -751,6 +787,17 @@ html[data-theme="dark"] #theme-toggle-icon {
     bottom: 0.34rem;
     width: 1px;
     background: linear-gradient(180deg, color-mix(in srgb, var(--site-link) 30%, transparent), transparent);
+}
+
+.page-research-projects .content-card--research-focus ul {
+    margin-left: 0;
+    position: static;
+}
+
+@include breakpoint($medium) {
+    .page-research-projects .content-card--research-focus ul {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
 }
 
 .content-card ul,

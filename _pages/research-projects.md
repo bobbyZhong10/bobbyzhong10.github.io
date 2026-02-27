@@ -12,7 +12,7 @@ author_profile: true
   <div class="research-quote-card__cite">—— MIS Quarterly, 2013</div>
 </section>
 
-<section class="content-card" markdown="1">
+<section class="content-card content-card--research-focus" markdown="1">
 ## Research Interests
 
 - **Methods:** Econometrics, Machine Learning, Laboratory/Field Experiments, Text Analysis, LLM Annotation
