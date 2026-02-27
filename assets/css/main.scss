@@ -983,11 +983,11 @@ html[data-theme="dark"] #theme-toggle-icon {
     padding: 0;
     border: 0;
     color: var(--site-text);
-    font-family: "Snell Roundhand", "Segoe Script", "Apple Chancery", "Bradley Hand", cursive;
+    font-family: "Iowan Old Style", "Baskerville", "Palatino Linotype", "Book Antiqua", "Source Serif 4", Georgia, serif;
     font-size: 1.12rem;
-    font-style: normal;
+    font-style: italic;
     font-weight: 500;
-    letter-spacing: 0.01em;
+    letter-spacing: 0.005em;
     line-height: 1.8;
 }
 
@@ -1006,8 +1006,10 @@ html[data-theme="dark"] #theme-toggle-icon {
     position: relative;
     margin-top: 0.85rem;
     color: var(--site-text);
-    font-family: "Snell Roundhand", "Segoe Script", "Apple Chancery", "Bradley Hand", cursive;
+    font-family: "Iowan Old Style", "Baskerville", "Palatino Linotype", "Book Antiqua", "Source Serif 4", Georgia, serif;
     font-size: 1.02rem;
+    font-style: normal;
+    font-weight: 500;
     text-align: right;
 }
 
