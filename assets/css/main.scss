@@ -546,7 +546,7 @@ html[data-theme="dark"] #theme-toggle-icon {
     padding: 1rem 1.1rem;
     border: 1px solid var(--site-border);
     border-radius: 16px;
-    background: linear-gradient(180deg, var(--site-surface), rgba(153, 0, 0, 0.03));
+    background: linear-gradient(180deg, var(--site-surface), color-mix(in srgb, var(--site-link) 3%, var(--site-surface)));
     box-shadow: var(--site-shadow);
 }
 
@@ -560,7 +560,11 @@ html[data-theme="dark"] #theme-toggle-icon {
     top: 0;
     height: 2px;
     border-radius: 999px;
-    background: linear-gradient(90deg, var(--site-link), var(--site-accent));
+    background: linear-gradient(
+      90deg,
+      color-mix(in srgb, var(--site-link) 92%, var(--site-accent)),
+      color-mix(in srgb, var(--site-link) 72%, var(--site-accent))
+    );
     opacity: 0.7;
 }
 
@@ -578,10 +582,10 @@ html[data-theme="dark"] #theme-toggle-icon {
     align-items: center;
     width: fit-content;
     padding: 0.18rem 0.5rem;
-    border: 1px solid color-mix(in srgb, var(--site-accent) 18%, transparent);
+    border: 1px solid color-mix(in srgb, var(--site-link) 22%, transparent);
     border-radius: 999px;
-    background: color-mix(in srgb, var(--site-accent-soft) 70%, transparent);
-    color: var(--site-accent);
+    background: color-mix(in srgb, var(--site-link) 10%, var(--site-surface));
+    color: color-mix(in srgb, var(--site-link) 88%, var(--site-text));
     font-size: 0.82rem;
     font-weight: 700;
     letter-spacing: 0.08em;
@@ -621,10 +625,10 @@ html[data-theme="dark"] #theme-toggle-icon {
 .phd-callout {
     margin: 1.6rem 0 2rem;
     padding: 1.15rem 1.2rem;
-    border: 1px solid rgba(153, 0, 0, 0.18);
+    border: 1px solid color-mix(in srgb, var(--site-link) 24%, var(--site-border));
     border-radius: 18px;
     background:
-      linear-gradient(135deg, rgba(153, 0, 0, 0.08), transparent 48%),
+      linear-gradient(135deg, color-mix(in srgb, var(--site-link) 8%, transparent), transparent 50%),
       var(--site-surface);
     box-shadow: var(--site-shadow);
 }
@@ -636,7 +640,11 @@ html[data-theme="dark"] #theme-toggle-icon {
     height: 2px;
     margin-bottom: 0.8rem;
     border-radius: 999px;
-    background: linear-gradient(90deg, var(--site-accent), var(--site-link));
+    background: linear-gradient(
+      90deg,
+      color-mix(in srgb, var(--site-link) 90%, var(--site-accent)),
+      color-mix(in srgb, var(--site-link) 70%, var(--site-accent))
+    );
 }
 
 .phd-callout p {
@@ -733,6 +741,11 @@ html[data-theme="dark"] #theme-toggle-icon {
 .page-research-projects .content-card--research-focus::before {
     height: 3px;
     opacity: 0.95;
+    background: linear-gradient(
+      90deg,
+      color-mix(in srgb, var(--site-link) 94%, var(--site-accent)),
+      color-mix(in srgb, var(--site-link) 78%, var(--site-accent))
+    );
 }
 
 .page-research-projects .content-card--research-focus > h2 {
@@ -813,11 +826,11 @@ html[data-theme="dark"] #theme-toggle-icon {
     position: relative;
     margin: 0.8rem 0 1.4rem;
     padding: 1.35rem 1.45rem 1.25rem;
-    border: 1px solid rgba(1, 31, 91, 0.12);
+    border: 1px solid color-mix(in srgb, var(--site-link) 22%, var(--site-border));
     border-radius: 22px;
     background:
-      linear-gradient(135deg, rgba(1, 31, 91, 0.08), transparent 50%),
-      linear-gradient(180deg, var(--site-surface), var(--site-surface-strong));
+      linear-gradient(135deg, color-mix(in srgb, var(--site-link) 7%, transparent), transparent 52%),
+      linear-gradient(180deg, var(--site-surface), color-mix(in srgb, var(--site-link) 4%, var(--site-surface)));
     box-shadow: var(--site-shadow);
     overflow: hidden;
 }
@@ -827,8 +840,8 @@ html[data-theme="dark"] #theme-toggle-icon {
     position: absolute;
     inset: 0;
     background-image:
-      linear-gradient(rgba(1, 31, 91, 0.06) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(1, 31, 91, 0.06) 1px, transparent 1px);
+      linear-gradient(color-mix(in srgb, var(--site-link) 12%, transparent) 1px, transparent 1px),
+      linear-gradient(90deg, color-mix(in srgb, var(--site-link) 12%, transparent) 1px, transparent 1px);
     background-size: 24px 24px;
     mask-image: linear-gradient(135deg, rgba(0, 0, 0, 0.4), transparent 68%);
     pointer-events: none;
@@ -851,7 +864,7 @@ html[data-theme="dark"] #theme-toggle-icon {
     position: absolute;
     left: -0.45rem;
     top: -0.35rem;
-    color: color-mix(in srgb, var(--site-accent) 40%, transparent);
+    color: color-mix(in srgb, var(--site-link) 42%, transparent);
     font-size: 2rem;
     line-height: 1;
     pointer-events: none;
