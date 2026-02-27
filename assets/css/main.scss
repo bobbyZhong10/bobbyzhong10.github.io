@@ -122,8 +122,6 @@ h1:before, .anchor:before {
     --site-accent: #990000;
     --site-accent-soft: rgba(153, 0, 0, 0.08);
     --site-shadow: 0 18px 45px rgba(1, 31, 91, 0.08);
-    --network-node: rgba(1, 31, 91, 0.18);
-    --network-edge: rgba(153, 0, 0, 0.12);
 }
 
 html[data-theme="dark"] {
@@ -140,8 +138,6 @@ html[data-theme="dark"] {
     --site-accent: #d06a6a;
     --site-accent-soft: rgba(208, 106, 106, 0.16);
     --site-shadow: 0 24px 50px rgba(0, 0, 0, 0.32);
-    --network-node: rgba(243, 215, 215, 0.2);
-    --network-edge: rgba(208, 106, 106, 0.22);
 }
 
 html,
@@ -167,44 +163,6 @@ body {
       var(--site-bg);
 }
 
-.page-home::before,
-.page-home::after {
-    content: "";
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    z-index: 0;
-}
-
-.page-home::before {
-    background-image:
-      radial-gradient(circle at 12% 20%, var(--network-node) 1.1px, transparent 1.2px),
-      radial-gradient(circle at 24% 12%, var(--network-node) 0.9px, transparent 1px),
-      radial-gradient(circle at 40% 18%, var(--network-node) 1px, transparent 1.1px),
-      radial-gradient(circle at 62% 10%, var(--network-node) 0.95px, transparent 1.05px),
-      radial-gradient(circle at 80% 16%, var(--network-node) 1.1px, transparent 1.2px),
-      radial-gradient(circle at 18% 34%, var(--network-node) 0.9px, transparent 1px),
-      radial-gradient(circle at 73% 32%, var(--network-node) 1px, transparent 1.1px);
-    opacity: 0.45;
-}
-
-.page-home::after {
-    background-image:
-      linear-gradient(112deg, transparent 12%, var(--network-edge) 12.2%, transparent 12.45%),
-      linear-gradient(101deg, transparent 23%, var(--network-edge) 23.18%, transparent 23.34%),
-      linear-gradient(96deg, transparent 34%, var(--network-edge) 34.16%, transparent 34.32%),
-      linear-gradient(106deg, transparent 47%, var(--network-edge) 47.2%, transparent 47.36%),
-      linear-gradient(98deg, transparent 61%, var(--network-edge) 61.16%, transparent 61.3%);
-    opacity: 0.3;
-}
-
-#main,
-.masthead,
-.site-copyright {
-    position: relative;
-    z-index: 1;
-}
-
 .masthead__menu {
     position: relative;
 }
@@ -220,6 +178,7 @@ body {
     background-color: var(--site-masthead);
     border-bottom-color: var(--site-border);
     backdrop-filter: blur(14px);
+    box-shadow: 0 1px 0 color-mix(in srgb, var(--site-border) 75%, transparent);
 }
 
 .page__content,
@@ -689,11 +648,16 @@ html[data-theme="dark"] #theme-toggle-icon {
 .content-card {
     position: relative;
     margin: 1.25rem 0 0;
-    padding: 1.2rem 1.3rem;
+    padding: 1.25rem 1.35rem 1.3rem;
     border: 1px solid var(--site-border);
     border-radius: 18px;
     background: var(--site-surface);
     box-shadow: var(--site-shadow);
+}
+
+.content-card h2,
+.content-card h3 {
+    letter-spacing: 0.01em;
 }
 
 .content-card::after {
@@ -714,8 +678,41 @@ html[data-theme="dark"] #theme-toggle-icon {
 
 .content-card > h2 {
     margin-top: 0;
+    margin-bottom: 0.75rem;
     padding-bottom: 0.55rem;
     border-bottom: 1px solid var(--site-border) !important;
+}
+
+.content-card > h2::after,
+.content-card > h3::after {
+    display: none !important;
+}
+
+.content-card > :first-child {
+    margin-top: 0;
+}
+
+.content-card > :last-child {
+    margin-bottom: 0;
+}
+
+.content-card p {
+    margin: 0.55rem 0 0;
+    line-height: 1.78;
+}
+
+.content-card ul,
+.content-card ol {
+    margin: 0.55rem 0 0;
+    padding-left: 1.15rem;
+}
+
+.content-card li {
+    line-height: 1.72;
+}
+
+.content-card li + li {
+    margin-top: 0.42rem;
 }
 
 .page-research-projects .content-card:hover::after {
@@ -733,7 +730,7 @@ html[data-theme="dark"] #theme-toggle-icon {
 
 .page-research-projects .content-card ul {
     position: relative;
-    margin-left: 0.2rem;
+    margin-left: 0.18rem;
 }
 
 .page-research-projects .content-card ul::before {
@@ -831,6 +828,19 @@ html[data-theme="dark"] #theme-toggle-icon {
     margin-top: 0.45rem;
     background: linear-gradient(90deg, var(--site-link), var(--site-accent));
     border-radius: 999px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .news-item:hover,
+    .content-card:hover,
+    .visitor-map-card:hover,
+    .phd-callout:hover {
+        transform: none;
+    }
+
+    .content-card::after {
+        transition: none;
+    }
 }
 
 .page__content ul li::marker {
