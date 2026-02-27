@@ -730,12 +730,13 @@ html[data-theme="dark"] #theme-toggle-icon {
 
 .page-research-projects .content-card {
     overflow: hidden;
+    border-color: color-mix(in srgb, var(--site-link) 12%, var(--site-border));
 }
 
 .page-research-projects .content-card--research-focus {
-    border-color: color-mix(in srgb, var(--site-link) 45%, var(--site-border));
+    border-color: color-mix(in srgb, var(--site-link) 28%, var(--site-border));
     background:
-      linear-gradient(180deg, color-mix(in srgb, var(--site-link) 8%, var(--site-surface)), var(--site-surface));
+      linear-gradient(180deg, color-mix(in srgb, var(--site-link) 5%, var(--site-surface)), var(--site-surface));
 }
 
 .page-research-projects .content-card--research-focus::before {
@@ -767,9 +768,9 @@ html[data-theme="dark"] #theme-toggle-icon {
     list-style: none;
     margin: 0;
     padding: 0.62rem 0.72rem;
-    border: 1px solid color-mix(in srgb, var(--site-link) 20%, var(--site-border));
+    border: 1px solid color-mix(in srgb, var(--site-link) 22%, var(--site-border));
     border-radius: 12px;
-    background: color-mix(in srgb, var(--site-surface) 85%, var(--site-link) 15%);
+    background: transparent;
 }
 
 .page-research-projects .content-card--research-focus li::marker {
@@ -784,7 +785,7 @@ html[data-theme="dark"] #theme-toggle-icon {
 }
 
 .page-research-projects .content-card:hover {
-    border-color: color-mix(in srgb, var(--site-link) 40%, var(--site-border));
+    border-color: color-mix(in srgb, var(--site-link) 24%, var(--site-border));
 }
 
 .page-research-projects .content-card ul {
@@ -826,7 +827,7 @@ html[data-theme="dark"] #theme-toggle-icon {
     position: relative;
     margin: 0.8rem 0 1.4rem;
     padding: 1.35rem 1.45rem 1.25rem;
-    border: 1px solid color-mix(in srgb, var(--site-link) 22%, var(--site-border));
+    border: 1px solid color-mix(in srgb, var(--site-link) 34%, var(--site-border));
     border-radius: 22px;
     background:
       linear-gradient(135deg, color-mix(in srgb, var(--site-link) 7%, transparent), transparent 52%),
