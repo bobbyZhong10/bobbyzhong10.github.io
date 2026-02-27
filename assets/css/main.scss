@@ -124,6 +124,14 @@ h1:before, .anchor:before {
     --site-shadow: 0 18px 45px rgba(1, 31, 91, 0.08);
     --page-head-gap: 0.92rem;
     --page-first-card-gap: 0.95rem;
+    --glass-bg: color-mix(in srgb, #ffffff 68%, var(--site-surface));
+    --glass-bg-strong: color-mix(in srgb, #ffffff 78%, var(--site-surface));
+    --glass-border: color-mix(in srgb, var(--site-link) 16%, var(--site-border));
+    --glass-border-strong: color-mix(in srgb, var(--site-link) 26%, var(--site-border));
+    --glass-highlight: rgba(255, 255, 255, 0.64);
+    --glass-sheen: rgba(255, 255, 255, 0.36);
+    --glass-shadow: 0 16px 36px rgba(1, 31, 91, 0.08), 0 1px 0 rgba(255, 255, 255, 0.5) inset;
+    --glass-blur: 10px;
 }
 
 html[data-theme="dark"] {
@@ -140,6 +148,14 @@ html[data-theme="dark"] {
     --site-accent: #d06a6a;
     --site-accent-soft: rgba(208, 106, 106, 0.16);
     --site-shadow: 0 24px 50px rgba(0, 0, 0, 0.32);
+    --glass-bg: color-mix(in srgb, #253247 74%, var(--site-surface));
+    --glass-bg-strong: color-mix(in srgb, #2c3c53 82%, var(--site-surface));
+    --glass-border: color-mix(in srgb, #a5b8d8 18%, var(--site-border));
+    --glass-border-strong: color-mix(in srgb, #bdd0f2 26%, var(--site-border));
+    --glass-highlight: rgba(226, 236, 255, 0.18);
+    --glass-sheen: rgba(213, 228, 255, 0.12);
+    --glass-shadow: 0 18px 42px rgba(0, 0, 0, 0.36), 0 1px 0 rgba(220, 232, 255, 0.08) inset;
+    --glass-blur: 12px;
 }
 
 html,
@@ -382,10 +398,14 @@ html[data-theme="dark"] #theme-toggle-icon {
 .profile_box {
     position: relative;
     padding: 1.1rem 1rem 1rem;
-    border: 1px solid var(--site-border);
+    border: 1px solid var(--glass-border-strong);
     border-radius: 18px;
-    background: var(--site-surface);
-    box-shadow: var(--site-shadow);
+    background:
+      linear-gradient(160deg, var(--glass-highlight), transparent 55%),
+      var(--glass-bg);
+    box-shadow: var(--glass-shadow);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
 }
 
 .profile_box::before {
@@ -398,6 +418,15 @@ html[data-theme="dark"] #theme-toggle-icon {
     border-radius: 999px;
     background: linear-gradient(90deg, var(--site-link), var(--site-accent));
     opacity: 0.7;
+}
+
+.profile_box::after {
+    content: "";
+    position: absolute;
+    inset: 1px;
+    border-radius: calc(18px - 1px);
+    border: 1px solid color-mix(in srgb, var(--glass-highlight) 78%, transparent);
+    pointer-events: none;
 }
 
 .author__avatar img {
@@ -528,10 +557,14 @@ html[data-theme="dark"] #theme-toggle-icon {
 .home-card,
 .visitor-map-card {
     padding: 1.25rem 1.35rem;
-    border: 1px solid var(--site-border);
+    border: 1px solid var(--glass-border);
     border-radius: 18px;
-    background: var(--site-surface);
-    box-shadow: var(--site-shadow);
+    background:
+      linear-gradient(158deg, var(--glass-highlight), transparent 58%),
+      var(--glass-bg);
+    box-shadow: var(--glass-shadow);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
 }
 
 .home-section h2 {
@@ -563,10 +596,14 @@ html[data-theme="dark"] #theme-toggle-icon {
     grid-template-columns: 7.5rem 1fr;
     gap: 1rem;
     padding: 1rem 1.1rem;
-    border: 1px solid var(--site-border);
+    border: 1px solid var(--glass-border);
     border-radius: 16px;
-    background: linear-gradient(180deg, var(--site-surface), color-mix(in srgb, var(--site-link) 3%, var(--site-surface)));
-    box-shadow: var(--site-shadow);
+    background:
+      linear-gradient(162deg, var(--glass-sheen), transparent 54%),
+      linear-gradient(180deg, var(--glass-bg), color-mix(in srgb, var(--site-link) 4%, var(--glass-bg-strong)));
+    box-shadow: var(--glass-shadow);
+    backdrop-filter: blur(calc(var(--glass-blur) - 1px));
+    -webkit-backdrop-filter: blur(calc(var(--glass-blur) - 1px));
 }
 
 .news-item::before,
@@ -644,12 +681,14 @@ html[data-theme="dark"] #theme-toggle-icon {
 .phd-callout {
     margin: 1.6rem 0 2rem;
     padding: 1.15rem 1.2rem;
-    border: 1px solid color-mix(in srgb, var(--site-link) 24%, var(--site-border));
+    border: 1px solid color-mix(in srgb, var(--site-link) 20%, var(--glass-border-strong));
     border-radius: 18px;
     background:
-      linear-gradient(135deg, color-mix(in srgb, var(--site-link) 8%, transparent), transparent 50%),
-      var(--site-surface);
-    box-shadow: var(--site-shadow);
+      linear-gradient(150deg, color-mix(in srgb, var(--site-link) 9%, transparent), transparent 54%),
+      linear-gradient(175deg, var(--glass-bg), var(--glass-bg-strong));
+    box-shadow: var(--glass-shadow);
+    backdrop-filter: blur(calc(var(--glass-blur) - 1px));
+    -webkit-backdrop-filter: blur(calc(var(--glass-blur) - 1px));
 }
 
 .phd-callout::before {
@@ -676,11 +715,15 @@ html[data-theme="dark"] #theme-toggle-icon {
     position: relative;
     margin: 0.95rem 0 1.4rem;
     padding: 1.15rem 1.25rem 1.2rem;
-    border: 1px solid color-mix(in srgb, var(--site-link) 16%, var(--site-border));
+    border: 1px solid color-mix(in srgb, var(--site-link) 14%, var(--glass-border));
     border-left: 3px solid color-mix(in srgb, var(--site-link) 72%, var(--site-accent));
     border-radius: 14px;
-    background: var(--site-surface);
-    box-shadow: 0 10px 24px color-mix(in srgb, var(--site-link) 8%, transparent);
+    background:
+      linear-gradient(158deg, var(--glass-highlight), transparent 58%),
+      var(--glass-bg-strong);
+    box-shadow: 0 12px 28px color-mix(in srgb, var(--site-link) 9%, transparent);
+    backdrop-filter: blur(calc(var(--glass-blur) - 2px));
+    -webkit-backdrop-filter: blur(calc(var(--glass-blur) - 2px));
 }
 
 .home-intro-card::before {
@@ -712,10 +755,14 @@ html[data-theme="dark"] #theme-toggle-icon {
     position: relative;
     margin: 1.25rem 0 0;
     padding: 1.25rem 1.35rem 1.3rem;
-    border: 1px solid var(--site-border);
+    border: 1px solid var(--glass-border);
     border-radius: 18px;
-    background: var(--site-surface);
-    box-shadow: var(--site-shadow);
+    background:
+      linear-gradient(160deg, var(--glass-sheen), transparent 56%),
+      var(--glass-bg);
+    box-shadow: var(--glass-shadow);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
 }
 
 .content-card h2,
@@ -785,13 +832,14 @@ html[data-theme="dark"] #theme-toggle-icon {
 
 .page-research-projects .content-card {
     overflow: hidden;
-    border-color: color-mix(in srgb, var(--site-link) 12%, var(--site-border));
+    border-color: color-mix(in srgb, var(--site-link) 15%, var(--glass-border));
 }
 
 .page-research-projects .content-card--research-focus {
-    border-color: color-mix(in srgb, var(--site-link) 28%, var(--site-border));
+    border-color: color-mix(in srgb, var(--site-link) 31%, var(--glass-border-strong));
     background:
-      linear-gradient(180deg, color-mix(in srgb, var(--site-link) 5%, var(--site-surface)), var(--site-surface));
+      linear-gradient(155deg, var(--glass-highlight), transparent 62%),
+      linear-gradient(180deg, color-mix(in srgb, var(--site-link) 4%, var(--glass-bg)), var(--glass-bg));
 }
 
 .page-research-projects .content-card--research-focus::before {
@@ -824,7 +872,7 @@ html[data-theme="dark"] #theme-toggle-icon {
     list-style: none;
     margin: 0;
     padding: 0.62rem 0.72rem;
-    border: 1px solid color-mix(in srgb, var(--site-link) 22%, var(--site-border));
+    border: 1px solid color-mix(in srgb, var(--site-link) 24%, var(--glass-border));
     border-left-width: 3px;
     border-radius: 12px;
     background: transparent;
@@ -842,7 +890,7 @@ html[data-theme="dark"] #theme-toggle-icon {
 }
 
 .page-research-projects .content-card:hover {
-    border-color: color-mix(in srgb, var(--site-link) 24%, var(--site-border));
+    border-color: color-mix(in srgb, var(--site-link) 24%, var(--glass-border-strong));
 }
 
 .page-research-projects .content-card ul {
@@ -878,12 +926,15 @@ html[data-theme="dark"] #theme-toggle-icon {
     position: relative;
     margin: 0.95rem 0 1.35rem;
     padding: 1.35rem 1.45rem 1.25rem;
-    border: 1px solid color-mix(in srgb, var(--site-link) 34%, var(--site-border));
+    border: 1px solid color-mix(in srgb, var(--site-link) 36%, var(--glass-border-strong));
     border-radius: 22px;
     background:
-      linear-gradient(135deg, color-mix(in srgb, var(--site-link) 7%, transparent), transparent 52%),
-      linear-gradient(180deg, var(--site-surface), color-mix(in srgb, var(--site-link) 4%, var(--site-surface)));
-    box-shadow: var(--site-shadow);
+      linear-gradient(150deg, var(--glass-highlight), transparent 56%),
+      linear-gradient(135deg, color-mix(in srgb, var(--site-link) 6%, transparent), transparent 54%),
+      linear-gradient(180deg, var(--glass-bg-strong), color-mix(in srgb, var(--site-link) 3%, var(--glass-bg)));
+    box-shadow: var(--glass-shadow);
+    backdrop-filter: blur(var(--glass-blur));
+    -webkit-backdrop-filter: blur(var(--glass-blur));
     overflow: hidden;
 }
 
