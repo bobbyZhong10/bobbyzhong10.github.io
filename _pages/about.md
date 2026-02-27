@@ -16,12 +16,13 @@ My academic training spans interdisciplinary research in information systems, fi
 
 My research examines how generative artificial intelligence and related digital technologies reshape information environments and economic outcomes on digital platforms. I investigate how AI-driven content generation, aggregation, and filtering reconfigure the visibility and distribution of user-generated information, and how micro-level information cues such as linguistic framing, tags, and emojis interact with these changes to influence online word-of-mouth, user engagement, and reputation formation. Methodologically, I combine econometric with machine learning and LLM annotation, as well as online and flied experiments.
 
-💡 *I am currently exploring **US PhD opportunities at business schools for Fall 2027 entry** in **Information Systems**. Also willing to learn about the opportunities of Empirical Operations Management, or Quantitative Marketing. I welcome opportunities to connect with scholars whose research interests align with mine.*
+<div class="phd-callout">
+  <p>💡 <em>I am currently exploring <strong>US PhD opportunities at business schools for Fall 2027 entry</strong> in <strong>Information Systems</strong>. Also willing to learn about the opportunities of Empirical Operations Management, or Quantitative Marketing. I welcome opportunities to connect with scholars whose research interests align with mine.</em></p>
+</div>
 
 <section class="home-section">
   <div class="section-heading">
     <h2>News</h2>
-    <p>Recent milestones and updates.</p>
   </div>
   <div class="news-list">
     <article class="news-item">
@@ -50,7 +51,6 @@ My research examines how generative artificial intelligence and related digital 
 <section class="home-section home-section--compact">
   <div class="section-heading">
     <h2>Site Visitors</h2>
-    <p>A lightweight traffic snapshot.</p>
   </div>
   <div class="visitor-map-card">
     <script type='text/javascript' id='clustrmaps' src='//cdn.clustrmaps.com/map_v2.js?cl=011f5b&w=280&t=m&d=EflkrirZfRTVknrDdfUrj6J3kad22tbwvOvXE6x0rmo&co=ffffff&ct=011f5b&cmo=990000&cmn=7d0c0c'></script>
