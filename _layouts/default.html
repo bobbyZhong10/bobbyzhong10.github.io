@@ -27,7 +27,10 @@ layout: compress
       </article>
     </div>
 
-    <footer class="site-copyright" role="contentinfo">© 2025-2026 Bobby Zhong</footer>
+    {% assign current_url = page.url | replace: "index.html", "" %}
+    {% if current_url == "/" %}
+      <footer class="site-copyright" role="contentinfo">© 2025-2026 Bobby Zhong</footer>
+    {% endif %}
 
     {% include scripts.html %}
 

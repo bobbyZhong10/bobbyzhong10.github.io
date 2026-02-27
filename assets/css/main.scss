@@ -331,6 +331,22 @@ html[data-theme="dark"] #theme-toggle-icon {
     font-weight: 700;
 }
 
+.masthead__menu-item--active {
+    position: relative;
+}
+
+.masthead__menu-item--active::after {
+    content: "";
+    position: absolute;
+    left: 0.55rem;
+    right: 0.55rem;
+    bottom: 0.42rem;
+    height: 0.3rem;
+    border-radius: 999px;
+    background: color-mix(in srgb, var(--site-accent-soft) 75%, transparent);
+    z-index: -1;
+}
+
 .masthead__menu-item--active a:before {
     transform: scaleX(1) !important;
     height: 2px !important;
@@ -433,6 +449,26 @@ html[data-theme="dark"] #theme-toggle-icon {
 .sidebar .author__meta-line--employer {
     font-size: inherit;
     letter-spacing: -0.01em;
+}
+
+@include breakpoint($large) {
+    .profile_box .author__avatar {
+        text-align: center;
+    }
+
+    .profile_box .author__avatar img {
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .profile_box .author__content {
+        text-align: center;
+        width: 100%;
+    }
+
+    .profile_box .author__name {
+        text-align: center;
+    }
 }
 
 .cv-actions {
