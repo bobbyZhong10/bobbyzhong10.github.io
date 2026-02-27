@@ -461,6 +461,22 @@ html[data-theme="dark"] #theme-toggle-icon {
     color: var(--site-link) !important;
 }
 
+.author__urls a i,
+.author__urls a .fa,
+.author__urls a .fab,
+.author__urls a .fas,
+.author__urls a .ai {
+    color: var(--site-link) !important;
+}
+
+.author__urls a:hover i,
+.author__urls a:hover .fa,
+.author__urls a:hover .fab,
+.author__urls a:hover .fas,
+.author__urls a:hover .ai {
+    color: var(--site-link-hover) !important;
+}
+
 @include breakpoint($large) {
     .profile_box .author__avatar {
         text-align: center;
