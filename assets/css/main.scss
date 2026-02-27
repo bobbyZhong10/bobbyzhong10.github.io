@@ -122,6 +122,8 @@ h1:before, .anchor:before {
     --site-accent: #990000;
     --site-accent-soft: rgba(153, 0, 0, 0.08);
     --site-shadow: 0 18px 45px rgba(1, 31, 91, 0.08);
+    --page-head-gap: 0.92rem;
+    --page-first-card-gap: 0.95rem;
 }
 
 html[data-theme="dark"] {
@@ -356,7 +358,8 @@ html[data-theme="dark"] #theme-toggle-icon {
 }
 
 .page__content h1 {
-    margin-bottom: 1rem;
+    margin-bottom: var(--page-head-gap);
+    padding-bottom: 0.34rem;
 }
 
 .page__content h2 {
@@ -653,6 +656,42 @@ html[data-theme="dark"] #theme-toggle-icon {
     line-height: 1.8;
 }
 
+.home-intro-card {
+    position: relative;
+    margin: 0.95rem 0 1.4rem;
+    padding: 1.15rem 1.25rem 1.2rem;
+    border: 1px solid color-mix(in srgb, var(--site-link) 16%, var(--site-border));
+    border-left: 3px solid color-mix(in srgb, var(--site-link) 72%, var(--site-accent));
+    border-radius: 14px;
+    background: var(--site-surface);
+    box-shadow: 0 10px 24px color-mix(in srgb, var(--site-link) 8%, transparent);
+}
+
+.home-intro-card::before {
+    content: "";
+    position: absolute;
+    left: 1rem;
+    right: 1rem;
+    top: 0;
+    height: 2px;
+    border-radius: 999px;
+    background: linear-gradient(
+      90deg,
+      color-mix(in srgb, var(--site-link) 88%, var(--site-accent)),
+      color-mix(in srgb, var(--site-link) 68%, var(--site-accent))
+    );
+    opacity: 0.62;
+}
+
+.home-intro-card p {
+    margin: 0.52rem 0 0;
+    line-height: 1.78;
+}
+
+.home-intro-card p:first-child {
+    margin-top: 0;
+}
+
 .content-card {
     position: relative;
     margin: 1.25rem 0 0;
@@ -821,7 +860,7 @@ html[data-theme="dark"] #theme-toggle-icon {
 
 .research-quote-card {
     position: relative;
-    margin: 0.8rem 0 1.4rem;
+    margin: 0.95rem 0 1.35rem;
     padding: 1.35rem 1.45rem 1.25rem;
     border: 1px solid color-mix(in srgb, var(--site-link) 34%, var(--site-border));
     border-radius: 22px;
@@ -830,6 +869,22 @@ html[data-theme="dark"] #theme-toggle-icon {
       linear-gradient(180deg, var(--site-surface), color-mix(in srgb, var(--site-link) 4%, var(--site-surface)));
     box-shadow: var(--site-shadow);
     overflow: hidden;
+}
+
+.research-quote-card::after {
+    content: "";
+    position: absolute;
+    left: 1rem;
+    right: 1rem;
+    top: 0;
+    height: 2px;
+    border-radius: 999px;
+    background: linear-gradient(
+      90deg,
+      color-mix(in srgb, var(--site-link) 90%, var(--site-accent)),
+      color-mix(in srgb, var(--site-link) 72%, var(--site-accent))
+    );
+    opacity: 0.7;
 }
 
 .research-quote-card::before {
@@ -897,6 +952,18 @@ html[data-theme="dark"] #theme-toggle-icon {
     border-radius: 999px;
 }
 
+.page-home .home-intro-card,
+.page-research-projects .research-quote-card,
+.page-education .content-card:first-of-type {
+    margin-top: var(--page-first-card-gap);
+}
+
+.page-home .home-intro-card p:first-child,
+.page-research-projects .research-quote-card blockquote,
+.page-education .content-card:first-of-type > h2 {
+    margin-top: 0;
+}
+
 @media (prefers-reduced-motion: reduce) {
     .news-item:hover,
     .content-card:hover,
@@ -907,6 +974,21 @@ html[data-theme="dark"] #theme-toggle-icon {
 
     .content-card::after {
         transition: none;
+    }
+}
+
+@media (hover: none) and (pointer: coarse) {
+    .news-item:hover,
+    .content-card:hover,
+    .visitor-map-card:hover,
+    .phd-callout:hover {
+        transform: none;
+        box-shadow: var(--site-shadow);
+    }
+
+    .page-research-projects .content-card:hover::after {
+        opacity: 0;
+        transform: translateX(-18%);
     }
 }
 
@@ -934,9 +1016,82 @@ html[data-theme="dark"] #theme-toggle-icon {
     }
 }
 
-@include breakpoint(max-width $small) {
+@media (min-width: 768px) and (max-width: 1100px) {
+    .masthead-theme-toggle {
+        right: 0.35rem;
+    }
+
     .greedy-nav .visible-links {
-        padding-right: 2.8rem;
+        padding-right: 3.9rem;
+    }
+
+    .greedy-nav .visible-links li a {
+        margin: 0 0.48rem;
+        font-size: 0.83rem;
+        letter-spacing: 0.015em;
+    }
+
+    .content-card,
+    .research-quote-card,
+    .phd-callout,
+    .home-intro-card,
+    .visitor-map-card,
+    .news-item {
+        padding-left: 1.12rem;
+        padding-right: 1.12rem;
+    }
+
+    .page-home .home-intro-card,
+    .page-research-projects .research-quote-card,
+    .page-education .content-card:first-of-type {
+        padding-top: 1.2rem;
+    }
+}
+
+@media (min-width: 1440px) {
+    #main {
+        max-width: 1360px;
+    }
+
+    .greedy-nav .visible-links li a {
+        margin: 0 0.82rem;
+    }
+
+    .content-card,
+    .research-quote-card,
+    .phd-callout,
+    .home-intro-card,
+    .visitor-map-card,
+    .news-item {
+        padding-left: 1.45rem;
+        padding-right: 1.45rem;
+    }
+
+    .page-home .home-intro-card,
+    .page-research-projects .research-quote-card,
+    .page-education .content-card:first-of-type {
+        padding-top: 1.32rem;
+    }
+
+    .home-intro-card p,
+    .content-card p,
+    .news-item__body {
+        line-height: 1.82;
+    }
+}
+
+@include breakpoint(max-width $small) {
+    .masthead-theme-toggle {
+        right: 2.55rem;
+    }
+
+    .greedy-nav .visible-links {
+        padding-right: 5.1rem;
+    }
+
+    .greedy-nav > button {
+        right: 0.15rem;
+        min-width: 2.1rem;
     }
 
     .greedy-nav .visible-links li a {
@@ -947,9 +1102,14 @@ html[data-theme="dark"] #theme-toggle-icon {
     .content-card,
     .research-quote-card,
     .phd-callout,
+    .home-intro-card,
     .visitor-map-card,
     .news-item {
         padding-left: 1rem;
         padding-right: 1rem;
+    }
+
+    .content-card {
+        margin-top: 1rem;
     }
 }
