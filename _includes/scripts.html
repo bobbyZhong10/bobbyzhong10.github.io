@@ -9,7 +9,8 @@
     function setTheme(theme) {
       root.setAttribute('data-theme', theme);
       localStorage.setItem('theme', theme);
-      icon.textContent = theme === 'dark' ? '☀' : '☾';
+      btn.setAttribute('data-theme', theme);
+      icon.textContent = '';
       btn.setAttribute('aria-label', theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
     }
 

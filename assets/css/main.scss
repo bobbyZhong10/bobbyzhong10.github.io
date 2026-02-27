@@ -170,6 +170,7 @@ body {
     width: 100%;
     display: flex;
     align-items: center;
+    min-height: 2.8rem;
 }
 
 .masthead {
@@ -228,20 +229,21 @@ a:hover,
 .theme-toggle-btn {
     display: inline-flex;
     align-items: center;
-    justify-content: center;
-    width: 1.7rem;
-    height: 1.7rem;
+    justify-content: flex-start;
+    width: 2.7rem;
+    height: 1.55rem;
     margin: 0;
-    padding: 0;
+    padding: 0.14rem;
     border: 1px solid var(--site-border-strong);
     border-radius: 999px;
-    background: var(--site-surface);
+    background: color-mix(in srgb, var(--site-surface-strong) 88%, transparent);
     color: var(--site-text);
     cursor: pointer;
     line-height: 1;
-    font-size: 0.9rem;
-    font-family: "Source Serif 4", serif;
+    font-size: 0.75rem;
+    font-family: $sans-serif;
     text-decoration: none;
+    transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
 }
 
 .masthead-theme-toggle {
@@ -254,8 +256,43 @@ a:hover,
 }
 
 .theme-toggle-btn:hover {
-    background: var(--site-text);
-    color: var(--site-surface);
+    border-color: var(--site-link);
+    background: color-mix(in srgb, var(--site-surface) 76%, var(--site-link) 24%);
+}
+
+.theme-toggle-btn:focus-visible {
+    outline: 2px solid color-mix(in srgb, var(--site-accent) 55%, transparent);
+    outline-offset: 2px;
+}
+
+#theme-toggle-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1.05rem;
+    height: 1.05rem;
+    border-radius: 999px;
+    background: linear-gradient(180deg, #ffffff, #e8edf7);
+    color: #011f5b;
+    box-shadow: 0 2px 8px rgba(1, 31, 91, 0.18);
+    transform: translateX(0);
+    transition: transform 0.2s ease, background 0.2s ease, color 0.2s ease;
+}
+
+#theme-toggle-icon::before {
+    content: "";
+    width: 0.42rem;
+    height: 0.42rem;
+    border-radius: 999px;
+    background: currentColor;
+    opacity: 0.9;
+}
+
+html[data-theme="dark"] #theme-toggle-icon {
+    transform: translateX(1.08rem);
+    background: linear-gradient(180deg, #1f2d40, #101926);
+    color: #f3d7d7;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.34);
 }
 
 .visitor-map {
@@ -368,21 +405,21 @@ a:hover,
 
 .sidebar .author__name {
     white-space: nowrap;
-    overflow: hidden;
-    font-size: 0.8rem;
-    letter-spacing: -0.01em;
-    text-overflow: clip;
+    overflow: visible;
+    font-size: $type-size-6;
+    letter-spacing: 0;
+    text-overflow: unset;
 }
 
 .sidebar .author__meta-line {
     white-space: nowrap;
-    overflow: hidden;
-    text-overflow: clip;
+    overflow: visible;
+    text-overflow: unset;
 }
 
 .sidebar .author__meta-line--employer {
-    font-size: 0.72rem;
-    letter-spacing: -0.015em;
+    font-size: inherit;
+    letter-spacing: -0.01em;
 }
 
 .cv-actions {
@@ -471,6 +508,15 @@ a:hover,
     opacity: 0.7;
 }
 
+.news-item:hover,
+.content-card:hover,
+.visitor-map-card:hover,
+.phd-callout:hover {
+    transform: translateY(-1px);
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+    box-shadow: 0 20px 48px rgba(1, 31, 91, 0.11);
+}
+
 .news-item__date {
     color: var(--site-accent);
     font-size: 0.82rem;
@@ -518,6 +564,16 @@ a:hover,
       linear-gradient(135deg, rgba(153, 0, 0, 0.08), transparent 48%),
       var(--site-surface);
     box-shadow: var(--site-shadow);
+}
+
+.phd-callout::before {
+    content: "";
+    display: block;
+    width: 3.4rem;
+    height: 2px;
+    margin-bottom: 0.8rem;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--site-accent), var(--site-link));
 }
 
 .phd-callout p {
@@ -608,6 +664,20 @@ a:hover,
     border-image: linear-gradient(90deg, var(--site-link), var(--site-accent)) 1;
 }
 
+.page__content h2 {
+    position: relative;
+}
+
+.page__content h2::after {
+    content: "";
+    display: block;
+    width: 2.6rem;
+    height: 2px;
+    margin-top: 0.45rem;
+    background: linear-gradient(90deg, var(--site-link), var(--site-accent));
+    border-radius: 999px;
+}
+
 @include breakpoint(max-width $medium) {
     .news-item {
         grid-template-columns: 1fr;
@@ -632,13 +702,5 @@ a:hover,
     .news-item {
         padding-left: 1rem;
         padding-right: 1rem;
-    }
-
-    .sidebar .author__name {
-        font-size: 0.76rem;
-    }
-
-    .sidebar .author__meta-line--employer {
-        font-size: 0.68rem;
     }
 }
