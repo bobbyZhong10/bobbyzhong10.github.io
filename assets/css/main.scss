@@ -724,6 +724,16 @@ html[data-theme="dark"] #theme-toggle-icon {
     overflow: hidden;
 }
 
+.page-research-projects .content-card:first-of-type {
+    border-color: color-mix(in srgb, var(--site-link) 32%, var(--site-border));
+    background:
+      linear-gradient(180deg, color-mix(in srgb, var(--site-link) 5%, var(--site-surface)), var(--site-surface));
+}
+
+.page-research-projects .content-card:first-of-type::before {
+    opacity: 0.9;
+}
+
 .page-research-projects .content-card:hover {
     border-color: color-mix(in srgb, var(--site-link) 40%, var(--site-border));
 }
