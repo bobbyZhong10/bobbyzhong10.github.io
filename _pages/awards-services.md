@@ -18,5 +18,5 @@ author_profile: true
 <section class="content-card" markdown="1">
 ## Services
 
-- **Conference Reviewer:** ICIS, ECIS, AOM Annual Meeting, ACM CHI
+- **Conference Reviewer:** ICIS, ECIS, AOM Annual Meeting
 </section>
