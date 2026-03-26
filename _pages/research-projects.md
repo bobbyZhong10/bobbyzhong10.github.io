@@ -23,6 +23,7 @@ author_profile: true
 ## Conference Proceedings
 
 - *[Evaluating the Impact of Anthropomorphic Emojis on Digital Sustainability Content Engagement](https://aisel.aisnet.org/pacis2025/hci/hci/3/)*, **Yunzhou Zhong**, [Philip Tin Yun Lee](https://ef.hksyu.edu/about-us/staff-list/detail/lee-tin-yun), [Bingjie Deng](https://scholar.xjtlu.edu.cn/en/persons/BingjieDeng/), **29th Pacific-Asia Conference on Information Systems (PACIS 2025)**
+- *How Are We Mobilized to Express on Social Media? Identity, Persuasion, and Social Norms*, **Yunzhou Zhong** and [Bingjie Deng](https://scholar.xjtlu.edu.cn/en/persons/BingjieDeng/), **86th Annual Meeting of the Academy of Management (AOM 2026)**
 </section>
 
 <section class="content-card" markdown="1">
@@ -36,7 +37,6 @@ author_profile: true
 <section class="content-card" markdown="1">
 ## Work in Process
 
-- **Yunzhou Zhong** and [Bingjie Deng](https://scholar.xjtlu.edu.cn/en/persons/BingjieDeng/), *How Are We Mobilized to Express on Social Media? Identity, Persuasion, and Social Norms*, early version submit to AOM 2026
 - **Yunzhou Zhong** and [Bingjie Deng](https://scholar.xjtlu.edu.cn/en/persons/BingjieDeng/), *When Personalization Backfires: Skepticism and Decision Confidence in Platform-Mediated Information*, early version submit to AMCIS 2026
 - **Yunzhou Zhong** and [Bingjie Deng](https://scholar.xjtlu.edu.cn/en/persons/BingjieDeng/), *Competing Signals in Platform Observability: When the Best Signal Becomes the Worst*, early version submit to SCECR 2026
 </section>
