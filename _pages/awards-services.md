@@ -19,4 +19,6 @@ author_profile: true
 ## Services
 
 - **Conference Reviewer:** ICIS, AMCIS, PACIS, ECIS, AOM Annual Meeting
+- **Ad Hoc Reviewer:** International Journal of Information Management
+
 </section>
