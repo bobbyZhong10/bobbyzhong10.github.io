@@ -38,7 +38,6 @@ author_profile: true
 ## Work in Process
 
 - **Yunzhou Zhong** and [Bingjie Deng](https://scholar.xjtlu.edu.cn/en/persons/BingjieDeng/), *When Personalization Backfires: Skepticism and Decision Confidence in Platform-Mediated Information*, early version submit to AMCIS 2026
-- **Yunzhou Zhong** and [Bingjie Deng](https://scholar.xjtlu.edu.cn/en/persons/BingjieDeng/), *Competing Signals in Platform Observability: When the Best Signal Becomes the Worst*, early version submit to SCECR 2026
 </section>
 
 <section class="content-card" markdown="1">
