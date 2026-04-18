@@ -11,7 +11,7 @@ redirect_from:
 # Home
 
 <section class="home-intro-card" markdown="1">
-I am a student in the ninth cohort of the [Master of Behavioral and Decision Sciences](https://www.lps.upenn.edu/degree-programs/mbds) at the University of Pennsylvania. I received my BSc (Hons) in Information Management and Information Systems from [Xi'an Jiaotong-Liverpool University (XJTLU)](https://www.xjtlu.edu.cn/en) and the University of Liverpool in 2025, advised by [Prof. Xuezhong (Tony) He](https://scholar.xjtlu.edu.cn/en/persons/XuezhongHe/). My research has been presented at premier conferences, including PACIS, INFORMS and AOM.
+I am a student in the ninth cohort of the [Master of Behavioral and Decision Sciences](https://www.lps.upenn.edu/degree-programs/mbds) at the University of Pennsylvania. I received my BSc (Hons) in Information Management and Information Systems from [Xi'an Jiaotong-Liverpool University (XJTLU)](https://www.xjtlu.edu.cn/en) and the University of Liverpool in 2025, advised by [Prof. Xuezhong (Tony) He](https://scholar.xjtlu.edu.cn/en/persons/XuezhongHe/). My research has been presented at premier conferences, including PACIS, AMCIS, INFORMS and AOM.
 
 My academic training spans interdisciplinary research in information systems, finance, and computer science. I currently collaborate with [Dr. Jiding Zhang](https://jidingz.github.io/) at Arizona State University and [Dr. Simin Li](https://siminli.wp.tulane.edu/) at Tulane University on projects that examine AI generated review summaries and their implications for information provision on digital platforms. In parallel, I work with [Dr. Bingjie Deng](https://scholar.xjtlu.edu.cn/en/persons/BingjieDeng/) at XJTLU, continuing a collaboration that began during my undergraduate studies and applies experimental methods to study human computer interaction and user behavior in online environments. Earlier in my training, I conducted research on large language models for market information analysis and prediction in the Department of Finance at XJTLU under the supervision of [Dr. Jia Zhai](https://scholar.xjtlu.edu.cn/en/persons/JiaZhai) and [Dr. Shimeng Shi](https://scholar.xjtlu.edu.cn/en/persons/ShimengShi/). In addition, under the supervision of [Prof. Dapeng Tao](https://www.ise.ynu.edu.cn/faculty/68/) at Yunnan University, I contributed to the development of core components of large language model training pipelines, which strengthened my foundation in artificial intelligence development and applied machine learning. Complementing this technical training, I completed the Research Seminar in Information Systems at the Wharton School, with a focus on the economics of information systems.
 
@@ -28,6 +28,9 @@ My research focuses on the economics of digital platforms and artificial intelli
   </div>
   <div class="news-list">
     <article class="news-item">
+      <div class="news-item__date">Apr 2026</div>
+      <div class="news-item__body">One paper has been accepted by AMCIS.</div>
+    </article>
       <div class="news-item__date">Mar 2026</div>
       <div class="news-item__body">One paper has been accepted by AOM.</div>
     </article>
