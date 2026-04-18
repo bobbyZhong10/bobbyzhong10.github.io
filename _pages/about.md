@@ -31,6 +31,7 @@ My research focuses on the economics of digital platforms and artificial intelli
       <div class="news-item__date">Apr 2026</div>
       <div class="news-item__body">One paper has been accepted by AMCIS.</div>
     </article>
+     <article class="news-item">
       <div class="news-item__date">Mar 2026</div>
       <div class="news-item__body">One paper has been accepted by AOM.</div>
     </article>
