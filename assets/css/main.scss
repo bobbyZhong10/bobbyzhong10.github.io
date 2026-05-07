@@ -465,8 +465,7 @@ html[data-theme="dark"] #theme-toggle-icon::before {
     font-size: 0.82rem;
 }
 
-.home-card,
-.visitor-map-card {
+.home-card {
     padding: 1.25rem 1.35rem;
     border: 1px solid var(--glass-border);
     border-radius: 18px;
@@ -518,8 +517,7 @@ html[data-theme="dark"] #theme-toggle-icon::before {
 }
 
 .news-item::before,
-.content-card::before,
-.visitor-map-card::before {
+.content-card::before {
     content: "";
     position: absolute;
     left: 1rem;
@@ -537,7 +535,6 @@ html[data-theme="dark"] #theme-toggle-icon::before {
 
 .news-item:hover,
 .content-card:hover,
-.visitor-map-card:hover,
 .phd-callout:hover {
     transform: translateY(-1px);
     transition: transform 0.18s ease, box-shadow 0.18s ease;
@@ -564,13 +561,8 @@ html[data-theme="dark"] #theme-toggle-icon::before {
     line-height: 1.7;
 }
 
-.visitor-map-card {
-    position: relative;
-    text-align: center;
-}
-
-.visitor-map-card > div,
-.visitor-map-card iframe {
+.visitor-map > div,
+.visitor-map iframe {
     margin: 0 auto;
 }
 
@@ -917,7 +909,6 @@ html[data-theme="dark"] #theme-toggle-icon::before {
 @media (prefers-reduced-motion: reduce) {
     .news-item:hover,
     .content-card:hover,
-    .visitor-map-card:hover,
     .phd-callout:hover {
         transform: none;
     }
@@ -926,7 +917,6 @@ html[data-theme="dark"] #theme-toggle-icon::before {
 @media (hover: none) and (pointer: coarse) {
     .news-item:hover,
     .content-card:hover,
-    .visitor-map-card:hover,
     .phd-callout:hover {
         transform: none;
         box-shadow: var(--site-shadow);
@@ -976,7 +966,6 @@ html[data-theme="dark"] #theme-toggle-icon::before {
     .research-quote-card,
     .phd-callout,
     .home-intro-card,
-    .visitor-map-card,
     .news-item {
         padding-left: 1.12rem;
         padding-right: 1.12rem;
@@ -998,7 +987,6 @@ html[data-theme="dark"] #theme-toggle-icon::before {
     .research-quote-card,
     .phd-callout,
     .home-intro-card,
-    .visitor-map-card,
     .news-item {
         padding-left: 1.45rem;
         padding-right: 1.45rem;
@@ -1040,7 +1028,6 @@ html[data-theme="dark"] #theme-toggle-icon::before {
     .research-quote-card,
     .phd-callout,
     .home-intro-card,
-    .visitor-map-card,
     .news-item {
         padding-left: 1rem;
         padding-right: 1rem;
