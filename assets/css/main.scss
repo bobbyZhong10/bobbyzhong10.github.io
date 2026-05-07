@@ -581,18 +581,61 @@ html[data-theme="dark"] #theme-toggle-icon::before {
     -webkit-backdrop-filter: blur(calc(var(--glass-blur) - 1px));
 }
 
-.phd-callout::before {
-    content: "";
-    display: block;
-    width: 3.4rem;
-    height: 2px;
-    margin-bottom: 0.8rem;
+.phd-callout__badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    margin-bottom: 0.85rem;
+    padding: 0.22rem 0.7rem 0.22rem 0.6rem;
+    border: 1px solid color-mix(in srgb, #16a34a 38%, var(--site-border));
     border-radius: 999px;
-    background: linear-gradient(
-      90deg,
-      color-mix(in srgb, var(--site-link) 90%, var(--site-accent)),
-      color-mix(in srgb, var(--site-link) 70%, var(--site-accent))
-    );
+    background: color-mix(in srgb, #16a34a 10%, var(--site-surface));
+    color: color-mix(in srgb, #16a34a 78%, var(--site-text));
+    font-family: "JetBrains Mono", "SF Mono", "Cascadia Code", ui-monospace, monospace;
+    font-size: 0.74rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+}
+
+.phd-callout__badge::before {
+    content: "";
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 999px;
+    background: #16a34a;
+    box-shadow: 0 0 0 0 rgba(22, 163, 74, 0.55);
+    animation: phd-pulse 2s ease-out infinite;
+}
+
+@keyframes phd-pulse {
+    0% { box-shadow: 0 0 0 0 rgba(22, 163, 74, 0.55); }
+    70% { box-shadow: 0 0 0 6px rgba(22, 163, 74, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(22, 163, 74, 0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .phd-callout__badge::before {
+        animation: none;
+    }
+}
+
+html[data-theme="dark"] .phd-callout__badge {
+    border-color: color-mix(in srgb, #4ade80 50%, var(--site-border));
+    background: color-mix(in srgb, #4ade80 14%, var(--site-surface));
+    color: color-mix(in srgb, #4ade80 90%, var(--site-text));
+}
+
+html[data-theme="dark"] .phd-callout__badge::before {
+    background: #4ade80;
+    box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.55);
+    animation-name: phd-pulse-dark;
+}
+
+@keyframes phd-pulse-dark {
+    0% { box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.55); }
+    70% { box-shadow: 0 0 0 6px rgba(74, 222, 128, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(74, 222, 128, 0); }
 }
 
 .phd-callout p {

@@ -17,7 +17,8 @@ My research focuses on the economics of digital platforms and artificial intelli
 </section>
 
 <div class="phd-callout">
-  <p>I am currently exploring <strong>US PhD opportunities at business schools for Fall 2027 entry</strong> in <strong>Information Systems</strong>. Also willing to learn about the opportunities of Empirical Operations Management, or Quantitative Marketing. I welcome opportunities to connect with scholars whose research interests align with mine.</p>
+  <span class="phd-callout__badge">Open to PhD</span>
+  <p>Currently exploring <strong>US PhD programs in Information Systems</strong> at business schools for <strong>Fall 2027 entry</strong>, with openness to Empirical Operations Management or Quantitative Marketing. I welcome connections with scholars whose research interests align with mine.</p>
 </div>
 
 <section class="home-section">
