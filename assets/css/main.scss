@@ -174,12 +174,22 @@ body,
 body {
     position: relative;
     min-height: 100vh;
+    display: flex;
+    flex-direction: column;
     background:
       radial-gradient(circle at top left, rgba(1, 31, 91, 0.05), transparent 34%),
       radial-gradient(circle at top right, rgba(153, 0, 0, 0.04), transparent 26%),
       linear-gradient(180deg, color-mix(in srgb, #ffffff 42%, var(--site-bg)), var(--site-bg)),
       var(--site-bg);
     background-attachment: fixed;
+}
+
+#main {
+    flex: 1 0 auto;
+}
+
+.site-copyright {
+    flex: 0 0 auto;
 }
 
 html[data-theme="dark"] body {
