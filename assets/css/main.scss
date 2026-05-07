@@ -355,29 +355,29 @@ html[data-theme="dark"] #theme-toggle-icon {
 }
 
 .masthead__menu-item--active a {
-    font-weight: 700;
+    font-weight: 650;
 }
 
 .masthead__menu-item--active {
     position: relative;
 }
 
-.masthead__menu-item--active::after {
-    content: "";
-    position: absolute;
-    left: 0.55rem;
-    right: 0.55rem;
-    bottom: 0.42rem;
-    height: 0.3rem;
-    border-radius: 999px;
-    background: color-mix(in srgb, var(--site-accent-soft) 75%, transparent);
-    z-index: -1;
-}
-
 .masthead__menu-item--active a:before {
     transform: scaleX(1) !important;
     height: 2px !important;
-    background: var(--site-accent) !important;
+    border-radius: 999px;
+    background: linear-gradient(
+        90deg,
+        var(--site-link),
+        var(--site-accent)
+    ) !important;
+    box-shadow: 0 0 8px color-mix(in srgb, var(--site-link) 35%, transparent);
+}
+
+.greedy-nav .visible-links a:before {
+    height: 2px !important;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--site-link), var(--site-accent)) !important;
 }
 
 .page__content h1 {
