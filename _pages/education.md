@@ -8,7 +8,7 @@ author_profile: true
 # Education
 
 <section class="content-card" markdown="1">
-## Education
+## Academic Background
 
 - 2025.08 - now, Master of Behavioral and Decision Science, **University of Pennsylvania**
 - 2021.09 - 2025.07, BSc (Hons) Information Management and Information Systems, **Xi'an Jiaotong-Liverpool University (XJTLU) & University of Liverpool**
