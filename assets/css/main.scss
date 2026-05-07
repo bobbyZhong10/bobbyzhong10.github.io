@@ -494,15 +494,15 @@ html[data-theme="dark"] #theme-toggle-icon {
     display: inline-flex;
     align-items: center;
     width: fit-content;
-    padding: 0.18rem 0.5rem;
+    padding: 0.18rem 0.55rem;
     border: 1px solid color-mix(in srgb, var(--site-link) 22%, transparent);
     border-radius: 999px;
     background: color-mix(in srgb, var(--site-link) 10%, var(--site-surface));
     color: color-mix(in srgb, var(--site-link) 88%, var(--site-text));
-    font-size: 0.82rem;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
+    font-family: "JetBrains Mono", "SF Mono", "Cascadia Code", ui-monospace, monospace;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0;
 }
 
 .news-item__body {
