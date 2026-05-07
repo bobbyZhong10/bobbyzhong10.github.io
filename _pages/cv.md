@@ -1,6 +1,6 @@
 ---
 permalink: /cv/
-title: ""
+title: "Curriculum Vitae"
 excerpt: ""
 author_profile: true
 ---

@@ -1,6 +1,6 @@
 ---
 permalink: /teaching/
-title: ""
+title: "Teaching"
 excerpt: ""
 author_profile: true
 ---
