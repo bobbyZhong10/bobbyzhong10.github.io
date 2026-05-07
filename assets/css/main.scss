@@ -381,6 +381,7 @@ html[data-theme="dark"] #theme-toggle-icon::before {
 .masthead__inner-wrap {
     padding-top: 0.5rem;
     padding-bottom: 0.5rem;
+    max-width: 1100px;
 }
 
 .greedy-nav .visible-links li a {
@@ -1208,7 +1209,8 @@ html[data-theme="dark"] #theme-toggle-icon::before {
 
 @media (min-width: 1440px) {
     .home-hero,
-    #main {
+    #main,
+    .masthead__inner-wrap {
         max-width: 1200px;
     }
 }
