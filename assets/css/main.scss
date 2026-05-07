@@ -243,6 +243,15 @@ a:hover,
     color: var(--site-link-hover);
 }
 
+a:focus-visible,
+button:focus-visible,
+.cv-button:focus-visible,
+.home-hero__links a:focus-visible {
+    outline: 2px solid color-mix(in srgb, var(--site-link) 65%, transparent);
+    outline-offset: 3px;
+    border-radius: 4px;
+}
+
 .greedy-nav .hidden-links {
     background: var(--site-masthead);
     border-color: var(--site-border);
