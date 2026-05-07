@@ -31,7 +31,7 @@ author_profile: true
 ## Working Papers
 
 - *Too Neat to Be True? Discrepancy and Consumer Response with AI-Generated Review Summaries*, [Simin Li](https://siminli.wp.tulane.edu/), [Jiding Zhang](https://jidingz.github.io/), **Yunzhou Zhong**
-- *Humanizing Digital Communication: How Anthropomorphic Emojis Drive Information Dissemination*, **Yunzhou Zhong**, [Philip Tin Yun Lee](https://ef.hksyu.edu/about-us/staff-list/detail/lee-tin-yun), [Bingjie Deng](https://scholar.xjtlu.edu.cn/en/persons/BingjieDeng/), under 1st round review at Information & Management
+- *Humanizing Digital Communication: How Anthropomorphic Emojis Drive Information Dissemination*, **Yunzhou Zhong**, [Philip Tin Yun Lee](https://ef.hksyu.edu/about-us/staff-list/detail/lee-tin-yun), [Bingjie Deng](https://scholar.xjtlu.edu.cn/en/persons/BingjieDeng/), under 1st round review at ***Information & Management***
 </section>
 
 <section class="content-card" markdown="1">

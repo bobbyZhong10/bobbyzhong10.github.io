@@ -28,31 +28,31 @@ My research focuses on the economics of digital platforms and artificial intelli
   <div class="news-list">
     <article class="news-item">
       <div class="news-item__date">Apr 2026</div>
-      <div class="news-item__body">One paper has been accepted by AMCIS.</div>
+      <div class="news-item__body">One paper has been accepted by <strong>AMCIS</strong>.</div>
     </article>
      <article class="news-item">
       <div class="news-item__date">Mar 2026</div>
-      <div class="news-item__body">One paper has been accepted by AOM.</div>
+      <div class="news-item__body">One paper has been accepted by <strong>AOM</strong>.</div>
     </article>
     <article class="news-item">
       <div class="news-item__date">Nov 2025</div>
-      <div class="news-item__body">Received the Professional Student Individual Grants from the University of Pennsylvania.</div>
+      <div class="news-item__body">Received the <strong>Professional Student Individual Grants</strong> from the University of Pennsylvania.</div>
     </article>
     <article class="news-item">
       <div class="news-item__date">Oct 2025</div>
-      <div class="news-item__body">Participated in my first INFORMS and CIST, and presented preliminary results from the AIGS project at INFORMS.</div>
+      <div class="news-item__body">Participated in my first <strong>INFORMS</strong> and <strong>CIST</strong>, and presented preliminary results from the <strong>AIGS project</strong> at INFORMS.</div>
     </article>
     <article class="news-item">
       <div class="news-item__date">Aug 2025</div>
-      <div class="news-item__body">Joined the Master of Behavioral Decision Science at the University of Pennsylvania.</div>
+      <div class="news-item__body">Joined the <strong>Master of Behavioral Decision Science</strong> at the University of Pennsylvania.</div>
     </article>
     <article class="news-item">
       <div class="news-item__date">Jul 2025</div>
-      <div class="news-item__body">Won the Best Student Final Year Project (Thesis) Award at XJTLU.</div>
+      <div class="news-item__body">Won the <strong>Best Student Final Year Project (Thesis) Award</strong> at XJTLU.</div>
     </article>
     <article class="news-item">
       <div class="news-item__date">Jul 2025</div>
-      <div class="news-item__body">My first IS paper was presented at PACIS.</div>
+      <div class="news-item__body">My first IS paper was presented at <strong>PACIS</strong>.</div>
     </article>
   </div>
 </section>
