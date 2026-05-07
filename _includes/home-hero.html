@@ -5,14 +5,9 @@
     </div>
     <div class="home-hero__content">
       <h1 class="home-hero__name">{{ site.author.name }}</h1>
-      <ul class="home-hero__meta">
-        {% if site.author.location %}
-          <li><i class="fa fa-fw fa-map-marker" aria-hidden="true"></i> {{ site.author.location }}</li>
-        {% endif %}
-        {% if site.author.employer %}
-          <li><i class="fa fa-fw fa-university" aria-hidden="true"></i> {{ site.author.employer }}</li>
-        {% endif %}
-      </ul>
+      {% if site.author.employer %}
+        <p class="home-hero__meta">{{ site.author.employer }}</p>
+      {% endif %}
       <ul class="home-hero__links" aria-label="Profiles and contact">
         {% if site.author.email %}
           <li><a href="mailto:{{ site.author.email }}" aria-label="Email">

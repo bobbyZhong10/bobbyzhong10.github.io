@@ -1077,26 +1077,11 @@ html[data-theme="dark"] #theme-toggle-icon {
 }
 
 .home-hero__meta {
-    list-style: none;
-    margin: 0 0 0.7rem 0;
+    margin: 0 0 0.85rem 0;
     padding: 0;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.4rem 1rem;
-    font-family: "JetBrains Mono", "SF Mono", "Cascadia Code", ui-monospace, monospace;
-    font-size: 0.84rem;
+    font-size: 1.05rem;
+    line-height: 1.4;
     color: var(--site-muted);
-}
-
-.home-hero__meta li {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    white-space: nowrap;
-}
-
-.home-hero__meta i {
-    color: var(--site-link);
 }
 
 .home-hero__links {
@@ -1165,8 +1150,8 @@ html[data-theme="dark"] #theme-toggle-icon {
     }
 
     .home-hero__meta {
-        justify-content: center;
-        font-size: 0.8rem;
+        text-align: center;
+        font-size: 1rem;
     }
 
     .home-hero__links {
