@@ -1043,9 +1043,8 @@ html[data-theme="dark"] #theme-toggle-icon::before {
    ========================================================================== */
 
 .home-hero {
-    max-width: 1100px;
-    margin: 1.6rem auto 0.4rem;
-    padding: 0 1em;
+    margin: 1.6rem 0 0.4rem;
+    padding: 0;
 }
 
 .home-hero__inner {
@@ -1197,7 +1196,6 @@ html[data-theme="dark"] #theme-toggle-icon::before {
 }
 
 @media (min-width: 1440px) {
-    .home-hero,
     #main,
     .masthead__inner-wrap {
         max-width: 1200px;
