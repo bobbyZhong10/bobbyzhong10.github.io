@@ -28,5 +28,21 @@
   })();
 </script>
 
+<script>
+  (function() {
+    var masthead = document.querySelector('.masthead');
+    if (!masthead) return;
+    function update() {
+      if (window.scrollY > 4) {
+        masthead.classList.add('is-scrolled');
+      } else {
+        masthead.classList.remove('is-scrolled');
+      }
+    }
+    update();
+    window.addEventListener('scroll', update, { passive: true });
+  })();
+</script>
+
 {% include analytics.html %}
 {% include fetch_google_scholar_stats.html %}
