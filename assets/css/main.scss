@@ -1198,3 +1198,162 @@ html[data-theme="dark"] #theme-toggle-icon {
         margin-top: 1rem;
     }
 }
+
+/* ==========================================================================
+   HOME HERO
+   ========================================================================== */
+
+.home-hero {
+    @include container;
+    margin: 1.6rem auto 0.4rem;
+    padding: 0 1em;
+
+    @include breakpoint($x-large) {
+        max-width: $x-large;
+    }
+}
+
+.home-hero__inner {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.home-hero__avatar {
+    flex: 0 0 auto;
+}
+
+.home-hero__avatar img {
+    display: block;
+    width: 130px;
+    height: 130px;
+    object-fit: cover;
+    border-radius: 18px;
+    border: 2px solid color-mix(in srgb, var(--site-link) 38%, var(--glass-border-strong));
+    box-shadow:
+        0 14px 32px color-mix(in srgb, var(--site-link) 14%, transparent),
+        0 1px 0 var(--glass-highlight) inset;
+    background: var(--glass-bg-strong);
+}
+
+.home-hero__content {
+    min-width: 0;
+}
+
+.home-hero__name {
+    margin: 0 0 0.45rem 0;
+    padding: 0;
+    border: 0 !important;
+    font-size: 1.8rem;
+    font-weight: 700;
+    line-height: 1.15;
+    color: var(--site-text);
+}
+
+.home-hero__name::after {
+    display: none !important;
+}
+
+.home-hero__meta {
+    list-style: none;
+    margin: 0 0 0.7rem 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem 1rem;
+    font-family: "JetBrains Mono", "SF Mono", "Cascadia Code", ui-monospace, monospace;
+    font-size: 0.84rem;
+    color: var(--site-muted);
+}
+
+.home-hero__meta li {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    white-space: nowrap;
+}
+
+.home-hero__meta i {
+    color: var(--site-link);
+}
+
+.home-hero__links {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    gap: 0.55rem;
+}
+
+.home-hero__links a {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.05rem;
+    height: 2.05rem;
+    border-radius: 10px;
+    border: 1px solid color-mix(in srgb, var(--site-link) 22%, var(--glass-border));
+    background: var(--glass-bg-strong);
+    color: var(--site-link) !important;
+    text-decoration: none;
+    transition: transform 0.18s ease, border-color 0.18s ease, color 0.18s ease, background-color 0.18s ease;
+}
+
+.home-hero__links a:hover {
+    color: var(--site-link-hover) !important;
+    border-color: color-mix(in srgb, var(--site-link) 50%, var(--glass-border-strong));
+    transform: translateY(-1px);
+}
+
+.home-hero__links i,
+.home-hero__links .fa,
+.home-hero__links .fab,
+.home-hero__links .fas,
+.home-hero__links .ai {
+    color: inherit !important;
+    font-size: 0.95rem;
+}
+
+.home-hero__divider {
+    margin: 1.4rem 0 0;
+    height: 2px;
+    width: 4rem;
+    border-radius: 999px;
+    background: linear-gradient(90deg, var(--site-link), var(--site-accent));
+    opacity: 0.78;
+}
+
+@include breakpoint(max-width $small) {
+    .home-hero__inner {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        gap: 1.1rem;
+    }
+
+    .home-hero__avatar img {
+        width: 96px;
+        height: 96px;
+        border-radius: 14px;
+    }
+
+    .home-hero__name {
+        font-size: 1.6rem;
+    }
+
+    .home-hero__meta {
+        justify-content: center;
+        font-size: 0.8rem;
+    }
+
+    .home-hero__links {
+        justify-content: center;
+    }
+
+    .home-hero__divider {
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
