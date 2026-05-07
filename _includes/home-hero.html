@@ -1,0 +1,41 @@
+<section class="home-hero" aria-label="About">
+  <div class="home-hero__inner">
+    <div class="home-hero__avatar">
+      <img src="{{ site.author.avatar | relative_url }}" alt="{{ site.author.name }}">
+    </div>
+    <div class="home-hero__content">
+      <h1 class="home-hero__name">{{ site.author.name }}</h1>
+      <ul class="home-hero__meta">
+        {% if site.author.location %}
+          <li><i class="fa fa-fw fa-map-marker" aria-hidden="true"></i> {{ site.author.location }}</li>
+        {% endif %}
+        {% if site.author.employer %}
+          <li><i class="fa fa-fw fa-university" aria-hidden="true"></i> {{ site.author.employer }}</li>
+        {% endif %}
+      </ul>
+      <ul class="home-hero__links" aria-label="Profiles and contact">
+        {% if site.author.email %}
+          <li><a href="mailto:{{ site.author.email }}" aria-label="Email">
+            <i class="fas fa-fw fa-envelope" aria-hidden="true"></i>
+          </a></li>
+        {% endif %}
+        {% if site.author.linkedin %}
+          <li><a href="https://www.linkedin.com/in/{{ site.author.linkedin }}" aria-label="LinkedIn" target="_blank" rel="noopener">
+            <i class="fab fa-fw fa-linkedin" aria-hidden="true"></i>
+          </a></li>
+        {% endif %}
+        {% if site.author.googlescholar %}
+          <li><a href="{{ site.author.googlescholar }}" aria-label="Google Scholar" target="_blank" rel="noopener">
+            <i class="fas fa-fw fa-graduation-cap" aria-hidden="true"></i>
+          </a></li>
+        {% endif %}
+        {% if site.author.orcid %}
+          <li><a href="{{ site.author.orcid }}" aria-label="ORCID" target="_blank" rel="noopener">
+            <i class="ai ai-orcid-square ai-fw" aria-hidden="true"></i>
+          </a></li>
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+  <div class="home-hero__divider" aria-hidden="true"></div>
+</section>
