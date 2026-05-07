@@ -121,7 +121,7 @@ h1:before, .anchor:before {
     --site-masthead: rgba(243, 246, 250, 0.94);
     --site-accent: #990000;
     --site-accent-soft: rgba(153, 0, 0, 0.08);
-    --site-shadow: 0 18px 45px rgba(1, 31, 91, 0.08);
+    --site-shadow: 0 14px 36px rgba(1, 31, 91, 0.07);
     --page-head-gap: 0.92rem;
     --page-first-card-gap: 0.95rem;
     --glass-bg: color-mix(in srgb, #ffffff 82%, var(--site-surface));
@@ -130,8 +130,8 @@ h1:before, .anchor:before {
     --glass-border-strong: color-mix(in srgb, var(--site-link) 36%, var(--site-border));
     --glass-highlight: rgba(255, 255, 255, 0.84);
     --glass-sheen: rgba(255, 255, 255, 0.56);
-    --glass-shadow: 0 20px 46px rgba(1, 31, 91, 0.11), 0 1px 0 rgba(255, 255, 255, 0.72) inset;
-    --glass-blur: 13px;
+    --glass-shadow: 0 14px 34px rgba(1, 31, 91, 0.09), 0 1px 0 rgba(255, 255, 255, 0.72) inset;
+    --glass-blur: 11px;
 }
 
 html[data-theme="dark"] {
@@ -147,15 +147,15 @@ html[data-theme="dark"] {
     --site-masthead: rgba(17, 21, 29, 0.94);
     --site-accent: #d06a6a;
     --site-accent-soft: rgba(208, 106, 106, 0.16);
-    --site-shadow: 0 24px 50px rgba(0, 0, 0, 0.32);
+    --site-shadow: 0 18px 38px rgba(0, 0, 0, 0.28);
     --glass-bg: color-mix(in srgb, #2f415d 82%, var(--site-surface));
     --glass-bg-strong: color-mix(in srgb, #3a4f6d 88%, var(--site-surface));
     --glass-border: color-mix(in srgb, #c2d5f2 28%, var(--site-border));
     --glass-border-strong: color-mix(in srgb, #d5e4fa 38%, var(--site-border));
     --glass-highlight: rgba(226, 236, 255, 0.28);
     --glass-sheen: rgba(213, 228, 255, 0.2);
-    --glass-shadow: 0 22px 50px rgba(0, 0, 0, 0.44), 0 1px 0 rgba(220, 232, 255, 0.16) inset;
-    --glass-blur: 15px;
+    --glass-shadow: 0 16px 36px rgba(0, 0, 0, 0.36), 0 1px 0 rgba(220, 232, 255, 0.16) inset;
+    --glass-blur: 12px;
 }
 
 html,
@@ -594,7 +594,7 @@ html[data-theme="dark"] #theme-toggle-icon {
 
 .content-card {
     position: relative;
-    margin: 1.25rem 0 0;
+    margin: 1.1rem 0 0;
     padding: 1.25rem 1.35rem 1.3rem;
     border: 1px solid var(--glass-border);
     border-radius: 18px;
