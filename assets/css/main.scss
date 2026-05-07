@@ -166,9 +166,7 @@ html[data-theme="light"] {
 
 body,
 .greedy-nav,
-.page,
-.sidebar,
-.author__urls-wrapper {
+.page {
     background-color: var(--site-bg);
     color: var(--site-text);
 }
@@ -332,19 +330,6 @@ html[data-theme="dark"] #theme-toggle-icon {
     text-align: center;
 }
 
-.author__urls i,
-.author__urls .fa,
-.author__urls .fab,
-.author__urls .fas,
-.author__urls .ai,
-.author__urls_sm i,
-.author__urls_sm .fa,
-.author__urls_sm .fab,
-.author__urls_sm .fas,
-.author__urls_sm .ai {
-    color: var(--site-text) !important;
-}
-
 .masthead__inner-wrap {
     padding-top: 0.5rem;
     padding-bottom: 0.5rem;
@@ -404,140 +389,6 @@ html[data-theme="dark"] #theme-toggle-icon {
 
 .author__name {
     white-space: nowrap;
-}
-
-.profile_box {
-    position: relative;
-    padding: 1.1rem 1rem 1rem;
-    border: 1px solid color-mix(in srgb, var(--glass-border-strong) 76%, var(--site-link));
-    border-radius: 18px;
-    background:
-      linear-gradient(154deg, color-mix(in srgb, var(--glass-highlight) 95%, #ffffff 5%), transparent 52%),
-      linear-gradient(192deg, color-mix(in srgb, var(--glass-sheen) 78%, transparent), transparent 64%),
-      var(--glass-bg-strong);
-    box-shadow:
-      0 22px 52px color-mix(in srgb, var(--site-link) 14%, transparent),
-      0 1px 0 color-mix(in srgb, var(--glass-highlight) 94%, transparent) inset;
-    backdrop-filter: blur(calc(var(--glass-blur) + 1px));
-    -webkit-backdrop-filter: blur(calc(var(--glass-blur) + 1px));
-}
-
-.profile_box::before {
-    content: "";
-    position: absolute;
-    left: 1rem;
-    right: 1rem;
-    top: 0;
-    height: 2px;
-    border-radius: 999px;
-    background: linear-gradient(90deg, var(--site-link), var(--site-accent));
-    opacity: 0.7;
-}
-
-.profile_box::after {
-    content: "";
-    position: absolute;
-    inset: 1px;
-    border-radius: calc(18px - 1px);
-    border: 1px solid color-mix(in srgb, var(--glass-highlight) 92%, transparent);
-    pointer-events: none;
-}
-
-.author__avatar img {
-    box-shadow: 0 14px 30px rgba(1, 31, 91, 0.12);
-    border: 3px solid rgba(255, 255, 255, 0.9);
-}
-
-.author__urls li {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    white-space: normal;
-    padding: 0.35rem 0;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-}
-
-.author__urls li > i {
-    width: 1.1rem;
-    text-align: center;
-    flex: 0 0 1.1rem;
-}
-
-.author__urls li > a {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.author__urls li > a i {
-    width: 1.1rem;
-    text-align: center;
-    flex: 0 0 1.1rem;
-    margin-right: 0.22rem;
-}
-
-.sidebar .author__urls li {
-    font-size: 0.89rem;
-}
-
-.sidebar .author__name {
-    white-space: nowrap;
-    overflow: visible;
-    font-size: $type-size-6;
-    letter-spacing: 0;
-    text-overflow: unset;
-}
-
-.sidebar .author__meta-line {
-    white-space: nowrap;
-    overflow: visible;
-    text-overflow: unset;
-    color: var(--site-link);
-}
-
-.sidebar .author__meta-line--employer {
-    font-size: inherit;
-    letter-spacing: -0.01em;
-}
-
-.author__urls .author__meta-line i {
-    color: var(--site-link) !important;
-}
-
-.author__urls a i,
-.author__urls a .fa,
-.author__urls a .fab,
-.author__urls a .fas,
-.author__urls a .ai {
-    color: var(--site-link) !important;
-}
-
-.author__urls a:hover i,
-.author__urls a:hover .fa,
-.author__urls a:hover .fab,
-.author__urls a:hover .fas,
-.author__urls a:hover .ai {
-    color: var(--site-link-hover) !important;
-}
-
-@include breakpoint($large) {
-    .profile_box .author__avatar {
-        text-align: center;
-    }
-
-    .profile_box .author__avatar img {
-        margin-left: auto;
-        margin-right: auto;
-    }
-
-    .profile_box .author__content {
-        text-align: center;
-        width: 100%;
-    }
-
-    .profile_box .author__name {
-        text-align: center;
-    }
 }
 
 .cv-actions {
@@ -675,21 +526,6 @@ html[data-theme="dark"] #theme-toggle-icon {
 .visitor-map-card > div,
 .visitor-map-card iframe {
     margin: 0 auto;
-}
-
-.author__bio {
-    color: var(--site-muted);
-    line-height: 1.6;
-}
-
-.author__content,
-.author__urls-wrapper,
-.author__urls {
-    background: transparent;
-}
-
-.author__urls {
-    background: transparent;
 }
 
 .phd-callout {
