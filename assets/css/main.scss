@@ -1134,10 +1134,6 @@ html[data-theme="dark"] #theme-toggle-icon {
 }
 
 @media (min-width: 1440px) {
-    #main {
-        max-width: 1360px;
-    }
-
     .greedy-nav .visible-links li a {
         margin: 0 0.82rem;
     }
@@ -1355,5 +1351,31 @@ html[data-theme="dark"] #theme-toggle-icon {
     .home-hero__divider {
         margin-left: auto;
         margin-right: auto;
+    }
+}
+
+/* ==========================================================================
+   FULL-WIDTH MAIN COLUMN
+   ========================================================================== */
+
+.page {
+    float: none !important;
+    width: 100% !important;
+    margin: 0 auto !important;
+    padding: 0 !important;
+    max-width: 880px;
+}
+
+#main {
+    max-width: 980px;
+}
+
+@media (min-width: 1440px) {
+    #main {
+        max-width: 1040px;
+    }
+
+    .page {
+        max-width: 920px;
     }
 }
