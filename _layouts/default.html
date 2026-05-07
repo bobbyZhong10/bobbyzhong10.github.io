@@ -13,6 +13,8 @@ layout: compress
   {% assign page_slug = current_url | replace: "/", " " | strip | replace: " ", "-" %}
   <body class="page-shell{% if current_url == "/" %} page-home{% else %} page-inner{% endif %}{% if page_slug != "" %} page-{{ page_slug }}{% endif %}">
 
+    <a class="skip-to-content" href="#main">Skip to content</a>
+
     {% include browser-upgrade.html %}
     {% include masthead.html %}
 
