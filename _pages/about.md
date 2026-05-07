@@ -8,8 +8,6 @@ redirect_from:
   - /about.html
 ---
 
-# Home
-
 <section class="home-intro-card" markdown="1">
 I am a student in the ninth cohort of the [Master of Behavioral and Decision Sciences](https://www.lps.upenn.edu/degree-programs/mbds) at the University of Pennsylvania. I received my BSc (Hons) in Information Management and Information Systems from [Xi'an Jiaotong-Liverpool University (XJTLU)](https://www.xjtlu.edu.cn/en) and the University of Liverpool in 2025, advised by [Prof. Xuezhong (Tony) He](https://scholar.xjtlu.edu.cn/en/persons/XuezhongHe/). My research has been presented at premier conferences, including PACIS, AMCIS, INFORMS and AOM.
 

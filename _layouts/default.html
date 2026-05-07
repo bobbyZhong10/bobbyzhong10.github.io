@@ -16,6 +16,10 @@ layout: compress
     {% include browser-upgrade.html %}
     {% include masthead.html %}
 
+    {% if current_url == "/" %}
+      {% include home-hero.html %}
+    {% endif %}
+
     <div id="main" role="main">
       {% include sidebar.html %}
     
