@@ -656,18 +656,6 @@ html[data-theme="dark"] #theme-toggle-icon::before {
     letter-spacing: 0.01em;
 }
 
-.content-card::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    background: linear-gradient(118deg, transparent 36%, color-mix(in srgb, var(--site-link) 26%, transparent) 48%, transparent 60%);
-    opacity: 0;
-    transform: translateX(-18%);
-    transition: opacity 0.26s ease, transform 0.32s ease;
-    pointer-events: none;
-}
-
 .content-card:first-of-type {
     margin-top: 0.9rem;
 }
@@ -711,13 +699,7 @@ html[data-theme="dark"] #theme-toggle-icon::before {
     margin-top: 0.42rem;
 }
 
-.page-research-projects .content-card:hover::after {
-    opacity: 0.5;
-    transform: translateX(18%);
-}
-
 .page-research-projects .content-card {
-    overflow: hidden;
     border-color: color-mix(in srgb, var(--site-link) 15%, var(--glass-border));
 }
 
@@ -928,10 +910,6 @@ html[data-theme="dark"] #theme-toggle-icon::before {
     .phd-callout:hover {
         transform: none;
     }
-
-    .content-card::after {
-        transition: none;
-    }
 }
 
 @media (hover: none) and (pointer: coarse) {
@@ -941,11 +919,6 @@ html[data-theme="dark"] #theme-toggle-icon::before {
     .phd-callout:hover {
         transform: none;
         box-shadow: var(--site-shadow);
-    }
-
-    .page-research-projects .content-card:hover::after {
-        opacity: 0;
-        transform: translateX(-18%);
     }
 }
 
