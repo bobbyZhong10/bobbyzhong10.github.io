@@ -523,7 +523,8 @@ html[data-theme="dark"] #theme-toggle-icon {
 .phd-callout {
     margin: 1.6rem 0 2rem;
     padding: 1.15rem 1.2rem;
-    border: 1px solid color-mix(in srgb, var(--site-link) 20%, var(--glass-border-strong));
+    border: 1px solid color-mix(in srgb, var(--site-link) 30%, var(--glass-border-strong));
+    border-left: 3px solid color-mix(in srgb, var(--site-link) 70%, var(--site-accent));
     border-radius: 18px;
     background:
       linear-gradient(150deg, color-mix(in srgb, var(--site-link) 9%, transparent), transparent 54%),
