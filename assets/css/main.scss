@@ -217,9 +217,7 @@ html[data-theme="dark"] body {
 
 .page__content,
 .page__content p,
-.page__content li,
-.author__content,
-.author__urls li {
+.page__content li {
     color: var(--site-text);
 }
 
@@ -234,13 +232,11 @@ html[data-theme="dark"] body {
 }
 
 a,
-.author__urls a,
 .greedy-nav a {
     color: var(--site-link);
 }
 
 a:hover,
-.author__urls a:hover,
 .greedy-nav a:hover {
     color: var(--site-link-hover);
 }
@@ -385,10 +381,6 @@ html[data-theme="dark"] #theme-toggle-icon {
 .page__content h3 {
     margin-top: 1.2rem;
     margin-bottom: 0.45rem;
-}
-
-.author__name {
-    white-space: nowrap;
 }
 
 .cv-actions {
@@ -1194,7 +1186,7 @@ html[data-theme="dark"] #theme-toggle-icon {
    FULL-WIDTH MAIN COLUMN
    ========================================================================== */
 
-.page {
+#main .page {
     float: none !important;
     width: 100% !important;
     margin: 0 auto !important;
@@ -1211,7 +1203,7 @@ html[data-theme="dark"] #theme-toggle-icon {
         max-width: 1040px;
     }
 
-    .page {
+    #main .page {
         max-width: 920px;
     }
 }
