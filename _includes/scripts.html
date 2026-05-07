@@ -43,5 +43,19 @@
   })();
 </script>
 
+<script>
+  (function() {
+    var headings = document.querySelectorAll('.content-card > h2[id], .content-card > h3[id]');
+    headings.forEach(function(h) {
+      var link = document.createElement('a');
+      link.href = '#' + h.id;
+      link.className = 'heading-anchor';
+      link.textContent = '#';
+      link.setAttribute('aria-label', 'Permalink to ' + h.textContent.trim());
+      h.appendChild(link);
+    });
+  })();
+</script>
+
 {% include analytics.html %}
 {% include fetch_google_scholar_stats.html %}

@@ -881,15 +881,17 @@ html[data-theme="dark"] .phd-callout__badge::before {
 }
 
 .research-quote-card::before {
-    content: "";
+    content: "\201D";
     position: absolute;
-    inset: 0;
-    background-image:
-      linear-gradient(color-mix(in srgb, var(--site-link) 12%, transparent) 1px, transparent 1px),
-      linear-gradient(90deg, color-mix(in srgb, var(--site-link) 12%, transparent) 1px, transparent 1px);
-    background-size: 24px 24px;
-    mask-image: linear-gradient(135deg, rgba(0, 0, 0, 0.4), transparent 68%);
+    top: -1.5rem;
+    right: 1.2rem;
+    font-family: "Source Serif 4", "Iowan Old Style", "Baskerville", Georgia, serif;
+    font-size: 11rem;
+    font-weight: 700;
+    line-height: 1;
+    color: color-mix(in srgb, var(--site-link) 9%, transparent);
     pointer-events: none;
+    user-select: none;
 }
 
 .research-quote-card blockquote {
@@ -947,6 +949,29 @@ html[data-theme="dark"] .phd-callout__badge::before {
     margin-top: 0.45rem;
     background: linear-gradient(90deg, var(--site-link), var(--site-accent));
     border-radius: 999px;
+}
+
+.heading-anchor {
+    margin-left: 0.45rem;
+    color: var(--site-muted) !important;
+    text-decoration: none !important;
+    opacity: 0;
+    font-weight: 400;
+    font-size: 0.95em;
+    transition: opacity 0.18s ease, color 0.18s ease;
+}
+
+h2:hover > .heading-anchor {
+    opacity: 0.55;
+}
+
+.heading-anchor:hover {
+    opacity: 1 !important;
+    color: var(--site-link) !important;
+}
+
+.heading-anchor:focus-visible {
+    opacity: 1;
 }
 
 .page-home .home-intro-card,
@@ -1115,10 +1140,10 @@ html[data-theme="dark"] .phd-callout__badge::before {
 
 .home-hero__avatar img {
     display: block;
-    width: 130px;
-    height: 130px;
+    width: 145px;
+    height: 145px;
     object-fit: cover;
-    border-radius: 18px;
+    border-radius: 20px;
     border: 2px solid color-mix(in srgb, var(--site-link) 38%, var(--glass-border-strong));
     box-shadow:
         0 14px 32px color-mix(in srgb, var(--site-link) 14%, transparent),
@@ -1223,15 +1248,6 @@ html[data-theme="dark"] .phd-callout__badge::before {
     font-size: 0.95rem;
 }
 
-.home-hero__divider {
-    margin: 1.4rem 0 0;
-    height: 2px;
-    width: 4rem;
-    border-radius: 999px;
-    background: linear-gradient(90deg, var(--site-link), var(--site-accent));
-    opacity: 0.78;
-}
-
 @include breakpoint(max-width $small) {
     .home-hero__inner {
         flex-direction: column;
@@ -1241,8 +1257,8 @@ html[data-theme="dark"] .phd-callout__badge::before {
     }
 
     .home-hero__avatar img {
-        width: 96px;
-        height: 96px;
+        width: 110px;
+        height: 110px;
         border-radius: 14px;
     }
 
@@ -1257,11 +1273,6 @@ html[data-theme="dark"] .phd-callout__badge::before {
 
     .home-hero__links {
         justify-content: center;
-    }
-
-    .home-hero__divider {
-        margin-left: auto;
-        margin-right: auto;
     }
 }
 
