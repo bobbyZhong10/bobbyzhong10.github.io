@@ -8,29 +8,29 @@
       {% if site.author.employer %}
         <p class="home-hero__meta">{{ site.author.employer }}</p>
       {% endif %}
-      <ul class="home-hero__links" aria-label="Profiles and contact">
-        {% if site.author.email %}
-          <li><a href="mailto:{{ site.author.email }}" aria-label="Email">
-            <i class="fas fa-fw fa-envelope" aria-hidden="true"></i>
-          </a></li>
-        {% endif %}
-        {% if site.author.linkedin %}
-          <li><a href="https://www.linkedin.com/in/{{ site.author.linkedin }}" aria-label="LinkedIn" target="_blank" rel="noopener">
-            <i class="fab fa-fw fa-linkedin" aria-hidden="true"></i>
-          </a></li>
-        {% endif %}
-        {% if site.author.googlescholar %}
-          <li><a href="{{ site.author.googlescholar }}" aria-label="Google Scholar" target="_blank" rel="noopener">
-            <i class="fas fa-fw fa-graduation-cap" aria-hidden="true"></i>
-          </a></li>
-        {% endif %}
-        {% if site.author.orcid %}
-          <li><a href="{{ site.author.orcid }}" aria-label="ORCID" target="_blank" rel="noopener">
-            <i class="ai ai-orcid-square ai-fw" aria-hidden="true"></i>
-          </a></li>
-        {% endif %}
-      </ul>
     </div>
+    <ul class="home-hero__links" aria-label="Profiles and contact">
+      {% if site.author.email %}
+        <li><a href="mailto:{{ site.author.email }}" aria-label="Email">
+          <i class="fas fa-fw fa-envelope" aria-hidden="true"></i>
+        </a></li>
+      {% endif %}
+      {% if site.author.linkedin %}
+        <li><a href="https://www.linkedin.com/in/{{ site.author.linkedin }}" aria-label="LinkedIn" target="_blank" rel="noopener">
+          <i class="fab fa-fw fa-linkedin" aria-hidden="true"></i>
+        </a></li>
+      {% endif %}
+      {% if site.author.googlescholar %}
+        <li><a href="{{ site.author.googlescholar }}" aria-label="Google Scholar" target="_blank" rel="noopener">
+          <i class="fas fa-fw fa-graduation-cap" aria-hidden="true"></i>
+        </a></li>
+      {% endif %}
+      {% if site.author.orcid %}
+        <li><a href="{{ site.author.orcid }}" aria-label="ORCID" target="_blank" rel="noopener">
+          <i class="ai ai-orcid-square ai-fw" aria-hidden="true"></i>
+        </a></li>
+      {% endif %}
+    </ul>
   </div>
   <div class="home-hero__divider" aria-hidden="true"></div>
 </section>

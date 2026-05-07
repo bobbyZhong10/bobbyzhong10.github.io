@@ -1073,6 +1073,7 @@ html[data-theme="dark"] #theme-toggle-icon::before {
 }
 
 .home-hero__content {
+    flex: 1 1 auto;
     min-width: 0;
 }
 
@@ -1100,6 +1101,7 @@ html[data-theme="dark"] #theme-toggle-icon::before {
 
 .home-hero__links {
     list-style: none;
+    flex: 0 0 auto;
     margin: 0;
     padding: 0;
     display: flex;
