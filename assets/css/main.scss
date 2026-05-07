@@ -316,11 +316,19 @@ a:hover,
     transition: transform 0.2s ease, background 0.2s ease, color 0.2s ease;
 }
 
+#theme-toggle-icon::before {
+    content: "\263C";
+}
+
 html[data-theme="dark"] #theme-toggle-icon {
     transform: translateX(0.98rem);
     background: linear-gradient(180deg, #1f2d40, #101926);
     color: #f3d7d7;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.34);
+}
+
+html[data-theme="dark"] #theme-toggle-icon::before {
+    content: "\263E";
 }
 
 .visitor-map {
