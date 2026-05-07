@@ -166,6 +166,19 @@ html[data-theme="light"] {
 
 body,
 .greedy-nav,
+.page,
+.masthead__inner-wrap,
+.page__content,
+.home-hero,
+button,
+input,
+select,
+textarea {
+    font-family: "IBM Plex Sans", -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Noto Sans CJK SC", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+body,
+.greedy-nav,
 .page {
     background-color: var(--site-bg);
     color: var(--site-text);
@@ -887,7 +900,7 @@ html[data-theme="dark"] .phd-callout__badge::before {
     padding: 0;
     border: 0;
     color: var(--site-text);
-    font-family: "Iowan Old Style", "Baskerville", "Palatino Linotype", "Book Antiqua", "Source Serif 4", Georgia, serif;
+    font-family: "Source Serif 4", "Iowan Old Style", "Baskerville", "Palatino Linotype", "Book Antiqua", Georgia, serif;
     font-size: 1.12rem;
     font-style: italic;
     font-weight: 500;
@@ -910,7 +923,7 @@ html[data-theme="dark"] .phd-callout__badge::before {
     position: relative;
     margin-top: 0.85rem;
     color: var(--site-text);
-    font-family: "Iowan Old Style", "Baskerville", "Palatino Linotype", "Book Antiqua", "Source Serif 4", Georgia, serif;
+    font-family: "Source Serif 4", "Iowan Old Style", "Baskerville", "Palatino Linotype", "Book Antiqua", Georgia, serif;
     font-size: 1.02rem;
     font-style: normal;
     font-weight: 500;
@@ -1124,8 +1137,10 @@ html[data-theme="dark"] .phd-callout__badge::before {
     margin: 0 0 0.45rem 0;
     padding: 0;
     border: 0 !important;
-    font-size: 1.8rem;
-    font-weight: 700;
+    font-family: "Source Serif 4", "Iowan Old Style", "Baskerville", "Palatino Linotype", "Book Antiqua", Georgia, serif;
+    font-size: 2rem;
+    font-weight: 600;
+    letter-spacing: -0.005em;
     line-height: 1.15;
     color: var(--site-text);
 }
