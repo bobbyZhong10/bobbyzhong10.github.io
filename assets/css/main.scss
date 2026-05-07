@@ -1129,6 +1129,36 @@ html[data-theme="dark"] #theme-toggle-icon::before {
     transform: translateY(-1px);
 }
 
+.home-hero__links a {
+    position: relative;
+}
+
+.home-hero__links a[data-tooltip]::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    top: calc(100% + 0.45rem);
+    left: 50%;
+    transform: translateX(-50%) translateY(-2px);
+    padding: 0.22rem 0.55rem;
+    border-radius: 6px;
+    background: color-mix(in srgb, var(--site-text) 92%, transparent);
+    color: var(--site-bg);
+    font-size: 0.74rem;
+    font-weight: 600;
+    line-height: 1;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s ease, transform 0.15s ease;
+    z-index: 5;
+}
+
+.home-hero__links a:hover[data-tooltip]::after,
+.home-hero__links a:focus-visible[data-tooltip]::after {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+}
+
 .home-hero__links i,
 .home-hero__links .fa,
 .home-hero__links .fab,

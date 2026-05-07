@@ -7,7 +7,8 @@
 
 # Site Settings
 title                    : "Yunzhou (Bobby) Zhong"
-description              : ""
+description              : "Economics of Information Systems"
+url                      : "https://bobbyzhong10.github.io"
 repository               : "bobbyzhong10/bobbyzhong10.github.io"
 google_scholar_stats_use_cdn : true
 
