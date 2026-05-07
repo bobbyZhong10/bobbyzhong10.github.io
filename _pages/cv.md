@@ -5,7 +5,7 @@ excerpt: ""
 author_profile: true
 ---
 
-# CV
+# Curriculum Vitae
 
 <div class="content-card content-card--cv">
   <div class="cv-actions">
