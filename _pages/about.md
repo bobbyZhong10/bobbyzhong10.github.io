@@ -57,9 +57,6 @@ My research focuses on the economics of digital platforms and artificial intelli
 </section>
 
 <section class="home-section home-section--compact">
-  <div class="section-heading">
-    <h2>Site Visitors</h2>
-  </div>
   <div class="visitor-map">
     <script type='text/javascript' id='clustrmaps' src='//cdn.clustrmaps.com/map_v2.js?cl=011f5b&w=280&t=m&d=EflkrirZfRTVknrDdfUrj6J3kad22tbwvOvXE6x0rmo&co=ffffff&ct=011f5b&cmo=990000&cmn=7d0c0c'></script>
   </div>
