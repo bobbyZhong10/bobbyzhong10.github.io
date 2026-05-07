@@ -406,9 +406,9 @@ html[data-theme="dark"] #theme-toggle-icon {
 
 .cv-updated {
     margin-top: 0.55rem;
-    color: var(--site-text);
-    opacity: 0.86;
-    font-size: 0.9rem;
+    color: var(--site-muted);
+    font-family: "JetBrains Mono", "SF Mono", "Cascadia Code", ui-monospace, monospace;
+    font-size: 0.82rem;
 }
 
 .home-card,
