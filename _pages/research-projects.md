@@ -35,7 +35,7 @@ author_profile: true
 </section>
 
 <section class="content-card" markdown="1">
-## Work in Process
+## Work in Progress
 
 - *Who Pays When Algorithms Price? Algorithmic Cost Allocation in Ride-Hailing Markets*
 </section>
@@ -43,14 +43,14 @@ author_profile: true
 <section class="content-card" markdown="1">
 ## Presentations
 
-- *When Personalization Backfires: Skepticism and Decision Confidence in Platform-Mediated Information*, 32nd Americas Conference on Information Systems (Reno, NV), 2026.8 (scheduled)
-- *How Are We Mobilized to Express on Social Media? Identity, Persuasion, and Social Norms*, 86th Annual Meeting of the Academy of Management (Philadelphia, PA), 2026.7 (scheduled)
-- *Too Neat to Be True? Bias and Consumer Response with AI-Generated Review Summaries*, INFORMS Annual Meeting (Atlanta, GA), 2025.10
-- *Evaluating the Impact of Anthropomorphic Emojis on Digital Sustainability Content Engagement*, 29th Pacific-Asia Conference on Information Systems (Kuala Lumpur, Malaysia), 2025.07
+- *When Personalization Backfires: Skepticism and Decision Confidence in Platform-Mediated Information*, 32nd Americas Conference on Information Systems (Reno, NV), Aug 2026 (scheduled)
+- *How Are We Mobilized to Express on Social Media? Identity, Persuasion, and Social Norms*, 86th Annual Meeting of the Academy of Management (Philadelphia, PA), July 2026 (scheduled)
+- *Too Neat to Be True? Discrepancy and Consumer Response with AI-Generated Review Summaries*, INFORMS Annual Meeting (Atlanta, GA), Oct 2025
+- *Evaluating the Impact of Anthropomorphic Emojis on Digital Sustainability Content Engagement*, 29th Pacific-Asia Conference on Information Systems (Kuala Lumpur, Malaysia), July 2025
 </section>
 
 <section class="content-card" markdown="1">
 ## Thesis
 
-- *Social Interaction and Volatility Clustering in Chinese Market*, **Yunzhou Zhong**, Undergraduate Thesis, **XJTLU Best Student Final Year Project (thesis) Award**, supervised by [Prof. Xuezhong He](https://scholar.xjtlu.edu.cn/en/persons/XuezhongHe/)
+- *Social Interaction and Volatility Clustering in Chinese Market*, **Yunzhou Zhong**, Undergraduate Thesis, **XJTLU Best Student Final Year Project (Thesis) Award**, supervised by [Prof. Xuezhong He](https://scholar.xjtlu.edu.cn/en/persons/XuezhongHe/)
 </section>
