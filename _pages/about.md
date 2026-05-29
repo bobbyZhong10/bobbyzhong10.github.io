@@ -59,6 +59,6 @@ My research focuses on the economics of digital platforms and artificial intelli
 
 <section class="home-section home-section--compact">
   <div class="visitor-map">
-    <script type="text/javascript" id="mapmyvisitors" src="//mapmyvisitors.com/map.js?d=TA8pmEL4G-sfNd8cPpO5EpflMiKxnDDIwjKdS5HqpDw&cl=ffffff&w=a"></script>
+    <script type='text/javascript' id='mapmyvisitors' src='https://mapmyvisitors.com/map.js?cl=ffffff&w=280&t=n&d=TA8pmEL4G-sfNd8cPpO5EpflMiKxnDDIwjKdS5HqpDw&co=d6cfe8&ct=000000'></script>
   </div>
 </section>
