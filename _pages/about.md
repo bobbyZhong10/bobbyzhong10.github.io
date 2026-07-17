@@ -28,7 +28,7 @@ My research focuses on the economics of digital platforms and artificial intelli
   <div class="news-list">
     <article class="news-item">
       <div class="news-item__date">Apr 2026</div>
-      <div class="news-item__body">One paper has been accepted by <strong>AMCIS</strong>.</div>
+      <div class="news-item__body">One paper has been accepted by <strong>AMCIS</strong> and nominated as a <strong>Top 25% Paper</strong>.</div>
     </article>
      <article class="news-item">
       <div class="news-item__date">Mar 2026</div>
