@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script>(function(){try{var t=localStorage.getItem('theme');if(t==='dark'||t==='light')document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <title>03 RUM and Logit | From Choices to Counterfactuals</title>
+  <link rel="stylesheet" href="assets/katex/katex.min.css">
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="page-wrapper">
+
+  <!-- ==================== SIDEBAR ==================== -->
+  <nav class="sidebar">
+    <div class="sidebar-title">From Choices to Counterfactuals: Structural Estimation for Digital Platform Research</div>
+    <div class="sidebar-subtitle">Chapter 03 · RUM and Logit</div>
+
+    <div class="toc-section-label">Contents</div>
+    <div class="toc">
+      <a href="#rum-setup">3.1 The Random Utility Model</a>
+      <a href="#identification-basics">3.2 The Basic Rules of Identification</a>
+      <a href="#logit-derivation">3.3 From the Extreme-Value Distribution to Logit</a>
+      <a href="#elasticities">3.4 Elasticities and Marginal Effects</a>
+      <a href="#iia">3.5 IIA: Property, Symptoms, and Testing</a>
+      <a href="#welfare">3.6 Consumer Surplus and the Logsum</a>
+      <a href="#mle">3.7 Maximum Likelihood Estimation</a>
+      <a href="#code">3.8 Code</a>
+      <a href="#misconceptions">3.9 Common Pitfalls</a>
+      <a href="#summary">3.10 Chapter Summary</a>
+      <a href="#readings">Further Reading</a>
+    </div>
+
+    <div class="file-nav">
+      <div class="nav-label">Chapters</div>
+      <a href="01_overview_roadmap.html">01 Overview & Decision Framework</a>
+      <a href="02_why_structural.html">02 Why Structural Models</a>
+      <a href="03_rum_logit.html" class="current">03 RUM and Logit</a>
+      <a href="04_gev_mixed_logit.html">04 Nested and Mixed Logit</a>
+      <a href="05_simulation_estimation.html">05 Simulation and Numerical Estimation</a>
+      <a href="06_endogeneity_blp.html">06 Endogeneity and BLP</a>
+      <a href="07_dynamic_choice.html">07 Dynamic Discrete Choice</a>
+      <a href="08_applications.html">08 Platform Research Applications</a>
+      <a href="09_workflow_reference.html">09 Workflow, Validation, and Reference</a>
+    </div>
+  </nav>
+
+  <!-- ==================== MAIN ==================== -->
+  <main class="main-content">
+
+    <header class="page-header">
+      <h1>RUM and Logit</h1>
+      <div class="subtitle">Random Utility, the Logit Model, and What It Buys You</div>
+      <div class="meta">From Choices to Counterfactuals: Structural Estimation for Digital Platform Research · Chapter 03</div>
+    </header>
+
+    <div class="global-legend">
+      <span class="legend-label">Variable colors</span>
+      <span><span class="dot dot-observed"></span>Observed in data</span>
+      <span><span class="dot dot-estimated"></span>Parameters to estimate</span>
+      <span><span class="dot dot-researcher"></span>Set by the researcher</span>
+    </div>
+
+    <p>In Chapter 02 we compressed the skeleton of a structural model into a single abstract equation, $M(Y,X,\varepsilon;F,G)=0$, and spent some effort making a point: that random term $\varepsilon$ is not there for decoration but is a logical necessity. The skeleton stands, yet it is still only a skeleton. This chapter puts flesh on it, arriving at the form that is most common in discrete choice and the one you should master first: the random utility model (RUM) paired with a Type I extreme-value distribution, carried all the way down to logit. In the notation of Chapter 02, $F$ here becomes linear utility plus a utility-maximizing decision rule, $G$ becomes an extreme-value distributional assumption, and $M=0$ collapses into a choice probability with a closed-form solution. Along the way we follow the single example that runs through the whole book, a user choosing one streaming subscription among several, carrying every step through to concrete numbers. The goal of the chapter is a practical one: to demonstrate one complete logit analysis from start to finish, from how the model is specified, to how the parameters are estimated, to how every number in the results should be read.</p>
+
+    <div class="pipeline-bar">
+      <span class="pipe-step">Specify</span>
+      <span class="pipe-arrow">→</span>
+      <span class="pipe-step">Probabilities</span>
+      <span class="pipe-arrow">→</span>
+      <span class="pipe-step">Elasticities</span>
+      <span class="pipe-arrow">→</span>
+      <span class="pipe-step">Counterfactual</span>
+      <span class="pipe-arrow">→</span>
+      <span class="pipe-step">Welfare</span>
+      <span class="pipe-arrow">→</span>
+      <span class="pipe-step">Estimation</span>
+    </div>
+
+    <!-- ============================================ -->
+    <h2 id="rum-setup">3.1 The Random Utility Model</h2>
+
+    <p>The data record only which subscription a user finally clicked, never why. At the same platform, some come for the exclusive series, some for the light ad load, some merely because a friend recommended it; yet all the data leave behind is a single outcome, "chose A." We see the choice but not the preferences behind it, and this is the fundamental difficulty that discrete choice has to confront from the very start. The first step of this chapter is to connect the unobserved preferences to the observed choices, and the device that does it is precisely the random utility model (RUM).</p>
+
+    <p>The starting point of RUM is a behavioral assumption about as plain as they come: the decision-maker weighs every option in the choice set and picks the one with the highest utility. In notation, write the total utility individual $n$ derives from option $i$ as $U_{ni}$; then the individual chooses $i$ if and only if $U_{ni} \geq U_{nj}$ for every $j$ in the choice set. The trouble hides inside $U_{ni}$: it is perfectly clear to the individual, but to the researcher on the data side it is a complete black box. RUM's response is clever. It splits total utility in two, one part for the attributes we can see and the other for the factors we cannot, caught by a random term.</p>
+
+    <div class="formula-box">
+      <div class="formula-title">Utility decomposition</div>
+      <div class="formula-math">$$U_{nj} = V_{nj} + \varepsilon_{nj}$$</div>
+      <div class="formula-explain">
+        <table>
+          <tr><td>$U_{nj}$</td><td>total utility of option $j$ for individual $n$ (not observed by the researcher)</td></tr>
+          <tr><td>$V_{nj}$</td><td>the deterministic part, determined by observable attributes, usually set as $V_{nj}=\beta' x_{nj}$</td></tr>
+          <tr><td class="var-researcher">$\varepsilon_{nj}$</td><td>the random term: factors observable to the individual but not to the researcher, whose distribution is set by the researcher</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <p>This decomposition maps exactly onto the eighth modeling decision from Chapter 02, information and observability. One point deserves special emphasis: the individual decides on the basis of the complete $U_{nj}$, so $\varepsilon_{nj}$ is not at all random to that person, only to the researcher; what is random is not behavior but our ignorance. Anything that influenced the choice yet was not written into $x_{nj}$ gets swept into $\varepsilon_{nj}$: this month's enthusiasm for binge-watching, a friend's recommendation, whether one happens to have free time on hand. There is also an easily overlooked detail: every option must carry its own subscripted $\varepsilon_{nj}$; if all options shared a single random shock, that randomness would cancel out in the comparison across options and the model would revert to a deterministic one. As for what goes into $V_{nj}$ and what stays in $\varepsilon_{nj}$, that is a modeling choice to be stated out in the open, not a default setting.</p>
+
+    <h3>Three conditions on the choice set</h3>
+
+    <p>For the rule "pick the one with the highest utility" to genuinely make sense, the choice set itself must first satisfy three conditions. All three sound like plain common sense, but when it comes to using them, plenty of people trip up right here.</p>
+
+    <div class="table-scroll">
+    <table>
+      <thead>
+        <tr><th>Condition</th><th>Meaning</th><th>Streaming setting</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Mutually exclusive</strong></td><td>the individual cannot choose more than one at once</td><td>model the decision as keeping only one primary subscription this month, rather than subscribing to platform A and platform C at the same time</td></tr>
+        <tr><td><strong>Exhaustive</strong></td><td>at least one option is chosen</td><td>include "not subscribing (free content only)" in the choice set; some people in the population always choose it</td></tr>
+        <tr><td><strong>Finite</strong></td><td>the number of options is finite and can be enumerated</td><td>build the choice set from the platforms the user actually considers, rather than every streaming service on the market</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <p>Of these, exhaustiveness pushes the outside option straight to center stage. The reasoning is simple: a user is perfectly free to subscribe to nothing and watch only free content. Only by writing the option "not subscribing to any paid platform" explicitly into the choice set, and normalizing its utility to $V_{\text{outside}}=0$, does the model become exhaustive. Do not underestimate this option; it is by no means an optional technical ornament. Consider the case where all the platforms raise prices together: users may well exit the paid market altogether rather than merely shuffle among platforms, and only by keeping the outside option can this collective exit be described. How its utility is normalized and how market shares are defined remain, in the BLP framework of Chapter 06, a key link in identification.</p>
+
+    <p>Put the three conditions side by side and their weights are in fact not equal. Mutual exclusivity and exhaustiveness can almost always be met by redrawing the choice set: if two options can be chosen at once, merge "both" into a third option; and if no existing option is sure to be chosen, add an outside option as we just did, and exhaustiveness is restored. What really bites, and what separates discrete choice from continuous regression, is the third condition, finite and enumerable. The dependent variable in ordinary regression is a continuous stretch of the real line, whereas discrete choice requires the outcome to fall on a countable, listable inventory; and precisely because the options can be enumerated one by one, the decision rule "compare utilities pairwise and pick the highest" becomes workable.</p>
+
+    <h3>The general form of the choice probability</h3>
+
+    <p>The next step translates the decision rule "pick the highest" into a probability. That individual $n$ chooses $i$ says nothing more than that $i$'s utility is no lower than that of any other option, that is, the joint event in which all of these utility differences satisfy the constraint at once.</p>
+
+    <div class="formula-box">
+      <div class="formula-title">The general form of the choice probability</div>
+      <div class="formula-math">$$P_{ni} = \operatorname{Prob}\!\left(\varepsilon_{nj} - \varepsilon_{ni} \leq V_{ni} - V_{nj},\ \forall j \neq i\right)$$</div>
+      <div class="formula-explain">
+        <table>
+          <tr><td>$P_{ni}$</td><td>probability that individual $n$ chooses option $i$</td></tr>
+          <tr><td>$V_{ni}-V_{nj}$</td><td>the difference in deterministic utility between two options, determined by data and parameters</td></tr>
+          <tr><td class="var-researcher">$\varepsilon_{nj}-\varepsilon_{ni}$</td><td>the difference in random terms, whose joint distribution is determined by the researcher-specified $G$</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <p>Do not let this expression intimidate you; it is really a multiple integral. When the choice set has $J$ options, taking utility differences drops the dimension to $J-1$, so $P_{ni}$ is the integral of a $J-1$-dimensional random vector over the intersection of $J-1$ half-spaces (a shifted orthant), degenerating to a single half-space only when $J=2$. In the streaming case, $J=4$ (general-interest platform A, general-interest platform B, niche documentary platform C, not subscribing), so $P_{ni}$ is a three-dimensional integral. Integrals of this kind generally have no closed-form solution; the extreme-value assumption in Section 3.3 is precisely the key that makes it suddenly solvable.</p>
+
+    <div class="info-box">
+      <div class="box-title">Why the distributional assumption carries special weight here</div>
+      <p style="margin-bottom:0">Recall linear regression, $y=x'\beta+u$: as long as $E[u\mid x]=0$, the estimate of $\beta$ is consistent, and whatever distribution the error $u$ follows moves only inferential quantities like standard errors and confidence intervals, not the coefficients themselves. Discrete choice here is an entirely different matter. The distribution $G$ of the difference in random terms directly determines the whole functional form of $P_{ni}$; change $G$ and the choice-probability formula changes with it, and so do the substitution patterns and the welfare conclusions. So in a structural discrete-choice model, $G$ is a component of identification, not an accessory to the inference stage. If $G$ is set wrong, then even where some average marginal effects still hold approximately in the quasi-maximum-likelihood sense (White, 1982), the substitution patterns and consumer surplus computed from that distribution can generally no longer be trusted. This is exactly the fundamental motivation for Chapter 04 to move from logit toward more flexible distributions.</p>
+    </div>
+
+    <!-- ============================================ -->
+    <h2 id="identification-basics">3.2 The Basic Rules of Identification</h2>
+
+    <p>Once the model specification is written down and you actually set out to estimate, two entirely natural ideas tend to spring to mind first. The first: since every option has its own character, give each option its own intercept (an alternative-specific constant, ASC) to measure that innate "attractiveness." The second: once the price coefficient $\beta_{\text{price}}$ is estimated, compare its magnitude with the price coefficients in other people's papers; whoever's absolute value is larger has the more price-sensitive users.</p>
+
+    <p>Both ideas are reasonable, and unfortunately both fail: the software either throws an error on the spot or hands you a set of meaningless numbers. The root cause is the same. The choice probability recognizes only the <strong>difference</strong> in utilities, neither its absolute level nor its absolute scale. The first "does not recognize" blocks the first idea, and the second blocks the second. Next we split these two failures into two rules, each answering the three questions of identification in the same order: what exactly are we trying to estimate, which variation in the data can pick it out, and under what circumstances it cannot be picked out at all.</p>
+
+    <div class="info-box">
+      <div class="box-title">First, a review of two of the most basic points</div>
+      <p>Before we formally split out the rules, let us review two of the most basic points. They are plain to the point of common sense, yet they are the common footing of every argument below.</p>
+      <p><strong>First, what is "identification" actually asking?</strong> To say a parameter is identified means something very direct: whether the data alone can pin the number down uniquely. Conversely, if two distinct parameter values generate identical observable outcomes, the data cannot rank one above the other, and the parameter is called unidentified. So identification is not a question of "how precisely we estimate" but a prior one: even given infinitely much data, can this number be pinned down at all.</p>
+      <p style="margin-bottom:0"><strong>Second, in logit the choice depends only on the difference in utilities.</strong> This we have repeated several times in Section 3.1, and confirm once more here. The individual picks the option with the highest utility among the alternatives, and what actually matters is the differences in utility among options; the absolute level does not enter the comparison at all. How much higher one option is than another decides the trade-off between the two; the overall height at which these utilities hang does not affect the choice in the slightest. Both rules below are, in the end, direct corollaries of this single sentence.</p>
+    </div>
+
+    <h3>Level normalization: only $J-1$ constants can be estimated</h3>
+
+    <p><strong>What are we trying to estimate?</strong> We want to give each option an ASC, to measure the inherent attractiveness beyond price, ads, and content, that "hard-to-articulate yet genuinely operative" pull. With $J$ options, naturally we want to estimate $J$ ASCs.</p>
+
+    <p><strong>Which variation identifies it?</strong> All the information the data can provide lies in "whose utility is higher than whose," and the absolute level does not enter that comparison at all. Consider an example about as small as it gets. Someone faces two options with utilities 1 and 2 and chooses the higher, the latter. Now add 10 to both utilities at once, turning them into 11 and 12; which is higher has not changed one bit, he still chooses the latter, and the two options' choice probabilities are identical. Replace 10 with any constant $c$ and the conclusion is the same: adding $c$ to the utilities of all options leaves every pairwise ranking untouched, so no one switches and each option's probability is rock-steady. Since shifting the entire utility curve up or down together is something the data cannot detect at all, the absolute height of each of the $J$ intercepts naturally cannot be pinned down one by one. (Put another way, which says the same thing: the logit probability is a share of exponentials, $e^{V_{ni}}/\sum_j e^{V_{nj}}$; add the same $c$ to all the $V$, multiply numerator and denominator by $e^{c}$, cancel, and the probability does not budge.)</p>
+
+    <p><strong>When does identification fail?</strong> Force all $J$ ASCs into the model and you leave behind an entire direction the data cannot see (all ASCs rising together, falling together), the parameters are unidentified, and the software either errors out or hands you a set of absurd standard errors. The remedy takes just one step: pick one option as the baseline, set its ASC to 0, and estimate the remaining $J-1$ relative to that baseline. This is exactly what the streaming case does, setting the general-interest platforms' ASC to 0 and estimating only the niche documentary platform's $ASC_C$ relative to the general-interest platforms.</p>
+
+    <h3>Scale normalization: the absolute magnitude of a coefficient has no independent meaning</h3>
+
+    <p>The second idea falls through for a subtler reason. This time what stops us is not that utility can be shifted as a whole, but that utility can be stretched as a whole. To see this clearly, we first have to grip one most basic fact: utility is never a quantity we can observe directly, and it has no natural unit of measurement at all. What the data show is only the outcome "who chose what"; the level of utility is merely an intermediate quantity the model introduces on the fly to explain that outcome. Exactly what one unit of utility is worth has no external yardstick to compare against.</p>
+
+    <p>Follow this fact through with a small calculation. Take the same person, with deterministic utilities of 1 and 2 for the two options, leaning toward the latter. Now multiply each option's entire utility, that is, the deterministic part together with the random noise behind it, by 2, so the deterministic utilities become 2 and 4. After this multiplication, the ranking of any single choice does not flip and the choice probabilities do not move at all; in the eyes of the data, "1 versus 2" and "2 versus 4" are one and the same thing. But here is the trouble: the very same batch of "decisive" choice data can be read either as users' preferences being intrinsically strong ($\beta$ large) or as the random noise in their decisions being small (the variance of $\varepsilon$ small); the two accounts give identical choices, and the data cannot take sides between them. So what the data can really pick out is only the ratio of preference strength to noise size; the absolute magnitude of either side cannot be pinned down. This obstacle is best explained with a ruler.</p>
+
+    <div class="intuition-box">
+      <div class="box-title">Intuition: a ruler with no units</div>
+      Imagine you are holding a ruler whose graduations are even but which happens to bear no printed unit at all. Use it to measure two pieces of string, one spanning 8 marks and one spanning 1. You may say with full confidence "the first is 8 times the second," and this ratio is solid, the same no matter who measures. But you cannot say "the first is 8 centimeters long," because you have no idea whether one mark is a centimeter, an inch, or a handspan; the graduation "how much one mark is worth" was simply never printed. Utility is measured with a ruler like this: what can be pinned down is only the ratio between coefficients, while the absolute magnitude of any single coefficient cannot, precisely because "how much one mark of utility is worth" has never had an objective standard. Two people measuring the same preferences with rulers of different tautness will report different numbers of marks (that is, different coefficient magnitudes), but the ratio 8:1 must agree.
+    </div>
+
+    <p><strong>What are we trying to estimate?</strong> We want to read off the absolute magnitude of $\beta$, to say with conviction "the price coefficient is exactly $-0.1$," and then use that number to compare against the price coefficients in other people's papers.</p>
+
+    <p><strong>Which variation identifies it?</strong> Generalize the "multiply by 2" trick to any factor: multiply all utilities by a positive number $\mu$ and the ranking of options is unchanged, and so are the choice probabilities. This shows that $\beta$ and the scale of the random term $\varepsilon$ are tied to one rope; enlarge $\beta$ by a factor while enlarging the noise by the same factor, and the effect on choice probabilities is nil. What the data can pick out is only what remains after $\mu$ divides out, that is, the ratios between coefficients; the absolute magnitude of $\beta$ itself the data cannot see.</p>
+
+    <p><strong>When does identification fail?</strong> The magnitude of $\beta$ and the variance of $\varepsilon$ cannot be identified simultaneously; only one of them can be held down. Logit's approach is to fix the variance of the random term, which amounts to nailing the scale $\mu$ to 1 as well.</p>
+
+    <div class="formula-box">
+      <div class="formula-title">The variance convention of the Type I extreme-value distribution</div>
+      <div class="formula-math">$$\operatorname{Var}(\varepsilon_{nj}) = \frac{\pi^2}{6} \approx 1.645$$</div>
+      <div class="formula-explain">
+        <table>
+          <tr><td class="var-researcher">$\varepsilon_{nj}$</td><td>iid Type I extreme-value (Gumbel) random term, with variance fixed by convention</td></tr>
+          <tr><td class="var-estimated">$\beta$</td><td>the coefficient vector; its absolute magnitude has meaning only relative to this fixed variance</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <p>This convention has a direct consequence, and it settles that second idea from the start: <strong>coefficient magnitudes estimated by different models cannot be compared directly.</strong> Both being logit, two models, as long as the noise size of random utility differs between the two datasets, will have estimated $\beta$ that differ in scale, like two rulers whose graduations are stretched differently. A larger $\beta$ does not mean stronger preferences; it only means the observable factors stand out more relative to the noise. What can genuinely be compared across models and across samples is the <strong>ratio</strong> of coefficients, where the common scale $\mu$ divides out.</p>
+
+    <p>And the ratio happens to be exactly what the researcher truly cares about. Using the streaming case's parameters ($\beta_{\text{price}}=-0.1$, $\beta_{\text{ad}}=-0.05$, $\beta_{\text{content}}=0.8$), compute two willingness-to-pay (WTP) figures: for each additional point of content rating, a user is willing to pay an extra $\beta_{\text{content}}/|\beta_{\text{price}}| = 0.8/0.1 = 8$ yuan per month; for each fewer minute of weekly ads, willing to pay an extra $|\beta_{\text{ad}}|/|\beta_{\text{price}}| = 0.05/0.1 = 0.5$ yuan of monthly fee, which works out to 30 yuan of monthly fee for one fewer hour of ads per week. Both ratios are scale-free, can be compared across models and across samples, and can be taken directly into counterfactual calculations. <span class="demo-badge">illustrative data</span></p>
+
+    <div class="warn-box">
+      <div class="box-title">Pitfall: comparing the coefficient magnitudes of two models directly</div>
+      <p style="margin-bottom:0">"Our $\beta_{\text{price}}$ is larger than Smith's, so users in our sample care more about price," this sentence is almost sure to be wrong. Coefficient magnitude is bound up with the scale of random utility, the scales of two samples generally differ, and comparing magnitudes directly is meaningless; if you must compare, compare ratios like willingness to pay. By the same token, logit and probit coefficients differ by construction by a scale factor of roughly 1.6 to 1.8 (the two assume different distributions for the difference in utilities, logit using logistic and probit using normal), so cramming their raw coefficients into the same table to compare magnitudes is a specification error that can be spotted at a glance.</p>
+    </div>
+
+    <h3>How sociodemographic characteristics enter the model</h3>
+
+    <p>There is another class of variables governed by the same logic: individual-level sociodemographic characteristics like age, income, and gender take the same value across all of a given individual's options. If they are dropped straight into $V_{nj}$ with a common coefficient, they contribute the same constant to every option, get canceled when utility differences are taken, and simply cannot be estimated. There are two correct approaches. One is to interact the characteristic with an option attribute, for example $V_{nj}=\beta_1 \text{Price}_{nj} + \beta_2(\text{Age}_n \times \text{Price}_{nj})$, capturing "older users are more price-sensitive." The other is to interact it with an ASC, for example letting the niche documentary platform's ASC vary with age as $\alpha_{C}+\gamma\,\text{Age}_n$, capturing "older users prefer documentary-type content more." The two treatments read differently, but they share one thing: individual characteristics can enter the model only by acting through the differences between options.</p>
+
+    <div class="takeaway-box">
+      <div class="box-title">Bottom Line</div>
+      The choice probability recognizes only utility differences. Level normalization means you can estimate only $J-1$ ASCs; scale normalization strips the absolute magnitude of coefficients of any independent meaning, and only ratios like willingness to pay compare well across models. Individual characteristics, for their part, must pass through interaction terms to enter the model at all.
+    </div>
+
+    <!-- ============================================ -->
+    <h2 id="logit-derivation">3.3 From the Extreme-Value Distribution to Logit</h2>
+
+    <p>Now it is time to assign $\varepsilon_{nj}$ a concrete distribution; once assigned, the $J-1$-dimensional integral of Section 3.1 immediately has a closed-form solution. We assume $\varepsilon_{nj}$ is independent and identically distributed, following a Type I extreme-value distribution (also called the Gumbel distribution), with cumulative distribution function $F(\varepsilon)=\exp(-\exp(-\varepsilon))$. Substitute it into the choice-probability integral and we can derive the most famous formula in the discrete-choice field.</p>
+
+    <div class="formula-box">
+      <div class="formula-title">The multinomial logit choice probability</div>
+      <div class="formula-math">$$P_{ni} = \frac{e^{V_{ni}}}{\sum_{j=1}^{J} e^{V_{nj}}}$$</div>
+      <div class="formula-explain">
+        <table>
+          <tr><td>$P_{ni}$</td><td>probability that individual $n$ chooses option $i$</td></tr>
+          <tr><td>$V_{nj}$</td><td>deterministic utility, under the linear specification $V_{nj}=\beta' x_{nj}$</td></tr>
+          <tr><td class="var-estimated">$\beta$</td><td>coefficients to be estimated; they enter through $V$ and are estimated by maximum likelihood</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <details>
+      <summary>Expand: integrating the logit formula from the extreme-value CDF</summary>
+      <div class="detail-content">
+        <p>Choosing $i$ means $V_{ni}+\varepsilon_{ni} \geq V_{nj}+\varepsilon_{nj}$ for all $j\neq i$. Treat $\varepsilon_{ni}$ as known for now; then for each $j\neq i$ we need $\varepsilon_{nj} \leq \varepsilon_{ni}+V_{ni}-V_{nj}$, whose probability is $F(\varepsilon_{ni}+V_{ni}-V_{nj})$. The $\varepsilon_{nj}$ are independent, so the conditional probability is a product:</p>
+        <div class="formula-math">$$P_{ni}\mid \varepsilon_{ni} = \prod_{j\neq i} \exp\!\big(-\exp(-(\varepsilon_{ni}+V_{ni}-V_{nj}))\big).$$</div>
+        <p>Then integrate over $\varepsilon_{ni}$ using its density $f(\varepsilon)=\exp(-\varepsilon)\exp(-\exp(-\varepsilon))$. Folding the $j=i$ term into the product as well (for that term $V_{ni}-V_{ni}=0$, contributing $\exp(-\exp(-\varepsilon_{ni}))$), rearrange to</p>
+        <div class="formula-math">$$P_{ni} = \int_{-\infty}^{\infty} \exp(-\varepsilon_{ni})\,\exp\!\Big(-e^{-\varepsilon_{ni}}\sum_{j} e^{-(V_{ni}-V_{nj})}\Big)\, d\varepsilon_{ni}.$$</div>
+        <p>Substitute $t=e^{-\varepsilon_{ni}}$, so $dt=-e^{-\varepsilon_{ni}}\,d\varepsilon_{ni}$, and the interval of integration becomes $0$ to $\infty$:</p>
+        <div class="formula-math">$$P_{ni} = \int_{0}^{\infty} \exp\!\Big(-t\sum_{j} e^{-(V_{ni}-V_{nj})}\Big)\, dt = \frac{1}{\sum_{j} e^{-(V_{ni}-V_{nj})}} = \frac{e^{V_{ni}}}{\sum_{j} e^{V_{nj}}}.$$</div>
+        <p>The last step pulls $e^{V_{ni}}$ into the denominator to give logit. The whole derivation uses only a single substitution, a measure of how well the extreme-value assumption and utility maximization fit together in mathematical structure.</p>
+      </div>
+    </details>
+
+    <p>There are three solid reasons this formula is used so widely. First, it is closed-form; computing $P_{ni}$ takes only one exponential and one sum, so even with tens of thousands of options it can be computed directly, with no integral simulation of any kind. Second, its log-likelihood is globally concave under linear $V$ (McFadden, 1974), so numerical optimization will not get stuck at some local extremum, and wherever it converges is the global optimum. Third, it writes choice probabilities, elasticities, and welfare all as simple functions of the same set of exponentials, so once the parameters are estimated, these quantities follow with a bit of algebra. There is no free lunch: the price is that the iid assumption of the extreme-value distribution quietly carries IIA, a bill we settle in detail in Section 3.5.</p>
+
+    <div class="worked-example">
+      <div class="worked-title">Streaming example (1): from attributes to four choice probabilities <span class="demo-badge">illustrative data</span></div>
+
+      <p>A user chooses one of four options: general-interest platform A, general-interest platform B, niche documentary platform C, and not subscribing, watching only free content (the outside option). The attributes and parameters are as follows.</p>
+
+      <div class="table-scroll">
+      <table>
+        <thead>
+          <tr><th>Option</th><th>Monthly fee (yuan)</th><th>Weekly ads (minutes)</th><th>Content rating</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>General-interest platform A</td><td>30</td><td>30</td><td>4.5</td></tr>
+          <tr><td>General-interest platform B</td><td>28</td><td>35</td><td>4.3</td></tr>
+          <tr><td>Niche documentary platform C</td><td>45</td><td>40</td><td>4.7</td></tr>
+          <tr><td>Not subscribing</td><td colspan="3">the outside option, utility normalized to $V_{\text{outside}}=0$</td></tr>
+        </tbody>
+      </table>
+      </div>
+
+      <p>Parameters (illustrative data): $\beta_{\text{price}}=-0.1$, $\beta_{\text{ad}}=-0.05$ (the marginal disutility per minute of weekly ads), $\beta_{\text{content}}=0.8$, the niche platform's $ASC_C$ relative to the general-interest platforms is $+0.3$ (a differentiation premium), and the general-interest platforms' ASC is $0$.</p>
+
+      <div class="worked-step">Step 1: Compute the deterministic utilities $V_{nj}$</div>
+      <div class="formula-math">$$\begin{aligned}
+      V_A &= -0.1(30) - 0.05(30) + 0.8(4.5) = -3 - 1.5 + 3.6 = -0.90\\
+      V_B &= -0.1(28) - 0.05(35) + 0.8(4.3) = -2.8 - 1.75 + 3.44 = -1.11\\
+      V_C &= 0.3 - 0.1(45) - 0.05(40) + 0.8(4.7) = 0.3 - 4.5 - 2 + 3.76 = -2.44\\
+      V_{\text{outside}} &= 0
+      \end{aligned}$$</div>
+
+      <div class="worked-step">Step 2: Exponentiate and sum</div>
+      <p>$e^{-0.90}=0.4066$, $e^{-1.11}=0.3296$, $e^{-2.44}=0.0872$, $e^{0}=1$. Summing the four terms gives the denominator $\sum_j e^{V_j} = 1.8233$.</p>
+
+      <div class="worked-step">Step 3: Compute the logit probabilities</div>
+      <div class="formula-math">$$P_A = \frac{0.4066}{1.8233} = 0.2230,\quad P_B = \frac{0.3296}{1.8233} = 0.1807,\quad P_C = \frac{0.0872}{1.8233} = 0.0478,\quad P_{\text{outside}} = \frac{1}{1.8233} = 0.5485.$$</div>
+
+      <p>The four probabilities add up to exactly 1. In plain terms: facing these three platforms, about 22.30% of users subscribe to platform A, 18.07% to B, 4.78% to C, and the remaining 54.85% subscribe to none. Platform C has the highest monthly fee and the longest ads, and although its content rating is also the highest, its share comes in last; more than half of users simply do not pay, which is exactly the outside option at work. This set of numbers is the shared starting point for the later sections of this chapter on elasticities, IIA, and welfare.</p>
+    </div>
+
+    <!-- ============================================ -->
+    <h2 id="elasticities">3.4 Elasticities and Marginal Effects</h2>
+
+    <p>Estimating the parameters is only the first step of a long march. For policy analysis, what you really use is elasticities: when price moves by one percent, by what percent does the share move in turn. Fortunately logit's elasticities wear a tidy closed-form face, and that face itself hides important information worth examining term by term. Let the coefficient on price in utility be $\beta_{\text{price}}$ (a negative value); there are two formulas.</p>
+
+    <div class="formula-box">
+      <div class="formula-title">Logit price elasticities</div>
+      <div class="formula-math">$$\eta_{jj} = \beta_{\text{price}}\, p_j\,(1-P_j), \qquad \eta_{jk} = -\,\beta_{\text{price}}\, p_k\, P_k \ \ (k\neq j)$$</div>
+      <div class="formula-explain">
+        <table>
+          <tr><td>$\eta_{jj}$</td><td>own-elasticity: when $j$'s own price changes by 1%, by what percent $P_j$ changes</td></tr>
+          <tr><td>$\eta_{jk}$</td><td>cross-elasticity: when $k$'s price changes by 1%, by what percent $P_j$ changes</td></tr>
+          <tr><td>$p_k, P_k$</td><td>the price and choice probability of option $k$</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <p>This cross-elasticity formula is worth staring at a moment longer: in $\eta_{jk}=-\beta_{\text{price}}\,p_k\,P_k$ there is, remarkably, not a single quantity involving $j$. In other words, when $k$ raises its price, the percentage shock to <strong>every</strong> other option $j$ is exactly the same size, and who $j$ is does not matter at all. This is no coincidence but a fingerprint that IIA has quietly pressed onto the elasticities; its full consequences we lay out in Section 3.5.</p>
+
+    <p>Own-elasticity and marginal effect each take their own shape, and being easy to confuse, they need to be sorted out. The own-elasticity $|\eta_{jj}|=|\beta_{\text{price}}|\,p_j(1-P_j)$ shrinks as $P_j$ grows, so an option with a smaller share reacts more sharply in percentage terms to raising its own price. The marginal effect $\beta_{\text{price}}\,P_j(1-P_j)$ is another shape entirely, largest when $P_j$ is in the middle range and small as it approaches 0 or 1. Both track the share, quite unlike the everywhere-constant marginal effect of OLS, so when reporting one must not get away with the value at a single point.</p>
+
+    <div class="figure">
+    <svg viewBox="0 0 700 322" role="img" aria-label="The different shapes of own-elasticity and marginal effect across share: the own-elasticity falls monotonically as share rises, the marginal effect is largest in the mid-share range">
+      <line class="gr dash" x1="64" y1="280.0" x2="660" y2="280.0"></line><text x="56" y="284.0" text-anchor="end" class="mut lbl-s">0</text><line class="gr dash" x1="64" y1="160.0" x2="660" y2="160.0"></line><text x="56" y="164.0" text-anchor="end" class="mut lbl-s">0.5</text><line class="gr dash" x1="64" y1="40.0" x2="660" y2="40.0"></line><text x="56" y="44.0" text-anchor="end" class="mut lbl-s">1</text>
+      <line class="ax" x1="64" y1="280" x2="660" y2="280"></line>
+      <line class="ax" x1="64" y1="34" x2="64" y2="280"></line>
+      <line class="gr dash" x1="362.0" y1="40" x2="362.0" y2="280"></line>
+      <polyline points="75.9,44.8 87.8,49.6 99.8,54.4 111.7,59.2 123.6,64.0 135.5,68.8 147.4,73.6 159.4,78.4 171.3,83.2 183.2,88.0 195.1,92.8 207.0,97.6 219.0,102.4 230.9,107.2 242.8,112.0 254.7,116.8 266.6,121.6 278.6,126.4 290.5,131.2 302.4,136.0 314.3,140.8 326.2,145.6 338.2,150.4 350.1,155.2 362.0,160.0 373.9,164.8 385.8,169.6 397.8,174.4 409.7,179.2 421.6,184.0 433.5,188.8 445.4,193.6 457.4,198.4 469.3,203.2 481.2,208.0 493.1,212.8 505.0,217.6 517.0,222.4 528.9,227.2 540.8,232.0 552.7,236.8 564.6,241.6 576.6,246.4 588.5,251.2 600.4,256.0 612.3,260.8 624.2,265.6 636.2,270.4 648.1,275.2" style="fill:none;stroke:var(--fig-1);stroke-width:2.5"></polyline>
+      <polyline points="75.9,261.2 87.8,243.1 99.8,225.9 111.7,209.3 123.6,193.6 135.5,178.6 147.4,164.4 159.4,151.0 171.3,138.3 183.2,126.4 195.1,115.3 207.0,104.9 219.0,95.3 230.9,86.5 242.8,78.4 254.7,71.1 266.6,64.6 278.6,58.8 290.5,53.8 302.4,49.6 314.3,46.1 326.2,43.5 338.2,41.5 350.1,40.4 362.0,40.0 373.9,40.4 385.8,41.5 397.8,43.5 409.7,46.1 421.6,49.6 433.5,53.8 445.4,58.8 457.4,64.6 469.3,71.1 481.2,78.4 493.1,86.5 505.0,95.3 517.0,104.9 528.9,115.3 540.8,126.4 552.7,138.3 564.6,151.0 576.6,164.4 588.5,178.6 600.4,193.6 612.3,209.3 624.2,225.9 636.2,243.1 648.1,261.2" style="fill:none;stroke:var(--fig-2);stroke-width:2.5"></polyline>
+      <circle cx="362.0" cy="40.0" r="4" style="fill:var(--fig-2)"></circle>
+      <rect x="470" y="48" width="12" height="12" rx="2" style="fill:var(--fig-1)"></rect><text x="488" y="58" class="lbl-s">Own-elasticity ∝ (1−P)</text>
+      <rect x="470" y="68" width="12" height="12" rx="2" style="fill:var(--fig-2)"></rect><text x="488" y="78" class="lbl-s">Marginal effect ∝ P(1−P)</text>
+      <text x="362.0" y="32.0" text-anchor="middle" class="lbl-s" style="fill:var(--fig-2);font-weight:700">Largest at P=0.5</text>
+      <text x="362" y="300" text-anchor="middle" class="mut lbl-s">Option share P →</text>
+      <text x="20" y="160" text-anchor="middle" transform="rotate(-90 20 160)" class="mut lbl-s">Relative size (each normalized)</text>
+    </svg>
+    <div class="figcaption"><span class="fig-label">Figure 3.2</span>Own-elasticity and marginal effect trace two completely different curves across share. The magnitude of the own-elasticity is proportional to (1−P), falling monotonically as share rises, so an option with a smaller share reacts more sharply in percentage terms to raising its own price. The magnitude of the marginal effect is proportional to P(1−P), largest in the mid-share range (P=0.5) and small as it approaches 0 or 1. Both vary with share, completely unlike the everywhere-constant marginal effect of OLS, so when reporting one must not pick the value at a single point.</div>
+    </div>
+
+    <div class="worked-example">
+      <div class="worked-title">Streaming example (2): the elasticities when platform A raises its monthly fee <span class="demo-badge">illustrative data</span></div>
+
+      <p>Carrying over the probabilities from the previous section, $P_A=0.2230$, $P_B=0.1807$, $P_C=0.0478$, $P_{\text{outside}}=0.5485$, with monthly fee $p_A=30$.</p>
+
+      <div class="worked-step">A's own-price elasticity</div>
+      <div class="formula-math">$$\eta_{AA} = \beta_{\text{price}}\, p_A\,(1-P_A) = (-0.1)(30)(1-0.2230) = (-0.1)(30)(0.7770) = -2.33.$$</div>
+      <p>A 1% rise in platform A's monthly fee drops its choice probability by about 2.33%. An absolute value above 1 indicates elastic demand; in a market that has both an outside option and close substitutes, a magnitude like this is nothing unusual.</p>
+
+      <div class="worked-step">The cross-elasticities of the other options to A's price increase</div>
+      <div class="formula-math">$$\eta_{jA} = -\,\beta_{\text{price}}\, p_A\, P_A = -(-0.1)(30)(0.2230) = 0.67 \quad (j = B,\ C,\ \text{outside}).$$</div>
+      <p>A 1% price increase at platform A raises the choice probabilities of platform B, platform C, and not subscribing <strong>each</strong> by about 0.67%, all three numbers identical. Here is the strange part: intuitively, when platform A raises its price, the users it loses ought to switch more heavily to platform B, which shares general-interest content and a similar monthly fee, rather than move in equal proportion to the documentary platform or exit paid subscription outright. Yet logit insists that the percentage intensity of these three substitution paths is exactly the same.</p>
+
+      <div class="worked-step">Converting to a marginal effect</div>
+      <div class="formula-math">$$\frac{\partial P_A}{\partial p_A} = \beta_{\text{price}}\, P_A(1-P_A) = (-0.1)(0.2230)(0.7770) = -0.0173.$$</div>
+      <p>At the current shares, each 1-yuan rise in platform A's monthly fee drops its share by about 1.73 percentage points. This marginal effect shifts with the share, growing larger the closer the share is to the middle range.</p>
+    </div>
+
+    <!-- ============================================ -->
+    <h2 id="iia">3.5 IIA: Property, Symptoms, and Testing</h2>
+
+    <p>The cross-elasticities of the previous section give off a strange signal: when platform A raises its price, the percentage shock absorbed by platform B, platform C, and not subscribing is exactly the same, entirely unrelated to which of them each is. Behind this stands a structural property of logit with a name that is a bit of a mouthful: independence of irrelevant alternatives (IIA). Convoluted as the name is, take it apart and it becomes clear: how two options trade off against each other is not disturbed by a third, "irrelevant" option barging in.</p>
+
+    <p>Take an analogy. You are ordering at a cafe, torn between coffee and tea. What IIA says is: whether or not hot chocolate is on the menu, it does not shake your relative leaning between coffee and tea, and for that trade-off, hot chocolate is an "irrelevant option." Most of the time this assumption is quite reasonable. Logit carries it to the extreme: no matter what else is in the choice set, what is added, what is removed, the ratio of the probabilities that any two options are chosen is always determined solely by their own two utilities.</p>
+
+    <div class="formula-box">
+      <div class="formula-title">IIA: the odds ratio of two options</div>
+      <div class="formula-math">$$\frac{P_{ni}}{P_{nj}} = \frac{e^{V_{ni}}}{e^{V_{nj}}} = e^{V_{ni}-V_{nj}}$$</div>
+      <div class="formula-explain">
+        <table>
+          <tr><td>$P_{ni}/P_{nj}$</td><td>the odds of choosing $i$ relative to $j$</td></tr>
+          <tr><td>$V_{ni}-V_{nj}$</td><td>depends only on $i$ and $j$ themselves, unrelated to any third option</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <p>The odds ratio being unrelated to a third option leads straight to the rule of <strong>proportional substitution</strong>: when an option is removed from the choice set, the share it gives up is apportioned among the remaining options in proportion to their current odds, the higher odds getting more and the lower getting less. This rule looks fair on the surface, but placed into many settings it plainly defies intuition.</p>
+
+    <div class="example-box">
+      <div class="example-title">The classic counterexample: red bus, blue bus (IIA breaks down)</div>
+      <p>A certain city has only two commuting modes at rush hour, driving and the red bus, each with half the market. One day the bus company has a bright idea and repaints some of the red buses blue, putting them on identical routes; apart from body color, the blue bus is no different from the red in frequency, fare, or route, so in riders' eyes $V_{\text{red}}=V_{\text{blue}}$. Common sense gives an answer that could not be clearer: the newly arrived blue bus should only split the bus ridership evenly with the red bus; drivers are hardly going to change their minds just because the buses have gained a color. The final picture should be driving 50%, red bus 25%, blue bus 25%, with the driving share unmoved.</p>
+      <p style="margin-bottom:0">Logit thinks otherwise. The three have equal utility, so the model splits them evenly: $P=\tfrac{e^{V}}{e^{V_{\text{car}}}+e^{V_{\text{red}}}+e^{V_{\text{blue}}}}$, giving driving, red bus, and blue bus each $\tfrac{1}{3}\approx 33.3\%$. The driving share drops out of nowhere from 50% to 33%, for the sole reason that one more color of bus is on the road. A bus that has nothing whatever to do with "whether to drive" has walked off with part of the drivers' share. This is the textbook scene of IIA breaking down: the blue bus is, to a driver, an out-and-out "irrelevant option," yet it wrenches the odds of driving relative to the bus.</p>
+    </div>
+
+    <div class="figure">
+    <svg viewBox="0 0 720 344" role="img" aria-label="The red-bus/blue-bus IIA counterexample: a bar chart comparing driving and bus shares under three cases, before adding the blue bus, intuitive substitution, and logit's proportional substitution">
+      <rect x="236" y="10" width="12" height="12" rx="2" style="fill:var(--fig-2)"></rect>
+      <text x="254" y="20" class="lbl-s">Driving</text>
+      <rect x="318" y="10" width="12" height="12" rx="2" style="fill:var(--fig-5)"></rect>
+      <text x="336" y="20" class="lbl-s">Red bus</text>
+      <rect x="416" y="10" width="12" height="12" rx="2" style="fill:var(--fig-1)"></rect>
+      <text x="434" y="20" class="lbl-s">Blue bus</text>
+
+      <line class="ax" x1="60" y1="300" x2="700" y2="300"></line>
+      <line class="ax" x1="60" y1="44" x2="60" y2="300"></line>
+      <line class="gr dash" x1="60" y1="216" x2="700" y2="216"></line>
+      <line class="gr dash" x1="60" y1="132" x2="700" y2="132"></line>
+      <line class="gr dash" x1="60" y1="48" x2="700" y2="48"></line>
+      <text x="52" y="304" text-anchor="end" class="mut lbl-s">0</text>
+      <text x="52" y="220" text-anchor="end" class="mut lbl-s">20%</text>
+      <text x="52" y="136" text-anchor="end" class="mut lbl-s">40%</text>
+      <text x="52" y="52" text-anchor="end" class="mut lbl-s">60%</text>
+
+      <rect x="143" y="90" width="38" height="210" style="fill:var(--fig-2)"></rect>
+      <rect x="189" y="90" width="38" height="210" style="fill:var(--fig-5)"></rect>
+      <text x="162" y="84" text-anchor="middle" class="lbl-s ink">50%</text>
+      <text x="208" y="84" text-anchor="middle" class="lbl-s ink">50%</text>
+      <text x="185" y="322" text-anchor="middle" class="mut lbl-s">Before the blue bus</text>
+
+      <rect x="335" y="90" width="38" height="210" style="fill:var(--fig-2)"></rect>
+      <rect x="381" y="195" width="38" height="105" style="fill:var(--fig-5)"></rect>
+      <rect x="427" y="195" width="38" height="105" style="fill:var(--fig-1)"></rect>
+      <text x="354" y="84" text-anchor="middle" class="lbl-s ink">50%</text>
+      <text x="400" y="189" text-anchor="middle" class="lbl-s ink">25%</text>
+      <text x="446" y="189" text-anchor="middle" class="lbl-s ink">25%</text>
+      <text x="400" y="322" text-anchor="middle" class="mut lbl-s">Intuition: reasonable</text>
+
+      <rect x="550" y="160" width="38" height="140" style="fill:var(--fig-2)"></rect>
+      <rect x="596" y="160" width="38" height="140" style="fill:var(--fig-5)"></rect>
+      <rect x="642" y="160" width="38" height="140" style="fill:var(--fig-1)"></rect>
+      <text x="569" y="154" text-anchor="middle" class="lbl-s ink">33%</text>
+      <text x="615" y="154" text-anchor="middle" class="lbl-s ink">33%</text>
+      <text x="661" y="154" text-anchor="middle" class="lbl-s ink">33%</text>
+      <text x="615" y="322" text-anchor="middle" class="mut lbl-s">Logit: IIA proportional</text>
+    </svg>
+    <div class="figcaption"><span class="fig-label">Figure 3.1</span>The red-bus/blue-bus IIA counterexample. The blue bus and the red bus are completely identical in riders' eyes; intuitively the new bus should only split the bus ridership evenly with the red bus, leaving the driving share unmoved (middle). But logit, taking the three to have equal utility, splits them into thirds, and the driving share drops out of nowhere from 50% to 33% (right). The root cause is that IIA recognizes only the level of utility, not how similar the options are to one another.</div>
+    </div>
+
+    <p>Move the same symptom into the streaming case and you can see what it looks like in subscription data. Suppose platform A exits the market over a copyright dispute; logit's redistribution of its 22.30% share still abides by IIA: the share A gives up is spread among platform B, platform C, and not subscribing in proportion to their existing odds, $0.1807 : 0.0478 : 0.5485$.</p>
+
+    <div class="example-box">
+      <div class="example-title">Streaming version: logit's share redistribution after platform A exits the market <span class="demo-badge">illustrative data</span></div>
+      <div class="table-scroll">
+      <table>
+        <thead>
+          <tr><th>Option</th><th>Before A exits</th><th>After logit redistribution</th><th>Change</th><th>Share of A's mass absorbed</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>General-interest platform B</td><td>18.07%</td><td>23.26%</td><td>+5.19 pp</td><td>23.3%</td></tr>
+          <tr><td>Niche documentary platform C</td><td>4.78%</td><td>6.15%</td><td>+1.37 pp</td><td>6.2%</td></tr>
+          <tr><td>Not subscribing</td><td>54.85%</td><td>70.59%</td><td>+15.74 pp</td><td>70.6%</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <p style="margin-bottom:0">Of the 22.30 percentage points A gives up, only 23.3% flow to B, also a general-interest platform, while a full 70.6% flow to "not subscribing." This result does not add up: platform A's subscribers are mostly people who prefer general-interest content, so when A leaves they should switch en masse to the like-kind platform B, rather than have seventy percent of them drop paid subscription entirely. The reason logit gives such an answer is precisely that IIA forces A's share to be split in proportion to existing odds, while the model captures not a shred of the fact that "B and A are both general-interest video platforms and were close substitutes to begin with."</p>
+    </div>
+
+    <h3>When IIA is harmless, when it is fatal</h3>
+
+    <p>IIA is not inherently a defect. If no pair of options is unusually close in unobserved attributes, and the options are broadly symmetric in how similar they are to one another, then proportional substitution is actually a reasonable approximation; furthermore, if the study cares only about the average elasticity across the whole market and does not probe where substitution specifically flows, the bias IIA introduces is often within tolerable bounds. Imagine a user who will keep only one subscription in the monthly budget, choosing among streaming, a gym membership, and an online course: these three share almost no unobserved attributes, so when any one exits, the user splits toward the other two in proportion to their respective appeal, and no direction of flow is systematically underestimated.</p>
+
+    <p>IIA really turns deadly when close substitutes lurk in the choice set and your research question happens to hinge on the direction of substitution. Hit hardest are counterfactuals about product entry or exit: from whom a new platform will steal users, and where users flock after an incumbent departs, the answers are all dictated by the substitution structure, and IIA crushes that structure into proportional allocation, as the earlier example of platform A exiting the market vividly illustrates. As long as your conclusion rests on "who substitutes for whom," logit's IIA will steer you systematically off course.</p>
+
+    <h3>How to test it</h3>
+
+    <p>IIA can be tested. Hausman and McFadden's (1984) idea grows directly out of the property itself: since under IIA the odds ratio does not depend on the removed option, dropping one option (or a group) from the choice set and re-estimating the parameters on the remaining subset should give estimates consistent with those from the full set. Along this line, construct a Hausman-type statistic to measure how far the full-set estimate is from the subset estimate; if the gap is significant, reject IIA. Its weak spot must be stated plainly too: the result is fairly sensitive to which option is dropped and how the subset is chosen, performs unstably in small samples, and occasionally even produces a negative test statistic. So it is better treated as a warning light than a final verdict; in practice the sounder path is simply to estimate a model that relaxes IIA and see whether the conclusions change.</p>
+
+    <p>Beyond testing, the sense of proportion in reporting matters just as much. When counterfactual conclusions rest on the specific direction of substitution (from whom a new platform draws users, where users flow after an incumbent leaves), the model that relaxes IIA should be presented as the main result, with logit demoted to a comparison, and the sensitivity of the conclusion to the substitution structure spelled out. Conversely, leaning on a line like "the Hausman-McFadden test did not reject" as a shield to keep using logit's substitution pattern is a defense that is hard to sustain: failure to reject does not equal the assumption being true, and besides, this test is inherently sensitive to how the subset is chosen. Whether the identification is credible comes down, in the end, to whether the substitution structure has been captured properly, not to the mood of a sensitive auxiliary test.</p>
+
+    <div class="takeaway-box">
+      <div class="box-title">Bottom Line</div>
+      IIA is not some implementation flaw of logit but an inescapable cost of the assumption that "$\varepsilon$ follows an iid extreme-value distribution." It crushes all substitution into proportional allocation, and once close substitutes are present and you need to analyze the direction of substitution or entry-and-exit problems, it errs systematically. Chapter 04 relaxes it along two paths: nested logit allows options to be correlated within groups, and mixed logit lets coefficients vary randomly across individuals.
+    </div>
+
+    <!-- ============================================ -->
+    <h2 id="welfare">3.6 Consumer Surplus and the Logsum</h2>
+
+    <p>Logit also hands you a ready-made welfare measure. The logic follows naturally: the better the choice set a person faces (more options, higher quality), the higher the expected maximum utility they can obtain; and under the extreme-value distribution this "expected maximum utility" happens to have a closed-form solution, known as the logsum.</p>
+
+    <div class="formula-box">
+      <div class="formula-title">Expected consumer surplus (the logsum)</div>
+      <div class="formula-math">$$E[CS_n] = \frac{1}{\alpha}\,\ln\!\left(\sum_{j=1}^{J} e^{V_{nj}}\right) + C$$</div>
+      <div class="formula-explain">
+        <table>
+          <tr><td class="var-estimated">$\alpha$</td><td>the absolute value of the price coefficient $|\beta_{\text{price}}|$, the marginal utility that converts utility into money</td></tr>
+          <tr><td>$\sum_j e^{V_{nj}}$</td><td>the logit denominator; the larger it is, the more valuable the choice set</td></tr>
+          <tr><td class="var-researcher">$C$</td><td>a constant independent of $V$, which cancels automatically when differencing before and after a policy</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="intuition-box">
+      <div class="box-title">Intuition: the logsum measures how much the whole menu is worth</div>
+      Think of the logsum as a total score given to the whole menu. Inside the denominator $\sum_j e^{V_{nj}}$, as soon as any existing option gets better, or an attractive new option appears, this sum grows and the logsum rises with it. What it measures is not which dish the user finally orders, but how much the very thing "getting to pick and choose among this table of options" is worth: a platform cutting its price, an exclusive series launching, even just one more selectable platform appearing on the market, all raise the standing of this menu a notch. The logsum converts this value into money, so subtracting one logsum from another gives the welfare change that a better choice set brings to each person, which is exactly why policy evaluation reaches for it time and again.
+    </div>
+
+    <details>
+      <summary>Expand: why the logsum is the expected maximum utility</summary>
+      <div class="detail-content">
+        <p>Under the Type I extreme-value distribution, the maximum of a set of independent $V_{nj}+\varepsilon_{nj}$ is still extreme-value distributed, with location parameter $\ln\sum_j e^{V_{nj}}$. Taking the expectation, using the mean formula of the extreme-value distribution, gives</p>
+        <div class="formula-math">$$E\Big[\max_j (V_{nj}+\varepsilon_{nj})\Big] = \ln\!\left(\sum_j e^{V_{nj}}\right) + \gamma,$$</div>
+        <p>where $\gamma\approx 0.5772$ is the Euler constant. The unit of this expectation is utility; to convert it into money, divide the whole thing by the marginal utility of money $\alpha=|\beta_{\text{price}}|$, giving $\frac{1}{\alpha}\ln\sum_j e^{V_{nj}}+\frac{\gamma}{\alpha}$ (Williams, 1977; Small &amp; Rosen, 1981). Under this chapter's location normalization, this constant takes the value $\frac{\gamma}{\alpha}$ (here $\alpha=0.1$, so about $5.772$, not $\gamma$ itself); its absolute value depends on how the zero point of utility is set and is not uniquely determined across settings, but fortunately it cancels when differencing before and after. A policy that moves $V$ from $V^0$ to $V^1$ produces a consumer-surplus change equal to the difference of two logsums, with the constant $C$ canceling: $\Delta E[CS_n]=\frac{1}{\alpha}\big[\ln\sum_j e^{V^1_{nj}}-\ln\sum_j e^{V^0_{nj}}\big]$.</p>
+      </div>
+    </details>
+
+    <p>To use this formula, one premise must be kept in mind: dividing the logsum by the constant $\alpha$ to fold it into money quietly assumes that the marginal utility of money is a constant, that is, no income effects. When the price change is small relative to income, this approximation holds up; but once the change is large, or utility is nonlinear in price, the approximation goes astray, and then a more careful compensating-variation measure must be brought in, which we leave to Chapter 08. In the demonstration below, the monthly fee moves by only 5 yuan, so the constant-$\alpha$ approximation is no problem.</p>
+
+    <div class="worked-example">
+      <div class="worked-title">Streaming example (3): platform C's monthly fee falls from 45 yuan to 40 yuan <span class="demo-badge">illustrative data</span></div>
+
+      <p>Niche documentary platform C wants to broaden its subscriber base, so it lowers its monthly fee from 45 yuan to 40 yuan, holding everything else fixed. Small as it is, this counterfactual happens to let all three legitimate justifications from Chapter 02 (ex-ante evaluation, mechanism decomposition, welfare calculation) be demonstrated at once in a single model: first predict the post-cut shares (ex-ante evaluation), then break apart where the new subscribers come from (mechanism decomposition), and finally use the logsum to compute the welfare change.</p>
+
+      <div class="worked-step">Step 1: New deterministic utilities and probabilities</div>
+      <p>Only C's utility changes: $V_C^{1}=0.3-0.1(40)-0.05(40)+0.8(4.7)=-1.94$, with the other $V$ unchanged. Recompute the denominator and the four probabilities:</p>
+      <div class="table-scroll">
+      <table>
+        <thead>
+          <tr><th>Option</th><th>Share before the cut</th><th>Share after the cut</th><th>Change</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>General-interest platform A</td><td>22.30%</td><td>21.63%</td><td>−0.67 pp</td></tr>
+          <tr><td>General-interest platform B</td><td>18.07%</td><td>17.53%</td><td>−0.54 pp</td></tr>
+          <tr><td>Niche documentary platform C</td><td>4.78%</td><td>7.64%</td><td>+2.86 pp</td></tr>
+          <tr><td>Not subscribing</td><td>54.85%</td><td>53.20%</td><td>−1.65 pp</td></tr>
+        </tbody>
+      </table>
+      </div>
+
+      <div class="worked-step">Step 2: Substitution decomposition, where the new subscribers come from</div>
+      <p>The 2.86 percentage points C gains are pieced together entirely from losses across the other three options: platform A gives up 0.67 pp (23.4% of C's increment), platform B gives up 0.54 pp (19.0%), and not subscribing gives up 1.65 pp (57.6%). The two general-interest platforms together contribute only about 42%, and more than half of the new subscribers come from people who were not paying at all. This decomposition again bears the mark of IIA: each option is drawn down in proportion to its current share, so the outside option, with the largest share, is drawn down the hardest. It both demonstrates how substitution decomposition is done and, once more, lays logit's substitution-pattern shortcoming out in the open.</p>
+
+      <div class="worked-step">Step 3: Consumer surplus change per capita</div>
+      <p>Before the cut the denominator is 1.8233 and the logsum $=\ln(1.8233)=0.6006$; after the cut the denominator rises to 1.8798 and the logsum $=\ln(1.8798)=0.6312$. Computing the difference with unrounded values, $\Delta\text{logsum}=0.03054$. Dividing by $\alpha=|\beta_{\text{price}}|=0.1$:</p>
+      <div class="formula-math">$$\Delta E[CS] = \frac{1}{0.1}\,(0.63118 - 0.60064) = \frac{0.03054}{0.1} \approx 0.31.$$</div>
+      <p>On average, each user gains about 0.31 yuan of consumer surplus from this price cut. The number is small because C's original share was itself small, and this bit of benefit accrues only to the handful of users who already had the documentary platform in mind. Multiply this per-capita welfare by the user base and you get the user-side gain when evaluating the price-cut decision, which can be compared directly against the subscription revenue platform C gives up each month.</p>
+    </div>
+
+    <!-- ============================================ -->
+    <h2 id="mle">3.7 Maximum Likelihood Estimation</h2>
+
+    <p>The model's parameters are pinned down from data by maximum likelihood. Write $y_{nj}=1$ to indicate that individual $n$ chose $j$, and 0 if not. Take the log of the probability of the option each individual chose, and sum across individuals, and that is the log-likelihood.</p>
+
+    <div class="formula-box">
+      <div class="formula-title">The logit log-likelihood and first-order condition</div>
+      <div class="formula-math">$$LL(\beta) = \sum_{n}\sum_{j} y_{nj}\,\ln P_{nj}(\beta), \qquad \frac{\partial LL}{\partial \beta} = \sum_{n}\sum_{j}\big(y_{nj}-P_{nj}\big)\,x_{nj} = 0$$</div>
+      <div class="formula-explain">
+        <table>
+          <tr><td class="var-observed">$y_{nj}$</td><td>choice indicator: 1 if $n$ chose $j$, 0 otherwise (data)</td></tr>
+          <tr><td class="var-observed">$x_{nj}$</td><td>vector of option attributes (data)</td></tr>
+          <tr><td class="var-estimated">$\beta$</td><td>coefficients to be estimated, entering $P_{nj}$</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <p>Under linear $V$, this log-likelihood is globally concave in $\beta$, so any finite stationary point is a global maximum; only if the design matrix is full-rank, the parameters are normalized, and there is no complete or quasi-complete separation is the maximum unique and finite, and the numerical solution usually well-behaved. Its first-order condition is itself full of flavor: $\sum_n\sum_j (y_{nj}-P_{nj})x_{nj}=0$ reads out as the single line "the residual $y-P$ is orthogonal to the explanatory variables $x$," the same skeleton as the OLS normal equations $\sum(y-x'\beta)x=0$. From this follows a pretty corollary: under a specification with the full set of $J-1$ ASCs, the first-order condition for each ASC requires exactly that this option's average predicted probability equal its actual choice frequency in the sample, so logit automatically aligns each option's marginal share one for one. But this "hitting each separately" rests on the full set of ASCs: this chapter's demonstration model has only the single constant $ASC_C$ (general-interest platforms A and B share the baseline 0), so the alignment is guaranteed only along the dimension corresponding to that ASC, where platform C's average predicted share will hit the observed frequency, while the shares of A and B are not each guaranteed to hit separately.</p>
+
+    <p>Standard errors come from the curvature of the log-likelihood. Three are common: the inverse of the Hessian (using analytic second derivatives), BHHH (using the outer product of gradients to approximate, sparing the second derivatives), and the sandwich estimator (more robust to misspecification). The specific formulas and numerical details we leave to Chapter 05.</p>
+
+    <p>There is one question often glossed over that bears directly on whether the estimation is right: when the same individual makes more than one choice (say, re-choosing which platform to subscribe to each month), can logit still be used as is. The answer splits into two cases, and the divide is not the standard errors but whether the unobserved factors are correlated over time.</p>
+
+    <p>In the first case, the unobserved factors are independent across time points: a passing urge to binge-watch this month has no bearing on last month's mood. Then each choice can be treated as an independent observation, the panel handled as a cross-section, logit still holds, and the point estimates are consistent. Clustering the standard errors at the individual level is the prudent move (in real data it is hard to guarantee that time points really are uncorrelated), but it is more a layer of insurance than a strict necessity.</p>
+
+    <p>In the second case, the unobserved factors are correlated over time: an individual carries a persistent, researcher-invisible taste, some perennially preferring documentaries, some perpetually unable to stand ads, and this preference sways their choice in every period at once. This is no longer a question of whether the standard errors are right but of a misspecified model. A persistent individual preference stuffed into the $\varepsilon$ that is supposed to be iid biases the structural $\beta$ and throws off the substitution patterns too, and clustered standard errors can do nothing about it. To handle it, the persistent heterogeneity must be written explicitly into the model and held fixed across the periods of the same individual, which is exactly where the panel mixed logit of Chapters 04 and 05 comes into play.</p>
+
+    <div class="warn-box">
+      <div class="box-title">Pitfall: treating $\rho^2$ as $R^2$, or evaluating fit with "percent correctly predicted"</div>
+      <p>Goodness of fit commonly uses McFadden's likelihood-ratio index $\rho^2 = 1 - LL(\hat\beta)/LL_0$, where in the classic definition the baseline $LL_0$ takes the log-likelihood when all parameters are 0 (each option equally probable at $1/J$); in practice one also often switches to a model with only the option constants as the baseline, and the two mean different things, so which one is used must be stated when reporting. Its reading is completely different from $R^2$, and there is no universal passing threshold that transfers across datasets. The 0.2 to 0.4 often seen empirically serves only as a rough reference within a particular application; judging whether a model is good should also draw on the out-of-sample log-likelihood, calibration performance, and the research purpose.</p>
+      <p style="margin-bottom:0">Equally to be avoided is reporting a statement like "the model correctly predicted 75% of choices." If 75% of the sample happened to choose the same option to begin with, then a degenerate model that forever reports only that one option would still score a 75% hit rate, which shows this metric has no discriminating power at all. To evaluate, one still relies on $\rho^2$, the likelihood-ratio test, or the out-of-sample log-likelihood.</p>
+    </div>
+
+    <h3>The estimation sample: a random sample or a choice-based sample</h3>
+
+    <p>Standard maximum likelihood assumes by default that the data are a random sample of individuals (say, a batch of user choice logs the platform draws at random), in which case one simply writes out the likelihood and maximizes it numerically. But some data are sampled based on the choice: to gather enough sample size for niche options, one stratifies the sampling by option, say interviewing 100 users who subscribe to the documentary platform and another 100 who do not subscribe. Sampled this way, the ASC estimates become biased (the proportions of options in the sample have been artificially tampered with), though the attribute coefficients usually remain consistent. There are two correction routes, both from Manski and Lerman (1977): if only the option constants are biased, the simplest is to add to each constant the log of the ratio of the population share to the sample share (the constant-correction method); if all parameters are to be made consistent together, switch to weighted exogenous sample maximum likelihood (WESML), weighting each observation by the ratio of its chosen option's population share to its sample share, at the cost of some efficiency loss. Recognizing this kind of sampling and stating the correction clearly in the report is a detail that reviewers will almost surely fasten onto.</p>
+
+    <div class="takeaway-box">
+      <div class="box-title">Bottom Line</div>
+      Logit's log-likelihood is globally concave, and with normalization, full rank, and no separation the estimation is usually numerically stable; the first-order condition is residual orthogonality, and with the full set of ASCs the in-sample marginal shares align automatically. $\rho^2$ must be read relative to an explicit baseline model, sets no universal passing line, and should not have a hit rate substituted for evaluating probability predictions. With panel data, first distinguish whether the unobserved factors are independent or correlated over time: independent means handle it as a cross-section with clustered standard errors; correlated calls for panel mixed logit (Chapters 04 and 05); a choice-based sample is corrected with WESML.
+    </div>
+
+    <!-- ============================================ -->
+    <h2 id="code">3.8 Code</h2>
+
+    <p>Finally, cast the streaming case's data structure and estimation flow into code. Discrete-choice estimation almost universally recognizes "long format": each option of each individual occupies a row, with a column <code>chosen</code> marking the row that was selected. The two snippets below, one using Python's xlogit and one using R's mlogit, walk through the minimal flow from reading data to estimation to computing elasticities, each held under 30 lines.</p>
+
+    <div class="code-tabs">
+      <div class="tab-bar">
+        <button class="tab-btn active">Python (xlogit)</button>
+        <button class="tab-btn">R (mlogit)</button>
+      </div>
+
+      <div class="tab-panel active">
+<pre><code>import numpy as np
+import pandas as pd
+from xlogit import MultinomialLogit
+
+# Long format: one row per option per individual. Example columns:
+# id, alt, chosen, price, ad, content, asc_C
+# asc_C is a dummy for niche platform C (1 for C's rows, 0 otherwise), used to estimate the ASC
+df = pd.read_csv("streaming_long.csv")
+
+varnames = ["price", "ad", "content", "asc_C"]
+model = MultinomialLogit()
+model.fit(
+    X=df[varnames], y=df["chosen"], varnames=varnames,
+    ids=df["id"], alts=df["alt"],
+)
+model.summary()          # coefficients, standard errors, log-likelihood, McFadden rho^2
+
+# Own-elasticity via the closed-form formula (β_price · p_j · (1 − P_j))
+beta_price = model.coeff_[varnames.index("price")]
+_, proba = model.predict(
+    X=df[varnames], varnames=varnames,
+    ids=df["id"], alts=df["alt"], return_proba=True,
+)
+P = proba.mean(axis=0)                       # average share of each option
+price_by_alt = df.groupby("alt")["price"].first().values
+own_elas = beta_price * price_by_alt * (1 - P)
+print("Own-price elasticities:", dict(zip(sorted(df["alt"].unique()), own_elas)))
+</code></pre>
+      </div>
+
+      <div class="tab-panel">
+<pre><code>library(mlogit)
+
+# Read the long-format data: id, alt, chosen, price, ad, content, asc_C
+# asc_C is the same as in the Python version: a dummy for niche platform C, used to estimate ASC_C
+raw &lt;- read.csv("streaming_long.csv")
+
+# Convert to mlogit's index structure (individual id + option alt)
+dch &lt;- dfidx(raw, idx = c("id", "alt"), choice = "chosen")
+
+# Estimate: | 0 means do not use mlogit's auto-generated full set of ASCs, only the explicit asc_C
+# fully consistent with the single-ASC specification in the text and the Python version
+m &lt;- mlogit(chosen ~ price + ad + content + asc_C | 0, data = dch)
+summary(m)               # coefficients, standard errors, McFadden rho^2
+
+# Elasticities: type = "rr" gives relative-relative elasticities (the elasticity of choice probability to price)
+#               the diagonal is own-elasticities, the off-diagonal is cross-elasticities
+elas &lt;- effects(m, covariate = "price", type = "rr")
+print(elas)
+</code></pre>
+      </div>
+    </div>
+
+    <p>Close this section with three practical points. First, the data must be in long format; wide format (one row per person, options spread across columns) has to be reshaped first, and this is the step where mistakes are most common. Second, when individuals have different sets of available options (some platforms simply do not offer service in certain regions), use an availability column or estimate conditional on the subset, and never treat a platform an individual cannot possibly choose as "not chosen"; the odds ratio does not depend on the excluded options (Section 3.5), so estimating on a subset of options is still consistent, which is exactly the theoretical backing for the sampling-of-alternatives approach. Third, the ASC baseline must be specified explicitly, and setting the outside option as the baseline is the most common and most interpretable choice; changing the baseline does not change the model, it only shifts the starting point for reading each ASC.</p>
+
+    <!-- ============================================ -->
+    <h2 id="misconceptions">3.9 Common Pitfalls</h2>
+
+    <div class="table-scroll">
+    <table>
+      <thead>
+        <tr><th>Pitfall</th><th>Why it's wrong</th><th>What to do instead</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Comparing the coefficient magnitudes of two models directly, claiming "my sample cares more about price"</td>
+          <td>Coefficients are bound to the scale of random utility, different models have different scales, and absolute magnitudes are not comparable</td>
+          <td>Compare ratios like willingness to pay, $\beta_k/|\beta_{\text{price}}|$ (Section 3.2)</td>
+        </tr>
+        <tr>
+          <td>Treating $\rho^2=0.3$ as a poor fit</td>
+          <td>$\rho^2$ is not $R^2$; its magnitude depends on the baseline model, the choice set, and the sample, so no universal threshold applies</td>
+          <td>Read it on the $\rho^2$ scale, or report the out-of-sample log-likelihood (Section 3.7)</td>
+        </tr>
+        <tr>
+          <td>Ignoring scale and reading coefficients directly as marginal utilities</td>
+          <td>The logit marginal effect is $\beta P_j(1-P_j)$, which varies with share and is not constant</td>
+          <td>Report the average marginal effect or the elasticity at representative values (Section 3.4)</td>
+        </tr>
+        <tr>
+          <td>Using logit for the entry or exit counterfactual of close substitutes</td>
+          <td>IIA crushes substitution into proportional allocation and systematically miscomputes who substitutes for whom</td>
+          <td>First estimate nested or mixed logit, and check whether the conclusions change (Section 3.5, Chapter 04)</td>
+        </tr>
+        <tr>
+          <td>Forgetting normalization and trying to estimate all $J$ ASCs</td>
+          <td>The invariance to utility differences makes the constants unidentified, and the software errors out or gives absurd standard errors</td>
+          <td>Pick a baseline and set its ASC to 0, estimating the remaining $J-1$ (Section 3.2)</td>
+        </tr>
+        <tr>
+          <td>Treating the estimated willingness to pay directly as a credible causal quantity</td>
+          <td>If price is correlated with unobserved quality, $\beta_{\text{price}}$ is biased, and the ratio is biased along with it</td>
+          <td>Confront price endogeneity, using instrumental variables or BLP (Chapter 06)</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+
+    <!-- ============================================ -->
+    <h2 id="summary">3.10 Chapter Summary</h2>
+
+    <p>This chapter turned that one line from Chapter 02, $M(Y,X,\varepsilon;F,G)=0$, into a random utility model plus a Type I extreme-value distribution. $F$ is linear utility plus a utility-maximizing decision rule, $G$ is an iid extreme-value distribution, and put together the two collapse the $J-1$-dimensional choice-probability integral into the closed-form logit formula $P_{ni}=e^{V_{ni}}/\sum_j e^{V_{nj}}$. On identification, only utility differences have any say, so only $J-1$ ASCs can be estimated, the absolute magnitude of coefficients drifts with scale, and only ratios withstand comparison. What logit gives in return is concrete: closed-form choice probabilities, a globally concave likelihood, tidy elasticity formulas, plus the logsum as a ready-made welfare measure. Along the way, borrowing the streaming-subscription case, we worked through the specification, the four choice probabilities, elasticities, the counterfactual of a platform exiting, and the welfare and substitution decomposition of a price cut, all the way to estimation and code, from start to finish, with every number you can check for yourself.</p>
+
+    <p>The flip side of the convenience is the price to be paid, and this too must be laid out plainly. Logit rests on three assumptions, each leading to a later chapter. It assumes $\varepsilon$ is independent and identically distributed and follows an extreme-value distribution, and thereby shoulders IIA and proportional substitution, so that once close substitutes are present the substitution pattern is miscomputed, which Chapter 04 relaxes with nested and mixed logit. It also assumes that, beyond interactions with observable characteristics, everyone shares the same set of $\beta$, so taste can vary only systematically with observed individual characteristics, leaving no room for the random taste heterogeneity the researcher cannot see. This is not the kind of computational nuisance where "the integral has no closed form," but a substantive gap in expressive power: it both biases the substitution pattern and leaves a separate hard wound; a new product that appeals to only a few and leaves the majority indifferent simply cannot have its penetration predicted by a one-size-fits-all $\beta$, because the model leaves no place at all for that small group's strong preference. Relaxing this assumption is one of the foremost motivations for mixed logit (Chapter 04); as for the bit of computational cost from coefficients then varying randomly across individuals and the closed-form solution vanishing along with it, Chapter 05's Monte Carlo simulation and simulated maximum likelihood take that over. It assumes, finally, that attributes are exogenous, and once price is entangled with unobserved quality, $\beta_{\text{price}}$ along with the willingness to pay and welfare derived from it are all biased, which Chapter 06 cleans up with BLP. Logit is the technical starting point of the whole book, and also the yardstick to look back and compare against at every later step of relaxing assumptions.</p>
+
+    <!-- ============================================ -->
+    <h2 id="readings">Further Reading</h2>
+
+    <h4>Textbooks and primary sources</h4>
+    <ul>
+      <li>Train, K. E. (2009). <em>Discrete choice methods with simulation</em> (2nd ed.). Cambridge University Press. <a href="https://doi.org/10.1017/CBO9780511805271">https://doi.org/10.1017/CBO9780511805271</a> (Chapters 2 to 4 systematically develop the derivation, properties, and estimation of logit)</li>
+      <li>McFadden, D. (1974). Conditional logit analysis of qualitative choice behavior. In P. Zarembka (Ed.), <em>Frontiers in econometrics</em> (pp. 105–142). Academic Press. (the original conditional-logit paper; closed-form solution and global concavity)</li>
+      <li>McFadden, D. (2001). Economic choices. <em>American Economic Review</em>, <em>91</em>(3), 351–378. <a href="https://doi.org/10.1257/aer.91.3.351">https://doi.org/10.1257/aer.91.3.351</a> (the Nobel lecture; a survey perspective on random utility and discrete choice)</li>
+    </ul>
+
+    <h4>Welfare, IIA testing, and sampling</h4>
+    <ul>
+      <li>Williams, H. C. W. L. (1977). On the formation of travel demand models and economic evaluation measures of user benefit. <em>Environment and Planning A</em>, <em>9</em>(3), 285–344. <a href="https://doi.org/10.1068/a090285">https://doi.org/10.1068/a090285</a> (one of the independent origins of the logsum as expected consumer surplus, alongside Small &amp; Rosen)</li>
+      <li>Small, K. A., &amp; Rosen, H. S. (1981). Applied welfare economics with discrete choice models. <em>Econometrica</em>, <em>49</em>(1), 105–130. <a href="https://doi.org/10.2307/1911129">https://doi.org/10.2307/1911129</a> (the theoretical basis for the logsum welfare measure)</li>
+      <li>Hausman, J. A., &amp; McFadden, D. (1984). Specification tests for the multinomial logit model. <em>Econometrica</em>, <em>52</em>(5), 1219–1240. <a href="https://doi.org/10.2307/1910997">https://doi.org/10.2307/1910997</a> (the specification test for IIA)</li>
+      <li>Manski, C. F., &amp; Lerman, S. R. (1977). The estimation of choice probabilities from choice based samples. <em>Econometrica</em>, <em>45</em>(8), 1977–1988. <a href="https://doi.org/10.2307/1914121">https://doi.org/10.2307/1914121</a> (choice-based sampling and the WESML correction)</li>
+      <li>Chipman, J. S. (1960). The foundations of utility. <em>Econometrica</em>, <em>28</em>(2), 193–224. (pointed out, in the same year as Debreu, that IIA does not apply in certain cases)</li>
+      <li>Debreu, G. (1960). [Review of the book <em>Individual choice behavior: A theoretical analysis</em>, by R. D. Luce]. <em>American Economic Review</em>, <em>50</em>(1), 186–188. (the inapplicability of IIA was first noted by Chipman and this review; the "red bus, blue bus" is the popularized example that later became standard in textbooks)</li>
+      <li>White, H. (1982). Maximum likelihood estimation of misspecified models. <em>Econometrica</em>, <em>50</em>(1), 1–25. <a href="https://doi.org/10.2307/1912526">https://doi.org/10.2307/1912526</a> (quasi-maximum-likelihood under distributional misspecification; cited in Section 3.1)</li>
+    </ul>
+
+    <footer class="page-footer">
+      From Choices to Counterfactuals: Structural Estimation for Digital Platform Research · 03 RUM and Logit
+    </footer>
+
+  </main>
+</div>
+
+<script defer src="assets/katex/katex.min.js"></script>
+<script defer src="assets/katex/auto-render.min.js"></script>
+<script defer src="assets/notes.js"></script>
+</body>
+</html>

@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script>(function(){try{var t=localStorage.getItem('theme');if(t==='dark'||t==='light')document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <title>02 Why Structural Models | From Choices to Counterfactuals</title>
+  <link rel="stylesheet" href="assets/katex/katex.min.css">
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="page-wrapper">
+
+  <!-- ==================== SIDEBAR ==================== -->
+  <nav class="sidebar">
+    <div class="sidebar-title">From Choices to Counterfactuals: Structural Estimation for Digital Platform Research</div>
+    <div class="sidebar-subtitle">Chapter 02 · Why Structural Models</div>
+
+    <div class="toc-section-label">Contents</div>
+    <div class="toc">
+      <a href="#opening">2.1 Starting from an A/B Test</a>
+      <a href="#what-is-structure">2.2 What &ldquo;Structure&rdquo; Means</a>
+      <a href="#dgp-view" class="level-3">How a model generates data</a>
+      <a href="#why-epsilon">2.3 Why There Must Be a Random Term</a>
+      <a href="#marschak">2.4 When You Don&rsquo;t Need Full Structure</a>
+      <a href="#twelve-decisions">2.5 The Twelve Modeling Decisions</a>
+      <a href="#identification">2.6 The Philosophy of Identification</a>
+      <a href="#external-validity">2.7 The Real Limits of External Validity</a>
+      <a href="#validation">2.8 Validation and Experimental Evidence</a>
+      <a href="#misconceptions">2.9 Six Common Pitfalls</a>
+      <a href="#summary">2.10 Chapter Summary</a>
+      <a href="#readings">Further Reading</a>
+    </div>
+
+    <div class="file-nav">
+      <div class="nav-label">Chapters</div>
+      <a href="01_overview_roadmap.html">01 Overview &amp; Decision Framework</a>
+      <a href="02_why_structural.html" class="current">02 Why Structural Models</a>
+      <a href="03_rum_logit.html">03 RUM and Logit</a>
+      <a href="04_gev_mixed_logit.html">04 Nested and Mixed Logit</a>
+      <a href="05_simulation_estimation.html">05 Simulation and Numerical Estimation</a>
+      <a href="06_endogeneity_blp.html">06 Endogeneity and BLP</a>
+      <a href="07_dynamic_choice.html">07 Dynamic Discrete Choice</a>
+      <a href="08_applications.html">08 Platform Research Applications</a>
+      <a href="09_workflow_reference.html">09 Workflow, Validation, and Reference</a>
+    </div>
+  </nav>
+
+  <!-- ==================== MAIN ==================== -->
+  <main class="main-content">
+
+    <header class="page-header">
+      <h1>Why Structural Models</h1>
+      <div class="subtitle">Policy Invariance, the Data-Generating Process, and When You Actually Need Structure</div>
+      <div class="meta">From Choices to Counterfactuals: Structural Estimation for Digital Platform Research · Chapter 02</div>
+    </header>
+
+    <div class="global-legend">
+      <span class="legend-label">Variable colors</span>
+      <span><span class="dot dot-observed"></span>Observed in data</span>
+      <span><span class="dot dot-estimated"></span>Parameters to estimate</span>
+      <span><span class="dot dot-researcher"></span>Set by the researcher</span>
+    </div>
+
+    <p>This chapter sets estimation technique aside and answers two more basic questions: <strong>what exactly does &ldquo;structure&rdquo; mean, and what kind of research question is worth the cost of building a model for it?</strong> We start from what an A/B test can and cannot do, and from there work toward the classic definition of &ldquo;structure,&rdquo; the reason the random term is a logical necessity rather than a convenience, and the handful of things you cannot avoid when judging whether a result is credible: identification, external validity, and validation. Once these two questions are settled, you will be able to justify every technical choice in the chapters that follow.</p>
+
+    <!-- ============================================ -->
+    <h2 id="opening">2.1 Starting from an A/B Test</h2>
+
+    <p>Let me first show you an almost unimpeachable experimental result, then explain why it still is not enough. Last quarter a music streaming platform ran a price-increase experiment: it drew a random 5% of its users and raised the standard-tier monthly fee from 10 dollars to 11 dollars a month, tracking them for three months. The result was clean and robust. The treatment group&rsquo;s renewal rate was 4 percentage points lower than the control group&rsquo;s, and the confidence interval was tight. <span class="demo-badge">illustrative data</span></p>
+
+    <p>For the single question of how many users a one-dollar price increase drives away, the experiment has already handed you a credible, causal answer. Riding on that success, a tempting thought comes easily: whenever you need a conclusion in the future, just run another experiment to measure it, so why build a separate model at all? The thought is seductive, but only half right. An experiment is like a flashlight. It illuminates only the small slice of variation it manufactures for itself, here the inch between 10 and 11 dollars a month; and a large class of the decisions a platform actually has to make falls squarely in the dark, beyond the reach of that beam.</p>
+
+    <p>The three kinds of questions below all lie outside the beam. An experiment cannot answer any of them directly:</p>
+
+    <div class="table-scroll">
+    <table>
+      <thead>
+        <tr><th>Question</th><th>Why an A/B test can&rsquo;t answer it</th><th>What you need</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>A policy never implemented</strong>: what happens if the price rises to 13 dollars? What if you switch to two-tier pricing (a cheap tier with ads, a premium tier without)?</td>
+          <td>The experiment covers only the single change from 10 to 11 dollars. The new price point and the new pricing structure do not exist in the data, and extrapolating to them requires a model of preferences</td>
+          <td>ex-ante policy evaluation</td>
+        </tr>
+        <tr>
+          <td><strong>Where the users go</strong>: of the 4 percentage points who churn, how many switch to a competitor, downgrade to the free tier, or leave streaming altogether?</td>
+          <td>The experiment estimates the total effect on a single outcome variable; it does not characterize the substitution pattern</td>
+          <td>mechanism decomposition</td>
+        </tr>
+        <tr>
+          <td><strong>How welfare changes</strong>: how much consumer surplus does the increase cost the users who stay? How does the platform trade its own profit against user welfare?</td>
+          <td>Welfare is a concept at the level of utility. Without a utility function, there is no consumer surplus to compute</td>
+          <td>welfare analysis</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+
+    <p>Evaluating policies that never launched, decomposing mechanisms, and computing welfare: these three tasks are the reason structural models exist. They share a common weak spot: <strong>the answer simply is not in the variation the data already contains, and can be reached only by extending outward from an explicit behavioral model.</strong> This also gives you a criterion this chapter will use again and again: first ask whether the variation in your data covers the answer you want, and only then decide whether to call in a structural model.</p>
+
+    <div class="takeaway-box">
+      <div class="box-title">Bottom Line</div>
+      A structural model is not a fancier regression. It answers a fundamentally different kind of question from experiments and quasi-experiments: the latter tell you the size of the causal effect of a change that has already happened, while the former delivers a grounded, checkable prediction in an environment you have never observed.
+    </div>
+
+    <!-- ============================================ -->
+    <h2 id="what-is-structure">2.2 What &ldquo;Structure&rdquo; Means: Policy Invariance</h2>
+
+    <p>Return to the price experiment in 2.1. It handed us one blunt number: for every one-dollar increase in price, the renewal rate falls 4 percentage points. Now let us be deliberately pedantic. Is this &ldquo;4 percentage points&rdquo; a stable fact about users, or a number that quietly shifts the moment the environment changes? The question sounds like hair-splitting, but it lands precisely on the vital spot of the word &ldquo;structure.&rdquo;</p>
+
+    <p>What you really want is a number you can carry across environments: it still holds after a competitor cuts its price or the platform adds a tier, so you can use it to predict these new situations. What you really fear is the other possibility: that the number is actually a composite that the competitive landscape and the choice set of the moment produced together, so that once the environment changes it quietly fails, yet on the surface it is still the same regression coefficient, with nothing on its face to reveal that it has expired. Telling these two kinds of numbers apart is exactly what the concept of &ldquo;structure&rdquo; is meant to do for you.</p>
+
+    <p>&ldquo;Structure&rdquo; has several defensible definitions; this chapter adopts the usage in the tradition of Marschak (1953) and Hurwicz (1962): <strong>we call a relationship structural when it remains invariant under the environmental change to be analyzed.</strong> Structural parameters, then, are the primitives that do not change when policy changes: preferences, technology, beliefs, constraints, the information structure, and the laws of state transition.</p>
+
+    <details>
+      <summary>Going deeper: &ldquo;invariant&rdquo; is always relative to some class of intervention</summary>
+      <div class="detail-content">
+        <p>Strictly speaking, no relationship is &ldquo;absolutely structural.&rdquo; Whether a relationship is structural is always relative to some particular class of environmental change. The same regression coefficient of the renewal rate on price may be reasonably stable under an intervention like &ldquo;change only your own price,&rdquo; but the moment the intervention widens to &ldquo;competitors respond in kind and the platform reshuffles the choice set,&rdquo; the coefficient moves with it. The rigorous practice, then, is to state clearly which class of intervention is under analysis, and only then judge which relationships stay invariant under it. Every later mention of &ldquo;structural parameters&rdquo; in this chapter assumes such a scope of intervention has already been fixed.</p>
+      </div>
+    </details>
+
+    <p>Why does this definition matter? The streaming example makes it plain at a glance. Given one and the same dataset, you can estimate two kinds of objects with opposite natures, and they respond to environmental change in exactly opposite ways:</p>
+
+    <ul>
+      <li><strong>A reduced-form coefficient</strong>: the regression coefficient of the renewal rate on price, for example &ldquo;for every one-dollar increase in price, the renewal rate falls 4 percentage points.&rdquo; This coefficient is a composite produced jointly by preferences, competitors&rsquo; prices, the choice set, and the composition of users; it does not by itself correspond to any single primitive. Change any one element of the environment (a competitor cuts its price, the platform adds a cheap tier) and the proportions of the composite shift with it, so the coefficient no longer applies.</li>
+      <li><strong>A structural parameter</strong>: the price sensitivity <span class="var-estimated">$\beta_{\text{price}}$</span> and the marginal disutility of advertising <span class="var-estimated">$\beta_{\text{ad}}$</span> in the user&rsquo;s utility function. As long as preferences themselves do not change with the pricing scheme, these parameters still hold under a new policy, and the researcher can use the same set of parameters to recompute the choice probabilities under any pricing scheme and any competitive landscape. That &ldquo;as long as&rdquo; is a substantive assumption that must be defended, not a fact that holds automatically, and 2.7 returns to its limits.</li>
+    </ul>
+
+    <p>This is exactly the heart of the Lucas (1976) critique: a reduced-form relationship estimated from historical data will fail precisely when policy changes, because people&rsquo;s decision rules adjust to policy; only primitives can carry predictions across policies. Following this logic, Galiani &amp; Pantano (2021) endorse a pair of labels, proposed earlier by others, that fit better than &ldquo;structural vs. reduced form,&rdquo; namely <strong>model-based versus design-based</strong>; for expositional convenience, however, the two authors themselves keep using the word &ldquo;structural.&rdquo; The two approaches are not opposites but complementary tools that answer different questions, and 2.8 discusses how the two combine.</p>
+
+    <div class="worked-example">
+      <div class="worked-title">Worked example: why a reduced-form slope is not policy invariant <span class="demo-badge">illustrative data</span></div>
+
+      <p>Talk is cheap, so let us put the comparison above into concrete numbers. Here we switch to the video-subscription setup that runs through chapters 02 to 05: the music price increase in 2.1 serves to raise the question, and from here on the computations all take place in this video setup, with the unit of account switching from dollars to yuan accordingly. Suppose a user chooses among three video platforms and not subscribing (the outside option, with utility normalized to 0), with utility $V_j = ASC_j - 0.1\,p_j - 0.05\,ad_j + 0.8\,c_j$, where $p_j$ is the monthly fee (in yuan), $ad_j$ is weekly ads in minutes, and $c_j$ is the content rating, with $ASC_C = 0.3$ and the rest 0. Plugging in the three platforms&rsquo; attributes gives $V_A = -0.90$, $V_B = -1.11$, and $V_C = -2.44$ (chapter 03 gives the attribute details and the term-by-term computation of $V$; here we simply take these three numbers). Choice probabilities are computed with the logit formula $P_j = e^{V_j} / \sum_k e^{V_k}$, that is, exponentiate each option&rsquo;s utility and look at its share of the sum of exponentials across all options (chapter 03 gives the origin of this form; here we simply use it). What we want to watch is the &ldquo;slope&rdquo; that reduced-form work cares about most: when platform A raises its price by 1 yuan, how many percentage points does the probability of choosing A fall?</p>
+
+      <div class="worked-step">Step 1: the slope in the baseline environment</div>
+      <p>At baseline $e^{-0.90}=0.4066$, $e^{-1.11}=0.3296$, $e^{-2.44}=0.0872$, plus $e^{0}=1$, so the denominator is 1.8233 and $P_A = 0.4066/1.8233 = 0.2230$. Raise A&rsquo;s monthly fee from 30 yuan to 31 yuan: $V_A$ falls to $-1.00$, $e^{-1.00}=0.3679$, the denominator becomes 1.7846, and $P_A = 0.3679/1.7846 = 0.2061$. The slope: for every 1 yuan increase, the probability of choosing A falls by about 1.68 percentage points.</p>
+
+      <div class="worked-step">Step 2: a competitor cuts its price, preferences unchanged, the slope changes</div>
+      <p>Let platform B cut its monthly fee from 28 yuan to 24 yuan: $V_B$ rises to $-0.71$, $e^{-0.71}=0.4916$. Recomputing under the same preference parameters: before A&rsquo;s increase $P_A = 0.4066/1.9854 = 0.2048$, after the increase $P_A = 0.3679/1.9467 = 0.1890$, so the slope becomes 1.58 percentage points.</p>
+
+      <div class="worked-step">Step 3: the choice set changes, and the slope changes again</div>
+      <p>A different environmental change: platform C exits the market, leaving a choice set of only A, B, and not subscribing. Before A&rsquo;s increase $P_A = 0.4066/1.7361 = 0.2342$, after the increase $P_A = 0.3679/1.6974 = 0.2167$, so the slope becomes 1.75 percentage points.</p>
+
+      <p>See the point? Across all three environments the preference parameter $\beta_{\text{price}} = -0.1$ never changed by a hair, yet the reduced-form coefficient &ldquo;how many percentage points per 1 yuan increase&rdquo; swings between 1.58 and 1.75. The single slope estimated from historical data holds only under the competitors&rsquo; prices and the choice set that prevailed at the time; with structural parameters plus a choice model, by contrast, you can recompute the corresponding slope in any environment whatsoever. This is what policy invariance looks like when it comes down to numbers.</p>
+    </div>
+
+    <h3>A general framework for reading papers: $M(Y, X, \varepsilon; F, G) = 0$</h3>
+
+    <p>Matzkin (2007) gives structural models a general form. This form is worth committing to memory, because almost every structural paper can be filled into its five slots:</p>
+
+    <div class="formula-box">
+      <div class="formula-title">The general form of a structural model</div>
+      <div class="formula-math">$$M(Y, X, \varepsilon;\; F, G) = 0$$</div>
+      <div class="formula-explain">
+        <table>
+          <tr><td class="var-observed">$Y$</td><td>Endogenous variables: the choices and outcomes the model explains (observed)</td></tr>
+          <tr><td class="var-observed">$X$</td><td>Exogenous observable variables: attributes, prices, demographics</td></tr>
+          <tr><td class="var-researcher">$\varepsilon$</td><td>Unobserved factors: taste shocks, unobserved heterogeneity (their values are unobserved; what the researcher sets is the role they play in the model, while the distribution $G$ is estimated separately)</td></tr>
+          <tr><td class="var-estimated">$F$</td><td>Structural functions: preferences, technology, decision rules (to be estimated, parametric or nonparametric)</td></tr>
+          <tr><td class="var-estimated">$G$</td><td>The distribution of the random objects: what distribution $\varepsilon$ follows (to be estimated or to be specified)</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <p>Fill in the table once with the streaming subscription choice, and the abstract skeleton immediately takes on substance: <span class="demo-badge">illustrative data</span></p>
+
+    <div class="table-scroll">
+    <table>
+      <thead>
+        <tr><th>Slot</th><th>General meaning</th><th>Streaming subscription example</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>$Y$</td><td>Endogenous choices and outcomes</td><td>The subscription tier the user chooses (free / standard / family), and whether they renew</td></tr>
+        <tr><td>$X$</td><td>Exogenous observable variables</td><td>Each tier&rsquo;s price, ad load, catalog size, and the user&rsquo;s age and income bracket</td></tr>
+        <tr><td>$\varepsilon$</td><td>Unobserved factors</td><td>An individual&rsquo;s aversion to ads, a current-period budget shock, a friend&rsquo;s recommendation</td></tr>
+        <tr><td>$F$</td><td>Structural functions</td><td>The utility function $U = \beta' x + \varepsilon$ plus the decision rule &ldquo;choose the tier with the highest utility&rdquo;</td></tr>
+        <tr><td>$G$</td><td>Distributional assumptions</td><td>$\varepsilon$ is i.i.d. Type I extreme value (giving logit), or a random-coefficients distribution</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <div class="intuition-box">
+      <div class="box-title">Intuition: treat it as a form to fill in while reading papers</div>
+      When you read any structural estimation paper, try setting the results table aside and going back to claim these five slots one by one: what does the author make serve as $Y$, and what as $X$; are the unobserved factors placed in $\varepsilon$, or quietly absorbed into $F$; and in which sentence is the distributional assumption $G$ hidden? Often you will find that the one slot that will not fit, or fits only through vague wording, is exactly the paper&rsquo;s most fragile joint. Drilling this form-filling routine into instinct saves you more time than memorizing any estimation formula.
+    </div>
+
+    <h3 id="dgp-view">The DGP view: how an economic model &ldquo;generates&rdquo; data</h3>
+
+    <p>The entire worldview of structural econometrics can be compressed into one sentence: <strong>imagine the data are generated by an economic model, and estimation is the exploitation of the restrictions that optimization and equilibrium impose on that data-generating process (DGP).</strong> This sentence lays bare what the relationship between &ldquo;economic theory&rdquo; and &ldquo;econometric method&rdquo; really is: theory is not decoration placed at the front of a paper to look good; it dictates the joint distribution the data takes, and thereby dictates which estimators can stand. Conversely, once the model specification fails to match the true mechanism, these restrictions pump bias into every estimate downstream, so the model specification is itself an object that can be tested and refuted, not a premise exempt from interrogation.</p>
+
+    <p>Applied to discrete choice, this view sharpens into a perfectly clear chain: a preference assumption (the random utility model, RUM) plus a distributional assumption ($G$) together imply the functional form of the choice probabilities; multiplying the choice probability of each observation gives the likelihood function; and the likelihood is then handed to an estimator. Chapter 03 follows this chain and derives logit from start to finish, where you will see that every formula that emerges there is just a special case of this chapter&rsquo;s abstract framework.</p>
+
+    <div class="takeaway-box">
+      <div class="box-title">Bottom Line</div>
+      The definition of &ldquo;structure&rdquo; is policy invariance: the object of estimation is the primitives that stay invariant when policy changes. $M(Y,X,\varepsilon;F,G)=0$ is the general skeleton, and the DGP view explains how theory constrains the distribution of the data.
+    </div>
+
+    <!-- ============================================ -->
+    <h2 id="why-epsilon">2.3 Why There Must Be a Random Term: A Proof by Contradiction</h2>
+
+    <p>Almost everyone learning the random utility model for the first time hesitates at the same spot: if we already assume people are maximizing utility, why stuff a random term $\varepsilon$ into utility at all? It looks for all the world like a patch bolted on to make the math tractable. This section uses a proof by contradiction to show you that $\varepsilon$ is neither a patch nor a stopgap, but a logical necessity there is no dodging. Remove it, and the whole model collapses before your eyes. This argument is the bedrock of the book, and it is worth walking through step by step.</p>
+
+    <p>Start with an utterly ordinary phenomenon in the data. Two users are identical on every variable you hold: the same age bracket, the same income bracket, the same device, the same browsing history. Yet the outcomes differ: one subscribes to platform A, the other subscribes to nothing. These &ldquo;people who look identical yet make different choices&rdquo; appear in batches in any real dataset; they are anything but a freak occurrence. Now put the problem to a deterministic model with no random term: what can it possibly say about these two people?</p>
+
+    <p>First write this deterministic model down clearly: an individual in state $z$ chooses $j$ from the choice set if and only if $v_j(z) \geq v_k(z)$ holds for all $k$, where the utility $v_j(z)$ is determined entirely by the observed state $z$, with no second component mixed in. Follow this setup through and you will find that it runs three steps, each straight into a dead end:</p>
+
+    <ol>
+      <li>Facing that pair of &ldquo;look identical, choose differently&rdquo; users, the model has only one escape: since the two share the same state $z$ yet choose different things, all it can say is that, for a person in this state, platform A and &ldquo;not subscribing&rdquo; happen to have exactly equal utility ($v_A(z) = v_0(z)$), so the two are completely indifferent.</li>
+      <li>But once the sample is large, in nearly every state nearly every option is chosen by someone. Apply the previous step&rsquo;s escape to the whole sample and the model is forced to concede something absurd: everyone is indifferent among all options.</li>
+      <li>And a model that &ldquo;no choice you make ever violates&rdquo; rules out no behavior whatsoever, and therefore has no empirical content. It is true that it can never be refuted by data, but the price is that it says nothing about the world, like a prophecy that counts every outcome as &ldquo;fulfilled&rdquo; in advance: watertight in appearance, yet without a single useful word.</li>
+    </ol>
+
+    <p>So a deterministic choice model has only two fates: <strong>either it is refuted on the spot by data the moment it meets &ldquo;identical people who choose differently,&rdquo; or it retreats to &ldquo;everyone, everywhere, is indifferent among all options&rdquo; and becomes utterly empty.</strong> One is refuted, the other has no content; both are dead ends. There is only one real way out: admit that the state $z$ you observe is inherently incomplete. The individual still sees things you cannot, the mood of the moment, a friend&rsquo;s offhand recommendation, being a little short on cash this month, and all these factors beyond your reach are booked into $\varepsilon$. Once $\varepsilon$ is added, the model no longer insists of any one person that &ldquo;he will surely choose this,&rdquo; but instead predicts &ldquo;among a group of people all in state $z$, what fraction each option gets,&rdquo; that is, the conditional choice probability $P(j \mid z)$. This is a far more modest target, and one that stands up far better to data.</p>
+
+    <div class="intuition-box">
+      <div class="box-title">Intuition: we predict populations, not individuals</div>
+      This step quietly swaps the object of prediction from the individual to the population, in the voice of a weather forecast: the forecaster never claims whether rain will fall on your head the moment you step out this afternoon, only a probability of precipitation. A structural model is the same. It does not promise to get right whether some particular user renews next month, only to get right the fraction who renew among the ten thousand people in the same state as him. $\varepsilon$ can thus be seen as the model&rsquo;s honest accounting of its own ignorance: every factor the researcher fails to observe yet that truly governs choice is booked into the $\varepsilon$ account, and the distributional assumption $G$ is the structured guess about the shape of that account. Chapter 03 shows that when this guess takes the Type I extreme value distribution, the conditional choice probability reduces exactly to the closed-form logit expression.
+    </div>
+
+    <p>This proof by contradiction also settles, in passing, why the distributional assumption $G$ holds such a special place in structural models. Recall linear regression: the error distribution affects only inference, not the consistency of the coefficients. But in discrete choice the entire functional form of the choice probabilities is fixed by $G$, so $G$ is itself part of identification. Choose $G$ wrong and the substitution patterns and welfare conclusions go wrong with it. This is exactly the underlying motivation for chapter 04&rsquo;s march from logit onward to nested logit and mixed logit.</p>
+
+    <div class="takeaway-box">
+      <div class="box-title">Bottom Line</div>
+      The random term $\varepsilon$ is not for computational convenience but a logical necessity: remove it and the deterministic model is either refuted on the spot by data or degenerates into emptiness. Add it and the object of prediction shifts from &ldquo;what some person chooses&rdquo; to &ldquo;what fraction each option gets among a group of like people,&rdquo; which is what finally makes the model both contentful and testable. The distributional assumption $G$ then determines the specific shape of these probabilities, and is therefore part of identification, not a technical detail to be filled in casually.
+    </div>
+
+    <!-- ============================================ -->
+    <h2 id="marschak">2.4 When You Don&rsquo;t Need Full Structure: Marschak&rsquo;s Maxim</h2>
+
+    <p>The first three sections have been saying what a structural model is and why you need it. This section plays the contrarian: when you do not need it at all. Consider an extreme case. If the only thing the platform has to worry about is &ldquo;how many users churn when the standard tier rises from 10 to 11 dollars a month,&rdquo; then the experiment in 2.1 already measured the answer directly, and going back to estimate the whole utility function is pure redundancy. This observation, plain to the point of being a truism, actually rests on a serious principle, named after Marschak (1953) and usually called <strong>Marschak&rsquo;s Maxim</strong>: if the policy question depends only on some function or combination of parameters that can be identified directly from the variation in the data, there is no need to recover the full deep structure. Identify just enough, and anything beyond that is waste.</p>
+
+    <p>What counts as &ldquo;enough&rdquo;? Break it into three questions to ask yourself, and operationally it becomes a single decision rule:</p>
+
+    <div class="info-box">
+      <div class="box-title">Decision rule: is the counterfactual covered by the variation in the data?</div>
+      <p style="margin-top:0">&#9312; First write down the counterfactual that corresponds to your research question, that is, the situation you want to predict that has not yet occurred, as concretely as possible.</p>
+      <p>&#9313; Then ask: does this counterfactual have corresponding variation in the data? If, say, the price really did move back and forth between 10 and 11 dollars a month, and you care only about the effect within this range, then it counts as covered.</p>
+      <p style="margin-bottom:0">&#9314; Once it is covered, a design-based method suffices; it assumes less and is usually more robust. Only when the counterfactual reaches beyond the support of the data (a new price point, a new mechanism, a new market structure), or when what you want is mechanism decomposition and welfare figures in the first place, is it worth paying the cost of a full structural model.</p>
+    </div>
+
+    <div class="figure">
+    <svg viewBox="0 0 700 336" role="img" aria-label="Coverage and extrapolation: the demand curve is solid within the observed price range (readable design-based) and a dashed extrapolation outside it (relying on functional-form assumptions)">
+      <rect x="320" y="40" width="100" height="250" style="fill:var(--fig-1-soft)"></rect>
+      <line class="ax" x1="60" y1="290" x2="668" y2="290"></line>
+      <line class="ax" x1="60" y1="34" x2="60" y2="290"></line>
+      <text x="360" y="330" text-anchor="middle" class="mut lbl-s">Price →</text>
+      <text x="16" y="162" text-anchor="middle" transform="rotate(-90 16 162)" class="mut lbl-s">Demand / share ↑</text>
+
+      <polyline points="60,48.6 70,49.6 80,50.7 90,51.9 100,53.2 110,54.6 120,56.2 130,58.0 140,60.0 150,62.1 160,64.4 170,67.0 180,69.8 190,72.8 200,76.1 210,79.7 220,83.6 230,87.7 240,92.2 250,96.9 260,101.9 270,107.2 280,112.8 290,118.7 300,124.8 310,131.1 320,137.7" style="fill:none;stroke:var(--fig-2);stroke-width:2;stroke-dasharray:5 4"></polyline>
+      <polyline points="320,137.7 330,144.4 340,151.2 350,158.1 360,165.0 370,171.9 380,178.8 390,185.6 400,192.3 410,198.9 420,205.2" style="fill:none;stroke:var(--fig-1);stroke-width:2.5"></polyline>
+      <polyline points="420,205.2 430,211.3 440,217.2 450,222.8 460,228.1 470,233.1 480,237.8 490,242.3 500,246.4 510,250.3 520,253.9 530,257.2 540,260.2 550,263.0 560,265.6 570,267.9 580,270.0 590,272.0 600,273.8 610,275.4 620,276.8 630,278.1 640,279.3 650,280.4 660,281.4" style="fill:none;stroke:var(--fig-2);stroke-width:2;stroke-dasharray:5 4"></polyline>
+
+      <text x="370" y="58" text-anchor="middle" class="lbl-s" style="fill:var(--fig-1);font-weight:700">Observed price variation</text>
+      <text x="370" y="308" text-anchor="middle" class="lbl-s" style="fill:var(--fig-1);font-weight:700">Covered · design-based</text>
+      <text x="180" y="308" text-anchor="middle" class="mut lbl-s">Beyond support · extrapolated</text>
+      <text x="560" y="308" text-anchor="middle" class="mut lbl-s">Beyond support · extrapolated</text>
+
+      <line x1="150" y1="62.1" x2="150" y2="290" style="stroke:var(--fig-2);stroke-width:1.2;stroke-dasharray:3 3"></line>
+      <circle cx="150" cy="62.1" r="5" style="fill:var(--fig-2)"></circle>
+      <text x="162" y="100" class="lbl-s" style="fill:var(--fig-2);font-weight:700">Counterfactual: new price point</text>
+      <text x="162" y="118" class="mut lbl-s">Not in data; only the model extrapolates</text>
+    </svg>
+    <div class="figcaption"><span class="fig-label">Figure 2.1</span>Coverage and extrapolation. The shaded band in the middle is the price variation that actually occurred in the data; a counterfactual that falls within this stretch is &ldquo;covered,&rdquo; and a design-based method reads it off directly (solid line). But once the counterfactual reaches outside the band, say a low price point that was never set (marked on the left), there is no corresponding variation in the data, and extending the curve there relies on a functional form the researcher fixed in advance (dashed line). This is precisely the dividing line for deciding whether to bring in a structural model, and precisely where the extrapolation assumption must be defended on its own.</div>
+    </div>
+
+    <p>That said, &ldquo;pure design-based&rdquo; and &ldquo;full structure&rdquo; are not an either-or pair of extremes; a spectrum stretches between them, on which several commonly used tiers of method stand:</p>
+
+    <div class="table-scroll">
+    <table>
+      <thead>
+        <tr><th>Method tier</th><th>Core idea</th><th>Representative reference</th><th>When it applies</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Design-based</strong></td>
+          <td>Use experimental or quasi-experimental variation to estimate causal effects directly, assuming no decision model</td>
+          <td>Angrist &amp; Pischke (2010)</td>
+          <td>The counterfactual is covered by the variation in the data and only the total effect is needed</td>
+        </tr>
+        <tr>
+          <td><strong>Sufficient statistics</strong></td>
+          <td>Welfare conclusions depend only on a few directly estimable combinations of elasticities, with no need to recover all the primitives</td>
+          <td>Chetty (2009)</td>
+          <td>The question reduces exactly to a function of a few elasticities</td>
+        </tr>
+        <tr>
+          <td><strong>MTE / marginal treatment effects</strong></td>
+          <td>Use instrumental variables to recover the distributional structure of treatment effects, sitting between the two</td>
+          <td>Heckman &amp; Vytlacil (2005)</td>
+          <td>The policy-relevant population differs from the experimental one (PRTE)</td>
+        </tr>
+        <tr>
+          <td><strong>Full structural model</strong></td>
+          <td>Specify $F$ and $G$ explicitly, estimate the primitives, and simulate any counterfactual</td>
+          <td>Chapters 02 to 08 of this series</td>
+          <td>New-environment prediction, mechanism decomposition, welfare computation</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+
+    <h3>If a platform can run experiments anytime, is there still a place for structural models?</h3>
+
+    <p>The answer is yes. And, interestingly, it is precisely where experiments are most widespread and A/B tests most abundant that the following three reasons surface most often:</p>
+
+    <ol>
+      <li><strong>Ex-ante evaluation</strong>: the counterfactual is a scheme that has not launched, or that cannot even be experimented on at all. An experiment can test only schemes that have already been designed and are ethically and operationally feasible; but interventions like a pricing-structure overhaul, a platform-wide change to the recommendation algorithm, or a shift in the commission rate often cannot be experimented on before they truly roll out, or the experiment would be frighteningly costly. A structural model, by contrast, can simulate it on paper before deployment.</li>
+      <li><strong>Mechanism decomposition</strong>: interventions are often &ldquo;bundled,&rdquo; and you want to know how much each item in the bundle contributes. A real product revision is almost never a single move; one interface update may simultaneously change disclosure, the default option, and the cost of the action, all three. An A/B test reports only the total effect of the bundle, whereas a structural model can pull it apart and compute each mechanism&rsquo;s separate contribution (the specific unbundling design is left to 2.8). For research that explains results through mechanisms, this matters especially.</li>
+      <li><strong>Welfare and willingness to pay</strong>: the moment the question asks &ldquo;how much do users actually gain, and how much do they lose,&rdquo; it enters the territory of utility. Consumer surplus, compensating variation, and the willingness to pay (WTP) for some feature are all quantities at the level of utility; they can be computed only from a utility model, and the experiment itself cannot hand you these numbers.</li>
+    </ol>
+
+    <p>The reason for calling in a structural model must fall into one of these three categories; it cannot rest on a methodological label. &ldquo;Structural models are more rigorous&rdquo; or &ldquo;more theoretical&rdquo; is not itself a reason: whether an analysis is rigorous depends on whether its distributional assumptions and identification strategy are credible, and has nothing whatsoever to do with whether it wears the label &ldquo;structural&rdquo; or &ldquo;reduced-form.&rdquo; When none of these three legitimate reasons applies, a reduced-form design with its assumptions laid out in plain view is often more deserving of your trust than a structural model with its assumptions piled into a heap.</p>
+
+    <div class="takeaway-box">
+      <div class="box-title">Bottom Line</div>
+      Marschak&rsquo;s Maxim: identify just far enough to answer the research question, no more and no less. The three legitimate reasons for calling in a full structural model are ex-ante evaluation, mechanism decomposition, and welfare computation; when none of the three holds, prefer a lighter method.
+    </div>
+
+    <!-- ============================================ -->
+    <h2 id="twelve-decisions">2.5 The Twelve Modeling Decisions</h2>
+
+    <p>Once you decide to use a structural model, the real work is only beginning: translating a still-fuzzy research question into a model you can take to estimation. Galiani &amp; Pantano (2021, §3.3) break this translation into twelve decisions that cannot be sidestepped and must be stated explicitly. You can use this list two ways: as a checklist when writing your own model, and as a review sheet when reading someone else&rsquo;s paper. Beyond the original list, the table below adds, for each decision, a column of typical options in the discrete-choice setting.</p>
+
+    <div class="table-scroll">
+    <table>
+      <thead>
+        <tr><th style="width:30px">#</th><th>Decision</th><th>What it affects</th><th>Typical options in a discrete-choice setting</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td><strong>Agents</strong></td><td>Whose behavior the model explains</td><td>Consumers, sellers, or both sides (consumers and sellers modeled together; see the two-sided market in chapter 08)</td></tr>
+        <tr><td>2</td><td><strong>Interaction and equilibrium</strong></td><td>Single-agent optimization or a game; whether the counterfactual requires re-solving an equilibrium</td><td>Single agent (chapters 02 to 05); demand plus supply-side pricing equilibrium (BLP, chapter 06); strategic interaction (beyond this series)</td></tr>
+        <tr><td>3</td><td><strong>Planning horizon</strong></td><td>Static or forward-looking</td><td>Static for one-shot choices; dynamic when there are switching costs, learning, or durable-good features (chapter 07)</td></tr>
+        <tr><td>4</td><td><strong>Time unit</strong></td><td>Matching the decision frequency to the granularity of the data</td><td>Per session, per monthly subscription cycle, per purchase</td></tr>
+        <tr><td>5</td><td><strong>Choice set</strong></td><td>Whether to model choice as discrete or continuous</td><td>This book fixes it as discrete, then settles the composition of the choice set: whether &ldquo;not choosing&rdquo; counts as an option (whether an outside option is included), whether the consideration set is smaller than the full set, and where to draw the boundary</td></tr>
+        <tr><td>6</td><td><strong>State space</strong></td><td>Which states the decision depends on in a dynamic model</td><td>The past subscription tier, cumulative usage, remaining contract term</td></tr>
+        <tr><td>7</td><td><strong>Objective function</strong></td><td>How preferences are specified</td><td>Linear utility $\beta'x$; taking the log of price or interacting it with income</td></tr>
+        <tr><td>8</td><td><strong>Information and observability</strong></td><td>What the individual knows and what the researcher observes; the gap between the two is the source of $\varepsilon$</td><td>The individual observes $\varepsilon$ while the researcher does not (standard RUM); if the individual is also uncertain, you enter a learning model</td></tr>
+        <tr><td>9</td><td><strong>Observed heterogeneity</strong></td><td>Which preference differences are captured by observable variables</td><td>Demographics and attribute interaction terms (chapter 03)</td></tr>
+        <tr><td>10</td><td><strong>Unobserved heterogeneity</strong></td><td>Which preference differences are latent; this is the main step up in model complexity</td><td>None (logit), discrete types (latent class), a continuous distribution (mixed logit, chapter 04)</td></tr>
+        <tr><td>11</td><td><strong>Functional form</strong></td><td>The trade-off between extrapolation ability and parsimony</td><td>Whether utility is linear or nonlinear in price; the shape of the cost function (the Rust example in chapter 07)</td></tr>
+        <tr><td>12</td><td><strong>Distributional assumption $G$</strong></td><td>The functional form of the choice probabilities and the substitution patterns</td><td>Type I EV (logit), GEV (nested), normal (probit), a random-coefficients distribution</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <div class="warn-box">
+      <div class="box-title">Pitfall: an endogenous state variable is not an ordinary control</div>
+      <p style="margin-bottom:0">The most common error on decision 6 is to treat &ldquo;the results left behind by past choices&rdquo; as exogenous controls and stuff them straight into the model: cumulative usage time, the current subscription tier, and the number of past purchases are all products of the individual&rsquo;s past decisions, inherently entangled with the unobserved preference $\varepsilon$. This has a name in reduced-form regression, bad control; in a structural model it forces you either to model explicitly how the state evolves (a dynamic model, chapter 07) or to handle the initial conditions problem honestly. Treating an endogenous state as an exogenous control is a serious flaw a referee will see through at a glance.</p>
+    </div>
+
+    <!-- ============================================ -->
+    <h2 id="identification">2.6 The Philosophy of Identification</h2>
+
+    <p>The twelve decisions have assembled the model; the question that immediately follows is whether the data can actually pin it down. Ground this worry in a concrete scenario. Suppose you estimate a price coefficient $\beta_{\text{price}} = -0.1$, with a standard error reassuringly small. But is this $-0.1$ something the data told you, or something your assumptions said through the mouth of the data? As long as there exists another set of parameters that generates exactly the same distribution of choice probabilities, no amount of data can tell the two apart, and $\beta_{\text{price}}$ has not been &ldquo;identified.&rdquo;</p>
+
+    <p>Identification asks exactly this: <strong>given infinitely much data, can $(F, G)$ be determined uniquely?</strong> Note that it has nothing to do with sample size; it asks about the logical relationship between the model and the structure of the data, not about how precisely you estimate. For an unidentified model, more data is useless; conversely, a small standard error can never serve as evidence of identification, because the likelihood surface may well have several peaks of equal height, each locally steep (corresponding to a small standard error) yet each pointing to a different parameter value.</p>
+
+    <div class="intuition-box">
+      <div class="box-title">Intuition: sharp is not the same as unique</div>
+      Imagine estimation as taking a photograph of the parameters. A small standard error says the photo is sharp and fine-grained, thanks to a large sample and low noise. Identification says something else entirely: whether what is in the photo can be recognized at all. If two utterly different parameter values would take exactly the same photo (generate the same choice probabilities), then no matter how sharp the photo, you can never say which of the two you captured. A larger sample can cure &ldquo;blur,&rdquo; but it cannot cure this root-level &ldquo;ambiguity.&rdquo; This is exactly why a beautiful small standard error can never vouch for identification.
+    </div>
+
+    <p>So what does it take to explain identification clearly? In practice, it comes down to answering three questions in order. These three run through the whole book, and every time you meet an identification argument from here on, it is worth asking them:</p>
+
+    <ol>
+      <li><strong>What exactly are we trying to estimate?</strong> First name the target parameter or function, leaving no ambiguity.</li>
+      <li><strong>Which variation in the data identifies it?</strong> Point to exactly which kind of variation (exogenous swings in price, the strength of within-group substitution, the time dimension of a panel) supplies information about this parameter.</li>
+      <li><strong>When does identification fail, and what happens then?</strong> Imagine the situation where that variation is absent or contaminated, and spell out which wrong answer the model slides toward.</li>
+    </ol>
+
+    <p>Run that price coefficient through them and the three questions immediately become concrete. &#9312; What we want is the sensitivity of utility to price, $\beta_{\text{price}}$. &#9313; What identifies it is the exogenous variation in price across options that are otherwise identical in all attributes; it is exactly this &ldquo;nothing else moved, only price changed&rdquo; contrast that reveals how much price actually matters. &#9314; The failure case is equally concrete: if the expensive options also happen to be higher quality, then price moves in lockstep with unobserved quality, the data cannot tell whether the falling renewal rate should be charged to price or to quality, and the estimated price coefficient is pushed toward zero or even flips positive. The situation the third question describes is precisely the endogeneity problem chapter 06 sets out to handle.</p>
+
+    <p>The three questions set &ldquo;what to answer&rdquo;; as for &ldquo;how rigorously to answer,&rdquo; identification arguments in practice come in three tiers, each less rigorous but more common than the last:</p>
+
+    <ol>
+      <li><strong>A formal proof</strong>: in the tradition of Matzkin (2007), prove that $(F,G)$ corresponds one-to-one with the data distribution. Classic results (the identification of logit, the uniqueness of the Berry inversion) belong to this tier, but it is rarely feasible for complex applied models.</li>
+      <li><strong>A heuristic argument (an identification map)</strong>: for each parameter, explain &ldquo;which kind of variation in the data pins it down.&rdquo; For example, the price coefficient is identified by exogenous variation in price, and the nesting parameter by the relative strength of within-group substitution. This is the mainstream standard for applied papers, and is what a paper should write out explicitly.</li>
+      <li><strong>A numerical check</strong>: Monte Carlo parameter recovery (simulate data from the model and check whether the estimation routine can recover the true parameters) plus a sensitivity analysis of the objective function. It cannot prove identification, but it can expose the lack of it.</li>
+    </ol>
+
+    <p>These three tiers actually collapse into one question you should keep asking yourself, which is just the second and third of the three questions: is a given parameter identified by variation in the data, or merely assumed by the functional form? A trustworthy answer lays out an identification map, spelling out for each key parameter which kind of variation it feeds on, which conclusions are sensitive to functional form and which are not, backed by Monte Carlo parameter recovery and re-estimation under a different distributional assumption. This is the concrete form of the caution at the start of this section: explaining identification means pointing to where the variation comes from, not reporting a smaller standard error.</p>
+
+    <p>Identification in structural models often relies on <strong>exclusion restrictions</strong>: a variable affects one link in the choice but not another. On this Galiani &amp; Pantano lay down a discipline: <strong>an exclusion restriction in a structural model should face scrutiny as strong as that applied to an instrument in an IV study.</strong> Early structural work liked to tuck its key exclusion restrictions into a footnote and gloss over them, a practice no one accepts anymore. Chapter 06 shows you what this discipline looks like in concrete form: BLP&rsquo;s menu of instruments, and the validity threats each item on the menu faces.</p>
+
+    <!-- ============================================ -->
+    <h2 id="external-validity">2.7 The Real Limits of External Validity</h2>
+
+    <p>Identification asks whether a parameter can be recognized inside the model; external validity asks something else: once the estimated result is carried outside the model, how far can it travel? Suppose you estimate a set of preference parameters from one country&rsquo;s platform data for 2024. Can you use them directly to predict the choices of users in another country? Or the choices of your own country&rsquo;s users five years later? The glibbest defense is &ldquo;structural parameters are deep, so of course you can.&rdquo; Unfortunately, that defense needs some serious qualifications.</p>
+
+    <p>The trouble lies in the word &ldquo;deep.&rdquo; As long as the model admits unobserved preference heterogeneity (and nearly all modern models do), what it recovers is not abstract &ldquo;human preferences&rdquo; but <strong>the preference distribution of the particular population the estimation sample belongs to</strong>. Falk et al. (2018), using a global preferences survey, show that risk attitudes, patience, and social preferences differ enormously across populations. That being so, no logic can guarantee that a preference distribution estimated on one platform, in one country, in one period will still hold somewhere else.</p>
+
+    <p>So the honest limit of structural extrapolation is: <strong>the same population, the same time, the same place, changing only the environment.</strong> It promises &ldquo;how these users would choose under a different pricing scheme,&rdquo; not how &ldquo;users in another country&rdquo; or &ldquo;users five years from now&rdquo; would choose. But to state it in full: even if you do lock down population, time, and place and vary only the environment, extrapolation is usually not free. The counterfactual you want to predict often reaches beyond the support of the data, say a price point that never appeared or a pricing structure that never launched; and what really extends the structure across that gap is the functional form you fixed in advance. That functional-form assumption must itself be defended on its own; do not take for granted that it holds where there is no data.</p>
+
+    <p>Pushing further, across populations or across time, each end has its own difficulty. On the population end, you must argue that the composition of the two groups is comparable. On the time end you must be more sober: out-of-sample time shocks (a new competitor that emerges later, a macroeconomic recession) cannot be identified by any method, structural or reduced-form; no one can pin down in advance an aggregate shock that has not yet happened from data that record only the past. None of these supplementary arguments does the model provide on its own.</p>
+
+    <div class="warn-box">
+      <div class="box-title">A distinction: external validity is not free</div>
+      <p style="margin-bottom:0">The correct way to put it is this: a structural model puts the assumptions of extrapolation in plain view (the preference distribution is unchanged; the change in environment can be expressed within the model), which makes extrapolation debatable and testable. But it does not make extrapolation free. When a referee presses, &ldquo;can this result be generalized to other platforms?&rdquo;, what you should produce is an argument for the comparability of populations and environments, not the line &ldquo;because the parameters are structural.&rdquo;</p>
+    </div>
+
+    <!-- ============================================ -->
+    <h2 id="validation">2.8 Validation and the Integration of Experimental Evidence</h2>
+
+    <p>The previous section drew the limits of extrapolation; this section answers a more fundamental question: what entitles the model itself to be believed? A structural model can often fit the estimation sample seamlessly, with a high likelihood and everything lining up, but fitting well is not the same as being credible. In-sample fit says only that the model has enough degrees of freedom to hug the data it has already seen, which is no different from a student who has memorized last year&rsquo;s exam cold: full marks on every practice sheet, yet not necessarily a pass on a fresh set of questions. To test whether a model is fit to serve as a prediction tool, you must have it predict a stretch of data it never saw during estimation, in an incentive environment that is also different; this is <strong>out-of-sample validation</strong>. Behind this standard stands a clearly traceable methodological tradition:</p>
+
+    <ul>
+      <li><strong>Todd &amp; Wolpin (2006)</strong>: estimate a model of households&rsquo; enrollment decisions using the control-group data from Mexico&rsquo;s PROGRESA education-subsidy experiment, then predict the treatment group&rsquo;s behavior under the subsidy and compare with the experiment&rsquo;s actual results. The model used no treatment-group information, so the accuracy of its predictions is direct evidence of the model&rsquo;s credibility.</li>
+      <li><strong>Keane &amp; Wolpin (2007)</strong>: propose using a nonrandom holdout sample (for example, another state&rsquo;s welfare system) for validation, testing whether the model can extrapolate to an environment with larger institutional differences.</li>
+      <li><strong>Galiani, Murphy &amp; Pantano (2015)</strong>: split a multi-arm experiment in two. Estimate a neighborhood-choice model using the control group and one treatment arm of the MTO housing-assistance experiment, and validate with another treatment arm. Randomization guarantees that the holdout population and the estimation population share the same distribution of unobserved heterogeneity, which makes the experimental arm a &ldquo;first-class validation sample.&rdquo;</li>
+    </ul>
+
+    <p>Distill this tradition into a general framework: experimental or quasi-experimental variation can play three roles in structural research.</p>
+
+    <div class="table-scroll">
+    <table>
+      <thead>
+        <tr><th>Role</th><th>How it works</th><th>Platform-setting example</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Identification</strong></td>
+          <td>Use experimental variation in place of a questionable exclusion restriction, or identify a parameter that appears only under intervention</td>
+          <td>Use the platform&rsquo;s own pricing experiment to identify the price coefficient, avoiding reliance on instruments</td>
+        </tr>
+        <tr>
+          <td><strong>Validation</strong></td>
+          <td>Hold out a stretch of experimental data and have the model predict it</td>
+          <td>Estimate the model on historical observational data and predict the treatment-group result of last quarter&rsquo;s A/B test</td>
+        </tr>
+        <tr>
+          <td><strong>Both at once</strong></td>
+          <td>A multi-arm experiment: one arm goes into estimation, another is held out for validation</td>
+          <td>Add a 12-dollar arm to the two-arm experiment in 2.1: estimate on the control group and the 11-dollar arm, and validate on the 12-dollar arm <span class="demo-badge">illustrative data</span></td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+
+    <h3>Unbundling: the unique payoff a structural model offers an A/B test</h3>
+
+    <p>There is a fourth mode of integration that is especially useful for platform research: <strong>disentangling bundled treatments</strong>. A platform&rsquo;s real-world interventions rarely move only one mechanism. Suppose a revision simultaneously raises the number of recommendation slots from 5 to 8 and attaches a &ldquo;friends are listening too&rdquo; social label to recommended items, and the A/B test shows click-through rose 12%. <span class="demo-badge">illustrative data</span> Now management is stuck: what is truly valuable, the extra slots or that social label? A two-arm experiment is powerless here; it reports only the total effect after bundling. A structural model that writes &ldquo;exposure quantity&rdquo; and &ldquo;social signal&rdquo; separately into the utility function has a chance of pulling the two apart. But whether it can really pull them apart has a precondition, and does not hold automatically: at most one of the two mechanisms can be entirely new, and the other must be simulable from baseline behavior (that is, the control group). In this example, how users respond to seeing a few more recommendation slots already leaves traces in the pre-revision data, so the model can extrapolate that piece from the baseline; what genuinely has no baseline to lean on, and can be recognized only through the contrast between treatment and control, is the extra bit of utility that the &ldquo;friends are listening too&rdquo; label adds. So assigning the two contributions cleanly relies on the functional-form structure the model imposes plus this layer of experimental contrast, not on how large the experimental variation itself is. Galiani &amp; Pantano (2021, §5.4) demonstrate the same logic with MTO&rsquo;s dual intervention: the effect of a rent voucher on residential choice can be simulated from the control group&rsquo;s behavior through the budget constraint, because the control group has already revealed how, when the budget changes, households re-select the neighborhood they live in; the new parameter that genuinely requires the experimental contrast to identify is the relocation counseling service.</p>
+
+    <p>Conversely, this precondition is not always met. If the two things a revision packs in are both brand-new mechanisms, each adding to the utility function a piece of structure that was not there before and that has no counterpart in anyone&rsquo;s baseline, then no matter how elegant the structural model, it is of no help: the data contain only one &ldquo;treatment versus control&rdquo; contrast, yet two new parameters must be claimed at once, and a two-arm experiment simply cannot separate them.</p>
+
+    <div class="takeaway-box">
+      <div class="box-title">Bottom Line</div>
+      Credible structural papers tend to keep the same convention: one stretch of variation for identification, another held back for validation. The A/B tests in a platform researcher&rsquo;s hands may be the best validation resource in all of applied economics: randomization guarantees for you that the holdout population and the estimation population share the same distribution. Leaving it on the shelf, never using it to validate the model, is a genuine waste.
+    </div>
+
+    <!-- ============================================ -->
+    <h2 id="misconceptions">2.9 Six Common Pitfalls</h2>
+
+    <div class="table-scroll">
+    <table>
+      <thead>
+        <tr><th>Pitfall</th><th>Why it&rsquo;s wrong</th><th>What to do instead</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>&ldquo;Structural models are more advanced than reduced-form methods&rdquo;</td>
+          <td>The two answer different questions; given a question, a method is only fitting or not</td>
+          <td>Write the counterfactual first, then choose the method (the decision rule in 2.4)</td>
+        </tr>
+        <tr>
+          <td>&ldquo;The more complex the model, the better&rdquo;</td>
+          <td>Complexity consumes identifying power and compute, and crowds out sensitivity analysis</td>
+          <td>Value comes from a clear mechanism plus credible identification, not from the number of parameters</td>
+        </tr>
+        <tr>
+          <td>&ldquo;A small standard error means identification is fine&rdquo;</td>
+          <td>Precision reflects only local curvature; a multi-peaked likelihood surface gives small standard errors just the same</td>
+          <td>An identification map plus Monte Carlo recovery (2.6)</td>
+        </tr>
+        <tr>
+          <td>&ldquo;Structural parameters extrapolate automatically to other populations&rdquo;</td>
+          <td>What is recovered is the estimation population&rsquo;s preference distribution, and cross-population differences are an empirical fact</td>
+          <td>Restrict to &ldquo;the same population, the same time, the same place&rdquo; (2.7)</td>
+        </tr>
+        <tr>
+          <td>&ldquo;An exclusion restriction is a modeling assumption and need not be defended like an IV&rdquo;</td>
+          <td>Identification depends on it just as much, and the credibility requirement is exactly the same</td>
+          <td>Scrutinize every exclusion restriction by the standard of an IV (2.6)</td>
+        </tr>
+        <tr>
+          <td>&ldquo;A failed validation means the model is wrong&rdquo;</td>
+          <td>It may also be that the validation population differs or that an aggregate shock outside the model occurred during the period</td>
+          <td>Report the prediction target, the direction and magnitude of the deviation, and explain the source (2.8)</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+
+    <!-- ============================================ -->
+    <h2 id="summary">2.10 Chapter Summary</h2>
+
+    <p>This chapter has set up a framework of judgment for the whole series. The definition of a structural model is policy invariance: estimate the primitives that stay invariant when policy changes, in exchange for the ability to predict in environments never observed. The random term $\varepsilon$ is a logical necessity of this framework, not mathematical decoration, and it swaps the object of prediction from individual choice to the conditional choice probability. Marschak&rsquo;s Maxim reminds the researcher to identify only as far as needed: only three kinds of question, ex-ante evaluation, mechanism decomposition, and welfare computation, are worth the cost of full structure. The exclusion restrictions on which identification depends must face IV-level scrutiny; the honest limit of extrapolation is different policy environments for the same population at the same time and place; and the gold standard of validation is holding out a stretch of experimental variation.</p>
+
+    <p>On top of this framework, chapter 03 specializes $M(Y,X,\varepsilon;F,G)=0$ into a random utility model plus the Type I extreme value distribution and derives logit. The chapters that follow relax its restrictions one by one: chapter 04 relaxes the distributional assumption $G$ to capture substitution patterns, chapter 05 solves the simulation estimation needed when the integral has no closed form, chapter 06 handles the endogeneity that arises when $X$ is correlated with $\varepsilon$, chapter 07 extends the planning horizon from static to dynamic, chapter 08 puts these tools back into the research settings of platforms and digital markets, and chapter 09 discusses the complete workflow from research question to paper, together with model validation.</p>
+
+    <!-- ============================================ -->
+    <h2 id="readings">Further Reading</h2>
+
+    <h4>Classic definitions and methodological surveys</h4>
+    <ul>
+      <li>Galiani, S., &amp; Pantano, J. (2021). <em>Structural models: Inception and frontier</em> (NBER Working Paper No. 28698). National Bureau of Economic Research. <a href="https://doi.org/10.3386/w28698">https://doi.org/10.3386/w28698</a> (A methodological survey written for the Handbook of Labor, Human Resources and Population Economics; endorses model-based and design-based as the more fitting labels, and systematically discusses the modeling decisions and the integration of experimental evidence.)</li>
+      <li>Marschak, J. (1953). Economic measurements for policy and prediction. In W. C. Hood &amp; T. C. Koopmans (Eds.), <em>Studies in econometric method</em> (Cowles Commission Monograph No. 14, pp. 1–26). Wiley. (The origin of policy invariance and Marschak&rsquo;s Maxim.)</li>
+      <li>Hurwicz, L. (1962). On the structural form of interdependent systems. In E. Nagel, P. Suppes, &amp; A. Tarski (Eds.), <em>Logic, methodology and philosophy of science: Proceedings of the 1960 International Congress</em> (pp. 232–239). Stanford University Press. <a href="https://doi.org/10.1016/S0049-237X(09)70590-7">https://doi.org/10.1016/S0049-237X(09)70590-7</a></li>
+      <li>Lucas, R. E. (1976). Econometric policy evaluation: A critique. <em>Carnegie-Rochester Conference Series on Public Policy</em>, <em>1</em>, 19–46. <a href="https://doi.org/10.1016/S0167-2231(76)80003-6">https://doi.org/10.1016/S0167-2231(76)80003-6</a></li>
+      <li>Matzkin, R. L. (2007). Nonparametric identification. In J. J. Heckman &amp; E. E. Leamer (Eds.), <em>Handbook of econometrics</em> (Vol. 6B, pp. 5307–5368). Elsevier. <a href="https://doi.org/10.1016/S1573-4412(07)06073-4">https://doi.org/10.1016/S1573-4412(07)06073-4</a></li>
+    </ul>
+
+    <h4>Methodological debates and surveys</h4>
+    <ul>
+      <li>Keane, M. P. (2010). Structural vs. atheoretic approaches to econometrics. <em>Journal of Econometrics</em>, <em>156</em>(1), 3–20. <a href="https://doi.org/10.1016/j.jeconom.2009.09.003">https://doi.org/10.1016/j.jeconom.2009.09.003</a></li>
+      <li>Angrist, J. D., &amp; Pischke, J.-S. (2010). The credibility revolution in empirical economics: How better research design is taking the con out of econometrics. <em>Journal of Economic Perspectives</em>, <em>24</em>(2), 3–30. <a href="https://doi.org/10.1257/jep.24.2.3">https://doi.org/10.1257/jep.24.2.3</a> (The manifesto of the design-based camp.)</li>
+      <li>Low, H., &amp; Meghir, C. (2017). The use of structural models in econometrics. <em>Journal of Economic Perspectives</em>, <em>31</em>(2), 33–58. <a href="https://doi.org/10.1257/jep.31.2.33">https://doi.org/10.1257/jep.31.2.33</a></li>
+      <li>Rust, J. (2014). The limits of inference with theory: A review of Wolpin (2013). <em>Journal of Economic Literature</em>, <em>52</em>(3), 820–850. <a href="https://doi.org/10.1257/jel.52.3.820">https://doi.org/10.1257/jel.52.3.820</a></li>
+      <li>Chetty, R. (2009). Sufficient statistics for welfare analysis: A bridge between structural and reduced-form methods. <em>Annual Review of Economics</em>, <em>1</em>, 451–488. <a href="https://doi.org/10.1146/annurev.economics.050708.142910">https://doi.org/10.1146/annurev.economics.050708.142910</a></li>
+      <li>Heckman, J. J., &amp; Vytlacil, E. (2005). Structural equations, treatment effects, and econometric policy evaluation. <em>Econometrica</em>, <em>73</em>(3), 669–738. <a href="https://doi.org/10.1111/j.1468-0262.2005.00594.x">https://doi.org/10.1111/j.1468-0262.2005.00594.x</a></li>
+    </ul>
+
+    <h4>The validation and integration tradition</h4>
+    <ul>
+      <li>Todd, P. E., &amp; Wolpin, K. I. (2006). Assessing the impact of a school subsidy program in Mexico: Using a social experiment to validate a dynamic behavioral model of child schooling and fertility. <em>American Economic Review</em>, <em>96</em>(5), 1384–1417. <a href="https://doi.org/10.1257/aer.96.5.1384">https://doi.org/10.1257/aer.96.5.1384</a></li>
+      <li>Keane, M. P., &amp; Wolpin, K. I. (2007). Exploring the usefulness of a nonrandom holdout sample for model validation: Welfare effects on female behavior. <em>International Economic Review</em>, <em>48</em>(4), 1351–1378. <a href="https://doi.org/10.1111/j.1468-2354.2007.00465.x">https://doi.org/10.1111/j.1468-2354.2007.00465.x</a></li>
+      <li>Galiani, S., Murphy, A., &amp; Pantano, J. (2015). Estimating neighborhood choice models: Lessons from a housing assistance experiment. <em>American Economic Review</em>, <em>105</em>(11), 3385–3415. <a href="https://doi.org/10.1257/aer.20120737">https://doi.org/10.1257/aer.20120737</a></li>
+      <li>Falk, A., Becker, A., Dohmen, T., Enke, B., Huffman, D., &amp; Sunde, U. (2018). Global evidence on economic preferences. <em>Quarterly Journal of Economics</em>, <em>133</em>(4), 1645–1692. <a href="https://doi.org/10.1093/qje/qjy013">https://doi.org/10.1093/qje/qjy013</a></li>
+    </ul>
+
+    <h4>Frontier directions (developed in chapters 07 and 09)</h4>
+    <ul>
+      <li>Iskhakov, F., Rust, J., &amp; Schjerning, B. (2020). Machine learning and structural econometrics: Contrasts and synergies. <em>Econometrics Journal</em>, <em>23</em>(3), S81–S124. <a href="https://doi.org/10.1093/ectj/utaa019">https://doi.org/10.1093/ectj/utaa019</a></li>
+      <li>Kaji, T., Manresa, E., &amp; Pouliot, G. (2023). An adversarial approach to structural estimation. <em>Econometrica</em>, <em>91</em>(6), 2041–2063. <a href="https://doi.org/10.3982/ECTA18707">https://doi.org/10.3982/ECTA18707</a></li>
+      <li>Manski, C. F. (2004). Measuring expectations. <em>Econometrica</em>, <em>72</em>(5), 1329–1376. <a href="https://doi.org/10.1111/j.1468-0262.2004.00537.x">https://doi.org/10.1111/j.1468-0262.2004.00537.x</a> (Subjective expectations data, relaxing the rational expectations assumption.)</li>
+      <li>DellaVigna, S. (2018). Structural behavioral economics. In B. D. Bernheim, S. DellaVigna, &amp; D. Laibson (Eds.), <em>Handbook of behavioral economics: Applications and foundations 1</em> (Vol. 1, pp. 613–723). North-Holland. <a href="https://doi.org/10.1016/bs.hesbe.2018.07.005">https://doi.org/10.1016/bs.hesbe.2018.07.005</a></li>
+    </ul>
+
+    <footer class="page-footer">
+      From Choices to Counterfactuals: Structural Estimation for Digital Platform Research · 02 Why Structural Models
+    </footer>
+
+  </main>
+</div>
+
+<script defer src="assets/katex/katex.min.js"></script>
+<script defer src="assets/katex/auto-render.min.js"></script>
+<script defer src="assets/notes.js"></script>
+</body>
+</html>

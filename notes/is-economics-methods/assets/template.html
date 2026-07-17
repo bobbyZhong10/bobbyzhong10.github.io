@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"$if(lang)$ lang="$lang$"$else$ lang="en"$endif$>
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+$if(date-meta)$
+  <meta name="dcterms.date" content="$date-meta$" />
+$endif$
+$if(description-meta)$
+  <meta name="description" content="$description-meta$" />
+$endif$
+  <title>$if(title)$$title$ | $endif$$if(sidebartitle)$$sidebartitle$$else$Lecture Notes$endif$</title>
+  <link rel="stylesheet" href="assets/style.css" />
+$for(css)$
+  <link rel="stylesheet" href="$css$" />
+$endfor$
+$if(math)$
+  $math$
+$endif$
+$for(header-includes)$
+  $header-includes$
+$endfor$
+</head>
+<body>
+<div class="page-wrapper">
+  <nav class="sidebar">
+    <div class="sidebar-title">$if(sidebartitle)$$sidebartitle$$else$Lecture Notes$endif$</div>
+$if(sidebarsub)$
+    <div class="sidebar-subtitle">$sidebarsub$</div>
+$endif$
+$if(toc)$
+    <div class="toc-section-label">On this page</div>
+    <div class="toc">
+$table-of-contents$
+    </div>
+$endif$
+    <div class="file-nav">
+      <div class="nav-label">This series</div>
+      <a href="index.html">Home · Overview</a>
+      <a href="introduction.html">Introduction · How to Use</a>
+      <a href="01_consumer_producer_welfare.html">01 Consumer, Producer &amp; Welfare</a>
+      <a href="02_game_theory.html">02 Game Theory</a>
+      <a href="03_information_mechanism_design.html">03 Information &amp; Mechanism Design</a>
+      <a href="04_pricing_imperfect_competition.html">04 Pricing &amp; Imperfect Competition</a>
+      <a href="05_estimation_mle_gmm.html">05 Estimation: MLE &amp; GMM</a>
+      <a href="06_inference.html">06 Inference: Bootstrap &amp; Clustering</a>
+      <a href="07_panel_dynamic_panel.html">07 Panel &amp; Dynamic Panel</a>
+      <a href="08_nonparametrics.html">08 Nonparametrics &amp; Semiparametrics</a>
+      <a href="09_potential_outcomes.html">09 Potential Outcomes &amp; Selection</a>
+      <a href="10_research_design_architecture.html">10 Research Design</a>
+      <a href="11_measurement_digital_traces.html">11 Measurement &amp; Digital Traces</a>
+      <a href="12_iv_late_mte.html">12 IV: LATE &amp; MTE</a>
+      <a href="13_did_event_studies.html">13 DiD &amp; Event Studies</a>
+      <a href="14_rdd_synthetic_control.html">14 RDD &amp; Synthetic Control</a>
+      <a href="15_sensitivity_partial_identification.html">15 Sensitivity &amp; Partial Identification</a>
+      <a href="16_causal_ml_dml.html">16 Causal ML &amp; DML</a>
+      <a href="17_digital_experimentation.html">17 Digital Experimentation</a>
+      <a href="18_interference_marketplace_experiments.html">18 Interference &amp; Marketplace Experiments</a>
+      <a href="19_discrete_choice.html">19 Discrete Choice &amp; Mixed Logit</a>
+      <a href="20_demand_blp.html">20 Demand Estimation &amp; BLP</a>
+      <a href="21_supply_markups_mergers.html">21 Supply, Markups &amp; Mergers</a>
+      <a href="22_entry_partial_id.html">22 Entry &amp; Partial Identification</a>
+      <a href="23_dynamic_structural.html">23 Dynamic Structural Models</a>
+      <a href="24_platforms_networks.html">24 Platforms &amp; Network Effects</a>
+      <a href="25_search_advertising.html">25 Search, Advertising &amp; Information Goods</a>
+      <a href="26_ai_algorithms_data.html">26 AI, Adoption &amp; Data Economics</a>
+      <a href="27_quick_reference.html">27 Quick Reference &amp; Tools</a>
+    </div>
+  </nav>
+  <main class="main-content" id="top">
+$if(title)$
+    <header class="page-header">
+      <h1>$title$</h1>
+$if(subtitle)$
+      <div class="subtitle">$subtitle$</div>
+$endif$
+$if(seriesline)$
+      <div class="meta">$seriesline$</div>
+$endif$
+    </header>
+$endif$
+$body$
+    <footer class="page-footer">
+$if(series)$<span>$series$</span>$endif$
+    </footer>
+  </main>
+</div>
+<script>
+(function(){var p=(location.pathname.split('/').pop()||'index.html');document.querySelectorAll('.file-nav a').forEach(function(a){if(a.getAttribute('href')===p)a.classList.add('current');});})();
+
+/* Preserve complete formulas without internal scrollbars. Only formulas whose
+   natural width exceeds their text column are reduced, and resize restores the
+   largest size that fits. */
+(function () {
+  function fitMath() {
+    document.querySelectorAll('span.math').forEach(function (host) {
+      var katex = host.querySelector('.katex');
+      if (!katex) return;
+      katex.style.fontSize = '';
+      var parent = host.classList.contains('display') ? host : host.parentElement;
+      var available = Math.max(1, parent.clientWidth);
+      /* KaTeX's box can be clipped to the host before measurement; scrollWidth
+         retains the full typeset width and is therefore the correct basis. */
+      var needed = Math.max(katex.scrollWidth, katex.getBoundingClientRect().width);
+      /* Keep a small safety margin for KaTeX glyph overhangs and browser
+         sub-pixel rounding, so the last radical/bar is never clipped. */
+      var target = available * 0.98;
+      if (needed > target) {
+        katex.style.fontSize = Math.max(0.34, target / needed) + 'em';
+      }
+    });
+  }
+  document.addEventListener('DOMContentLoaded', function () {
+    requestAnimationFrame(fitMath);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitMath);
+  });
+  window.addEventListener('resize', fitMath);
+}());
+</script>
+<script defer src="assets/notes.js"></script>
+</body>
+</html>

@@ -1,0 +1,6 @@
+estimator,estimate,se,share_of_truth
+True simple ATT (DGP),0.0879,,1
+Static TWFE (feols),0.0227,0.0087,0.258
+"CS simple ATT (att_gt, not-yet-treated)",0.0818,0.007,0.931
+SA average ATT (sunab),0.0806,0.0078,0.917
+BJS imputation (did_imputation),0.0777,0.0047,0.884

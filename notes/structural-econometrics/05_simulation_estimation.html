@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script>(function(){try{var t=localStorage.getItem('theme');if(t==='dark'||t==='light')document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <title>05 Simulation and Numerical Estimation | From Choices to Counterfactuals</title>
+  <link rel="stylesheet" href="assets/katex/katex.min.css">
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="page-wrapper">
+
+  <!-- ==================== SIDEBAR ==================== -->
+  <nav class="sidebar">
+    <div class="sidebar-title">From Choices to Counterfactuals: Structural Estimation for Digital Platform Research</div>
+    <div class="sidebar-subtitle">Chapter 05 · Simulation and Numerical Estimation</div>
+
+    <div class="toc-section-label">Contents</div>
+    <div class="toc">
+      <a href="#why-simulate">5.1 Why Simulate</a>
+      <a href="#optimization">5.2 Numerical Optimization</a>
+      <a href="#drawing">5.3 Drawing from a Density</a>
+      <a href="#simulation-estimators">5.4 Simulation-Assisted Estimators</a>
+      <a href="#inference">5.5 Simulation Error and Inference</a>
+      <a href="#diagnostics">5.6 Diagnostics and Fit</a>
+      <a href="#approximation-traps">5.7 Seven Approximation Traps at the Implementation Level</a>
+      <a href="#code">5.8 Code</a>
+      <a href="#misconceptions">5.9 Common Pitfalls</a>
+      <a href="#summary">5.10 Chapter Summary</a>
+      <a href="#readings">Further Reading</a>
+    </div>
+
+    <div class="file-nav">
+      <div class="nav-label">Chapters</div>
+      <a href="01_overview_roadmap.html">01 Overview & Decision Framework</a>
+      <a href="02_why_structural.html">02 Why Structural Models</a>
+      <a href="03_rum_logit.html">03 RUM and Logit</a>
+      <a href="04_gev_mixed_logit.html">04 Nested and Mixed Logit</a>
+      <a href="05_simulation_estimation.html" class="current">05 Simulation and Numerical Estimation</a>
+      <a href="06_endogeneity_blp.html">06 Endogeneity and BLP</a>
+      <a href="07_dynamic_choice.html">07 Dynamic Discrete Choice</a>
+      <a href="08_applications.html">08 Platform Research Applications</a>
+      <a href="09_workflow_reference.html">09 Workflow, Validation, and Reference</a>
+    </div>
+  </nav>
+
+  <!-- ==================== MAIN ==================== -->
+  <main class="main-content">
+
+    <header class="page-header">
+      <h1>Simulation and Numerical Estimation</h1>
+      <div class="subtitle">Simulation, Numerical Optimization, and Making Estimators Work</div>
+      <div class="meta">From Choices to Counterfactuals: Structural Estimation for Digital Platform Research · Chapter 05</div>
+    </header>
+
+    <div class="global-legend">
+      <span class="legend-label">Variable colors</span>
+      <span><span class="dot dot-observed"></span>Observed in data</span>
+      <span><span class="dot dot-estimated"></span>Parameters to estimate</span>
+      <span><span class="dot dot-researcher"></span>Set by the researcher</span>
+    </div>
+
+    <p>Through Chapter 03, the choice probability was always something you could write down: a single ratio, plug in the numbers, and out came the answer. That convenience ends the moment random coefficients (the mixed logit of Chapter 04) enter utility. The choice probability becomes an integral over unobserved heterogeneity, logit's elegant closed form is gone, and even the most basic act of computing a single probability is no longer algebra but an integration problem. What this chapter contends with from beginning to end is exactly the chain of computational trouble that problem brings: if the integral has no analytic solution, how are we to estimate the parameters at all?</p>
+
+    <p>The answer has three layers. First, the log-likelihood surface no longer has a first-order condition you can solve in one step; you can only start somewhere and climb the slope a little at a time, which is the job of numerical optimization. Second, the integral itself cannot be evaluated, so it must be approximated by a finite handful of points drawn from the distribution, and how those points are drawn directly determines how good the approximation is. The third layer is the most hidden: the simulation step quietly changes the estimator's bias and variance, and it has to be pulled out and explained on its own. For each method we spell out where it fits, what symptoms it shows when it fails, and how to fix it. The running example is still the streaming subscription of Chapters 03 and 04; the only difference is that this time the choice probability has no closed form, which makes it the perfect vehicle for illustrating simulation.</p>
+
+    <!-- ============================================ -->
+    <h2 id="why-simulate">5.1 Why Simulate</h2>
+
+    <p>Return for a moment to the simplest possible computation in Chapter 03: the probability that a given user picks platform A, for which a pocket calculator is enough. Exponentiate the utility of each of the four options, sum them for the denominator, divide, and you have the answer. Why is it so easy? Because every user shares one and the same set of coefficients, so the choice probability has a ready-made closed form. But once Chapter 04 lets price sensitivity vary from person to person, the trouble begins. Now each user carries a personal price coefficient, and facing the same price list they each make their own choice, while the researcher cannot see even one person's coefficient and holds only the distribution of those coefficients across the whole population.</p>
+
+    <p>Faced with this, a lazy thought springs to mind almost at once: isn't the mean of the price coefficient still $-0.1$? So why not run one ordinary logit at that mean, treat the result as the whole market's share, and sidestep the problem? Unfortunately, this shortcut does not work. A market share is the average of many users' individual choice probabilities, and the choice probability bends nonlinearly with the coefficient, so "averaging over a crowd of people who react differently" and "computing once for one average person" are simply not the same thing. Price-sensitive users barely touch the expensive platforms, while price-insensitive users are happy to pay; the true share averaged across these two extremes need not land exactly on the point that "plug in the mean coefficient" gives you. There is only one honest route to the correct share: let each user run a logit with their own coefficient first, then average over the entire distribution of coefficients. And "averaging over the distribution," rendered into mathematics, is precisely an integral.</p>
+
+    <p>Let us turn this intuition into a model. The user picks one of four options: general-interest platform A, general-interest platform B, niche documentary platform C, and not subscribing (the outside option, with utility normalized to 0, watching free content only). The attributes are exactly those of Chapter 03: monthly fee, weekly ad minutes, and content rating. Only one thing changes: the price coefficient is no longer a single constant shared by everyone but a random coefficient that follows a normal distribution across the population.<span class="demo-badge">illustrative data</span></p>
+
+    <div class="table-scroll">
+    <table>
+      <thead>
+        <tr><th>Option</th><th>Monthly fee (yuan)</th><th>Weekly ads (minutes)</th><th>Content rating</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Platform A (general-interest)</td><td>30</td><td>30</td><td>4.5</td></tr>
+        <tr><td>Platform B (general-interest)</td><td>28</td><td>35</td><td>4.3</td></tr>
+        <tr><td>Platform C (niche documentary)</td><td>45</td><td>40</td><td>4.7</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <p>The fixed parameters carry over from Chapter 03: the marginal disutility of each weekly ad minute is <span class="var-researcher">$\beta_{\text{ad}}=-0.05$</span>, the content-rating coefficient is <span class="var-researcher">$\beta_{\text{content}}=0.8$</span>, and the differentiation premium of niche platform C enters as an ASC of <span class="var-researcher">$+0.3$</span>. Only the price coefficient becomes random: <span class="var-estimated">$\beta_{\text{price}} \sim N(-0.1,\, 0.05^2)$</span>. In other words, the population mean of price sensitivity is still $-0.1$ (the same as the fixed value in Chapter 03), only now it is spread out around that mean by one standard deviation of $0.05$. Given one person's $\beta_{\text{price}}$, their choice still follows an ordinary logit, and the conditional probability of choosing A is the standard logit formula. Now average this conditional probability over the entire distribution of $\beta_{\text{price}}$, and you get the unconditional probability of choosing A "when the coefficient cannot be seen." Written as an integral, this is exactly the expression below.</p>
+
+    <div class="formula-box">
+      <div class="formula-title">Mixed Logit Choice Probability</div>
+      <div class="formula-math">$$P_{nj} = \int \underbrace{\frac{e^{V_{nj}(\beta)}}{\displaystyle\sum_{k} e^{V_{nk}(\beta)}}}_{L_{nj}(\beta)\;\text{(logit given }\beta\text{)}} \, f(\beta \mid \theta)\, d\beta$$</div>
+      <div class="formula-explain">
+        <table>
+          <tr><td class="var-observed">$V_{nj}(\beta)$</td><td>Representative utility of individual $n$ for option $j$, varying with the coefficient $\beta$</td></tr>
+          <tr><td>$L_{nj}(\beta)$</td><td>The ordinary logit probability given $\beta$ (the integrand, closed-form)</td></tr>
+          <tr><td class="var-estimated">$f(\beta\mid\theta)$</td><td>The mixing distribution of the coefficient, whose shape is set by the parameters $\theta$ to be estimated (here the mean and standard deviation)</td></tr>
+          <tr><td class="var-estimated">$\theta$</td><td>The deep parameters to be estimated, for example the mean $-0.1$ and standard deviation $0.05$ of the $\beta_{\text{price}}$ distribution</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <p>What is this expression saying? It writes the probability of choosing A as a weighted average over the distribution of the price coefficient, each weight being the density $f(\beta\mid\theta)$: it aggregates the choice probabilities of people with every degree of price sensitivity, weighted by how many of them there are in the population. And here is where the trouble lies: even with price as the only random coefficient, this one-dimensional integral has no closed form in elementary functions. The dimension is as low as it can get and the problem as simple as it can get, yet still no analytic expression can be written down; the models of Chapter 04, with three or four random coefficients, push the integral to higher dimensions, and a hand-written solution is even more hopeless. Since no analytic solution can be had, we take one step back: replace the integral with a sample average. Draw several $\beta$ from $f(\beta\mid\theta)$, compute one closed-form logit at each $\beta$, and average. To see whether it actually works, let us first do it by hand with two points.</p>
+
+    <div class="worked-example">
+      <div class="worked-title">Worked example: approximating the mixed logit probability with two draws</div>
+
+      <div class="worked-step">Step 1: Write utility as a function of the price coefficient</div>
+      <p>First collect the price-free part. For platform A, the non-price utility from ads and content rating is $-0.05\times 30 + 0.8\times 4.5 = 2.1$, so $V_A(\beta)=30\beta + 2.1$. Likewise $V_B(\beta)=28\beta + 1.69$, $V_C(\beta)=45\beta + 2.06$ (including platform C's ASC), and $V_{\text{out}}=0$. Plug in the mean $\beta=-0.1$ to check: $V_A=-0.9$, $V_B=-1.11$, $V_C=-2.44$, exactly the utility values from Chapter 03.</p>
+
+      <div class="worked-step">Step 2: Draw two points: the mean plus and minus one standard deviation</div>
+      <p>For hand computation, pick two representative points: $\beta^{(1)}=-0.05$ (someone relatively insensitive to price) and $\beta^{(2)}=-0.15$ (someone relatively sensitive to price), and compute one closed-form logit at each draw.</p>
+      <p>For $\beta^{(1)}=-0.05$: $V_A=0.60,\ V_B=0.29,\ V_C=-0.19$. Exponentiating gives $e^{0.60}=1.822,\ e^{0.29}=1.336,\ e^{-0.19}=0.827,\ e^{0}=1$, for a denominator of $4.985$. Hence
+      $$L_A(\beta^{(1)}) = \frac{1.822}{4.985} = 0.366.$$</p>
+      <p>For $\beta^{(2)}=-0.15$: $V_A=-2.40,\ V_B=-2.51,\ V_C=-4.69$. Exponentiating gives $e^{-2.40}=0.0907,\ e^{-2.51}=0.0813,\ e^{-4.69}=0.0092,\ e^{0}=1$, for a denominator of $1.181$. Hence
+      $$L_A(\beta^{(2)}) = \frac{0.0907}{1.181} = 0.077.$$</p>
+
+      <div class="worked-step">Step 3: Average over the draws</div>
+      <p>Average the two results and you have the simulated probability:
+      $$\hat P_A = \tfrac12\big(0.366 + 0.077\big) = 0.221.$$
+      Compare it with the true value $P_A = 0.218$ from high-precision numerical integration: with only two points, it is already remarkably close. This is not luck: the two points sit symmetrically on either side of the mean, so the near-linear variation with the coefficient cancels between the plus and minus sides, leaving only a higher-order residual, the very trick that antithetic sampling in Section 5.3 relies on when the integrand is roughly monotone. Had we truly drawn two points at random, the error would have been far larger, and just how large that error is is exactly what we quantify carefully next.</p>
+
+      <div class="worked-step">Step 4: The mixing distribution raises platform C's share</div>
+      <p>One more detail is worth pausing on. Ordinary logit (pinning $\beta$ at the mean $-0.1$) gives platform C a share of only $4.8\%$, whereas the mixed logit's true value is $8.3\%$, nearly double. The root cause is that the integrand is convex in $\beta$: $\mathbb{E}[L_C(\beta)] \neq L_C(\mathbb{E}[\beta])$. Platform C, with the highest monthly fee, gets almost no takers among price-sensitive users but captures a sizable share among the few insensitive ones, and once averaged it comes out higher than the number "plug in the mean" produces. This Jensen-style inequality is not making its last appearance; it returns in a different guise in Section 5.4.<span class="demo-badge">illustrative data</span></p>
+    </div>
+
+    <p>Generalize this hand computation into a formula. For any option, the simulated probability is nothing but the average of the closed-form logit over $R$ draws:</p>
+
+    <div class="formula-box">
+      <div class="formula-title">Simulated Choice Probability</div>
+      <div class="formula-math">$$\hat P_{nj} = \frac{1}{R}\sum_{r=1}^{R} L_{nj}\big(\beta_r\big), \qquad \beta_r \sim f(\beta\mid\theta)$$</div>
+      <div class="formula-explain">
+        <table>
+          <tr><td class="var-researcher">$R$</td><td>Number of simulations (the count of draws), set by the researcher</td></tr>
+          <tr><td>$\beta_r$</td><td>The $r$-th coefficient drawn from the mixing distribution</td></tr>
+          <tr><td>$L_{nj}(\beta_r)$</td><td>The closed-form logit probability at the $r$-th draw</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <p>This estimator has a reassuring property: it is <strong>unbiased</strong> for the probability itself, $\mathbb{E}[\hat P_{nj}] = P_{nj}$, for the simple reason that it is nothing more than a sample average of the integrand. Its variance falls as $1/R$ and its standard deviation narrows as $1/\sqrt{R}$. How fast this convergence is, the table below shows with 500 independent replications: each row fixes an $R$, repeatedly draws $R$ pseudo-random draws to compute one $\hat P_A$ each time, and reports the mean and standard deviation of that batch of estimates.<span class="demo-badge">illustrative data</span></p>
+
+    <div class="table-scroll">
+    <table>
+      <thead>
+        <tr><th>Number of draws $R$</th><th>Mean of $\hat P_A$</th><th>SD of $\hat P_A$</th><th>SD reduction vs. previous row</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>10</td><td>0.2195</td><td>0.0366</td><td>—</td></tr>
+        <tr><td>100</td><td>0.2173</td><td>0.0116</td><td>about 3.2×</td></tr>
+        <tr><td>1000</td><td>0.2180</td><td>0.0039</td><td>about 3.0×</td></tr>
+        <tr><td>10000</td><td>0.2179</td><td>0.0012</td><td>about 3.2×</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <p>Read the table: the mean hugs the true value $0.218$ throughout, confirming unbiasedness; the standard deviation, meanwhile, shrinks by about $\sqrt{10}\approx 3.16$ every time $R$ grows tenfold, matching the theory to the last digit. This also reminds us that simulation error is by no means a decimal you can wave away. At $R=10$, the standard deviation of a single estimate is as high as $0.037$, roughly $17\%$ of the true value $0.218$; to press this relative fluctuation down to around $1\%$ takes three thousand points, and down to $0.5\%$ takes tens of thousands (the row with $R=10000$ and standard deviation $0.0012$). Buying one more stable decimal place with tens of thousands of points is a steep price, and the Halton sequence of Section 5.3 exists precisely to reach the same accuracy with far fewer points.</p>
+
+    <div class="intuition-box">
+      <div class="box-title">Intuition: outsourcing the integral to a panel of "representatives"</div>
+      The weighted average over the whole population cannot be computed directly, so we randomly invite $R$ people to vote and take their average as a stand-in for the population. The more people we invite, the closer the vote lands to the truth, with the error narrowing at rate $1/\sqrt{R}$. The truly demanding part is that inside each respondent's choice probability sits a logit; and to estimate the parameters we must compute one such integral for each of thousands of users, then recompute the whole thing again at every step of the optimizer. Simulation is cheap, but never free, and what the remaining sections of this chapter are all ultimately about is one thing: making each draw pull more weight.
+    </div>
+
+    <div class="takeaway-box">
+      <div class="box-title">Bottom Line</div>
+      Random coefficients turn the choice probability into an integral with no closed form. Approximating it with the average of $R$ draws is unbiased for the probability, with standard deviation converging as $1/\sqrt{R}$. Pseudo-random sampling converges slowly, which is the starting point for the improvements in the sections that follow.
+    </div>
+
+    <!-- ============================================ -->
+    <h2 id="optimization">5.2 Numerical Optimization</h2>
+
+    <p>The goal of estimation is unchanged: still to maximize the log-likelihood $\ell(\theta)=\sum_n \ln P_n(\theta)$, except that $P_n$ must now be replaced by the simulated probability $\hat P_n$, and there is no longer any first-order condition you can solve in one step. Since one step will not reach the top, we go step by step: start from any position on the likelihood surface, read the slope and curvature underfoot, and move toward higher ground. Modern optimizers are, when it comes down to it, all variants of this "hill-climbing" logic, differing only in how much local information they look at and how they use it.</p>
+
+    <h3>Newton-Raphson: Let Curvature Set the Step</h3>
+
+    <p>Newton-Raphson's idea is direct: at the current point, approximate the objective by a second-order Taylor expansion into a paraboloid, then jump in one step to that paraboloid's peak. Since the peak of a paraboloid has a ready-made formula, borrow it as the next foothold.</p>
+
+    <div class="formula-box">
+      <div class="formula-title">Newton-Raphson Update</div>
+      <div class="formula-math">$$\theta_{t+1} = \theta_t + \lambda\,\big(-H_t\big)^{-1} g_t$$</div>
+      <div class="formula-explain">
+        <table>
+          <tr><td>$g_t$</td><td>The gradient (score), $g_t = \frac{1}{N}\sum_n \partial \ln P_n/\partial\theta$, pointing uphill</td></tr>
+          <tr><td>$H_t$</td><td>The Hessian (matrix of second partial derivatives), capturing the curvature of the likelihood surface; negative definite where the surface is concave</td></tr>
+          <tr><td class="var-researcher">$\lambda$</td><td>Step size, starting at 1 and halving on backtracking when needed</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <p>The gradient sets the direction and $-H^{-1}$ sets how big the step is: where the likelihood surface bends sharply (high curvature) it takes small, cautious steps, and where it bends gently (nearly flat) it strides across in one bound. Near a concave function this step converges astonishingly fast, at the cost of computing and inverting a $K\times K$ Hessian at every iteration, which is not cheap. Newton-Raphson carries one crucial safeguard, called <strong>step-size backtracking</strong>: try the full step $\lambda=1$ first, and the moment the new point's likelihood falls rather than rises, halve $\lambda$ and try again, until the likelihood truly moves up. As long as the Hessian is negative definite, a small enough step is guaranteed to raise the likelihood, and backtracking uses exactly this fact to ensure every step heads higher.</p>
+
+    <h3>BHHH: Replace the Hessian with the Outer Product of Scores</h3>
+
+    <p>Computing second derivatives is slow and error-prone, so avoid it where you can. BHHH found a clever way around it: in MLE, the average outer product of the scores and the negative Hessian are equal at the true value anyway (this is the information matrix equality), so why go to the trouble of computing the Hessian at all? Just substitute the outer-product matrix $B$ for $-H$.</p>
+
+    <div class="formula-box">
+      <div class="formula-title">BHHH Update</div>
+      <div class="formula-math">$$\theta_{t+1} = \theta_t + \lambda\, B_t^{-1} g_t, \qquad B_t = \frac{1}{N}\sum_{n=1}^{N} s_n(\theta_t)\, s_n(\theta_t)'$$</div>
+      <div class="formula-explain">
+        <table>
+          <tr><td>$s_n(\theta_t)$</td><td>The score of the $n$-th observation, $s_n = \partial \ln P_n/\partial\theta$</td></tr>
+          <tr><td>$B_t$</td><td>The average outer product of the scores, always positive semidefinite, so no worry about a non-positive-definite matrix</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <p>So BHHH needs only first derivatives, and because $B_t$ is positive semidefinite by construction it always points uphill, which makes it worry-free in MLE. But its confidence rests entirely on the information matrix equality, that is, on the premise that "the model is correctly specified and not far from the true value." Once the model is misspecified, or the current point is still far from the truth, $B$ and $-H$ visibly fail to match, and the step BHHH gives you is no longer reliable.</p>
+
+    <h3>BFGS: The Default Quasi-Newton Choice</h3>
+
+    <p>BFGS takes a middle road: it neither computes second derivatives nor leans on the information matrix equality the way BHHH does, but instead, as it iterates, uses successive changes in the gradient to gradually piece together an approximation of the (inverse) Hessian. It is the default method for unconstrained problems in SciPy's <code>minimize</code>; R's <code>optim</code> and Stata's <code>ml</code> both build in BFGS as well, though the former defaults to Nelder-Mead and the latter to Newton-Raphson. In implementation it updates the approximate inverse Hessian directly, which both spares an inversion at every step and avoids computing the second derivatives themselves, and it is these two together that make it usually faster than Newton-Raphson. When parameters have natural bounds (for instance a standard deviation that must be positive), switch to the bounded version L-BFGS-B; for large problems with hundreds of parameters, prefer L-BFGS-B or a trust-region method as well. And if even the gradient is unreliable, fall back to derivative-free Nelder-Mead, which is more robust but also slower, and it is exactly what the illustrative example in this chapter uses.</p>
+
+    <h3>How to Tell You Have Converged</h3>
+
+    <p>An optimizer has to know when to stop. Watching the change in log-likelihood alone is not enough: on flat terrain the log-likelihood barely budges, yet the current point may still be far from the true peak, so calling it done based on whether the log-likelihood moved will stop too early. A more trustworthy signal is the gradient. A commonly used convergence statistic looks like this:</p>
+
+    <div class="formula-box">
+      <div class="formula-title">Gradient-Based Convergence Statistic</div>
+      <div class="formula-math">$$m = g'\,\big(-H\big)^{-1} g$$</div>
+      <div class="formula-explain">
+        <table>
+          <tr><td>$m$</td><td>A "how far from the peak" measure that combines gradient and curvature, roughly twice the log-likelihood gain expected from a full Newton step (that is, an expected gain of about $m/2$); small enough (say below $10^{-4}$) is taken as converged</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="intuition-box">
+      <div class="box-title">Intuition: how to confirm you have reached the summit in thick fog</div>
+      Picture yourself climbing in thick fog, able to see only the ground at your feet. Judging whether you have reached the top by height alone is unreliable: once you step onto a nearly level plateau, each step barely changes your height, yet you may still be far from the real summit. A more credible signal is the slope underfoot: as long as the ground still tilts, there is higher ground ahead; only when it has flattened in every direction have you truly reached the top. The gradient-based criterion $m$ does exactly this, converting "how steep the ground still is" into "roughly how much one more step would raise you," so it recognizes true convergence earlier and more reliably than staring at the change in height.
+    </div>
+
+    <p>In practice it is best to watch three criteria together: the gradient norm $\lVert g\rVert$ small enough, the parameter movement between consecutive iterations small enough, and the change in log-likelihood small enough; only when all three hold at once should you dare to conclude "converged."</p>
+
+    <div class="warn-box">
+      <div class="box-title">Pitfall: using only the change in log-likelihood as the criterion stops too early</div>
+      <p style="margin-bottom:0">Where the likelihood surface is flat, the difference in $\ell$ between consecutive steps can fall below the default tolerance even though the gradient is not small and the parameters are still moving noticeably. Here the optimizer falsely reports convergence and hands you a point that is not truly optimal. Making the gradient norm the primary criterion and the change in $\ell$ a secondary one is the first line of defense against this false convergence.</p>
+    </div>
+
+    <h3>Failure Modes and Fixes</h3>
+
+    <p>When estimation stalls, do not thrash about; match the symptom to its entry first, find the root cause, and then apply the remedy.</p>
+
+    <div class="table-scroll">
+    <table>
+      <thead>
+        <tr><th>Symptom</th><th>Possible cause</th><th>Fix</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Stuck at the starting values, never moving</td><td>The starting point happens to lie in a locally flat region where the gradient is nearly zero</td><td>Change the starting values; use multiple starts (at least 5 to 10 random starts)</td></tr>
+        <tr><td>The likelihood falls instead</td><td>The step is too large and overshoots the peak</td><td>Turn on step-size backtracking or a line search; check the BFGS line-search settings</td></tr>
+        <tr><td>The Hessian is not negative definite</td><td>Near a saddle point, or the parameters are underidentified</td><td>Switch to BHHH, or add a ridge to the Hessian (add a positive number to the diagonal); recheck identification</td></tr>
+        <tr><td>Parameters diverge or stick at a bound</td><td>The bounds are set poorly, or the parameter is not identified</td><td>Reparameterize (for example set $\sigma = e^{\gamma}$ to guarantee positivity automatically); treat divergence as a signal of an identification problem</td></tr>
+        <tr><td>Convergence is extremely slow</td><td>The Hessian is ill-conditioned and the parameters differ wildly in scale</td><td>Rescale the variables so the parameters are of comparable magnitude (pricing in yuan versus cents differs by two orders of magnitude)</td></tr>
+        <tr><td>Different starting values give different solutions</td><td>There are multiple local optima, or the model is badly overparameterized</td><td>Try more than 10 starting values and compare; this is most likely not a numerical problem but a model problem</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <div class="warn-box">
+      <div class="box-title">Pitfall: multiple local optima are often a signal of an identification problem, not merely numerical trouble</div>
+      <p style="margin-bottom:0">If the result is sensitive to the starting values, so that where it ends up depends entirely on where you began, that is most likely not the optimizer falling short but the model being overparameterized or underidentified. In mixed logit the most common case is that the data cannot pin down the mean and the variance of a random coefficient at the same time, so the estimate drifts across a likelihood surface that is nearly equally high everywhere. The remedy is to scatter several starting points from the outset and treat "different starts converging to the same point" as a test that must be passed; as long as they fail to reach the same point, suspect the model specification first rather than blaming the optimization software.</p>
+    </div>
+
+    <h3>Three Ways to Estimate the Standard Errors</h3>
+
+    <p>Once you have the point estimate $\hat\theta$, the variance matrix has three common recipes, corresponding neatly to three degrees of trust in the model, from full confidence to guarded skepticism.</p>
+
+    <div class="table-scroll">
+    <table>
+      <thead>
+        <tr><th>Estimator</th><th>Asymptotic variance ($-H$, $B$, $W$ are each per-observation averages)</th><th>When it holds</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Inverse Hessian</td><td>$\frac{1}{N}(-H)^{-1}$</td><td>The model is correctly specified and the likelihood is computed exactly; the classic choice</td></tr>
+        <tr><td>BHHH (inverse outer product)</td><td>$\frac{1}{N}B^{-1}$</td><td>The information matrix equality holds (correctly specified and near the true value)</td></tr>
+        <tr><td>Sandwich (robust)</td><td>$\frac{1}{N}(-H)^{-1}\, W\, (-H)^{-1}$</td><td>The model may be misspecified, or the data have a clustered structure (whether simulation variance is folded in, see Section 5.5)</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <div class="formula-box">
+      <div class="formula-title">Sandwich (Robust) Variance</div>
+      <div class="formula-math">$$\widehat{\operatorname{Var}}(\hat\theta) = \frac{1}{N}\big(-H\big)^{-1}\, W\, \big(-H\big)^{-1}, \qquad W = \frac{1}{N}\sum_{n=1}^{N} s_n(\hat\theta)\, s_n(\hat\theta)'$$</div>
+      <div class="formula-explain">
+        <table>
+          <tr><td>$-H$</td><td>The per-observation average of the negative Hessian (the "bread"), capturing curvature</td></tr>
+          <tr><td>$W$</td><td>The variance of the scores (the "filling"), absorbing misspecification and noise</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <p>When the model is exactly correct and there is no simulation error, these three recipes converge to the same value, and the first two are then easier to compute. But once you suspect the specification is wrong, both the inverse Hessian and BHHH underestimate the variance, and only sandwich will do. When the data have a clustered structure (users nested within cities, sessions nested within users), you must further replace $W$ with a version summed by cluster, to accommodate the within-cluster correlation. As for whether the simulation step itself adds another block of variance to the standard errors, and under what conditions it does, Section 5.5 spells it out.</p>
+
+    <div class="takeaway-box">
+      <div class="box-title">Bottom Line</div>
+      Start with BFGS by default, switch to L-BFGS-B when convergence is poor, and fall back to Nelder-Mead if it is still unsatisfactory. Judge convergence primarily by the gradient norm, and use multiple starts to test whether they converge to the same point. Use sandwich standard errors whenever the model may be misspecified, and switch to the clustered version when a clustered structure is present.
+    </div>
+
+    <!-- ============================================ -->
+    <h2 id="drawing">5.3 Drawing from a Density</h2>
+
+    <p>The quality of simulation rests half on the optimizer and half on how those $R$ points are chosen. This section answers two things: how to draw from a target distribution, and a question that seems a little incredible at first, why, when the points are placed cleverly, 100 points can do the work of 1000?</p>
+
+    <h3>The Inverse CDF and Cholesky</h3>
+
+    <p>The most general sampling method is the inverse-CDF transform. If $U\sim\text{Uniform}(0,1)$ and $F$ is the CDF of the target distribution, then $X=F^{-1}(U)$ follows $F$. To draw a one-dimensional normal, use $\beta = \mu + \sigma\,\Phi^{-1}(U)$; when the CDF has no closed-form inverse, solve it numerically. For the multivariate normal $N(\mu,\Omega)$, use the Cholesky factorization $\Omega = LL'$: draw a batch of independent standard normals $z$ first, then set $x = \mu + Lz$, and the random coefficients come out carrying the correct covariance structure. The models of Chapter 04 with correlated random coefficients rely on exactly this step to twist originally independent draws into the correct correlation structure.</p>
+
+    <h3>The Clumping Problem of Pseudo-Random Numbers</h3>
+
+    <p>Take $R$ points on $[0,1]$ with pseudo-random numbers directly, and the problem is that they love to clump at random: some intervals get several points crammed in while others get none at all. Clumping means some $\beta$ values are sampled over and over while others are never seen, so the variance of the integral approximation runs high. The large standard deviation in the $R=10$ row of the convergence table in Section 5.1 is in good part the doing of clumping; with the same 10 points, spreading them out evenly (the Halton scheme discussed below) makes the variance far smaller.</p>
+
+    <h3>The Halton Sequence: Filling the Interval Systematically</h3>
+
+    <p>The Halton sequence is a deterministic low-discrepancy sequence, born to combat clumping. Its idea can be stated in one sentence: rather than scatter points at random and let them huddle together, set a fixed rule that makes every new point squeeze into the emptiest interval currently available. Concretely, for a prime base $k$, write the index $r$ in base $k$, then move the digits after the decimal point and reverse their order:</p>
+
+    <div class="formula-box">
+      <div class="formula-title">Halton Sequence (prime base $k$)</div>
+      <div class="formula-math">$$h_r^{(k)} = \sum_{i\ge 1} \frac{d_i}{k^{\,i}}, \qquad d_i \in \{0,1,\dots,k-1\}$$</div>
+      <div class="formula-explain">
+        <table>
+          <tr><td class="var-researcher">$k$</td><td>The prime base, a different prime for each dimension</td></tr>
+          <tr><td>$d_i$</td><td>The digits of $r$ in base $k$, from least significant to most significant</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <p>For example, take base 2 and $r=5$: $5 = 101_2$, whose digits from least significant are $1,0,1$, so $h_5^{(2)} = 1/2 + 0/4 + 1/8 = 0.625$. The table below lists the first 8 points for base 2 and base 3, and one glance shows how they fill the interval by successive halving and thirding.</p>
+
+    <div class="table-scroll">
+    <table>
+      <thead>
+        <tr><th>$r$</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th><th>6</th><th>7</th><th>8</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Base 2</td><td>0.500</td><td>0.250</td><td>0.750</td><td>0.125</td><td>0.625</td><td>0.375</td><td>0.875</td><td>0.063</td></tr>
+        <tr><td>Base 3</td><td>0.333</td><td>0.667</td><td>0.111</td><td>0.444</td><td>0.778</td><td>0.222</td><td>0.556</td><td>0.889</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <div class="intuition-box">
+      <div class="box-title">Intuition: every new point fills the largest gap</div>
+      Walk through the base-2 row once: first place 0.5, splitting the interval in two; then 0.25 and 0.75, filling the midpoints of the left and right halves; then 0.125, 0.375, 0.625, 0.875, filling the midpoints of the four quartiles. Every new point lands in the largest gap currently available, so no matter which point you stop at, $[0,1]$ is covered roughly evenly. Pseudo-random numbers have no such "memory": you draw yours, I draw mine, and no one minds anyone else; Halton, by contrast, writes "spread out, don't clump" directly into its deterministic construction. Empirically, when the dimension is low, 100 Halton points can match the accuracy of about 1000 pseudo-random points.
+    </div>
+
+    <div class="figure">
+    <svg viewBox="0 0 680 372" role="img" aria-label="Coverage of 64 points on the unit square, pseudo-random versus the Halton sequence: pseudo-random clumps and leaves gaps, Halton spreads out evenly">
+      <text x="175" y="50" text-anchor="middle" class="ink lbl" style="font-weight:700">Pseudo-random · 64 points</text>
+      <text x="507" y="50" text-anchor="middle" class="ink lbl" style="font-weight:700;font-size:12px">Halton · 64 points (base 2 × base 3)</text>
+      <rect x="46" y="66" width="258" height="258" rx="4" class="ax"></rect>
+      <rect x="378" y="66" width="258" height="258" rx="4" class="ax"></rect>
+      <circle cx="120.7" cy="294.6" r="3" style="fill:var(--fig-2)"></circle>
+      <circle cx="115.4" cy="215.4" r="3" style="fill:var(--fig-2)"></circle>
+      <circle cx="78.5" cy="87.0" r="3" style="fill:var(--fig-2)"></circle>
+      <circle cx="129.2" cy="114.4" r="3" style="fill:var(--fig-2)"></circle>
+      <circle cx="116.0" cy="66.5" r="3" style="fill:var(--fig-2)"></circle>
+      <circle cx="66.3" cy="128.7" r="3" style="fill:var(--fig-2)"></circle>
+      <circle cx="149.9" cy="258.5" r="3" style="fill:var(--fig-2)"></circle>
+      <circle cx="210.6" cy="225.9" r="3" style="fill:var(--fig-2)"></circle>
+      <circle cx="263.6" cy="253.2" r="3" style="fill:var(--fig-2)"></circle>
+      <circle cx="174.5" cy="265.2" r="3" style="fill:var(--fig-2)"></circle>
+      <circle cx="203.2" cy="205.3" r="3" style="fill:var(--fig-2)"></circle>
+      <circle cx="212.6" cy="284.0" r="3" style="fill:var(--fig-2)"></circle>
+      <circle cx="97.8" cy="307.2" r="3" style="fill:var(--fig-2)"></circle>
+      <circle cx="177.2" cy="98.0" r="3" style="fill:var(--fig-2)"></circle>
+      <circle cx="217.9" cy="194.8" r="3" style="fill:var(--fig-2)"></circle>
+      <circle cx="61.9" cy="181.4" r="3" style="fill:var(--fig-2)"></circle>
+      <circle cx="101.7" cy="74.2" r="3" style="fill:var(--fig-2)"></circle>
+      <circle cx="254.4" cy="283.4" r="3" style="fill:var(--fig-2)"></circle>
+      <circle cx="285.4" cy="134.6" r="3" style="fill:var(--fig-2)"></circle>
+      <circle cx="63.1" cy="180.7" r="3" style="fill:var(--fig-2)"></circle>
+      <circle cx="282.1" cy="179.9" r="3" style="fill:var(--fig-2)"></circle>
+      <circle cx="298.5" cy="270.1" r="3" style="fill:var(--fig-2)"></circle>
+      <circle cx="207.9" cy="92.2" r="3" style="fill:var(--fig-2)"></circle>
+      <circle cx="207.7" cy="90.2" r="3" style="fill:var(--fig-2)"></circle>
+      <circle cx="51.6" cy="80.4" r="3" style="fill:var(--fig-2)"></circle>
+      <circle cx="166.4" cy="142.1" r="3" style="fill:var(--fig-2)"></circle>
+      <circle cx="165.1" cy="129.9" r="3" style="fill:var(--fig-2)"></circle>
+      <circle cx="46.3" cy="192.6" r="3" style="fill:var(--fig-2)"></circle>
+      <circle cx="193.0" cy="199.8" r="3" style="fill:var(--fig-2)"></circle>
+      <circle cx="181.6" cy="292.1" r="3" style="fill:var(--fig-2)"></circle>
+      <circle cx="164.1" cy="123.1" r="3" style="fill:var(--fig-2)"></circle>
+      <circle cx="71.2" cy="284.5" r="3" style="fill:var(--fig-2)"></circle>
+      <circle cx="47.5" cy="228.2" r="3" style="fill:var(--fig-2)"></circle>
+      <circle cx="295.7" cy="193.2" r="3" style="fill:var(--fig-2)"></circle>
+      <circle cx="294.0" cy="221.9" r="3" style="fill:var(--fig-2)"></circle>
+      <circle cx="168.6" cy="301.2" r="3" style="fill:var(--fig-2)"></circle>
+      <circle cx="196.6" cy="252.9" r="3" style="fill:var(--fig-2)"></circle>
+      <circle cx="111.9" cy="252.3" r="3" style="fill:var(--fig-2)"></circle>
+      <circle cx="88.8" cy="250.3" r="3" style="fill:var(--fig-2)"></circle>
+      <circle cx="269.0" cy="293.6" r="3" style="fill:var(--fig-2)"></circle>
+      <circle cx="295.3" cy="99.8" r="3" style="fill:var(--fig-2)"></circle>
+      <circle cx="73.2" cy="202.4" r="3" style="fill:var(--fig-2)"></circle>
+      <circle cx="138.6" cy="82.5" r="3" style="fill:var(--fig-2)"></circle>
+      <circle cx="249.1" cy="66.9" r="3" style="fill:var(--fig-2)"></circle>
+      <circle cx="301.0" cy="180.0" r="3" style="fill:var(--fig-2)"></circle>
+      <circle cx="133.0" cy="133.4" r="3" style="fill:var(--fig-2)"></circle>
+      <circle cx="284.3" cy="296.5" r="3" style="fill:var(--fig-2)"></circle>
+      <circle cx="105.3" cy="91.5" r="3" style="fill:var(--fig-2)"></circle>
+      <circle cx="244.7" cy="281.0" r="3" style="fill:var(--fig-2)"></circle>
+      <circle cx="212.0" cy="221.3" r="3" style="fill:var(--fig-2)"></circle>
+      <circle cx="50.5" cy="254.1" r="3" style="fill:var(--fig-2)"></circle>
+      <circle cx="130.4" cy="158.0" r="3" style="fill:var(--fig-2)"></circle>
+      <circle cx="269.4" cy="118.3" r="3" style="fill:var(--fig-2)"></circle>
+      <circle cx="285.0" cy="170.0" r="3" style="fill:var(--fig-2)"></circle>
+      <circle cx="108.4" cy="258.3" r="3" style="fill:var(--fig-2)"></circle>
+      <circle cx="164.6" cy="96.5" r="3" style="fill:var(--fig-2)"></circle>
+      <circle cx="213.5" cy="248.9" r="3" style="fill:var(--fig-2)"></circle>
+      <circle cx="131.7" cy="323.0" r="3" style="fill:var(--fig-2)"></circle>
+      <circle cx="64.0" cy="134.9" r="3" style="fill:var(--fig-2)"></circle>
+      <circle cx="58.1" cy="156.8" r="3" style="fill:var(--fig-2)"></circle>
+      <circle cx="232.9" cy="135.4" r="3" style="fill:var(--fig-2)"></circle>
+      <circle cx="75.1" cy="212.7" r="3" style="fill:var(--fig-2)"></circle>
+      <circle cx="234.9" cy="255.4" r="3" style="fill:var(--fig-2)"></circle>
+      <circle cx="66.6" cy="221.4" r="3" style="fill:var(--fig-2)"></circle>
+      <circle cx="507.0" cy="238.0" r="3" style="fill:var(--fig-1)"></circle>
+      <circle cx="442.5" cy="152.0" r="3" style="fill:var(--fig-1)"></circle>
+      <circle cx="571.5" cy="295.3" r="3" style="fill:var(--fig-1)"></circle>
+      <circle cx="410.2" cy="209.3" r="3" style="fill:var(--fig-1)"></circle>
+      <circle cx="539.2" cy="123.3" r="3" style="fill:var(--fig-1)"></circle>
+      <circle cx="474.8" cy="266.7" r="3" style="fill:var(--fig-1)"></circle>
+      <circle cx="603.8" cy="180.7" r="3" style="fill:var(--fig-1)"></circle>
+      <circle cx="394.1" cy="94.7" r="3" style="fill:var(--fig-1)"></circle>
+      <circle cx="523.1" cy="314.4" r="3" style="fill:var(--fig-1)"></circle>
+      <circle cx="458.6" cy="228.4" r="3" style="fill:var(--fig-1)"></circle>
+      <circle cx="587.6" cy="142.4" r="3" style="fill:var(--fig-1)"></circle>
+      <circle cx="426.4" cy="285.8" r="3" style="fill:var(--fig-1)"></circle>
+      <circle cx="555.4" cy="199.8" r="3" style="fill:var(--fig-1)"></circle>
+      <circle cx="490.9" cy="113.8" r="3" style="fill:var(--fig-1)"></circle>
+      <circle cx="619.9" cy="257.1" r="3" style="fill:var(--fig-1)"></circle>
+      <circle cx="386.1" cy="171.1" r="3" style="fill:var(--fig-1)"></circle>
+      <circle cx="515.1" cy="85.1" r="3" style="fill:var(--fig-1)"></circle>
+      <circle cx="450.6" cy="304.9" r="3" style="fill:var(--fig-1)"></circle>
+      <circle cx="579.6" cy="218.9" r="3" style="fill:var(--fig-1)"></circle>
+      <circle cx="418.3" cy="132.9" r="3" style="fill:var(--fig-1)"></circle>
+      <circle cx="547.3" cy="276.2" r="3" style="fill:var(--fig-1)"></circle>
+      <circle cx="482.8" cy="190.2" r="3" style="fill:var(--fig-1)"></circle>
+      <circle cx="611.8" cy="104.2" r="3" style="fill:var(--fig-1)"></circle>
+      <circle cx="402.2" cy="247.6" r="3" style="fill:var(--fig-1)"></circle>
+      <circle cx="531.2" cy="161.6" r="3" style="fill:var(--fig-1)"></circle>
+      <circle cx="466.7" cy="75.6" r="3" style="fill:var(--fig-1)"></circle>
+      <circle cx="595.7" cy="320.8" r="3" style="fill:var(--fig-1)"></circle>
+      <circle cx="434.4" cy="234.8" r="3" style="fill:var(--fig-1)"></circle>
+      <circle cx="563.4" cy="148.8" r="3" style="fill:var(--fig-1)"></circle>
+      <circle cx="498.9" cy="292.1" r="3" style="fill:var(--fig-1)"></circle>
+      <circle cx="627.9" cy="206.1" r="3" style="fill:var(--fig-1)"></circle>
+      <circle cx="382.0" cy="120.1" r="3" style="fill:var(--fig-1)"></circle>
+      <circle cx="511.0" cy="263.5" r="3" style="fill:var(--fig-1)"></circle>
+      <circle cx="446.5" cy="177.5" r="3" style="fill:var(--fig-1)"></circle>
+      <circle cx="575.5" cy="91.5" r="3" style="fill:var(--fig-1)"></circle>
+      <circle cx="414.3" cy="311.3" r="3" style="fill:var(--fig-1)"></circle>
+      <circle cx="543.3" cy="225.3" r="3" style="fill:var(--fig-1)"></circle>
+      <circle cx="478.8" cy="139.3" r="3" style="fill:var(--fig-1)"></circle>
+      <circle cx="607.8" cy="282.6" r="3" style="fill:var(--fig-1)"></circle>
+      <circle cx="398.2" cy="196.6" r="3" style="fill:var(--fig-1)"></circle>
+      <circle cx="527.2" cy="110.6" r="3" style="fill:var(--fig-1)"></circle>
+      <circle cx="462.7" cy="253.9" r="3" style="fill:var(--fig-1)"></circle>
+      <circle cx="591.7" cy="167.9" r="3" style="fill:var(--fig-1)"></circle>
+      <circle cx="430.4" cy="81.9" r="3" style="fill:var(--fig-1)"></circle>
+      <circle cx="559.4" cy="301.7" r="3" style="fill:var(--fig-1)"></circle>
+      <circle cx="494.9" cy="215.7" r="3" style="fill:var(--fig-1)"></circle>
+      <circle cx="623.9" cy="129.7" r="3" style="fill:var(--fig-1)"></circle>
+      <circle cx="390.1" cy="273.0" r="3" style="fill:var(--fig-1)"></circle>
+      <circle cx="519.1" cy="187.0" r="3" style="fill:var(--fig-1)"></circle>
+      <circle cx="454.6" cy="101.0" r="3" style="fill:var(--fig-1)"></circle>
+      <circle cx="583.6" cy="244.4" r="3" style="fill:var(--fig-1)"></circle>
+      <circle cx="422.3" cy="158.4" r="3" style="fill:var(--fig-1)"></circle>
+      <circle cx="551.3" cy="72.4" r="3" style="fill:var(--fig-1)"></circle>
+      <circle cx="486.8" cy="317.6" r="3" style="fill:var(--fig-1)"></circle>
+      <circle cx="615.8" cy="231.6" r="3" style="fill:var(--fig-1)"></circle>
+      <circle cx="406.2" cy="145.6" r="3" style="fill:var(--fig-1)"></circle>
+      <circle cx="535.2" cy="289.0" r="3" style="fill:var(--fig-1)"></circle>
+      <circle cx="470.7" cy="203.0" r="3" style="fill:var(--fig-1)"></circle>
+      <circle cx="599.7" cy="117.0" r="3" style="fill:var(--fig-1)"></circle>
+      <circle cx="438.5" cy="260.3" r="3" style="fill:var(--fig-1)"></circle>
+      <circle cx="567.5" cy="174.3" r="3" style="fill:var(--fig-1)"></circle>
+      <circle cx="503.0" cy="88.3" r="3" style="fill:var(--fig-1)"></circle>
+      <circle cx="632.0" cy="308.1" r="3" style="fill:var(--fig-1)"></circle>
+      <circle cx="380.0" cy="222.1" r="3" style="fill:var(--fig-1)"></circle>
+    </svg>
+    <div class="figcaption"><span class="fig-label">Figure 5.1</span>The same 64 points covering the unit square. Pseudo-random (left) clumps at random and leaves large voids, oversampling in some places while missing others, which pushes up the integration variance; Halton (right) fills the emptiest spots layer by layer according to a deterministic rule, covering the square evenly, and so reaches the same accuracy with about an order of magnitude fewer points.</div>
+    </div>
+
+    <h3>Correlation in High Dimensions and Scrambling</h3>
+
+    <p>As the dimension grows, assign each dimension its own prime base: 2 for the first, 3 for the second, 5 for the third, and so on. But a snag hides here. As the dimension rises, Halton sequences based on two large, close primes periodically "synchronize," marching almost side by side over a long stretch (base 29 and base 31, say), which laces spurious correlation between dimensions and cancels out the hard-won benefit of low discrepancy, usually becoming visible once the dimension passes 5. To see how to fix it, first distinguish two different kinds of correlation. One is the "first-cycle" correlation common to all primes, crowded at the start of the sequence, which you can clear simply by discarding the first several points (discarding no fewer than the largest prime base). The other is the large-prime correlation just described, which does not merely linger at the start but runs through a long stretch and cannot be removed by discarding the start at all; for this you must turn to <strong>scrambling</strong> (shuffling the correspondence among the digits) or <strong>randomization</strong> (setting $\tilde h_r = (h_r + U)\bmod 1$, where $U$ is a common uniform random offset). Scrambled Halton preserves even coverage with one hand and breaks up the between-dimension correlation with the other, and it incidentally makes "which sequence was drawn this time" itself repeatable, so that the simulation variance can be estimated. In still higher dimensions, switch to a Sobol sequence or Modified Latin Hypercube Sampling.</p>
+
+    <h3>Practical Advice and Two More Variance-Reduction Devices</h3>
+
+    <p>For mixed logit, 500 to 1000 Halton draws are usually enough to start, more as the dimension of the random coefficients grows, and do not forget to <strong>report the robustness of the results to the number of draws</strong>: double $R$ and the point estimates and standard errors should barely move, for once they move, $R$ is not yet enough. Beyond this there are two variance-reduction devices that buy a lot for a little. One is <strong>antithetic sampling</strong>: for every $\varepsilon$ drawn, pair it with its negative $-\varepsilon$ (or take $1-U$ on the inverse CDF) and use them together; when the integrand is roughly monotone, the plus and minus errors cancel, and the effective sample size can double or even triple, and the two $\pm$-symmetric points deliberately chosen in the hand computation of Section 5.1 are the plainest form of this trick. The other is <strong>systematic sampling</strong>: take $u_r = (r-1+u)/R$ (where $u\sim\text{Uniform}(0,1)$ is a common random offset) to lay out $[0,1]$ at equal spacing, then apply the inverse-CDF transform, replacing random ups and downs with tidy coverage; it is exactly that random offset that keeps it unbiased for the integral and still able to estimate the simulation variance by replication, and remove it and you fall back to a deterministic quadrature grid.</p>
+
+    <div class="takeaway-box">
+      <div class="box-title">Bottom Line</div>
+      The inverse CDF together with Cholesky can draw from any (correlated) distribution. Pseudo-random numbers clump, while the Halton sequence fills the space systematically, saving an order of magnitude of points in low dimensions. In high dimensions guard against prime-base correlation by switching to scrambled Halton. Start with 500 to 1000 draws and report doubling robustness.
+    </div>
+
+    <!-- ============================================ -->
+    <h2 id="simulation-estimators">5.4 Simulation-Assisted Estimators</h2>
+
+    <p>Feed the simulated probability of Section 5.1 into the optimizer of Section 5.2 and you get what are called simulation-assisted estimators. This section is the statistical heart of the chapter and also the place most easily taken for granted: simulation is not a free substitution but shifts the estimator's bias and variance, and each way of substituting it in (MSL, MSM, MSS) carries a different cost. First let us see the structure of the whole loop clearly.</p>
+
+    <div class="pipeline-bar">
+      <span class="pipe-step">Given $\theta$</span>
+      <span class="pipe-arrow">→</span>
+      <span class="pipe-step">Draw $\beta_r$</span>
+      <span class="pipe-arrow">→</span>
+      <span class="pipe-step here">Simulate $\hat P_n$</span>
+      <span class="pipe-arrow">→</span>
+      <span class="pipe-step">Form $\ell(\theta)=\sum_n \ln\hat P_n$</span>
+      <span class="pipe-arrow">→</span>
+      <span class="pipe-step">Optimizer updates $\theta$</span>
+    </div>
+
+    <h3>MSL: The Bias the Logarithm Introduces</h3>
+
+    <p>MSL (maximum simulated likelihood) does something plain: replace $P_n$ in the likelihood with the simulated probability $\hat P_n$ and leave every other step as it was. Since each $\hat P_n$ is unbiased for the probability, you would most naturally think that plugging it into the log-likelihood leaves the whole thing more or less unbiased too. This is exactly where the thought stumbles. The fault lies not in the simulated probability itself but in the fact that the likelihood wraps each probability in a logarithm first: taking the log and then the expectation is not equal to taking the expectation and then the log.</p>
+
+    <div class="intuition-box">
+      <div class="box-title">Intuition: the logarithm magnifies downward wobbles <span class="demo-badge">illustrative data</span></div>
+      Suppose an option's true probability is $0.2$, and the simulated probability wobbles up and down from sampling, half the time low at $0.1$ and half the time high at $0.3$, swinging symmetrically around $0.2$, apparently unbiased. But take the logarithm and the symmetry breaks at once: $\ln 0.1=-2.30$ is $0.69$ below $\ln 0.2=-1.61$, while $\ln 0.3=-1.20$ is only $0.41$ above it. For a wobble of the same size, the downward one is pulled farther by the log and the upward one cannot make it back. Average the two sides and you get $-1.75$, about $0.14$ below the log of the true value, $-1.61$. The logarithm is a downward-concave curve, and it punishes an underestimate more heavily than it rewards an equal overestimate, so "an unbiased probability," once logged, is on average too low. More troublesome still, this downward shift pushes in the same direction every time and does not cancel out no matter how many runs you make.
+    </div>
+
+    <p>Behind this is Jensen's inequality at work: $\ln$ is concave, so $\mathbb{E}[\ln \hat P_n] &lt; \ln \mathbb{E}[\hat P_n] = \ln P_n$. The simulated log-likelihood is on average <strong>too low</strong>, its bias is firmly negative, and it will not vanish just because you run it a few more times. How large this bias is, the expression below decides.</p>
+
+    <div class="formula-box">
+      <div class="formula-title">MSL Log-Likelihood Bias (Jensen)</div>
+      <div class="formula-math">$$\mathbb{E}_r\big[\ln \hat P_n\big] \;\approx\; \ln P_n \;-\; \frac{1}{2R}\,\frac{\operatorname{Var}_r\!\big[L_n(\beta_r)\big]}{P_n^{2}}$$</div>
+      <div class="formula-explain">
+        <table>
+          <tr><td class="var-researcher">$R$</td><td>Number of draws: the bias shrinks at rate $1/R$</td></tr>
+          <tr><td>$\operatorname{Var}_r[L_n]$</td><td>The variance of the integrand logit across draws: the fewer the draws and the more the integrand wobbles, the larger the bias</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <p>The formula alone is not enough; let us measure this bias concretely with the streaming example. The true value for platform A is $\ln P_A = -1.5234$. For each $R$, repeatedly simulate $\hat P_A$ and take its log, and see just how far its average departs from the true value.<span class="demo-badge">illustrative data</span></p>
+
+    <div class="table-scroll">
+    <table>
+      <thead>
+        <tr><th>Number of draws $R$</th><th>$\mathbb{E}[\ln \hat P_A]$</th><th>Bias (relative to $\ln P_A=-1.5234$)</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>5</td><td>-1.554</td><td>-0.031</td></tr>
+        <tr><td>25</td><td>-1.5288</td><td>-0.005</td></tr>
+        <tr><td>100</td><td>-1.5248</td><td>-0.001</td></tr>
+        <tr><td>1000</td><td>-1.5236</td><td>-0.0002</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <p>The bias in the table is negative throughout and shrinks roughly as $1/R$: from $R=5$ to $R=25$ (a fivefold increase), the bias drops from $-0.031$ to $-0.005$ (about a sixfold shrink); by $R=1000$ only about two ten-thousandths remain, safe to ignore in practice.</p>
+
+    <div class="figure">
+    <svg viewBox="0 0 700 340" role="img" aria-label="The MSL log-likelihood bias decays as 1/R with the number of draws R; on log-log axes the four points fall approximately on a line of slope negative one">
+      <line class="gr dash" x1="76" y1="52.0" x2="660" y2="52.0"></line><text x="68" y="56.0" text-anchor="end" class="mut lbl-s">0.1</text><line class="gr dash" x1="76" y1="128.0" x2="660" y2="128.0"></line><text x="68" y="132.0" text-anchor="end" class="mut lbl-s">0.01</text><line class="gr dash" x1="76" y1="204.0" x2="660" y2="204.0"></line><text x="68" y="208.0" text-anchor="end" class="mut lbl-s">0.001</text><line class="gr dash" x1="76" y1="280.0" x2="660" y2="280.0"></line><text x="68" y="284.0" text-anchor="end" class="mut lbl-s">0.0001</text>
+      <line class="ax" x1="76" y1="284" x2="660" y2="284"></line>
+      <line class="ax" x1="76" y1="46" x2="76" y2="284"></line>
+      <polyline points="76.0,75.5 660.0,280.7" style="fill:none;stroke:var(--fig-2);stroke-width:1.6;stroke-dasharray:5 4"></polyline>
+      <polyline points="119.0,90.7 270.2,150.9 400.4,204.0 616.7,257.1" style="fill:none;stroke:var(--fig-1);stroke-width:2"></polyline>
+      <circle cx="119.0" cy="90.7" r="3.5" style="fill:var(--fig-1)"></circle><circle cx="270.2" cy="150.9" r="3.5" style="fill:var(--fig-1)"></circle><circle cx="400.4" cy="204.0" r="3.5" style="fill:var(--fig-1)"></circle><circle cx="616.7" cy="257.1" r="3.5" style="fill:var(--fig-1)"></circle>
+      <text x="119.0" y="300" text-anchor="middle" class="mut lbl-s">5</text><text x="270.2" y="300" text-anchor="middle" class="mut lbl-s">25</text><text x="400.4" y="300" text-anchor="middle" class="mut lbl-s">100</text><text x="616.7" y="300" text-anchor="middle" class="mut lbl-s">1000</text>
+      <text x="368" y="324" text-anchor="middle" class="mut lbl-s">Number of draws R (log axis)</text>
+      <text x="20" y="165" text-anchor="middle" transform="rotate(-90 20 165)" class="mut lbl-s">Absolute bias (log axis)</text>
+      <text x="300" y="96" class="lbl-s" style="fill:var(--fig-2);font-weight:700">Reference: slope −1 (∝ 1/R)</text>
+    </svg>
+    <div class="figcaption"><span class="fig-label">Figure 5.2</span>The MSL log-likelihood bias decays with the number of draws R (<span class="demo-badge">illustrative data</span>, matching the bias table in Section 5.4). On log-log axes the four points fall approximately on a line of slope −1, the very mark of a bias that shrinks as 1/R: from R=5 to R=1000 the bias drops from about 0.031 to about 0.0002. The bias is always negative (Jensen's inequality) and depends only on R, not on the sample size N, so as N grows R must grow with it, or this bias will sooner or later overtake the ever-shrinking sampling fluctuation.</div>
+    </div>
+
+    <p>This $1/R$ shrink rate is exactly what determines the conditions under which MSL can be trusted. Common sense says that a large enough sample $N$ should make the estimate accurate enough. But the simulation bias has a counterintuitive temperament: it depends only on $R$ and has nothing to do with $N$. The larger the sample, the smaller the estimator's own sampling fluctuation, narrowing as $1/\sqrt{N}$, and the finer the signal you want to discern; the simulation bias, meanwhile, does not budge, clinging to the order of $1/R$. If you keep piling on a large $N$ while letting $R$ stand still, this otherwise negligible bias will sooner or later overtake the ever-shrinking sampling fluctuation and, turning guest into host, become the main source of estimation error. To keep it quietly in a secondary role, $R$ must grow together with $N$, and grow faster than $\sqrt{N}$. $R \gtrsim \sqrt{N}$ is only a floor, not a target: in practice, start with a few hundred to a few thousand Halton draws, use doubling robustness to confirm the estimate has landed in a stable region, and switching to Halton draws can press the required $R$ down further still.</p>
+
+    <details>
+      <summary>Going deeper: why the precise condition is $R/\sqrt{N}\to\infty$</summary>
+      <div class="detail-content">
+        <p>The asymptotic distribution of MSL is described by $\sqrt{N}(\hat\theta-\theta)$, so what must actually go to zero is the bias after magnification by $\sqrt{N}$. The single-observation log-likelihood bias is $O(1/R)$; aggregate over $N$ observations and multiply by $\sqrt{N}$, and the bias term is of order $\sqrt{N}/R$. Just how fast $R$ should grow with $N$ must be read in tiers, because "consistency" and "asymptotic normality" are two thresholds of different height:</p>
+        <ul>
+          <li><strong>$R$ held fixed</strong>: $\sqrt{N}/R$ diverges with $N$, the point estimate carries a bias that does not vanish with sample size, and MSL is <strong>inconsistent</strong>. This is precisely the rigorous source of "a large $N$ cannot substitute for a large $R$."</li>
+          <li><strong>$R\to\infty$ at any rate</strong>: as long as the number of draws goes to infinity along with $N$, the single-observation bias $O(1/R)$ is driven to zero and MSL is already <strong>consistent</strong>, even if it grows more slowly than $\sqrt{N}$.</li>
+          <li><strong>$R\to\infty$ but more slowly than $\sqrt{N}$</strong>: consistent it is, but $\sqrt{N}/R$ still diverges, the $\sqrt{N}$-magnified bias overwhelms the ordinary sampling fluctuation, and $\sqrt{N}(\hat\theta-\theta)$ no longer converges to that centered normal. In this tier the estimate is <strong>not asymptotically normal</strong>, and the standard errors and confidence intervals computed from $-H^{-1}/N$ lose their basis and cannot be constructed as usual.</li>
+          <li><strong>$R/\sqrt{N}\to\infty$, that is, faster than $\sqrt{N}$</strong>: equivalent to $\sqrt{N}/R\to 0$, the magnified bias finally vanishes, and the limiting distribution of MSL matches MLE exactly, <strong>consistent, asymptotically normal, attaining MLE's efficiency, and free of asymptotic bias</strong>. This is the rigorous version of the earlier rule of thumb $R\gtrsim\sqrt{N}$.</li>
+        </ul>
+      </div>
+    </details>
+
+    <p>More worth guarding against than "biased" is that this bias is especially hard to catch. When the draws are too few, a single run converges all the same, the log-likelihood, gradient, and standard errors all look normal, not one red light comes on, yet the result is wrong. This bias is written into no single output, and staring at the screen you will never find it. There is only one way to see it: change the set of draws, re-estimate the whole thing, and see whether the result moved.</p>
+
+    <p>The following demonstration is built to catch the kind of estimate that "shows no fault on the surface." Take the same simulated data (true values $\mu=-0.1$, $\sigma=0.05$) to estimate the mean and standard deviation of the price-coefficient distribution, comparing $R=5$ with $R=1000$. For each $R$, re-estimate once on 20 different sets of pseudo-random draws, and see how widely the estimates scatter across these seeds.<span class="demo-badge">illustrative data</span></p>
+
+    <div class="table-scroll">
+    <table>
+      <thead>
+        <tr><th>Number of draws $R$</th><th>$\hat\mu$ (20 seeds)</th><th>$\hat\sigma$ (20 seeds)</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>5</td><td>mean -0.103, across-seed SD 0.032, range [-0.181, -0.049]</td><td>mean 0.057, across-seed SD 0.025, range [0.024, 0.123]</td></tr>
+        <tr><td>1000</td><td>mean -0.097, across-seed SD 0.001, range [-0.098, -0.095]</td><td>mean 0.043, across-seed SD 0.001, range [0.041, 0.045]</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <p>Look at the $R=5$ row: the estimated $\hat\sigma$ swings wildly between 0.024 and 0.123, entirely at the mercy of which set of random draws you happened to use. What does this mean? With the same data and the same model, merely changing one seed, you could reach either of two opposite conclusions, from "almost no heterogeneity" all the way to "astonishingly large heterogeneity," and no single run would give you the slightest warning. At $R=1000$, this scatter narrows to the third decimal place, $\hat\sigma$ settling firmly at 0.043 and $\hat\mu$ at -0.097, both very close to the true values (the small gap from -0.1 and 0.05 is the sampling error inherent in this $N=3000$ sample). This is why "reporting draw robustness" is never a formality: it is the only window through which you can glimpse the simulation bias.</p>
+
+    <h3>MSM: Keeping Unbiasedness Inside the Integral</h3>
+
+    <p>MSL's root ailment, in the end, is that one move of "take the log first, then the expectation." MSM (the method of simulated moments) simply sidesteps it: instead of maximizing a likelihood, it makes the simulated moments line up with the moments in the data.</p>
+
+    <div class="formula-box">
+      <div class="formula-title">MSM Objective Function</div>
+      <div class="formula-math">$$\hat\theta_{\text{MSM}} = \arg\min_{\theta}\; \big[\bar m - \check m(\theta)\big]'\, W\, \big[\bar m - \check m(\theta)\big]$$</div>
+      <div class="formula-explain">
+        <table>
+          <tr><td class="var-observed">$\bar m$</td><td>Sample moments (choice shares, cross-moments, etc. in the data)</td></tr>
+          <tr><td>$\check m(\theta)$</td><td>Simulated moments, obtained by averaging directly over draws, unbiased for the moments themselves</td></tr>
+          <tr><td class="var-researcher">$W$</td><td>Weighting matrix, usually the inverse of the sample-moment variance</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <p>Here is the key difference: the simulated moment $\check m(\theta)$ averages the moment condition directly, with no nonlinear logarithm wrapped around the outside, so it is <strong>unbiased</strong> for the moments. Because of this, MSM's consistency <strong>does not depend on $R\to\infty$</strong>: any fixed $R>0$ (large enough to steer clear of numerical noise) is enough for consistency. The cost shifts to efficiency: a finite $R$ multiplies the asymptotic variance by an inflation factor of about $(1+1/R)$, and efficiency is quite picky about which moments you choose, for choose them poorly and the information in the data is simply wasted. BLP (Chapter 06) uses exactly MSM, because it takes market shares as moments by nature. This asymptotic theory was established by McFadden (1989) and Pakes &amp; Pollard (1989).</p>
+
+    <h3>MSS: Theoretically Optimal, Rare in Practice</h3>
+
+    <p>MSS (maximum simulated score) attacks from a different angle: it uses simulation to approximate the expectation inside the score rather than to approximate the likelihood itself. As long as you can construct an unbiased score simulator, it is consistent and asymptotically normal for fixed $R$; but at fixed $R$ its covariance is still larger than MLE's by an $O(1/R)$ simulation-noise term, and only when $R$ grows with $N$ at any rate does this term vanish and match MLE's efficiency. What truly makes it better than MSL is that its requirement on the growth rate of $R$ is far looser (any rate will do, no need to be faster than $\sqrt{N}$), not that there is no $1/R$ penalty at fixed $R$. The cost is that an unbiased score simulator is genuinely hard to build: the score carries $1/P$ in its denominator ($s=\partial\ln P/\partial\theta=(\partial P/\partial\theta)/P$), and filling that denominator with the simulated probability directly gives $\mathbb{E}[1/\hat P]\neq 1/P$, so the bias slips back in through the denominator; while a truly unbiased accept-reject simulator happens to be non-smooth and hard for the optimizer to handle. So it rarely appears in actual research, and knowing where it stands is enough.</p>
+
+    <div class="table-scroll">
+    <table>
+      <thead>
+        <tr><th>Method</th><th>Source of bias</th><th>Requirement on $R$</th><th>Efficiency</th><th>Implementation difficulty</th><th>Typical setting</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>MSL</strong></td><td>Jensen bias of $\ln\hat P$, $O(1/R)$</td><td>$R\to\infty$ for consistency; matching MLE (asymptotic normality, efficiency) needs $R/\sqrt{N}\to\infty$</td><td>Comparable to MLE when $R$ is large enough</td><td>Low</td><td>Mixed logit; the most common</td></tr>
+        <tr><td><strong>MSM</strong></td><td>None (moments are unbiased)</td><td>Any fixed $R>0$ for consistency</td><td>Depends on moment choice, possibly below MLE</td><td>Medium (choosing moments is hard)</td><td>BLP, share-based moments</td></tr>
+        <tr><td><strong>MSS</strong></td><td>None</td><td>Consistent at fixed $R$ under an unbiased score simulator; efficiency needs $R$ to grow</td><td>Attains MLE as $R\to\infty$</td><td>High (an unbiased score simulator is hard to construct)</td><td>Extremely high precision demands with ample compute</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <div class="info-box">
+      <div class="box-title">The discipline of reporting the number of draws</div>
+      <p style="margin-bottom:0">Whether a simulation estimate can be reproduced by others depends entirely on whether three pieces of information are stated clearly: the type of draw (scrambled Halton beats pseudo-random), the number, and the random seed. The safe practice is to take a large enough $R$ (say 1000) and then lay out the evidence: from $R=500$ to $R=2000$ the point estimates and standard errors barely move, showing that $R$ is already well past $\sqrt{N}$. With a smallish number like $R=50$, $R$ often falls short of $\sqrt{N}$, the estimate may be biased, and a single convergence does not rule out simulation bias for you. Skip this step and a referee will almost certainly ask you to re-estimate with a larger $R$.</p>
+    </div>
+
+    <div class="takeaway-box">
+      <div class="box-title">Bottom Line</div>
+      MSL is biased at small $R$ because of the Jensen bias of $\ln\hat P$: $R\to\infty$ for consistency, $R/\sqrt{N}\to\infty$ to match MLE's efficiency and asymptotic normality; at small $R$ the estimate is both biased and hard to detect on its own, revealed only by a draw-robustness check. MSM keeps unbiasedness inside the moments, consistent at fixed $R$, at the cost of efficiency. MSS is theoretically optimal but computationally too expensive.
+    </div>
+
+    <!-- ============================================ -->
+    <h2 id="inference">5.5 Simulation Error and Inference</h2>
+
+    <p>Simulation moves more than the point estimate; the standard errors must be weighed anew as well. But there is a glib and inaccurate claim to dispel first: the main reason simulation estimates use sandwich is not simulation noise. For the consistent MSL of this chapter's main line ($R$ faster than $\sqrt{N}$), the point estimate is asymptotically $\hat\theta\sim N(\theta^*,\,-H^{-1}/N)$, exactly as in MLE, the simulation variance is asymptotically negligible, $-H^{-1}$ is itself the correct asymptotic variance, and computing standard errors from it directly does not systematically understate them. What truly forces sandwich upon you are two other things unrelated to simulation: the model may be misspecified, and the data may be clustered. Once the specification is in doubt, both $-H^{-1}$ and BHHH cease to be reliable, and the filling $W$ must faithfully absorb the actual fluctuation of the scores; when the data have a clustered structure (users nested within cities, sessions nested within users), replace $W$ with a form summed by cluster to accommodate the within-cluster correlation. As for the recipe of "folding the simulation variance into the standard errors," it targets fixed-$R$ MSM or finite-$R$ settings, where simulation does leave an $O(1/R)$ block in the asymptotic variance; it does not apply to the consistent MSL here that has already matched MLE.</p>
+
+    <h3>Fixed Draws and Chattering</h3>
+
+    <p>There is an implementation point more basic than the standard errors yet routinely overlooked: <strong>throughout the optimization, the same set of draws must be reused from start to finish</strong>. The way to do it is to fix a set of standard-normal draws $z$ at the outset, then lock this same $z$ for every likelihood evaluation thereafter, generate coefficients by $\beta = \mu + \sigma z$, and let only the parameters $\theta$ vary. This way the log-likelihood is a smooth, deterministic function of $\theta$, the gradient is well-defined, and only then does the optimizer climb smoothly.</p>
+
+    <div class="warn-box">
+      <div class="box-title">Pitfall: redrawing at every iteration makes the objective function "shudder" (chattering)</div>
+      <p style="margin-bottom:0">If you redraw a set of draws at every likelihood evaluation, a layer of random noise is laid over the objective function out of nowhere: the parameters have not changed, yet the function value jumps around. The optimizer faces a surface bristling with burrs, the gradient is thrown off entirely, and it either fails to converge at all or stops at a false peak conjured up by the noise. This phenomenon has a name: chattering. The cure is a single sentence: draw once, reuse throughout. The demonstration code in Section 5.8 of this chapter fixes the Halton draws outside the likelihood function and passes them in, precisely to avoid this trap.</p>
+    </div>
+
+    <p>Fixing the draws also gives the phrase "report draw robustness" a precise meaning: re-estimate with a different seed, or a different starting point of the sequence, and if the point estimates and standard errors change noticeably, then $R$ is insufficient and you should increase $R$ or switch to better draws.</p>
+
+    <div class="info-box">
+      <div class="box-title">Inference Practice Checklist</div>
+      <ul style="margin-bottom:0">
+        <li>Always use sandwich standard errors; use clustered sandwich when there is a natural clustering (market, time, user group).</li>
+        <li>Fix the same set of draws throughout to eliminate chattering.</li>
+        <li>State the draw type, number, seed, and optimizer tolerance in the paper to ensure reproducibility.</li>
+        <li>Re-estimate with $R$ doubled to confirm the point estimates and standard errors are stable, as evidence of simulation adequacy.</li>
+      </ul>
+    </div>
+
+    <div class="takeaway-box">
+      <div class="box-title">Bottom Line</div>
+      The main threats to the standard errors are misspecification and clustering, corrected with sandwich (the clustered version when needed); for consistent MSL, $-H^{-1}$ is itself the correct asymptotic variance. Fixing the draws throughout buys a smooth objective function and avoids chattering. Report the draw type, number, seed, and tolerance.
+    </div>
+
+    <!-- ============================================ -->
+    <h2 id="diagnostics">5.6 Diagnostics and Fit</h2>
+
+    <p>Once estimation finishes, do not rush to conclusions; run a few diagnostics first. These diagnostics help you get a feel for the model's temperament and also serve as the basis for judging whether this set of estimates can bear the weight of the counterfactual inference to come.</p>
+
+    <h3>Predicted versus Actual Shares: Compared by Market Segment</h3>
+
+    <p>The most direct diagnostic is to compare the model's predicted shares with the actual shares in the data. The predicted share is the average of all individuals' choice probabilities, the actual share is the frequency with which each option is chosen, and if all goes well the two should sit very close. But matching in aggregate is a necessary condition, not a sufficient one: a model can be perfectly accurate in total yet biased in every market segment, only with the positive and negative biases canceling so that nothing shows on the surface. So you must also <strong>check by group</strong>, verifying predicted against actual shares separately by city, price band, and user type. Whichever group throws up a systematic departure is often telling you the model is missing an interaction term or a grouping dimension.</p>
+
+    <h3>Out-of-Sample Validation</h3>
+
+    <p>A good in-sample fit means only that the model has enough degrees of freedom to hug the data, nothing more. To test whether it works as a predictive tool, you must have it predict data that estimation never touched: hold out a portion of the observations, estimate on the rest, and see how accurately the model predicts the held-out portion. Why out-of-sample validation is the true proof of credibility, and how to carve out a holdout using experimental arms, Section 2.8 of Chapter 02 has already covered thoroughly, and we do not repeat it here, only adding that it is a standard step in simulation estimation as well; it is just that with a full simulation run required for each estimation, cross-validation costs more, and doing it once at the preliminary diagnostic stage is usually enough.</p>
+
+    <h3>Why the Hit Rate Misleads</h3>
+
+    <p>The hit rate is the proportion of cases in which "the option with the highest predicted probability happens to be the actual choice." People often reach for it, for no reason other than it being a single, easy-to-explain number, yet for a probability model it is simply the wrong thing to evaluate. Chapter 03 already made the point: a random utility model predicts <strong>the proportions of the options in the population</strong>, not a claim that a given person will certainly choose a certain thing. Forcing a probability into an argmax throws away the model's most valuable information (heterogeneity and shares). Worse, it deceives: when the choice distribution is imbalanced, a mediocre model that "always predicts the most common option" can also score a high hit rate. In the streaming example, the representative consumer facing a fixed price list has a not-subscribing share of about a half, so a model that blindly always predicts "not subscribing" also scores a hit rate of about a half, yet has no predictive power whatsoever for platform pricing or content interventions. Evaluation must land on probabilities, looking at predicted shares, the log-likelihood, and the out-of-sample likelihood, and always against a constant-only baseline model.</p>
+
+    <div class="info-box">
+      <div class="box-title">Quick Diagnostic Checklist</div>
+      <ul style="margin-bottom:0">
+        <li>Are the overall predicted and actual shares close, and close within each segment as well?</li>
+        <li>Are the parameter signs sensible (price coefficient negative, content-rating coefficient positive)?</li>
+        <li>Is there an out-of-sample (holdout) prediction, rather than only an in-sample fit?</li>
+        <li>Is the hit rate compared against a baseline model, rather than reported as a high number in isolation?</li>
+        <li>Are all standard errors reasonable, with no abnormally large or near-zero values?</li>
+      </ul>
+    </div>
+
+    <div class="takeaway-box">
+      <div class="box-title">Bottom Line</div>
+      Diagnostics should compare predicted with actual shares and examine them by segment; credibility comes from an out-of-sample holdout, not an in-sample fit; the hit rate misleads for probability models, the object of evaluation is always the probability, and always against a baseline model.
+    </div>
+
+    <!-- ============================================ -->
+    <h2 id="approximation-traps">5.7 Seven Approximation Traps at the Implementation Level</h2>
+
+    <p>Passing all the diagnostics is no reason to rest easy. Cramming a continuous economic model into a computer of finite precision makes approximations everywhere, and every approximation can quietly throw the estimate off while the surface stays calm. The table below organizes the seven common traps into symptoms plus checks, and the approach in the last column is really always the same: tighten the approximation one notch and see whether the result moves, for if it moves, the previous notch was not precise enough.</p>
+
+    <div class="table-scroll">
+    <table>
+      <thead>
+        <tr><th>Trap</th><th>Symptom</th><th>How to check</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Tolerance too loose</strong>: the convergence tolerance of the optimizer or an inner loop (such as BLP's contraction mapping) is set too wide</td>
+          <td>The result appears converged, yet elasticities or coefficients depart systematically; tighten the tolerance and the numbers change noticeably</td>
+          <td>Tighten the tolerance by several orders of magnitude (say $10^{-6}\to10^{-12}$) and re-estimate, watching whether the estimate moves</td>
+        </tr>
+        <tr>
+          <td><strong>Improper draw reuse</strong>: redrawing at every iteration, or wrongly sharing the same draw across individuals</td>
+          <td>Redrawing between iterations makes the objective shudder (chattering); sharing across individuals makes the simulation error move in the same direction across individuals and distorts the standard errors</td>
+          <td>Draw once and reuse throughout, confirming the objective is smooth after fixing the draws; and confirm each individual uses an independent segment of draws</td>
+        </tr>
+        <tr>
+          <td><strong>Integration discretized too coarsely</strong>: too few draws or too sparse a numerical-integration grid</td>
+          <td>The estimate changes noticeably with $R$ or grid density, and the standard errors are understated</td>
+          <td>Increase $R$ or refine the grid, switch to Halton, and report doubling robustness</td>
+        </tr>
+        <tr>
+          <td><strong>Interpolation error</strong>: interpolating a continuous value function or state on a coarse grid (common in dynamic models)</td>
+          <td>Counterfactuals are sensitive to grid resolution, and the policy function shows jagged edges</td>
+          <td>Refine the state grid, or use higher-order interpolation, and watch whether the solution stabilizes</td>
+        </tr>
+        <tr>
+          <td><strong>Truncation</strong>: hard-truncating an infinite horizon or an unbounded state space</td>
+          <td>The estimate changes with the truncation point, and tail behavior is systematically understated</td>
+          <td>Extrapolate the truncation point (lengthen the horizon, loosen the bounds) and confirm the result converges</td>
+        </tr>
+        <tr>
+          <td><strong>Using $\max\mathbb{E}$ in place of $\mathbb{E}[\max]$</strong>: taking the expectation first and then maximizing, in place of maximizing first and then taking the expectation</td>
+          <td>The option value is understated and forward-looking behavior is flattened</td>
+          <td>Integrate over the shocks correctly (for example the $\mathbb{E}[\max]$ of the logsum) rather than plugging in the expected value</td>
+        </tr>
+        <tr>
+          <td><strong>Poor scaling</strong>: parameters differing wildly in magnitude, or forcing a linear form on a nonlinear relationship</td>
+          <td>The Hessian is extremely ill-conditioned, convergence is very slow or numerically unstable</td>
+          <td>Rescale the variables to comparable magnitudes; check the Hessian's condition number; keep the nonlinear form where necessary</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+
+    <p>The sixth trap, $\mathbb{E}[\max]$ versus $\max\mathbb{E}$, is worth pulling out for a few more words, because it is of the same stock as the MSL bias of Section 5.4, both springing from Jensen's inequality: $\max$ is convex, and taking the expectation first and then maximizing understates the value of "keeping the choice in your hands." In static logit, $\mathbb{E}[\max_j U_j]$ is precisely the logsum (the consumer surplus of Chapter 03); in a dynamic model (Chapter 07) it transforms into the future option value, and once you replace it with $\max\mathbb{E}$, you systematically flatten away the patience of a far-sighted decision-maker.</p>
+
+    <!-- ============================================ -->
+    <h2 id="code">5.8 Code</h2>
+
+    <p>Now assemble the chapter's parts into one: generate the data, draw the Halton draws, write the simulated likelihood, hand it to the optimizer, and watch how the estimate changes with $R$. The roughly 30 lines of Python below run as is, using the streaming mixed logit (price coefficient $\sim N(-0.1,0.05^2)$, with the remaining parameters pinned at their true values and only the mean and standard deviation of the price-coefficient distribution estimated). Note that the draws are fixed once outside the likelihood function and then passed in, which is exactly the fixed draws of Section 5.5. For simplicity the code lets all individuals share the same set of draws; in real research you should assign each individual a non-overlapping segment of the Halton sequence (as xlogit and apollo both do), or the simulation error will stack in the same direction across individuals and will never average out with $N$.</p>
+
+    <pre><code>import numpy as np
+from scipy.optimize import minimize
+from scipy.stats import norm
+
+# ---- Streaming example: platforms A, B, C + not subscribing (outside, utility=0) ----
+ad      = np.array([30., 35., 40.])
+content = np.array([4.5, 4.3, 4.7])
+asc     = np.array([0., 0., 0.3])             # ASC of niche platform C
+fixed   = -0.05*ad + 0.8*content + asc        # part of utility excluding the monthly fee
+mu_true, sig_true = -0.1, 0.05                 # price coefficient ~ N(mu, sigma^2)
+
+# ---- 1) generate illustrative data ----
+rng = np.random.default_rng(424242)
+N = 3000
+price  = np.array([30., 28., 45.]) + rng.normal(0, 6, size=(N, 3))   # create variation in the monthly fee
+beta_n = rng.normal(mu_true, sig_true, N)                            # individual true price sensitivity
+util   = np.concatenate([beta_n[:,None]*price + fixed, np.zeros((N,1))], axis=1)
+choice = np.argmax(util + rng.gumbel(0, 1, size=(N, 4)), axis=1)     # Gumbel error -> logit
+
+# ---- 2) Halton draws (deterministic sequence, fixed and reused across iterations) ----
+def halton(n, base, skip=10):
+    out = []
+    for i in range(1+skip, n+1+skip):
+        f, r, k = 1.0, 0.0, i
+        while k &gt; 0:
+            f /= base; r += f*(k % base); k //= base
+        out.append(r)
+    return np.array(out)
+
+# ---- 3) simulated negative log-likelihood ----
+def make_negloglik(R):
+    z = norm.ppf(halton(R, 2))                          # standard-normal draws, fixed and reused
+    def negloglik(theta):
+        mu, log_s = theta                               # use log_s to guarantee sigma&gt;0
+        betas = mu + np.exp(log_s)*z                     # (R,)
+        v = betas[None,None,:]*price[:,:,None] + fixed[None,:,None]
+        v = np.concatenate([v, np.zeros((N,1,R))], axis=1)          # add outside
+        v -= v.max(axis=1, keepdims=True)                            # numerical stability
+        pr = np.exp(v); pr /= pr.sum(axis=1, keepdims=True)
+        phat = pr[np.arange(N), choice, :].mean(axis=1)              # simulated choice probability
+        return -np.sum(np.log(np.clip(phat, 1e-300, None)))
+    return negloglik
+
+# ---- 4) estimate for different R, observe the shift ----
+for R in [5, 100, 1000]:
+    res = minimize(make_negloglik(R), x0=[-0.15, np.log(0.1)],
+                   method='Nelder-Mead', options={'xatol':1e-6, 'fatol':1e-8})
+    print(f"R={R:&gt;4}  mu_hat={res.x[0]:+.4f}  sigma_hat={np.exp(res.x[1]):.4f}")
+</code></pre>
+
+    <p>Actual run output (true values $\mu=-0.1$, $\sigma=0.05$):<span class="demo-badge">illustrative data</span></p>
+
+    <div class="table-scroll">
+    <table>
+      <thead>
+        <tr><th>Number of draws $R$</th><th>$\hat\mu$</th><th>$\hat\sigma$</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>5</td><td>-0.1174</td><td>0.0519</td></tr>
+        <tr><td>100</td><td>-0.0966</td><td>0.0452</td></tr>
+        <tr><td>1000</td><td>-0.0970</td><td>0.0435</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <p>At $R=5$, $\hat\mu=-0.117$, clearly too large in absolute value (equivalent to overstating price sensitivity by about $17\%$), but once $R$ is raised past 100 it settles firmly at $\hat\mu\approx-0.097$ and $\hat\sigma\approx0.044$. The small remaining gap from the true values $-0.1$ and $0.05$ is the sampling error inherent in this $N=3000$ sample, not simulation bias, and piling on more $R$ will not erase it. This code uses deterministic Halton draws, so even at $R=5$ it is far steadier than the pseudo-random version of Section 5.4, which is exactly where Halton's value lies.</p>
+
+    <div class="info-box">
+      <div class="box-title">Quick reference for draw options in off-the-shelf software</div>
+      <p style="margin-bottom:0">In real research you need not hand-write any of this. Python's <code>xlogit</code> sets the number of draws with <code>n_draws</code> and turns on Halton with <code>halton=True</code> (it uses the Halton sequence for random coefficients by default), and it supplies robust standard errors automatically. R's <code>apollo</code> picks <code>'halton'</code>, <code>'mlhs'</code> (Modified Latin Hypercube), or <code>'sobol'</code> via <code>interDrawsType</code> in <code>apollo_draws</code>, and sets the number with <code>interNDraws</code>. Both support fixing the draws and reusing them. Whichever you use, the draw type, number, and seed must all go into the paper.</p>
+    </div>
+
+    <!-- ============================================ -->
+    <h2 id="misconceptions">5.9 Common Pitfalls</h2>
+
+    <div class="table-scroll">
+    <table>
+      <thead>
+        <tr><th>Pitfall</th><th>Why it's wrong</th><th>What to do instead</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>"$R=50$ is enough to publish"</td>
+          <td>The $R$ threshold depends on $N$ and the draw type; the bias exists at any finite $R$ and shrinks as $1/R$, and when $R$ does not grow with $N$ (or grows more slowly than $\sqrt{N}$) it cannot be asymptotically equivalent to MLE, and a single run can hardly detect it</td>
+          <td>Start with $R\gtrsim\sqrt{N}$ and Halton draws, and report doubling robustness (Section 5.4)</td>
+        </tr>
+        <tr>
+          <td>"Redrawing at every iteration is fairer"</td>
+          <td>It makes the objective shudder (chattering), so the optimizer cannot converge or stops at a false peak</td>
+          <td>Draw once and reuse the same set of draws throughout (Section 5.5)</td>
+        </tr>
+        <tr>
+          <td>"Running the optimizer and contraction mapping at the default tolerance is fine"</td>
+          <td>A too-loose tolerance yields a wrong solution that looks converged, and elasticities can differ several-fold</td>
+          <td>Tighten the tolerance and run a sensitivity test, recording the tolerance used (Section 5.7)</td>
+        </tr>
+        <tr>
+          <td>"$\hat\sigma$ jumping around means preference heterogeneity is large"</td>
+          <td>At small $R$ the across-seed scatter of $\hat\sigma$ is simulation noise, not economic heterogeneity</td>
+          <td>Increase $R$, confirm whether $\hat\sigma$ is stable, and only then discuss heterogeneity (Section 5.4)</td>
+        </tr>
+        <tr>
+          <td>"The seed and number of draws need not go into the paper"</td>
+          <td>Without reporting them the work cannot be reproduced, and others have no way to judge whether the simulation is adequate</td>
+          <td>Report the draw type, number, seed, and optimizer tolerance (Sections 5.5, 5.8)</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+
+    <!-- ============================================ -->
+    <h2 id="summary">5.10 Chapter Summary</h2>
+
+    <p>Random coefficients turned the choice probability into an integral with no closed form, and what this chapter set out to do is make it computable again. The core of the method is to approximate the integral with the average of $R$ draws: unbiased for the probability, with standard deviation converging as $1/\sqrt{R}$, while the Halton sequence, by filling the space systematically, reaches the same accuracy with an order of magnitude fewer points. On the estimation side, climbing step by step up a likelihood surface with no analytic solution, BFGS is the default choice, convergence is judged primarily by the gradient norm, multiple starts test whether they all reach the same point, and standard errors use sandwich whenever the model may be misspecified or clustering is present. A more subtle layer is that simulation quietly changes the estimator's statistical properties: MSL, because of the Jensen bias of $\ln\hat P$, is biased at small $R$ and requires $R/\sqrt{N}\to\infty$, and at small $R$ it is both biased and unwilling to reveal itself, drawn out only by a draw-robustness check; MSM, by contrast, locks unbiasedness firmly into the moments, consistent at fixed $R$ at the cost of efficiency. And the premise that lets all of this turn is that fixing the draws buys a smooth objective function and dodges chattering. Diagnostics should look at predicted shares by group and an out-of-sample holdout, and not be led astray by the hit rate. The common cure for the seven approximation traps is a single sentence: tighten the approximation one notch and see whether the result moves.</p>
+
+    <p>This craft of simulation plus optimization is no monopoly of mixed logit. The BLP of Chapter 06 runs into the same closed-form-free share integral on the demand side, and must further pack it, together with supply-side pricing and the instrumental variables that handle endogeneity, into a single GMM, using exactly this chapter's simulated probabilities, fixed draws, and sandwich standard errors, only wrapping one more layer of moment matching around the outside. The dynamic discrete choice of Chapter 07 extends the integral from "over unobserved heterogeneity" all the way to "over the future," and the Jensen inequality $\mathbb{E}[\max]$ returns in the costume of option value. In other words, from this chapter onward, "when the analytics cannot be had, hand it to simulation, and simulation must pin down the bias and the variance" will be a theme that echoes again and again.</p>
+
+    <!-- ============================================ -->
+    <h2 id="readings">Further Reading</h2>
+
+    <h4>Standard treatments of simulation and numerical estimation</h4>
+    <ul>
+      <li>Train, K. E. (2009). <em>Discrete choice methods with simulation</em> (2nd ed.). Cambridge University Press. <a href="https://doi.org/10.1017/CBO9780511805271">https://doi.org/10.1017/CBO9780511805271</a> (Chapter 8 on numerical maximization, Chapter 9 on drawing from densities, Chapter 10 on simulation-assisted estimation, and Chapter 5 on probit involving the GHK simulator)</li>
+      <li>Train, K. E. (2000). <em>Halton sequences for mixed logit</em> [Working paper]. Department of Economics, University of California, Berkeley. https://escholarship.org/uc/item/6zs694tp (the practical foundation for using Halton draws in mixed logit)</li>
+    </ul>
+
+    <h4>Theoretical foundations of simulation estimation</h4>
+    <ul>
+      <li>McFadden, D. (1989). A method of simulated moments for estimation of discrete response models without numerical integration. <em>Econometrica</em>, <em>57</em>(5), 995–1026. <a href="https://doi.org/10.2307/1913621">https://doi.org/10.2307/1913621</a> (the origin of MSM)</li>
+      <li>Pakes, A., &amp; Pollard, D. (1989). Simulation and the asymptotics of optimization estimators. <em>Econometrica</em>, <em>57</em>(5), 1027–1057. <a href="https://doi.org/10.2307/1913622">https://doi.org/10.2307/1913622</a> (the asymptotic theory of simulation-based estimators)</li>
+      <li>Gouriéroux, C., &amp; Monfort, A. (1996). <em>Simulation-based econometric methods</em>. Oxford University Press. (a systematic textbook on simulation methods)</li>
+      <li>Hajivassiliou, V. A., &amp; Ruud, P. A. (1994). Classical estimation methods for LDV models using simulation. In R. F. Engle &amp; D. McFadden (Eds.), <em>Handbook of econometrics</em> (Vol. 4, pp. 2383–2441). North-Holland. <a href="https://doi.org/10.1016/S1573-4412(05)80009-1">https://doi.org/10.1016/S1573-4412(05)80009-1</a></li>
+    </ul>
+
+    <h4>Sampling and low-discrepancy sequences</h4>
+    <ul>
+      <li>Bhat, C. R. (2001). Quasi-random maximum simulated likelihood estimation of the mixed multinomial logit model. <em>Transportation Research Part B: Methodological</em>, <em>35</em>(7), 677–693. <a href="https://doi.org/10.1016/S0191-2615(00)00014-X">https://doi.org/10.1016/S0191-2615(00)00014-X</a> (Halton for mixed logit)</li>
+      <li>Bhat, C. R. (2003). Simulation estimation of mixed discrete choice models using randomized and scrambled Halton sequences. <em>Transportation Research Part B: Methodological</em>, <em>37</em>(9), 837–855. <a href="https://doi.org/10.1016/S0191-2615(02)00090-5">https://doi.org/10.1016/S0191-2615(02)00090-5</a> (scrambled Halton to resolve high-dimensional correlation)</li>
+    </ul>
+
+    <footer class="page-footer">
+      From Choices to Counterfactuals: Structural Estimation for Digital Platform Research · 05 Simulation and Numerical Estimation
+    </footer>
+
+  </main>
+</div>
+
+<script defer src="assets/katex/katex.min.js"></script>
+<script defer src="assets/katex/auto-render.min.js"></script>
+<script defer src="assets/notes.js"></script>
+</body>
+</html>

@@ -1,0 +1,1530 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>From an Economic Question to a Research Design | IS Economics ·
+Empirical Methods</title>
+  <link rel="stylesheet" href="assets/style.css" />
+  <script defer="" src="assets/katex/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <link rel="stylesheet" href="assets/katex/katex.min.css" />
+</head>
+<body>
+<div class="page-wrapper">
+  <nav class="sidebar">
+    <div class="sidebar-title">Foundations of Information Systems Economics</div>
+    <div class="sidebar-subtitle">Theory · Methods · Applications</div>
+    <div class="toc-section-label">On this page</div>
+    <div class="toc">
+<ul>
+<li><a href="#introduction" id="toc-introduction">Introduction</a></li>
+<li><a
+href="#an-experimental-effect-that-turns-from-positive-to-negative"
+id="toc-an-experimental-effect-that-turns-from-positive-to-negative">1
+An Experimental Effect That Turns from Positive to Negative</a></li>
+<li><a href="#from-the-question-to-the-estimand"
+id="toc-from-the-question-to-the-estimand">2 From the Question to the
+Estimand</a></li>
+<li><a
+href="#identification-where-does-the-counterfactual-actually-come-from"
+id="toc-identification-where-does-the-counterfactual-actually-come-from">3
+Identification: Where Does the Counterfactual Actually Come
+From</a></li>
+<li><a
+href="#estimation-choose-the-estimator-only-after-the-design-is-fixed"
+id="toc-estimation-choose-the-estimator-only-after-the-design-is-fixed">4
+Estimation: Choose the Estimator Only After the Design Is Fixed</a></li>
+<li><a href="#anchor-papers" id="toc-anchor-papers">5 Anchor
+Papers</a></li>
+<li><a href="#a-complete-walkthrough-on-aurora-data"
+id="toc-a-complete-walkthrough-on-aurora-data">6 A Complete Walkthrough
+on Aurora Data</a></li>
+<li><a href="#failure-modes-and-robustness"
+id="toc-failure-modes-and-robustness">7 Failure Modes and
+Robustness</a></li>
+<li><a href="#further-reading" id="toc-further-reading">8 Further
+Reading</a></li>
+</ul>
+    </div>
+    <div class="file-nav">
+      <div class="nav-label">This series</div>
+      <a href="index.html">Home · Overview</a>
+      <a href="introduction.html">Introduction · How to Use</a>
+      <a href="01_consumer_producer_welfare.html">01 Consumer, Producer &amp; Welfare</a>
+      <a href="02_game_theory.html">02 Game Theory</a>
+      <a href="03_information_mechanism_design.html">03 Information &amp; Mechanism Design</a>
+      <a href="04_pricing_imperfect_competition.html">04 Pricing &amp; Imperfect Competition</a>
+      <a href="05_estimation_mle_gmm.html">05 Estimation: MLE &amp; GMM</a>
+      <a href="06_inference.html">06 Inference: Bootstrap &amp; Clustering</a>
+      <a href="07_panel_dynamic_panel.html">07 Panel &amp; Dynamic Panel</a>
+      <a href="08_nonparametrics.html">08 Nonparametrics &amp; Semiparametrics</a>
+      <a href="09_potential_outcomes.html">09 Potential Outcomes &amp; Selection</a>
+      <a href="10_research_design_architecture.html">10 Research Design</a>
+      <a href="11_measurement_digital_traces.html">11 Measurement &amp; Digital Traces</a>
+      <a href="12_iv_late_mte.html">12 IV: LATE &amp; MTE</a>
+      <a href="13_did_event_studies.html">13 DiD &amp; Event Studies</a>
+      <a href="14_rdd_synthetic_control.html">14 RDD &amp; Synthetic Control</a>
+      <a href="15_sensitivity_partial_identification.html">15 Sensitivity &amp; Partial Identification</a>
+      <a href="16_causal_ml_dml.html">16 Causal ML &amp; DML</a>
+      <a href="17_digital_experimentation.html">17 Digital Experimentation</a>
+      <a href="18_interference_marketplace_experiments.html">18 Interference &amp; Marketplace Experiments</a>
+      <a href="19_discrete_choice.html">19 Discrete Choice &amp; Mixed Logit</a>
+      <a href="20_demand_blp.html">20 Demand Estimation &amp; BLP</a>
+      <a href="21_supply_markups_mergers.html">21 Supply, Markups &amp; Mergers</a>
+      <a href="22_entry_partial_id.html">22 Entry &amp; Partial Identification</a>
+      <a href="23_dynamic_structural.html">23 Dynamic Structural Models</a>
+      <a href="24_platforms_networks.html">24 Platforms &amp; Network Effects</a>
+      <a href="25_search_advertising.html">25 Search, Advertising &amp; Information Goods</a>
+      <a href="26_ai_algorithms_data.html">26 AI, Adoption &amp; Data Economics</a>
+      <a href="27_quick_reference.html">27 Quick Reference &amp; Tools</a>
+    </div>
+  </nav>
+  <main class="main-content" id="top">
+    <header class="page-header">
+      <h1>From an Economic Question to a Research Design</h1>
+      <div class="subtitle">Units, Treatments, Estimands, and Assignment
+Mechanisms</div>
+      <div class="meta">Foundations of Information Systems Economics · Chapter 10</div>
+    </header>
+<h2 id="introduction">Introduction</h2>
+<p>Aurora randomly opens a recommendation tool early to a batch of
+merchants. The simplest experimental comparison shows sales rising. The
+researcher, uneasy, then adds post-adoption engagement to the regression
+to “control more thoroughly,” and the coefficient flips to negative.
+Randomization did not break, and the software did not miscompute. What
+broke was the question: engagement is a variable realized after
+treatment, and once you condition on it, the regression is no longer
+comparing the two worlds you started with.</p>
+<p>Accidents like this rarely surface in the last row of a results
+table. They are usually planted long before the first line of code. What
+does “using AI” even mean: gaining access, clicking once, sustained
+adoption, or being genuinely influenced by the algorithm? Is the outcome
+sales in the current week, long-run merchant retention, or total
+platform volume? Is the unit of study the merchant, the consumer, the
+order, or the market? Once these choices are left vague, a smaller
+standard error may mean only that the researcher is answering, ever more
+precisely, a question no one actually asked.</p>
+<p>For this reason, this chapter does not rush to pick a regression. It
+first breaks the research question into unit, treatment, timing,
+exposure, outcome, estimand, and assignment mechanism. Potential
+outcomes are there to say which two counterfactuals you mean to compare;
+a DAG is there to record which paths may be closed and which should not.
+Neither identifies a causal effect for you automatically. The real test
+is always the same: does the estimator in front of you still answer the
+decision problem you started with? Why Aurora’s positive effect gets
+rewritten into a negative one by “more thorough controls” will run
+through this design language from start to finish.</p>
+<h2 id="an-experimental-effect-that-turns-from-positive-to-negative">1
+An Experimental Effect That Turns from Positive to Negative</h2>
+<p>The Aurora platform opens a new recommendation tool early to a random
+half of its merchants. Before launch, the pre-analysis plan states the
+question clearly: if the tool were opened to all merchants, how would
+sales change in the next period? In the data, the early-access group and
+the control group differ in mean log sales by <span
+class="math inline">0.149</span>, with a standard error of <span
+class="math inline">0.017</span>. Because assignment is random, this
+difference targets the intention-to-treat effect directly, and it is
+close to the known total effect <span class="math inline">0.140</span>
+in the DGP.</p>
+<p>The analyst then adds baseline quality and region fixed effects, and
+the estimate becomes <span class="math inline">0.157</span>, with the
+standard error shrinking to <span class="math inline">0.015</span>. This
+is still reasonable: both variables are determined before treatment, and
+adjusting for them absorbs chance imbalance and outcome noise without
+changing what the treatment means.</p>
+<p>Next, the analyst controls for post-launch engagement, on the grounds
+that “active merchants sell more anyway.” The treatment coefficient
+immediately turns to <span class="math inline">-0.099</span>, and it is
+highly significant. Does the new tool help sales or hurt them? The
+randomized experiment has not changed. What changed is the variable the
+researcher conditioned on and the estimand that goes with it.</p>
+<div class="warning">
+<p>Adding a control is not an operation that monotonically increases
+credibility. Whether a variable is realized before or after treatment,
+whether it is a common cause or a mediator, and whether it is jointly
+determined by unobservables, matters more than its correlation with the
+outcome. The regression software will not warn you that you have swapped
+the question.</p>
+</div>
+<h2 id="from-the-question-to-the-estimand">2 From the Question to the
+Estimand</h2>
+<h3 id="first-write-down-eight-design-objects">2.1 First Write Down
+Eight Design Objects</h3>
+<p>Before writing a regression equation, fill in the following eight
+items.</p>
+<div class="table-scroll">
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th>Design object</th>
+<th>Definition in Aurora</th>
+<th>What happens if the definition is vague</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Unit</td>
+<td>Merchant</td>
+<td>User, merchant, and market effects get mixed together</td>
+</tr>
+<tr>
+<td>Treatment</td>
+<td>Early access to the new tool</td>
+<td>Confounded with actual use or recommendation exposure</td>
+</tr>
+<tr>
+<td>Version</td>
+<td>Same interface, same ranking model</td>
+<td>Different model versions treated as one treatment</td>
+</tr>
+<tr>
+<td>Timing</td>
+<td>Assignment in period 1, measurement in period 2</td>
+<td>Anticipation and lagged effects cannot be separated</td>
+</tr>
+<tr>
+<td>Exposure</td>
+<td>Whether the merchant received access</td>
+<td>Clicking into the tool mistaken for assignment</td>
+</tr>
+<tr>
+<td>Outcome</td>
+<td>Next-period log sales</td>
+<td>Short-run GMV conflated with long-run retention</td>
+</tr>
+<tr>
+<td>Population</td>
+<td>Eligible merchants in the pilot</td>
+<td>No basis for extrapolating to non-participating merchants</td>
+</tr>
+<tr>
+<td>Assignment</td>
+<td>Random early opening within region</td>
+<td>Cannot say where the counterfactual comes from</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>This table is not administrative paperwork. Change any one cell, and
+the potential outcomes may change. For example, <span
+class="math inline">Y_i(d)</span> can denote merchant <span
+class="math inline">i</span>’s sales under whether it received access,
+or its sales under whether it actually used the tool. The former
+identifies ITT through random assignment; the latter, if noncompliance
+is present, requires the IV/LATE logic of Chapter 12. The two cannot be
+collapsed into one estimand just because both use a single binary
+variable.</p>
+<h3 id="total-effect-and-direct-effect">2.2 Total Effect and Direct
+Effect</h3>
+<p>Let <span class="math inline">D_i</span> denote early access, <span
+class="math inline">M_i(d)</span> engagement under treatment status
+<span class="math inline">d</span>, and <span
+class="math inline">Y_i(d,m)</span> the outcome when access and
+engagement are both set. The platform’s original question corresponds to
+the total effect:</p>
+<p><span class="math display">\tau^{total} =
+\mathbb{E}\big[Y_i(1,M_i(1)) - Y_i(0,M_i(0))\big].</span></p>
+<p>It lets the tool work through engagement. If engagement is held at a
+single level, the question becomes the controlled direct effect:</p>
+<p><span class="math display">\tau^{direct}(m) = \mathbb{E}\big[Y_i(1,m)
+- Y_i(0,m)\big].</span></p>
+<p>Both can be meaningful scientific questions, but they are not the
+same question. Aurora’s structural direct effect is <span
+class="math inline">0.080</span>, the tool raises engagement by <span
+class="math inline">0.50</span> on average, and the marginal effect of
+engagement on sales is <span class="math inline">0.12</span>, so the
+total effect is <span class="math inline">0.08 + 0.50\times0.12 =
+0.140</span>. Controlling for the mediator is not “estimating the total
+effect more precisely”; it is an attempt to cut one of the channels
+through which the effect operates.</p>
+<div class="intuition">
+<p>First ask through which channels the policy will work, then decide
+whether to control for the channel variables. If the platform cares
+about the total consequences of a full rollout, the engagement change
+induced by treatment is part of the effect, not noise to be scrubbed
+out.</p>
+</div>
+<h3 id="estimand-estimator-and-estimate">2.3 Estimand, Estimator, and
+Estimate</h3>
+<p>Three words must be kept apart. The estimand is the target, for
+instance <span class="math inline">\tau^{total}</span>; the estimator is
+the rule mapping a sample to a number, for instance the treated-control
+mean difference; the estimate is the <span
+class="math inline">0.149</span> this sample hands over. Swapping a
+regression specification may only swap the estimator, or it may quietly
+swap the estimand. The first discipline of research design is to ask,
+each time you change the specification, whether it is still aiming at
+the same object.</p>
+<p>The summary of this section is as follows: an empirical question must
+first fix the unit, treatment version, timing, exposure, outcome,
+population, and assignment; total and direct effects are different
+targets; and estimand, estimator, and estimate are not
+interchangeable.</p>
+<h2
+id="identification-where-does-the-counterfactual-actually-come-from">3
+Identification: Where Does the Counterfactual Actually Come From</h2>
+<h3 id="the-assignment-mechanism-is-the-engine-of-the-design">3.1 The
+Assignment Mechanism Is the Engine of the Design</h3>
+<p>Causal identification does not begin with an outcome regression, it
+begins with how the treatment was assigned. If <span
+class="math inline">D_i</span> is randomly assigned within strata <span
+class="math inline">B_i</span> (a stratified-block indicator), then</p>
+<p><span class="math display">\{Y_i(1),Y_i(0)\}\perp D_i\mid
+B_i.</span></p>
+<p>Aurora opens access early at random within region, so a
+region-stratified comparison is backed by experimental design. Adding
+baseline quality can improve precision, but identification does not
+depend on getting a sales regression right. If early access were instead
+picked by account managers choosing “the most promising merchants,” the
+assignment mechanism would be different, and observed confounding, IV,
+RDD, DiD, or some other design would be needed to supply the missing
+counterfactual.</p>
+<div class="assumption" data-label="Design-based exchangeability">
+<p>Within the actual randomization level and strata, assignment is
+independent of all potential outcomes. The analysis must preserve the
+level, probabilities, and cluster structure used in the
+randomization.</p>
+</div>
+<p>This assumption constrains treatment assignment, not that the outcome
+must be linear. It is backed by the implementation protocol and can be
+checked against balance and an assignment audit to see whether execution
+drifted, but it cannot be proven from the goodness of fit of an outcome
+regression.</p>
+<h3 id="what-potential-outcomes-and-dags-each-do">3.2 What Potential
+Outcomes and DAGs Each Do</h3>
+<p>Potential outcomes are good at fixing the intervention and the
+estimand; DAGs are good at displaying the conditional-independence
+structure among variables. The two are not competing languages. For
+Aurora, you can draw <span class="math inline">D\rightarrow M\rightarrow
+Y</span>, <span class="math inline">D\rightarrow Y</span>, <span
+class="math inline">U\rightarrow M</span>, and <span
+class="math inline">U\rightarrow Y</span>. This graph reminds us at once
+that <span class="math inline">M</span> comes after treatment and is a
+joint effect of <span class="math inline">D</span> and <span
+class="math inline">U</span>.</p>
+<figure>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 590 302" role="img" aria-label="Aurora’s assignment graph. Early access affects sales directly and also through post-treatment engagement; latent service capability affects both engagement and sales. Controlling for engagement cuts the mediating path and opens a conditional association between early access and latent capability." style="max-width:100%;height:auto;display:block;margin:0 auto">
+<defs>
+<g>
+<g id="g1_glyph-0-0">
+<path d="M 4.421875 -4.203125 C 4.910156 -4.203125 5.296875 -4.296875 5.578125 -4.484375 C 5.867188 -4.679688 6.015625 -5.039062 6.015625 -5.5625 C 6.015625 -6.113281 5.816406 -6.488281 5.421875 -6.6875 C 5.203125 -6.789062 4.914062 -6.84375 4.5625 -6.84375 L 2 -6.84375 L 2 -4.203125 Z M 0.953125 -7.75 L 4.53125 -7.75 C 5.125 -7.75 5.613281 -7.660156 6 -7.484375 C 6.71875 -7.148438 7.078125 -6.539062 7.078125 -5.65625 C 7.078125 -5.1875 6.984375 -4.804688 6.796875 -4.515625 C 6.609375 -4.222656 6.34375 -3.988281 6 -3.8125 C 6.300781 -3.6875 6.523438 -3.519531 6.671875 -3.3125 C 6.828125 -3.113281 6.914062 -2.789062 6.9375 -2.34375 L 6.96875 -1.3125 C 6.976562 -1.007812 7.003906 -0.789062 7.046875 -0.65625 C 7.109375 -0.40625 7.21875 -0.242188 7.375 -0.171875 L 7.375 0 L 6.09375 0 C 6.0625 -0.0625 6.035156 -0.144531 6.015625 -0.25 C 5.992188 -0.363281 5.972656 -0.570312 5.953125 -0.875 L 5.890625 -2.15625 C 5.867188 -2.664062 5.679688 -3.003906 5.328125 -3.171875 C 5.128906 -3.273438 4.816406 -3.328125 4.390625 -3.328125 L 2 -3.328125 L 2 0 L 0.953125 0 Z M 0.953125 -7.75 "/>
+</g>
+<g id="g1_glyph-0-1">
+<path d="M 1.421875 -1.5 C 1.421875 -1.226562 1.519531 -1.007812 1.71875 -0.84375 C 1.925781 -0.6875 2.164062 -0.609375 2.4375 -0.609375 C 2.769531 -0.609375 3.09375 -0.6875 3.40625 -0.84375 C 3.9375 -1.101562 4.203125 -1.523438 4.203125 -2.109375 L 4.203125 -2.875 C 4.078125 -2.800781 3.921875 -2.738281 3.734375 -2.6875 C 3.554688 -2.632812 3.378906 -2.597656 3.203125 -2.578125 L 2.640625 -2.515625 C 2.296875 -2.460938 2.035156 -2.390625 1.859375 -2.296875 C 1.566406 -2.128906 1.421875 -1.863281 1.421875 -1.5 Z M 3.71875 -3.421875 C 3.9375 -3.453125 4.082031 -3.546875 4.15625 -3.703125 C 4.195312 -3.785156 4.21875 -3.90625 4.21875 -4.0625 C 4.21875 -4.382812 4.101562 -4.617188 3.875 -4.765625 C 3.644531 -4.910156 3.316406 -4.984375 2.890625 -4.984375 C 2.390625 -4.984375 2.035156 -4.847656 1.828125 -4.578125 C 1.710938 -4.429688 1.640625 -4.210938 1.609375 -3.921875 L 0.71875 -3.921875 C 0.738281 -4.617188 0.960938 -5.101562 1.390625 -5.375 C 1.828125 -5.644531 2.332031 -5.78125 2.90625 -5.78125 C 3.570312 -5.78125 4.113281 -5.65625 4.53125 -5.40625 C 4.9375 -5.15625 5.140625 -4.757812 5.140625 -4.21875 L 5.140625 -0.96875 C 5.140625 -0.875 5.160156 -0.796875 5.203125 -0.734375 C 5.242188 -0.671875 5.332031 -0.640625 5.46875 -0.640625 C 5.507812 -0.640625 5.554688 -0.640625 5.609375 -0.640625 C 5.660156 -0.648438 5.710938 -0.660156 5.765625 -0.671875 L 5.765625 0.03125 C 5.617188 0.0703125 5.503906 0.0976562 5.421875 0.109375 C 5.347656 0.117188 5.25 0.125 5.125 0.125 C 4.789062 0.125 4.550781 0.00390625 4.40625 -0.234375 C 4.332031 -0.347656 4.28125 -0.519531 4.25 -0.75 C 4.050781 -0.5 3.769531 -0.28125 3.40625 -0.09375 C 3.050781 0.0898438 2.65625 0.1875 2.21875 0.1875 C 1.6875 0.1875 1.253906 0.0273438 0.921875 -0.28125 C 0.597656 -0.601562 0.4375 -1.003906 0.4375 -1.484375 C 0.4375 -2.003906 0.597656 -2.40625 0.921875 -2.6875 C 1.242188 -2.976562 1.671875 -3.160156 2.203125 -3.234375 Z M 2.9375 -5.78125 Z M 2.9375 -5.78125 "/>
+</g>
+<g id="g1_glyph-0-2">
+<path d="M 0.703125 -5.640625 L 1.59375 -5.640625 L 1.59375 -4.84375 C 1.863281 -5.175781 2.144531 -5.410156 2.4375 -5.546875 C 2.738281 -5.691406 3.070312 -5.765625 3.4375 -5.765625 C 4.238281 -5.765625 4.78125 -5.488281 5.0625 -4.9375 C 5.21875 -4.625 5.296875 -4.1875 5.296875 -3.625 L 5.296875 0 L 4.328125 0 L 4.328125 -3.5625 C 4.328125 -3.90625 4.28125 -4.179688 4.1875 -4.390625 C 4.007812 -4.742188 3.703125 -4.921875 3.265625 -4.921875 C 3.035156 -4.921875 2.847656 -4.894531 2.703125 -4.84375 C 2.441406 -4.769531 2.21875 -4.617188 2.03125 -4.390625 C 1.863281 -4.203125 1.753906 -4.007812 1.703125 -3.8125 C 1.660156 -3.613281 1.640625 -3.328125 1.640625 -2.953125 L 1.640625 0 L 0.703125 0 Z M 2.921875 -5.78125 Z M 2.921875 -5.78125 "/>
+</g>
+<g id="g1_glyph-0-3">
+<path d="M 1.296875 -2.75 C 1.296875 -2.144531 1.421875 -1.640625 1.671875 -1.234375 C 1.929688 -0.828125 2.347656 -0.625 2.921875 -0.625 C 3.359375 -0.625 3.71875 -0.8125 4 -1.1875 C 4.28125 -1.570312 4.421875 -2.117188 4.421875 -2.828125 C 4.421875 -3.535156 4.273438 -4.0625 3.984375 -4.40625 C 3.691406 -4.75 3.332031 -4.921875 2.90625 -4.921875 C 2.425781 -4.921875 2.035156 -4.738281 1.734375 -4.375 C 1.441406 -4.007812 1.296875 -3.46875 1.296875 -2.75 Z M 2.71875 -5.75 C 3.15625 -5.75 3.519531 -5.65625 3.8125 -5.46875 C 3.976562 -5.363281 4.171875 -5.179688 4.390625 -4.921875 L 4.390625 -7.765625 L 5.296875 -7.765625 L 5.296875 0 L 4.4375 0 L 4.4375 -0.78125 C 4.21875 -0.4375 3.957031 -0.1875 3.65625 -0.03125 C 3.351562 0.121094 3.007812 0.203125 2.625 0.203125 C 1.988281 0.203125 1.441406 -0.0625 0.984375 -0.59375 C 0.523438 -1.125 0.296875 -1.828125 0.296875 -2.703125 C 0.296875 -3.523438 0.503906 -4.238281 0.921875 -4.84375 C 1.347656 -5.445312 1.945312 -5.75 2.71875 -5.75 Z M 2.71875 -5.75 "/>
+</g>
+<g id="g1_glyph-0-4">
+<path d="M 2.9375 -0.609375 C 3.5625 -0.609375 3.988281 -0.847656 4.21875 -1.328125 C 4.457031 -1.804688 4.578125 -2.335938 4.578125 -2.921875 C 4.578125 -3.441406 4.492188 -3.867188 4.328125 -4.203125 C 4.054688 -4.722656 3.597656 -4.984375 2.953125 -4.984375 C 2.367188 -4.984375 1.941406 -4.757812 1.671875 -4.3125 C 1.410156 -3.875 1.28125 -3.34375 1.28125 -2.71875 C 1.28125 -2.113281 1.410156 -1.609375 1.671875 -1.203125 C 1.941406 -0.804688 2.363281 -0.609375 2.9375 -0.609375 Z M 2.96875 -5.8125 C 3.695312 -5.8125 4.3125 -5.566406 4.8125 -5.078125 C 5.320312 -4.597656 5.578125 -3.882812 5.578125 -2.9375 C 5.578125 -2.03125 5.351562 -1.28125 4.90625 -0.6875 C 4.46875 -0.09375 3.78125 0.203125 2.84375 0.203125 C 2.070312 0.203125 1.457031 -0.0546875 1 -0.578125 C 0.539062 -1.109375 0.3125 -1.816406 0.3125 -2.703125 C 0.3125 -3.648438 0.550781 -4.40625 1.03125 -4.96875 C 1.507812 -5.53125 2.15625 -5.8125 2.96875 -5.8125 Z M 2.9375 -5.78125 Z M 2.9375 -5.78125 "/>
+</g>
+<g id="g1_glyph-0-5">
+<path d="M 0.703125 -5.640625 L 1.640625 -5.640625 L 1.640625 -4.84375 C 1.859375 -5.125 2.0625 -5.328125 2.25 -5.453125 C 2.5625 -5.660156 2.914062 -5.765625 3.3125 -5.765625 C 3.757812 -5.765625 4.117188 -5.65625 4.390625 -5.4375 C 4.546875 -5.3125 4.6875 -5.125 4.8125 -4.875 C 5.03125 -5.175781 5.28125 -5.398438 5.5625 -5.546875 C 5.84375 -5.691406 6.160156 -5.765625 6.515625 -5.765625 C 7.273438 -5.765625 7.796875 -5.492188 8.078125 -4.953125 C 8.222656 -4.648438 8.296875 -4.253906 8.296875 -3.765625 L 8.296875 0 L 7.3125 0 L 7.3125 -3.921875 C 7.3125 -4.296875 7.21875 -4.550781 7.03125 -4.6875 C 6.84375 -4.832031 6.613281 -4.90625 6.34375 -4.90625 C 5.96875 -4.90625 5.644531 -4.78125 5.375 -4.53125 C 5.101562 -4.28125 4.96875 -3.863281 4.96875 -3.28125 L 4.96875 0 L 4 0 L 4 -3.6875 C 4 -4.070312 3.957031 -4.347656 3.875 -4.515625 C 3.726562 -4.785156 3.457031 -4.921875 3.0625 -4.921875 C 2.707031 -4.921875 2.378906 -4.78125 2.078125 -4.5 C 1.785156 -4.21875 1.640625 -3.71875 1.640625 -3 L 1.640625 0 L 0.703125 0 Z M 0.703125 -5.640625 "/>
+</g>
+<g id="g1_glyph-0-6">
+<path d="M 0.703125 -5.625 L 1.65625 -5.625 L 1.65625 0 L 0.703125 0 Z M 0.703125 -7.75 L 1.65625 -7.75 L 1.65625 -6.671875 L 0.703125 -6.671875 Z M 0.703125 -7.75 "/>
+</g>
+<g id="g1_glyph-0-7">
+<path d="M 0.28125 -0.75 L 3.625 -4.796875 L 0.515625 -4.796875 L 0.515625 -5.640625 L 4.890625 -5.640625 L 4.890625 -4.875 L 1.578125 -0.84375 L 5 -0.84375 L 5 0 L 0.28125 0 Z M 2.71875 -5.78125 Z M 2.71875 -5.78125 "/>
+</g>
+<g id="g1_glyph-0-8">
+<path d="M 3.046875 -5.765625 C 3.441406 -5.765625 3.828125 -5.671875 4.203125 -5.484375 C 4.585938 -5.296875 4.878906 -5.054688 5.078125 -4.765625 C 5.265625 -4.472656 5.390625 -4.140625 5.453125 -3.765625 C 5.503906 -3.503906 5.53125 -3.085938 5.53125 -2.515625 L 1.390625 -2.515625 C 1.410156 -1.941406 1.546875 -1.484375 1.796875 -1.140625 C 2.054688 -0.796875 2.453125 -0.625 2.984375 -0.625 C 3.472656 -0.625 3.867188 -0.785156 4.171875 -1.109375 C 4.335938 -1.296875 4.453125 -1.515625 4.515625 -1.765625 L 5.453125 -1.765625 C 5.429688 -1.554688 5.347656 -1.328125 5.203125 -1.078125 C 5.066406 -0.828125 4.914062 -0.617188 4.75 -0.453125 C 4.457031 -0.171875 4.097656 0.015625 3.671875 0.109375 C 3.441406 0.171875 3.1875 0.203125 2.90625 0.203125 C 2.195312 0.203125 1.597656 -0.0507812 1.109375 -0.5625 C 0.617188 -1.070312 0.375 -1.789062 0.375 -2.71875 C 0.375 -3.625 0.617188 -4.359375 1.109375 -4.921875 C 1.609375 -5.484375 2.253906 -5.765625 3.046875 -5.765625 Z M 4.5625 -3.28125 C 4.519531 -3.6875 4.429688 -4.015625 4.296875 -4.265625 C 4.035156 -4.710938 3.597656 -4.9375 2.984375 -4.9375 C 2.546875 -4.9375 2.179688 -4.78125 1.890625 -4.46875 C 1.597656 -4.15625 1.441406 -3.757812 1.421875 -3.28125 Z M 2.953125 -5.78125 Z M 2.953125 -5.78125 "/>
+</g>
+<g id="g1_glyph-0-9">
+<path d="M 0.71875 -5.640625 L 1.625 -5.640625 L 1.625 -4.671875 C 1.695312 -4.859375 1.875 -5.085938 2.15625 -5.359375 C 2.445312 -5.628906 2.78125 -5.765625 3.15625 -5.765625 C 3.175781 -5.765625 3.207031 -5.765625 3.25 -5.765625 C 3.289062 -5.765625 3.363281 -5.757812 3.46875 -5.75 L 3.46875 -4.75 C 3.414062 -4.757812 3.363281 -4.765625 3.3125 -4.765625 C 3.269531 -4.765625 3.21875 -4.765625 3.15625 -4.765625 C 2.675781 -4.765625 2.304688 -4.609375 2.046875 -4.296875 C 1.796875 -3.992188 1.671875 -3.644531 1.671875 -3.25 L 1.671875 0 L 0.71875 0 Z M 0.71875 -5.640625 "/>
+</g>
+<g id="g1_glyph-0-10">
+<path d="M 0.71875 -7.75 L 1.671875 -7.75 L 1.671875 0 L 0.71875 0 Z M 0.71875 -7.75 "/>
+</g>
+<g id="g1_glyph-0-11">
+<path d="M 4.21875 -5.640625 L 5.265625 -5.640625 C 5.140625 -5.285156 4.84375 -4.460938 4.375 -3.171875 C 4.03125 -2.203125 3.742188 -1.410156 3.515625 -0.796875 C 2.960938 0.636719 2.570312 1.515625 2.34375 1.828125 C 2.125 2.148438 1.742188 2.3125 1.203125 2.3125 C 1.066406 2.3125 0.960938 2.304688 0.890625 2.296875 C 0.816406 2.285156 0.726562 2.265625 0.625 2.234375 L 0.625 1.375 C 0.789062 1.414062 0.910156 1.441406 0.984375 1.453125 C 1.054688 1.460938 1.117188 1.46875 1.171875 1.46875 C 1.347656 1.46875 1.476562 1.4375 1.5625 1.375 C 1.644531 1.320312 1.710938 1.253906 1.765625 1.171875 C 1.785156 1.148438 1.847656 1.007812 1.953125 0.75 C 2.066406 0.488281 2.148438 0.289062 2.203125 0.15625 L 0.109375 -5.640625 L 1.1875 -5.640625 L 2.703125 -1.046875 Z M 2.6875 -5.78125 Z M 2.6875 -5.78125 "/>
+</g>
+<g id="g1_glyph-0-12">
+</g>
+<g id="g1_glyph-0-13">
+<path d="M 2.875 -5.8125 C 3.507812 -5.8125 4.023438 -5.65625 4.421875 -5.34375 C 4.828125 -5.03125 5.066406 -4.5 5.140625 -3.75 L 4.21875 -3.75 C 4.164062 -4.09375 4.035156 -4.378906 3.828125 -4.609375 C 3.628906 -4.835938 3.3125 -4.953125 2.875 -4.953125 C 2.269531 -4.953125 1.835938 -4.660156 1.578125 -4.078125 C 1.410156 -3.691406 1.328125 -3.21875 1.328125 -2.65625 C 1.328125 -2.09375 1.445312 -1.617188 1.6875 -1.234375 C 1.925781 -0.847656 2.300781 -0.65625 2.8125 -0.65625 C 3.207031 -0.65625 3.519531 -0.773438 3.75 -1.015625 C 3.976562 -1.253906 4.132812 -1.582031 4.21875 -2 L 5.140625 -2 C 5.035156 -1.25 4.769531 -0.703125 4.34375 -0.359375 C 3.925781 -0.015625 3.390625 0.15625 2.734375 0.15625 C 1.992188 0.15625 1.40625 -0.109375 0.96875 -0.640625 C 0.53125 -1.179688 0.3125 -1.859375 0.3125 -2.671875 C 0.3125 -3.660156 0.550781 -4.429688 1.03125 -4.984375 C 1.507812 -5.535156 2.125 -5.8125 2.875 -5.8125 Z M 2.71875 -5.78125 Z M 2.71875 -5.78125 "/>
+</g>
+<g id="g1_glyph-0-14">
+<path d="M 1.265625 -1.765625 C 1.285156 -1.453125 1.363281 -1.210938 1.5 -1.046875 C 1.738281 -0.734375 2.148438 -0.578125 2.734375 -0.578125 C 3.085938 -0.578125 3.394531 -0.65625 3.65625 -0.8125 C 3.925781 -0.96875 4.0625 -1.207031 4.0625 -1.53125 C 4.0625 -1.769531 3.957031 -1.953125 3.75 -2.078125 C 3.613281 -2.148438 3.34375 -2.238281 2.9375 -2.34375 L 2.1875 -2.53125 C 1.695312 -2.65625 1.34375 -2.789062 1.125 -2.9375 C 0.707031 -3.195312 0.5 -3.550781 0.5 -4 C 0.5 -4.53125 0.691406 -4.960938 1.078125 -5.296875 C 1.460938 -5.628906 1.984375 -5.796875 2.640625 -5.796875 C 3.484375 -5.796875 4.09375 -5.546875 4.46875 -5.046875 C 4.707031 -4.734375 4.820312 -4.390625 4.8125 -4.015625 L 3.921875 -4.015625 C 3.898438 -4.234375 3.828125 -4.429688 3.703125 -4.609375 C 3.484375 -4.859375 3.101562 -4.984375 2.5625 -4.984375 C 2.207031 -4.984375 1.9375 -4.914062 1.75 -4.78125 C 1.5625 -4.644531 1.46875 -4.460938 1.46875 -4.234375 C 1.46875 -3.984375 1.585938 -3.785156 1.828125 -3.640625 C 1.972656 -3.554688 2.179688 -3.476562 2.453125 -3.40625 L 3.078125 -3.265625 C 3.765625 -3.097656 4.222656 -2.9375 4.453125 -2.78125 C 4.828125 -2.539062 5.015625 -2.160156 5.015625 -1.640625 C 5.015625 -1.128906 4.820312 -0.691406 4.4375 -0.328125 C 4.050781 0.0351562 3.46875 0.21875 2.6875 0.21875 C 1.851562 0.21875 1.257812 0.0273438 0.90625 -0.34375 C 0.5625 -0.726562 0.375 -1.203125 0.34375 -1.765625 Z M 2.65625 -5.78125 Z M 2.65625 -5.78125 "/>
+</g>
+<g id="g1_glyph-0-15">
+<path d="M 0.921875 -7.75 L 4.40625 -7.75 C 5.09375 -7.75 5.644531 -7.550781 6.0625 -7.15625 C 6.488281 -6.769531 6.703125 -6.226562 6.703125 -5.53125 C 6.703125 -4.925781 6.515625 -4.398438 6.140625 -3.953125 C 5.765625 -3.503906 5.1875 -3.28125 4.40625 -3.28125 L 1.96875 -3.28125 L 1.96875 0 L 0.921875 0 Z M 5.640625 -5.515625 C 5.640625 -6.085938 5.429688 -6.472656 5.015625 -6.671875 C 4.785156 -6.785156 4.46875 -6.84375 4.0625 -6.84375 L 1.96875 -6.84375 L 1.96875 -4.15625 L 4.0625 -4.15625 C 4.53125 -4.15625 4.910156 -4.253906 5.203125 -4.453125 C 5.492188 -4.660156 5.640625 -5.015625 5.640625 -5.515625 Z M 5.640625 -5.515625 "/>
+</g>
+<g id="g1_glyph-0-16">
+<path d="M 0.890625 -7.21875 L 1.84375 -7.21875 L 1.84375 -5.640625 L 2.75 -5.640625 L 2.75 -4.875 L 1.84375 -4.875 L 1.84375 -1.1875 C 1.84375 -0.988281 1.910156 -0.859375 2.046875 -0.796875 C 2.117188 -0.753906 2.242188 -0.734375 2.421875 -0.734375 C 2.460938 -0.734375 2.507812 -0.734375 2.5625 -0.734375 C 2.613281 -0.734375 2.675781 -0.738281 2.75 -0.75 L 2.75 0 C 2.632812 0.03125 2.519531 0.0507812 2.40625 0.0625 C 2.289062 0.0820312 2.164062 0.09375 2.03125 0.09375 C 1.582031 0.09375 1.28125 -0.0195312 1.125 -0.25 C 0.96875 -0.476562 0.890625 -0.773438 0.890625 -1.140625 L 0.890625 -4.875 L 0.125 -4.875 L 0.125 -5.640625 L 0.890625 -5.640625 Z M 0.890625 -7.21875 "/>
+</g>
+<g id="g1_glyph-0-17">
+<path d="M 0.453125 -3.5 L 3.09375 -3.5 L 3.09375 -2.515625 L 0.453125 -2.515625 Z M 0.453125 -3.5 "/>
+</g>
+<g id="g1_glyph-0-18">
+<path d="M 2.6875 -5.75 C 3.132812 -5.75 3.519531 -5.640625 3.84375 -5.421875 C 4.03125 -5.296875 4.210938 -5.113281 4.390625 -4.875 L 4.390625 -5.59375 L 5.265625 -5.59375 L 5.265625 -0.453125 C 5.265625 0.253906 5.160156 0.816406 4.953125 1.234375 C 4.554688 2.003906 3.8125 2.390625 2.71875 2.390625 C 2.113281 2.390625 1.601562 2.253906 1.1875 1.984375 C 0.769531 1.710938 0.539062 1.285156 0.5 0.703125 L 1.453125 0.703125 C 1.503906 0.953125 1.597656 1.144531 1.734375 1.28125 C 1.953125 1.5 2.289062 1.609375 2.75 1.609375 C 3.476562 1.609375 3.953125 1.347656 4.171875 0.828125 C 4.304688 0.523438 4.367188 -0.0078125 4.359375 -0.78125 C 4.171875 -0.5 3.941406 -0.285156 3.671875 -0.140625 C 3.410156 -0.00390625 3.054688 0.0625 2.609375 0.0625 C 2.003906 0.0625 1.472656 -0.148438 1.015625 -0.578125 C 0.554688 -1.015625 0.328125 -1.734375 0.328125 -2.734375 C 0.328125 -3.679688 0.554688 -4.421875 1.015625 -4.953125 C 1.472656 -5.484375 2.03125 -5.75 2.6875 -5.75 Z M 4.390625 -2.84375 C 4.390625 -3.539062 4.242188 -4.054688 3.953125 -4.390625 C 3.671875 -4.734375 3.304688 -4.90625 2.859375 -4.90625 C 2.191406 -4.90625 1.734375 -4.59375 1.484375 -3.96875 C 1.359375 -3.632812 1.296875 -3.195312 1.296875 -2.65625 C 1.296875 -2.019531 1.425781 -1.535156 1.6875 -1.203125 C 1.945312 -0.867188 2.289062 -0.703125 2.71875 -0.703125 C 3.40625 -0.703125 3.890625 -1.007812 4.171875 -1.625 C 4.316406 -1.976562 4.390625 -2.382812 4.390625 -2.84375 Z M 2.796875 -5.78125 Z M 2.796875 -5.78125 "/>
+</g>
+<g id="g1_glyph-0-19">
+<path d="M 1.5 -2.5 C 1.53125 -2.0625 1.632812 -1.703125 1.8125 -1.421875 C 2.164062 -0.910156 2.78125 -0.65625 3.65625 -0.65625 C 4.050781 -0.65625 4.410156 -0.710938 4.734375 -0.828125 C 5.359375 -1.046875 5.671875 -1.4375 5.671875 -2 C 5.671875 -2.414062 5.539062 -2.71875 5.28125 -2.90625 C 5.007812 -3.070312 4.585938 -3.222656 4.015625 -3.359375 L 2.96875 -3.59375 C 2.289062 -3.75 1.804688 -3.921875 1.515625 -4.109375 C 1.023438 -4.429688 0.78125 -4.914062 0.78125 -5.5625 C 0.78125 -6.25 1.019531 -6.816406 1.5 -7.265625 C 1.976562 -7.710938 2.660156 -7.9375 3.546875 -7.9375 C 4.359375 -7.9375 5.046875 -7.738281 5.609375 -7.34375 C 6.179688 -6.957031 6.46875 -6.332031 6.46875 -5.46875 L 5.484375 -5.46875 C 5.429688 -5.882812 5.316406 -6.203125 5.140625 -6.421875 C 4.828125 -6.828125 4.285156 -7.03125 3.515625 -7.03125 C 2.898438 -7.03125 2.457031 -6.898438 2.1875 -6.640625 C 1.914062 -6.378906 1.78125 -6.078125 1.78125 -5.734375 C 1.78125 -5.359375 1.9375 -5.082031 2.25 -4.90625 C 2.457031 -4.789062 2.925781 -4.648438 3.65625 -4.484375 L 4.75 -4.234375 C 5.269531 -4.109375 5.671875 -3.945312 5.953125 -3.75 C 6.453125 -3.382812 6.703125 -2.859375 6.703125 -2.171875 C 6.703125 -1.304688 6.390625 -0.6875 5.765625 -0.3125 C 5.140625 0.0507812 4.410156 0.234375 3.578125 0.234375 C 2.617188 0.234375 1.867188 -0.015625 1.328125 -0.515625 C 0.773438 -1.003906 0.503906 -1.664062 0.515625 -2.5 Z M 3.625 -7.953125 Z M 3.625 -7.953125 "/>
+</g>
+<g id="g1_glyph-0-20">
+<path d="M 0.828125 -7.75 L 1.875 -7.75 L 1.875 -0.921875 L 5.796875 -0.921875 L 5.796875 0 L 0.828125 0 Z M 0.828125 -7.75 "/>
+</g>
+<g id="g1_glyph-0-21">
+<path d="M 1.15625 -5.640625 L 2.671875 -1.046875 L 4.25 -5.640625 L 5.28125 -5.640625 L 3.15625 0 L 2.140625 0 L 0.0625 -5.640625 Z M 1.15625 -5.640625 "/>
+</g>
+<g id="g1_glyph-0-22">
+<path d="M 3.078125 -0.640625 C 3.523438 -0.640625 3.894531 -0.820312 4.1875 -1.1875 C 4.476562 -1.5625 4.625 -2.117188 4.625 -2.859375 C 4.625 -3.304688 4.554688 -3.691406 4.421875 -4.015625 C 4.179688 -4.640625 3.734375 -4.953125 3.078125 -4.953125 C 2.421875 -4.953125 1.972656 -4.625 1.734375 -3.96875 C 1.597656 -3.613281 1.53125 -3.164062 1.53125 -2.625 C 1.53125 -2.1875 1.597656 -1.816406 1.734375 -1.515625 C 1.972656 -0.929688 2.421875 -0.640625 3.078125 -0.640625 Z M 0.625 -5.625 L 1.546875 -5.625 L 1.546875 -4.875 C 1.734375 -5.125 1.941406 -5.320312 2.171875 -5.46875 C 2.484375 -5.675781 2.859375 -5.78125 3.296875 -5.78125 C 3.929688 -5.78125 4.472656 -5.535156 4.921875 -5.046875 C 5.367188 -4.554688 5.59375 -3.859375 5.59375 -2.953125 C 5.59375 -1.722656 5.269531 -0.84375 4.625 -0.3125 C 4.21875 0.0195312 3.742188 0.1875 3.203125 0.1875 C 2.773438 0.1875 2.421875 0.0898438 2.140625 -0.09375 C 1.960938 -0.195312 1.773438 -0.375 1.578125 -0.625 L 1.578125 2.25 L 0.625 2.25 Z M 0.625 -5.625 "/>
+</g>
+<g id="g1_glyph-0-23">
+<path d="M 0.625 -7.765625 L 1.546875 -7.765625 L 1.546875 -4.953125 C 1.753906 -5.222656 2 -5.429688 2.28125 -5.578125 C 2.570312 -5.722656 2.882812 -5.796875 3.21875 -5.796875 C 3.925781 -5.796875 4.5 -5.550781 4.9375 -5.0625 C 5.375 -4.582031 5.59375 -3.875 5.59375 -2.9375 C 5.59375 -2.039062 5.375 -1.296875 4.9375 -0.703125 C 4.507812 -0.117188 3.910156 0.171875 3.140625 0.171875 C 2.710938 0.171875 2.351562 0.0703125 2.0625 -0.125 C 1.882812 -0.25 1.695312 -0.445312 1.5 -0.71875 L 1.5 0 L 0.625 0 Z M 3.09375 -0.65625 C 3.601562 -0.65625 3.984375 -0.859375 4.234375 -1.265625 C 4.492188 -1.671875 4.625 -2.210938 4.625 -2.890625 C 4.625 -3.484375 4.492188 -3.972656 4.234375 -4.359375 C 3.984375 -4.742188 3.609375 -4.9375 3.109375 -4.9375 C 2.679688 -4.9375 2.300781 -4.773438 1.96875 -4.453125 C 1.644531 -4.140625 1.484375 -3.617188 1.484375 -2.890625 C 1.484375 -2.359375 1.550781 -1.925781 1.6875 -1.59375 C 1.9375 -0.96875 2.40625 -0.65625 3.09375 -0.65625 Z M 3.09375 -0.65625 "/>
+</g>
+<g id="g1_glyph-0-24">
+<path d="M 0.921875 -7.75 L 6.5625 -7.75 L 6.5625 -6.796875 L 1.953125 -6.796875 L 1.953125 -4.4375 L 6.21875 -4.4375 L 6.21875 -3.546875 L 1.953125 -3.546875 L 1.953125 -0.921875 L 6.640625 -0.921875 L 6.640625 0 L 0.921875 0 Z M 3.78125 -7.75 Z M 3.78125 -7.75 "/>
+</g>
+<g id="g1_glyph-0-25">
+<path d="M 0.890625 1.109375 C 1.140625 1.054688 1.3125 0.882812 1.40625 0.59375 C 1.457031 0.4375 1.484375 0.28125 1.484375 0.125 C 1.484375 0.101562 1.484375 0.0820312 1.484375 0.0625 C 1.484375 0.0390625 1.476562 0.0195312 1.46875 0 L 0.890625 0 L 0.890625 -1.15625 L 2.03125 -1.15625 L 2.03125 -0.078125 C 2.03125 0.335938 1.941406 0.703125 1.765625 1.015625 C 1.597656 1.328125 1.304688 1.523438 0.890625 1.609375 Z M 0.890625 1.109375 "/>
+</g>
+</g>
+</defs>
+<rect x="-59" y="-30.2" width="708" height="362.4" fill="rgb(100%, 100%, 100%)" fill-opacity="1"/>
+<path fill-rule="nonzero" fill="rgb(74.509804%, 89.019608%, 97.254902%)" fill-opacity="1" stroke-width="1.125" stroke-linecap="round" stroke-linejoin="round" stroke="rgb(10.196078%, 21.176471%, 36.470588%)" stroke-opacity="1" stroke-miterlimit="10" d="M 107.722656 112.929688 L 186.539062 112.929688 L 186.539062 90.953125 L 107.722656 90.953125 Z M 107.722656 112.929688 "/>
+<g fill="rgb(0%, 0%, 0%)" fill-opacity="1">
+<use xlink:href="#g1_glyph-0-0" x="116.8125" y="99.335938"/>
+<use xlink:href="#g1_glyph-0-1" x="124.611914" y="99.335938"/>
+<use xlink:href="#g1_glyph-0-2" x="130.618359" y="99.335938"/>
+<use xlink:href="#g1_glyph-0-3" x="136.624805" y="99.335938"/>
+<use xlink:href="#g1_glyph-0-4" x="142.63125" y="99.335938"/>
+<use xlink:href="#g1_glyph-0-5" x="148.637695" y="99.335938"/>
+<use xlink:href="#g1_glyph-0-6" x="157.63418" y="99.335938"/>
+<use xlink:href="#g1_glyph-0-7" x="160.033594" y="99.335938"/>
+<use xlink:href="#g1_glyph-0-8" x="165.433594" y="99.335938"/>
+<use xlink:href="#g1_glyph-0-3" x="171.440039" y="99.335938"/>
+</g>
+<g fill="rgb(0%, 0%, 0%)" fill-opacity="1">
+<use xlink:href="#g1_glyph-0-8" x="117.117188" y="112.296875"/>
+<use xlink:href="#g1_glyph-0-1" x="123.123633" y="112.296875"/>
+<use xlink:href="#g1_glyph-0-9" x="129.130078" y="112.296875"/>
+<use xlink:href="#g1_glyph-0-10" x="132.726562" y="112.296875"/>
+<use xlink:href="#g1_glyph-0-11" x="135.125977" y="112.296875"/>
+<use xlink:href="#g1_glyph-0-12" x="140.525977" y="112.296875"/>
+<use xlink:href="#g1_glyph-0-1" x="143.526563" y="112.296875"/>
+<use xlink:href="#g1_glyph-0-13" x="149.533008" y="112.296875"/>
+<use xlink:href="#g1_glyph-0-13" x="154.933008" y="112.296875"/>
+<use xlink:href="#g1_glyph-0-8" x="160.333008" y="112.296875"/>
+<use xlink:href="#g1_glyph-0-14" x="166.339453" y="112.296875"/>
+<use xlink:href="#g1_glyph-0-14" x="171.739453" y="112.296875"/>
+</g>
+<path fill-rule="nonzero" fill="rgb(99.607843%, 84.313725%, 84.313725%)" fill-opacity="1" stroke-width="1.125" stroke-linecap="round" stroke-linejoin="round" stroke="rgb(10.196078%, 21.176471%, 36.470588%)" stroke-opacity="1" stroke-miterlimit="10" d="M 269.992188 112.929688 L 348.808594 112.929688 L 348.808594 90.953125 L 269.992188 90.953125 Z M 269.992188 112.929688 "/>
+<g fill="rgb(0%, 0%, 0%)" fill-opacity="1">
+<use xlink:href="#g1_glyph-0-15" x="273.984375" y="99.335938"/>
+<use xlink:href="#g1_glyph-0-4" x="281.187891" y="99.335938"/>
+<use xlink:href="#g1_glyph-0-14" x="287.194336" y="99.335938"/>
+<use xlink:href="#g1_glyph-0-16" x="292.594336" y="99.335938"/>
+<use xlink:href="#g1_glyph-0-17" x="295.594922" y="99.335938"/>
+<use xlink:href="#g1_glyph-0-16" x="299.191406" y="99.335938"/>
+<use xlink:href="#g1_glyph-0-9" x="302.191992" y="99.335938"/>
+<use xlink:href="#g1_glyph-0-8" x="305.788477" y="99.335938"/>
+<use xlink:href="#g1_glyph-0-1" x="311.794922" y="99.335938"/>
+<use xlink:href="#g1_glyph-0-16" x="317.801367" y="99.335938"/>
+<use xlink:href="#g1_glyph-0-5" x="320.801953" y="99.335938"/>
+<use xlink:href="#g1_glyph-0-8" x="329.798437" y="99.335938"/>
+<use xlink:href="#g1_glyph-0-2" x="335.804883" y="99.335938"/>
+<use xlink:href="#g1_glyph-0-16" x="341.811328" y="99.335938"/>
+</g>
+<g fill="rgb(0%, 0%, 0%)" fill-opacity="1">
+<use xlink:href="#g1_glyph-0-8" x="279.375" y="112.296875"/>
+<use xlink:href="#g1_glyph-0-2" x="285.381445" y="112.296875"/>
+<use xlink:href="#g1_glyph-0-18" x="291.387891" y="112.296875"/>
+<use xlink:href="#g1_glyph-0-1" x="297.394336" y="112.296875"/>
+<use xlink:href="#g1_glyph-0-18" x="303.400781" y="112.296875"/>
+<use xlink:href="#g1_glyph-0-8" x="309.407227" y="112.296875"/>
+<use xlink:href="#g1_glyph-0-5" x="315.413672" y="112.296875"/>
+<use xlink:href="#g1_glyph-0-8" x="324.410156" y="112.296875"/>
+<use xlink:href="#g1_glyph-0-2" x="330.416602" y="112.296875"/>
+<use xlink:href="#g1_glyph-0-16" x="336.423047" y="112.296875"/>
+</g>
+<path fill-rule="nonzero" fill="rgb(77.647059%, 96.470588%, 83.529412%)" fill-opacity="1" stroke-width="1.125" stroke-linecap="round" stroke-linejoin="round" stroke="rgb(10.196078%, 21.176471%, 36.470588%)" stroke-opacity="1" stroke-miterlimit="10" d="M 432.261719 112.929688 L 511.078125 112.929688 L 511.078125 90.953125 L 432.261719 90.953125 Z M 432.261719 112.929688 "/>
+<g fill="rgb(0%, 0%, 0%)" fill-opacity="1">
+<use xlink:href="#g1_glyph-0-19" x="458.164062" y="105.808594"/>
+<use xlink:href="#g1_glyph-0-1" x="465.367578" y="105.808594"/>
+<use xlink:href="#g1_glyph-0-10" x="471.374023" y="105.808594"/>
+<use xlink:href="#g1_glyph-0-8" x="473.773438" y="105.808594"/>
+<use xlink:href="#g1_glyph-0-14" x="479.779883" y="105.808594"/>
+</g>
+<path fill-rule="nonzero" fill="rgb(98.039216%, 94.117647%, 53.72549%)" fill-opacity="1" stroke-width="1.125" stroke-linecap="round" stroke-linejoin="round" stroke="rgb(10.196078%, 21.176471%, 36.470588%)" stroke-opacity="1" stroke-miterlimit="10" d="M 269.992188 194.027344 L 348.808594 194.027344 L 348.808594 172.050781 L 269.992188 172.050781 Z M 269.992188 194.027344 "/>
+<g fill="rgb(0%, 0%, 0%)" fill-opacity="1">
+<use xlink:href="#g1_glyph-0-20" x="275.78125" y="180.433594"/>
+<use xlink:href="#g1_glyph-0-1" x="281.787695" y="180.433594"/>
+<use xlink:href="#g1_glyph-0-16" x="287.794141" y="180.433594"/>
+<use xlink:href="#g1_glyph-0-8" x="290.794727" y="180.433594"/>
+<use xlink:href="#g1_glyph-0-2" x="296.801172" y="180.433594"/>
+<use xlink:href="#g1_glyph-0-16" x="302.807617" y="180.433594"/>
+<use xlink:href="#g1_glyph-0-12" x="305.808203" y="180.433594"/>
+<use xlink:href="#g1_glyph-0-14" x="308.808789" y="180.433594"/>
+<use xlink:href="#g1_glyph-0-8" x="314.208789" y="180.433594"/>
+<use xlink:href="#g1_glyph-0-9" x="320.215234" y="180.433594"/>
+<use xlink:href="#g1_glyph-0-21" x="323.811719" y="180.433594"/>
+<use xlink:href="#g1_glyph-0-6" x="329.211719" y="180.433594"/>
+<use xlink:href="#g1_glyph-0-13" x="331.611133" y="180.433594"/>
+<use xlink:href="#g1_glyph-0-8" x="337.011133" y="180.433594"/>
+</g>
+<g fill="rgb(0%, 0%, 0%)" fill-opacity="1">
+<use xlink:href="#g1_glyph-0-13" x="286.886719" y="193.394531"/>
+<use xlink:href="#g1_glyph-0-1" x="292.286719" y="193.394531"/>
+<use xlink:href="#g1_glyph-0-22" x="298.293164" y="193.394531"/>
+<use xlink:href="#g1_glyph-0-1" x="304.299609" y="193.394531"/>
+<use xlink:href="#g1_glyph-0-23" x="310.306055" y="193.394531"/>
+<use xlink:href="#g1_glyph-0-6" x="316.3125" y="193.394531"/>
+<use xlink:href="#g1_glyph-0-10" x="318.711914" y="193.394531"/>
+<use xlink:href="#g1_glyph-0-6" x="321.111328" y="193.394531"/>
+<use xlink:href="#g1_glyph-0-16" x="323.510742" y="193.394531"/>
+<use xlink:href="#g1_glyph-0-11" x="326.511328" y="193.394531"/>
+</g>
+<path fill="none" stroke-width="1.125" stroke-linecap="round" stroke-linejoin="round" stroke="rgb(29.019608%, 33.333333%, 40.784314%)" stroke-opacity="1" stroke-miterlimit="10" d="M 188.855469 101.941406 L 267.671875 101.941406 "/>
+<path fill="none" stroke-width="1.125" stroke-linecap="round" stroke-linejoin="round" stroke="rgb(29.019608%, 33.333333%, 40.784314%)" stroke-opacity="1" stroke-miterlimit="10" d="M 262.683594 104.824219 L 267.671875 101.941406 L 262.683594 99.0625 "/>
+<path fill="none" stroke-width="1.125" stroke-linecap="round" stroke-linejoin="round" stroke="rgb(29.019608%, 33.333333%, 40.784314%)" stroke-opacity="1" stroke-miterlimit="10" d="M 351.125 101.941406 L 429.945312 101.941406 "/>
+<path fill="none" stroke-width="1.125" stroke-linecap="round" stroke-linejoin="round" stroke="rgb(29.019608%, 33.333333%, 40.784314%)" stroke-opacity="1" stroke-miterlimit="10" d="M 424.957031 104.824219 L 429.945312 101.941406 L 424.957031 99.0625 "/>
+<path fill="none" stroke-width="1.125" stroke-linecap="round" stroke-linejoin="round" stroke="rgb(29.019608%, 33.333333%, 40.784314%)" stroke-opacity="1" stroke-miterlimit="10" d="M 181.902344 113.714844 L 216.675781 137.261719 "/>
+<path fill="none" stroke-width="1.125" stroke-linecap="round" stroke-linejoin="round" stroke="rgb(29.019608%, 33.333333%, 40.784314%)" stroke-opacity="1" stroke-miterlimit="10" d="M 216.675781 137.261719 L 402.125 137.261719 "/>
+<path fill="none" stroke-width="1.125" stroke-linecap="round" stroke-linejoin="round" stroke="rgb(29.019608%, 33.333333%, 40.784314%)" stroke-opacity="1" stroke-miterlimit="10" d="M 402.125 137.261719 L 436.898438 113.714844 "/>
+<path fill="none" stroke-width="1.125" stroke-linecap="round" stroke-linejoin="round" stroke="rgb(29.019608%, 33.333333%, 40.784314%)" stroke-opacity="1" stroke-miterlimit="10" d="M 434.382812 118.898438 L 436.898438 113.714844 L 431.152344 114.128906 "/>
+<path fill="none" stroke-width="1.125" stroke-linecap="round" stroke-linejoin="round" stroke="rgb(29.019608%, 33.333333%, 40.784314%)" stroke-opacity="1" stroke-miterlimit="10" d="M 309.398438 171.269531 L 309.398438 115.023438 "/>
+<path fill="none" stroke-width="1.125" stroke-linecap="round" stroke-linejoin="round" stroke="rgb(29.019608%, 33.333333%, 40.784314%)" stroke-opacity="1" stroke-miterlimit="10" d="M 312.28125 120.011719 L 309.398438 115.023438 L 306.519531 120.011719 "/>
+<path fill="none" stroke-width="1.125" stroke-linecap="round" stroke-linejoin="round" stroke="rgb(29.019608%, 33.333333%, 40.784314%)" stroke-opacity="1" stroke-miterlimit="10" d="M 341.855469 175.191406 L 448.488281 113.714844 "/>
+<path fill="none" stroke-width="1.125" stroke-linecap="round" stroke-linejoin="round" stroke="rgb(29.019608%, 33.333333%, 40.784314%)" stroke-opacity="1" stroke-miterlimit="10" d="M 445.605469 118.703125 L 448.488281 113.714844 L 442.730469 113.710938 "/>
+<g fill="rgb(77.254902%, 18.823529%, 18.823529%)" fill-opacity="1">
+<use xlink:href="#g1_glyph-0-24" x="128.984375" y="210.585938"/>
+<use xlink:href="#g1_glyph-0-2" x="136.187891" y="210.585938"/>
+<use xlink:href="#g1_glyph-0-18" x="142.194336" y="210.585938"/>
+<use xlink:href="#g1_glyph-0-1" x="148.200781" y="210.585938"/>
+<use xlink:href="#g1_glyph-0-18" x="154.207227" y="210.585938"/>
+<use xlink:href="#g1_glyph-0-8" x="160.213672" y="210.585938"/>
+<use xlink:href="#g1_glyph-0-5" x="166.220117" y="210.585938"/>
+<use xlink:href="#g1_glyph-0-8" x="175.216602" y="210.585938"/>
+<use xlink:href="#g1_glyph-0-2" x="181.223047" y="210.585938"/>
+<use xlink:href="#g1_glyph-0-16" x="187.229492" y="210.585938"/>
+<use xlink:href="#g1_glyph-0-12" x="190.230078" y="210.585938"/>
+<use xlink:href="#g1_glyph-0-6" x="193.230664" y="210.585938"/>
+<use xlink:href="#g1_glyph-0-14" x="195.630078" y="210.585938"/>
+<use xlink:href="#g1_glyph-0-12" x="201.030078" y="210.585938"/>
+<use xlink:href="#g1_glyph-0-1" x="204.030664" y="210.585938"/>
+<use xlink:href="#g1_glyph-0-12" x="210.037109" y="210.585938"/>
+<use xlink:href="#g1_glyph-0-5" x="213.037695" y="210.585938"/>
+<use xlink:href="#g1_glyph-0-8" x="222.03418" y="210.585938"/>
+<use xlink:href="#g1_glyph-0-3" x="228.040625" y="210.585938"/>
+<use xlink:href="#g1_glyph-0-6" x="234.04707" y="210.585938"/>
+<use xlink:href="#g1_glyph-0-1" x="236.446484" y="210.585938"/>
+<use xlink:href="#g1_glyph-0-16" x="242.45293" y="210.585938"/>
+<use xlink:href="#g1_glyph-0-4" x="245.453516" y="210.585938"/>
+<use xlink:href="#g1_glyph-0-9" x="251.459961" y="210.585938"/>
+<use xlink:href="#g1_glyph-0-12" x="255.056445" y="210.585938"/>
+<use xlink:href="#g1_glyph-0-1" x="258.057031" y="210.585938"/>
+<use xlink:href="#g1_glyph-0-2" x="264.063477" y="210.585938"/>
+<use xlink:href="#g1_glyph-0-3" x="270.069922" y="210.585938"/>
+<use xlink:href="#g1_glyph-0-12" x="276.076367" y="210.585938"/>
+<use xlink:href="#g1_glyph-0-1" x="279.076953" y="210.585938"/>
+<use xlink:href="#g1_glyph-0-12" x="285.083398" y="210.585938"/>
+<use xlink:href="#g1_glyph-0-13" x="288.083984" y="210.585938"/>
+<use xlink:href="#g1_glyph-0-4" x="293.483984" y="210.585938"/>
+<use xlink:href="#g1_glyph-0-10" x="299.49043" y="210.585938"/>
+<use xlink:href="#g1_glyph-0-10" x="301.889844" y="210.585938"/>
+<use xlink:href="#g1_glyph-0-6" x="304.289258" y="210.585938"/>
+<use xlink:href="#g1_glyph-0-3" x="306.688672" y="210.585938"/>
+<use xlink:href="#g1_glyph-0-8" x="312.695117" y="210.585938"/>
+<use xlink:href="#g1_glyph-0-9" x="318.701562" y="210.585938"/>
+<use xlink:href="#g1_glyph-0-12" x="322.298047" y="210.585938"/>
+<use xlink:href="#g1_glyph-0-3" x="325.298633" y="210.585938"/>
+<use xlink:href="#g1_glyph-0-8" x="331.305078" y="210.585938"/>
+<use xlink:href="#g1_glyph-0-14" x="337.311523" y="210.585938"/>
+<use xlink:href="#g1_glyph-0-13" x="342.711523" y="210.585938"/>
+<use xlink:href="#g1_glyph-0-8" x="348.111523" y="210.585938"/>
+<use xlink:href="#g1_glyph-0-2" x="354.117969" y="210.585938"/>
+<use xlink:href="#g1_glyph-0-3" x="360.124414" y="210.585938"/>
+<use xlink:href="#g1_glyph-0-1" x="366.130859" y="210.585938"/>
+<use xlink:href="#g1_glyph-0-2" x="372.137305" y="210.585938"/>
+<use xlink:href="#g1_glyph-0-16" x="378.14375" y="210.585938"/>
+<use xlink:href="#g1_glyph-0-25" x="381.144336" y="210.585938"/>
+<use xlink:href="#g1_glyph-0-12" x="384.144922" y="210.585938"/>
+<use xlink:href="#g1_glyph-0-2" x="387.145508" y="210.585938"/>
+<use xlink:href="#g1_glyph-0-4" x="393.151953" y="210.585938"/>
+<use xlink:href="#g1_glyph-0-16" x="399.158398" y="210.585938"/>
+<use xlink:href="#g1_glyph-0-12" x="402.158984" y="210.585938"/>
+<use xlink:href="#g1_glyph-0-1" x="405.15957" y="210.585938"/>
+<use xlink:href="#g1_glyph-0-12" x="411.166016" y="210.585938"/>
+<use xlink:href="#g1_glyph-0-23" x="414.166602" y="210.585938"/>
+<use xlink:href="#g1_glyph-0-1" x="420.173047" y="210.585938"/>
+<use xlink:href="#g1_glyph-0-14" x="426.179492" y="210.585938"/>
+<use xlink:href="#g1_glyph-0-8" x="431.579492" y="210.585938"/>
+<use xlink:href="#g1_glyph-0-10" x="437.585937" y="210.585938"/>
+<use xlink:href="#g1_glyph-0-6" x="439.985352" y="210.585938"/>
+<use xlink:href="#g1_glyph-0-2" x="442.384766" y="210.585938"/>
+<use xlink:href="#g1_glyph-0-8" x="448.391211" y="210.585938"/>
+<use xlink:href="#g1_glyph-0-12" x="454.397656" y="210.585938"/>
+<use xlink:href="#g1_glyph-0-13" x="457.398242" y="210.585938"/>
+<use xlink:href="#g1_glyph-0-4" x="462.798242" y="210.585938"/>
+<use xlink:href="#g1_glyph-0-2" x="468.804687" y="210.585938"/>
+<use xlink:href="#g1_glyph-0-16" x="474.811133" y="210.585938"/>
+<use xlink:href="#g1_glyph-0-9" x="477.811719" y="210.585938"/>
+<use xlink:href="#g1_glyph-0-4" x="481.408203" y="210.585938"/>
+<use xlink:href="#g1_glyph-0-10" x="487.414648" y="210.585938"/>
+</g>
+</svg>
+<figcaption aria-hidden="true">Aurora’s assignment graph. Early access
+affects sales directly and also through post-treatment engagement;
+latent service capability affects both engagement and sales. Controlling
+for engagement cuts the mediating path and opens a conditional
+association between early access and latent capability.</figcaption>
+</figure>
+<p>A DAG cannot substitute for economic content. The arrows come from
+claims about platform institutions, user behavior, and temporal order;
+they are not facts learned automatically from a correlation matrix.
+Different plausible DAGs may imply different adjustment sets, and the
+honest practice is to show the key alternative graphs and state which
+arrows the conclusion is sensitive to.</p>
+<h3 id="confounder-mediator-and-collider">3.3 Confounder, Mediator, and
+Collider</h3>
+<p>A baseline confounder jointly affects <span
+class="math inline">D</span> and <span class="math inline">Y</span>
+before treatment, and controlling for it appropriately can recover
+conditional exchangeability. A mediator sits on the path from <span
+class="math inline">D</span> to <span class="math inline">Y</span>, and
+controlling for it takes away part of the total effect. A collider is a
+variable that two arrows both point into, and conditioning on it
+manufactures an association between its causes.</p>
+<p>In Aurora, engagement is affected by both <span
+class="math inline">D</span> and latent service capability <span
+class="math inline">U</span>, so on the path <span
+class="math inline">D\rightarrow M\leftarrow U\rightarrow Y</span> it is
+a collider. Randomization originally guarantees that <span
+class="math inline">D</span> and <span class="math inline">U</span> are
+unrelated; conditional on <span class="math inline">M</span>, treated
+merchants with the same engagement tend to require a lower <span
+class="math inline">U</span>, so <span class="math inline">D</span> and
+<span class="math inline">U</span> become negatively correlated in the
+conditioned sample. The result is that the treatment coefficient not
+only loses the mediated effect but also absorbs collider bias, and it
+flips from positive to <span class="math inline">-0.099</span>.</p>
+<div class="theorem" data-label="Bad-control principle">
+<p>If a variable is affected by the treatment, adding it to an outcome
+regression generally no longer identifies the original total effect; and
+if it is also a collider between the treatment and an unobserved cause
+of the outcome, the adjusted treatment coefficient usually does not
+identify the controlled direct effect either.</p>
+</div>
+<h3 id="pre-treatment-does-not-mean-it-should-be-controlled">3.4
+Pre-treatment Does Not Mean It Should Be Controlled</h3>
+<p>“Control only for pre-treatment variables” is a necessary safety
+screen, but not a sufficient rule. A pre-treatment collider still should
+not be controlled; a strong predictor close to the treatment that is
+unrelated to the outcome may lower the precision of some estimators; and
+in an IV design, the consequences of controlling for the instrument are
+different again. The reason for choosing controls should come from the
+assignment and the causal structure, not from stepwise regression,
+significance, or “throw in everything you can find.”</p>
+<h3 id="mechanism-evidence-does-not-mean-mechanism-identification">3.5
+Mechanism Evidence Does Not Mean Mechanism Identification</h3>
+<p>If the treatment raises engagement and engagement is positively
+correlated with sales, this is consistent with an engagement channel,
+but it does not identify the mediated effect. Formal mediation must
+handle mediator-outcome confounding, post-treatment confounding, and a
+well-defined mediator intervention. A mechanism prediction being
+supported by the data says only that the model has not yet been rejected
+by that prediction; it is not the unique identification of the mechanism
+against alternative explanations.</p>
+<h3 id="timing-anticipation-and-treatment-versions">3.6 Timing,
+Anticipation, and Treatment Versions</h3>
+<p>Platform policies often change behavior after the announcement but
+before the formal launch. If merchants prepare in advance, <span
+class="math inline">Y_i(0)</span> is already affected by future
+assignment in the so-called pre-period, and no anticipation fails.
+Algorithms also keep iterating, and an “AI assistant” of the same name
+may correspond to different model versions in different weeks. The
+researcher should record versions, deployment times, and exposure logs,
+and make clear whether the estimand is the short-run effect of one
+version or the policy effect of a family of versions.</p>
+<h3 id="testability-and-the-design-audit">3.7 Testability and the Design
+Audit</h3>
+<p>Randomization probabilities, stratification rules, sample exclusions,
+treatment crossover, and logging completeness can be audited; the
+independence of unobserved potential outcomes cannot be fully verified
+from outcome data. Balance checks are an execution diagnostic, not an
+item-by-item significance exam. More valuable is reconstructing the
+assignment code, reconciling exposure timestamps, checking whether
+attrition is affected by treatment, and locking in the primary estimand
+while still blind to the outcome.</p>
+<h3 id="attrition-truncation-and-who-is-still-in-the-sample">3.8
+Attrition, Truncation, and “Who Is Still in the Sample”</h3>
+<p>Platform outcomes often become unobservable only after treatment. A
+merchant that exits has no sales, a user that uninstalls has no
+engagement, and a refused impression has no click. If we define <span
+class="math inline">R_i(d)</span> as whether the outcome is recorded
+under treatment status <span class="math inline">d</span>, what we
+actually observe is <span class="math inline">R_i(D_i)Y_i(D_i)</span>.
+Even if <span class="math inline">D</span> is random, a complete-case
+comparison compares only between treatment-induced selected
+populations.</p>
+<p>First distinguish three objects. A missing outcome is a unit still in
+the target population with <span class="math inline">Y</span>
+unrecorded; truncation by death is treatment changing whether the unit
+exists or has a well-defined outcome at all; a sample restriction is the
+researcher deleting the sample after the fact according to observed
+behavior. IPW or imputation requires the corresponding missing-at-random
+condition and cannot automatically handle the case where <span
+class="math inline">R</span> depends on the unobserved <span
+class="math inline">Y</span>. The Lee bounds of Chapter 15 provide
+weaker conclusions under monotone selection.</p>
+<h3 id="internal-validity-external-validity-and-policy-transport">3.9
+Internal Validity, External Validity, and Policy Transport</h3>
+<p>An experiment’s effect on the pilot population can be internally
+valid without representing a national rollout. Let <span
+class="math inline">S_i=1</span> denote entering the study sample; the
+target-population effect requires transporting the response of <span
+class="math inline">S=1</span> to <span class="math inline">S=0</span>.
+This requires all effect modifiers to be observed and to have overlap,
+or bounds on the unobserved heterogeneity.</p>
+<p>Platform studies especially need to record the eligibility rule,
+invitation, consent, actual exposure, and analysis inclusion. The study
+sample is often active users, trackable devices, or firms willing to try
+AI, precisely the population least suited to unconditional
+extrapolation. A high-standard conclusion should be written as “valid
+for which units, which version, which horizon, and which rollout
+saturation,” rather than merely stating in a limitations paragraph that
+external validity is limited.</p>
+<p>The key points of this section can be summarized as follows:
+identification comes from the assignment mechanism; potential outcomes
+fix the question and DAGs display the conditional structure;
+post-treatment controls can simultaneously change the estimand and open
+a collider path; timing, versions, attrition, and implementation drift
+all need to enter the design audit; and transport from a pilot sample to
+a policy population is another set of assumptions that cannot be
+inferred automatically from internal validity.</p>
+<h2
+id="estimation-choose-the-estimator-only-after-the-design-is-fixed">4
+Estimation: Choose the Estimator Only After the Design Is Fixed</h2>
+<h3 id="difference-in-means">4.1 Difference in Means</h3>
+<p>In an executed simple randomized experiment, the most transparent
+estimator is</p>
+<p><span class="math display">\hat\tau = \bar Y_1-\bar Y_0.</span></p>
+<p>It maps directly to the assignment. Aurora’s estimate is <span
+class="math inline">0.149</span>. If randomization is stratified within
+region, the analysis should weight by the known assignment probability
+or add strata fixed effects, and compute standard errors at the actual
+randomization level.</p>
+<h3 id="baseline-adjustment">4.2 Baseline Adjustment</h3>
+<p>Covariates measured in advance that strongly predict the outcome can
+improve precision. After adding baseline quality and region fixed
+effects, Aurora obtains <span class="math inline">0.157</span>, with the
+SE falling from <span class="math inline">0.017</span> to <span
+class="math inline">0.015</span>. Randomization guarantees the
+unadjusted estimator is unbiased; the role of adjustment is mainly
+precision and finite-sample balance, and it should not be described as
+“removing endogeneity.”</p>
+<h3 id="itt-tot-and-the-exposure-effect">4.3 ITT, TOT, and the Exposure
+Effect</h3>
+<p>If having access is not the same as using it, then assignment <span
+class="math inline">Z</span>, actual adoption <span
+class="math inline">D</span>, and algorithmic exposure <span
+class="math inline">E</span> must be kept apart. The ITT of <span
+class="math inline">Z</span> on <span class="math inline">Y</span> is
+identified by randomization; using <span class="math inline">Z</span> as
+an instrument for <span class="math inline">D</span> identifies the
+complier LATE under exclusion and monotonicity; and directly comparing
+<span class="math inline">D=1</span> with <span
+class="math inline">D=0</span> often reintroduces selection. Three
+binary columns in a data table do not mean three causal effects are all
+identified by the same experiment.</p>
+<h3 id="a-specification-curve-cannot-substitute-for-design">4.4 A
+Specification Curve Cannot Substitute for Design</h3>
+<p>Showing several plausible specifications helps clarify whether the
+limited modeling choices matter, but running hundreds of control
+combinations does not create exogenous variation. If all specifications
+rely on the same untrustworthy assignment assumption, their joint
+stability does not amount to identification. Chapter 15 will
+parameterize deviations from the core assumption directly, rather than
+treating “swap a few controls” as a complete sensitivity analysis.</p>
+<h3
+id="deriving-distinguishable-empirical-predictions-from-economic-mechanisms">4.5
+Deriving Distinguishable Empirical Predictions from Economic
+Mechanisms</h3>
+<p>Research design cannot stop at “does the treatment work.” For IS and
+OM questions, a more valuable approach is to first write out competing
+mechanisms, then look for the margin that separates them. Suppose an AI
+copilot raises customer-service performance; there are at least three
+explanations: it lowers the handling cost of a single task; it supplies
+knowledge to low-experience workers; and it changes task allocation, so
+that easier tasks flow more toward treated workers. All three can raise
+the average handling volume, yet they give different predictions about
+quality, heterogeneity, and task composition.</p>
+<div class="table-scroll">
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr>
+<th>Mechanism</th>
+<th>First-order prediction</th>
+<th>Distinguishing additional prediction</th>
+<th>Main threat</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Cost reduction</td>
+<td>Volume completed per unit time rises</td>
+<td>Roughly proportional improvement across experience groups</td>
+<td>Contemporaneous demand shifts</td>
+</tr>
+<tr>
+<td>Knowledge supplement</td>
+<td>Larger improvement for low-experience workers</td>
+<td>Escalation falls, learning curve flattens</td>
+<td>Regression to the mean</td>
+</tr>
+<tr>
+<td>Task reallocation</td>
+<td>Treated throughput rises</td>
+<td>Untreated task difficulty rises</td>
+<td>Interference and selective logging</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The discipline here is that heterogeneity constitutes mechanism
+evidence only when it is defined before treatment, derived from the
+mechanism, and paired with the corresponding measurement. Searching for
+significant results across dozens of subgroups after the fact can only
+generate hypotheses. Mechanism tests should also avoid controlling for
+post-treatment variables; if the task mix is itself affected by
+treatment, putting it into the outcome regression rewrites the total
+effect into a controlled direct effect that is hard to interpret.</p>
+<h3 id="temporal-structure-dynamic-paths-and-cumulative-effects">4.6
+Temporal Structure, Dynamic Paths, and Cumulative Effects</h3>
+<p>Technology adoption often contains installation, training, active
+use, and workflow redesign at once. Compressing these dates into a
+single treatment date conflates the different stages. The research
+design should distinguish at least three estimands: the short-run
+disruption right after deployment, the flow effect once use stabilizes,
+and the cumulative effect that includes the up-front investment cost. If
+<span class="math inline">\tau_k</span> denotes the effect in period
+<span class="math inline">k</span> after adoption, the cumulative policy
+value is not whichever <span class="math inline">\tau_k</span> is most
+significant, but</p>
+<p><span
+class="math display">V_H=\sum_{k=0}^{H}\delta^k\tau_k-C_0,</span></p>
+<p>where <span class="math inline">C_0</span> includes migration,
+training, and organizational-adjustment costs. The empirical meaning of
+the productivity J-curve is exactly this: early <span
+class="math inline">\tau_k</span> can be negative and later ones
+positive, and whether <span class="math inline">V_H</span> is positive
+depends on the evaluation horizon. The researcher should state in
+advance whether event time is defined by access, first use, or stable
+use, and report the adoption rate alongside; otherwise the estimated
+rollout effect will blend technological capability with adoption
+behavior.</p>
+<h3
+id="from-identification-assumptions-to-an-auditable-design-table">4.7
+From Identification Assumptions to an Auditable Design Table</h3>
+<p>A high-quality paper should let the reader see what fact supports
+each key assumption, rather than only listing terminology in the methods
+section. Before estimation, you can build a design table like the
+following.</p>
+<div class="table-scroll">
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr>
+<th>Design object</th>
+<th>Question that must be answered</th>
+<th>Observable evidence</th>
+<th>Part still not testable</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Assignment</td>
+<td>Who decides when treatment is received</td>
+<td>Rollout rule, randomization code, eligibility threshold</td>
+<td>Unrecorded manual exceptions</td>
+</tr>
+<tr>
+<td>Exposure</td>
+<td>Does access equal use</td>
+<td>Login, feature call, duration</td>
+<td>Quality of use and cognitive investment</td>
+</tr>
+<tr>
+<td>Outcome</td>
+<td>Does the metric correspond to the construct</td>
+<td>Audit, reconciliation, alternative metric</td>
+<td>Unrecorded behavior and long-run welfare</td>
+</tr>
+<tr>
+<td>Counterfactual</td>
+<td>Why the control can represent the untreated state</td>
+<td>Balance, pre-trends, placebo</td>
+<td>Future untreated potential outcome</td>
+</tr>
+<tr>
+<td>Interference</td>
+<td>Whether units affect one another</td>
+<td>Network, boundary flows, saturation response</td>
+<td>Unobserved cross-market equilibrium responses</td>
+</tr>
+<tr>
+<td>Transport</td>
+<td>Whether the sample generalizes to the policy population</td>
+<td>Overlap, site composition, reweighting</td>
+<td>Structural change in a new environment</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The point of this table is not to claim that all assumptions can be
+tested, but to separate design facts, diagnostic evidence, and
+untestable assumptions. Rigor comes from exposing the untestable part
+and stating within what range of deviation the conclusion still
+holds.</p>
+<h2 id="anchor-papers">5 Anchor Papers</h2>
+<h3 id="rubin-1974">5.1 Rubin (1974)</h3>
+<div class="case">
+<p>Paper: “Estimating Causal Effects of Treatments in Randomized and
+Nonrandomized Studies,” Journal of Educational Psychology.</p>
+<p>Method: express causal effects through treatment-specific potential
+outcomes, write causal inference as a missing-data problem, and separate
+the assignment mechanism from the outcome model.</p>
+<p>Data: the paper is a methodological argument and does not rely on any
+one platform dataset.</p>
+<p>Result: the core contribution is not an empirical number but the
+establishment that “the two potential outcomes of the same unit cannot
+be observed at once,” so a causal design must say how the missing
+counterfactual is supported by assignment.</p>
+<p>Limitation: the framework itself does not automatically supply a
+valid design. Treatment versions, interference, and dynamic exposure all
+need extra definition in a concrete application.</p>
+</div>
+<h3 id="athey-and-imbens-2017">5.2 Athey and Imbens (2017)</h3>
+<div class="case">
+<p>Paper: “The State of Applied Econometrics: Causality and Policy
+Evaluation,” Journal of Economic Perspectives.</p>
+<p>Method: survey experimental, selection-on-observables, IV, RDD, DiD,
+and synthetic-control designs, stressing that the credibility of modern
+empirical work comes from an explicit identification strategy.</p>
+<p>Data: the review spans applications in education, labor, public
+economics, and policy evaluation.</p>
+<p>Result: the formulas for different estimators are not the heart of
+the taxonomy; what matters is how assignment or institutional variation
+constructs the counterfactual.</p>
+<p>Limitation: the review is broad in coverage and cannot substitute for
+a dedicated treatment of interference, measurement, and external
+validity for each design.</p>
+</div>
+<h3 id="imbens-2020">5.3 Imbens (2020)</h3>
+<div class="case">
+<p>Paper: “Potential Outcome and Directed Acyclic Graph Approaches to
+Causality: Relevance for Empirical Practice in Economics,” Journal of
+Economic Literature.</p>
+<p>Method: compare potential-outcome and DAG/structural-equation
+approaches, and discuss the different strengths of the two languages in
+economic empirical work.</p>
+<p>Data: a methodological review that uses several economic designs as
+examples and reports no single treatment effect.</p>
+<p>Result: potential outcomes are especially direct for making the
+intervention, estimand, and design explicit; DAGs are valuable for
+expressing complex conditional-independence assumptions. The two can
+complement each other.</p>
+<p>Limitation: any representation relies on substantive assumptions.
+Drawing the graph completely does not mean the arrows have been verified
+by the data.</p>
+</div>
+<h2 id="a-complete-walkthrough-on-aurora-data">6 A Complete Walkthrough
+on Aurora Data</h2>
+<h3 id="the-dgp">6.1 The DGP</h3>
+<p>Aurora has 12000 merchants, and the platform randomly opens the tool
+early to about half of them within 120 regions. The structural direct
+effect is <span class="math inline">0.080</span>; the tool raises
+engagement by <span class="math inline">0.50</span> on average, and the
+marginal effect of engagement is <span class="math inline">0.12</span>,
+so the total effect is <span class="math inline">0.140</span>.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1010</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>N <span class="ot">&lt;-</span> <span class="dv">12000</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>baseline_quality <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>region <span class="ot">&lt;-</span> <span class="fu">sample</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">120</span>, N, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>u_service <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>early_access <span class="ot">&lt;-</span> <span class="fu">ave</span>(<span class="fu">runif</span>(N), region,</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">FUN =</span> <span class="cf">function</span>(x) <span class="fu">as.integer</span>(x <span class="sc">&lt;=</span> <span class="fu">median</span>(x)))</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>engagement <span class="ot">&lt;-</span> <span class="fl">0.50</span><span class="sc">*</span>early_access <span class="sc">+</span> <span class="fl">0.30</span><span class="sc">*</span>baseline_quality <span class="sc">+</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="fl">0.60</span><span class="sc">*</span>u_service <span class="sc">+</span> <span class="fu">rnorm</span>(N, <span class="at">sd=</span><span class="fl">0.70</span>)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>log_sales <span class="ot">&lt;-</span> <span class="dv">2</span> <span class="sc">+</span> <span class="fl">0.40</span><span class="sc">*</span>baseline_quality <span class="sc">+</span> <span class="fl">0.08</span><span class="sc">*</span>early_access <span class="sc">+</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  <span class="fl">0.12</span><span class="sc">*</span>engagement <span class="sc">+</span> <span class="fl">0.50</span><span class="sc">*</span>u_service <span class="sc">+</span> <span class="fu">rnorm</span>(N, <span class="at">sd=</span><span class="fl">0.60</span>)</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">seller_id =</span> <span class="fu">seq_len</span>(N), region, baseline_quality,</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  early_access, engagement, log_sales)</span></code></pre></div>
+<h3 id="three-specifications">6.2 Three Specifications</h3>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>fit_diff <span class="ot">&lt;-</span> <span class="fu">lm</span>(log_sales <span class="sc">~</span> early_access, <span class="at">data=</span>dat)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>fit_pre  <span class="ot">&lt;-</span> <span class="fu">lm</span>(log_sales <span class="sc">~</span> early_access <span class="sc">+</span> baseline_quality <span class="sc">+</span> <span class="fu">factor</span>(region), <span class="at">data=</span>dat)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>fit_bad  <span class="ot">&lt;-</span> <span class="fu">lm</span>(log_sales <span class="sc">~</span> early_access <span class="sc">+</span> baseline_quality <span class="sc">+</span> engagement <span class="sc">+</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>              <span class="fu">factor</span>(region), <span class="at">data=</span>dat)</span></code></pre></div>
+<p>The actual output is as follows.</p>
+<div class="table-scroll">
+<table>
+<colgroup>
+<col style="width: 21%" />
+<col style="width: 28%" />
+<col style="width: 28%" />
+<col style="width: 21%" />
+</colgroup>
+<thead>
+<tr>
+<th>Specification</th>
+<th style="text-align: right;">Estimate</th>
+<th style="text-align: right;">SE</th>
+<th>Target and question</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Difference in means</td>
+<td style="text-align: right;">0.149</td>
+<td style="text-align: right;">0.017</td>
+<td>Total effect of random assignment</td>
+</tr>
+<tr>
+<td>Baseline adjusted</td>
+<td style="text-align: right;">0.157</td>
+<td style="text-align: right;">0.015</td>
+<td>The same total effect, higher precision</td>
+</tr>
+<tr>
+<td>Post-treatment control</td>
+<td style="text-align: right;">-0.099</td>
+<td style="text-align: right;">0.014</td>
+<td>Cuts the mediator and introduces collider bias</td>
+</tr>
+</tbody>
+</table>
+</div>
+<figure>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 590 331" role="img" aria-label="Estimates of the early-access coefficient under three specifications. The first two center on the true total effect; controlling for post-treatment engagement flips the coefficient negative. The structural direct effect shown by the purple line is not identified by that bad-control regression either." style="max-width:100%;height:auto;display:block;margin:0 auto">
+<defs>
+<g>
+<g id="g2_glyph-0-0">
+<path d="M 4.21875 -1 C 4.613281 -1 4.9375 -1.039062 5.1875 -1.125 C 5.644531 -1.269531 6.019531 -1.5625 6.3125 -2 C 6.539062 -2.34375 6.703125 -2.785156 6.796875 -3.328125 C 6.859375 -3.660156 6.890625 -3.960938 6.890625 -4.234375 C 6.890625 -5.304688 6.675781 -6.132812 6.25 -6.71875 C 5.832031 -7.3125 5.148438 -7.609375 4.203125 -7.609375 L 2.140625 -7.609375 L 2.140625 -1 Z M 0.96875 -8.609375 L 4.453125 -8.609375 C 5.640625 -8.609375 6.554688 -8.1875 7.203125 -7.34375 C 7.785156 -6.59375 8.078125 -5.625 8.078125 -4.4375 C 8.078125 -3.519531 7.90625 -2.691406 7.5625 -1.953125 C 6.957031 -0.648438 5.914062 0 4.4375 0 L 0.96875 0 Z M 0.96875 -8.609375 "/>
+</g>
+<g id="g2_glyph-0-1">
+<path d="M 0.78125 -6.25 L 1.84375 -6.25 L 1.84375 0 L 0.78125 0 Z M 0.78125 -8.609375 L 1.84375 -8.609375 L 1.84375 -7.40625 L 0.78125 -7.40625 Z M 0.78125 -8.609375 "/>
+</g>
+<g id="g2_glyph-0-2">
+<path d="M 1.03125 -7.234375 C 1.050781 -7.671875 1.128906 -7.988281 1.265625 -8.1875 C 1.515625 -8.550781 1.988281 -8.734375 2.6875 -8.734375 C 2.757812 -8.734375 2.828125 -8.726562 2.890625 -8.71875 C 2.960938 -8.71875 3.046875 -8.710938 3.140625 -8.703125 L 3.140625 -7.75 C 3.023438 -7.757812 2.941406 -7.765625 2.890625 -7.765625 C 2.847656 -7.765625 2.804688 -7.765625 2.765625 -7.765625 C 2.441406 -7.765625 2.25 -7.679688 2.1875 -7.515625 C 2.125 -7.347656 2.09375 -6.925781 2.09375 -6.25 L 3.140625 -6.25 L 3.140625 -5.421875 L 2.078125 -5.421875 L 2.078125 0 L 1.03125 0 L 1.03125 -5.421875 L 0.171875 -5.421875 L 0.171875 -6.25 L 1.03125 -6.25 Z M 1.03125 -7.234375 "/>
+</g>
+<g id="g2_glyph-0-3">
+<path d="M 3.390625 -6.421875 C 3.835938 -6.421875 4.269531 -6.316406 4.6875 -6.109375 C 5.101562 -5.898438 5.421875 -5.628906 5.640625 -5.296875 C 5.847656 -4.972656 5.988281 -4.601562 6.0625 -4.1875 C 6.125 -3.894531 6.15625 -3.429688 6.15625 -2.796875 L 1.546875 -2.796875 C 1.566406 -2.160156 1.71875 -1.648438 2 -1.265625 C 2.28125 -0.878906 2.71875 -0.6875 3.3125 -0.6875 C 3.863281 -0.6875 4.300781 -0.867188 4.625 -1.234375 C 4.8125 -1.441406 4.945312 -1.6875 5.03125 -1.96875 L 6.0625 -1.96875 C 6.039062 -1.738281 5.953125 -1.484375 5.796875 -1.203125 C 5.640625 -0.921875 5.46875 -0.6875 5.28125 -0.5 C 4.957031 -0.1875 4.554688 0.0195312 4.078125 0.125 C 3.828125 0.1875 3.539062 0.21875 3.21875 0.21875 C 2.4375 0.21875 1.773438 -0.0625 1.234375 -0.625 C 0.691406 -1.195312 0.421875 -1.992188 0.421875 -3.015625 C 0.421875 -4.023438 0.691406 -4.84375 1.234375 -5.46875 C 1.785156 -6.101562 2.503906 -6.421875 3.390625 -6.421875 Z M 5.0625 -3.640625 C 5.019531 -4.097656 4.921875 -4.460938 4.765625 -4.734375 C 4.484375 -5.242188 4.003906 -5.5 3.328125 -5.5 C 2.835938 -5.5 2.425781 -5.320312 2.09375 -4.96875 C 1.769531 -4.625 1.597656 -4.179688 1.578125 -3.640625 Z M 3.28125 -6.421875 Z M 3.28125 -6.421875 "/>
+</g>
+<g id="g2_glyph-0-4">
+<path d="M 0.796875 -6.28125 L 1.8125 -6.28125 L 1.8125 -5.1875 C 1.882812 -5.40625 2.082031 -5.664062 2.40625 -5.96875 C 2.726562 -6.269531 3.097656 -6.421875 3.515625 -6.421875 C 3.535156 -6.421875 3.566406 -6.414062 3.609375 -6.40625 C 3.660156 -6.40625 3.742188 -6.398438 3.859375 -6.390625 L 3.859375 -5.28125 C 3.796875 -5.289062 3.738281 -5.296875 3.6875 -5.296875 C 3.632812 -5.296875 3.578125 -5.296875 3.515625 -5.296875 C 2.984375 -5.296875 2.570312 -5.125 2.28125 -4.78125 C 2 -4.445312 1.859375 -4.054688 1.859375 -3.609375 L 1.859375 0 L 0.796875 0 Z M 0.796875 -6.28125 "/>
+</g>
+<g id="g2_glyph-0-5">
+<path d="M 0.78125 -6.28125 L 1.78125 -6.28125 L 1.78125 -5.390625 C 2.070312 -5.753906 2.382812 -6.015625 2.71875 -6.171875 C 3.050781 -6.335938 3.421875 -6.421875 3.828125 -6.421875 C 4.710938 -6.421875 5.3125 -6.109375 5.625 -5.484375 C 5.800781 -5.140625 5.890625 -4.65625 5.890625 -4.03125 L 5.890625 0 L 4.8125 0 L 4.8125 -3.953125 C 4.8125 -4.335938 4.753906 -4.644531 4.640625 -4.875 C 4.453125 -5.269531 4.113281 -5.46875 3.625 -5.46875 C 3.375 -5.46875 3.171875 -5.441406 3.015625 -5.390625 C 2.722656 -5.304688 2.46875 -5.132812 2.25 -4.875 C 2.070312 -4.664062 1.957031 -4.453125 1.90625 -4.234375 C 1.851562 -4.015625 1.828125 -3.695312 1.828125 -3.28125 L 1.828125 0 L 0.78125 0 Z M 3.25 -6.421875 Z M 3.25 -6.421875 "/>
+</g>
+<g id="g2_glyph-0-6">
+<path d="M 3.1875 -6.453125 C 3.894531 -6.453125 4.46875 -6.28125 4.90625 -5.9375 C 5.351562 -5.59375 5.625 -5.003906 5.71875 -4.171875 L 4.6875 -4.171875 C 4.625 -4.554688 4.484375 -4.875 4.265625 -5.125 C 4.046875 -5.382812 3.6875 -5.515625 3.1875 -5.515625 C 2.519531 -5.515625 2.039062 -5.1875 1.75 -4.53125 C 1.5625 -4.101562 1.46875 -3.578125 1.46875 -2.953125 C 1.46875 -2.328125 1.597656 -1.796875 1.859375 -1.359375 C 2.128906 -0.929688 2.550781 -0.71875 3.125 -0.71875 C 3.5625 -0.71875 3.90625 -0.851562 4.15625 -1.125 C 4.414062 -1.394531 4.59375 -1.757812 4.6875 -2.21875 L 5.71875 -2.21875 C 5.601562 -1.382812 5.3125 -0.773438 4.84375 -0.390625 C 4.375 -0.00390625 3.773438 0.1875 3.046875 0.1875 C 2.222656 0.1875 1.566406 -0.113281 1.078125 -0.71875 C 0.585938 -1.320312 0.34375 -2.070312 0.34375 -2.96875 C 0.34375 -4.070312 0.609375 -4.925781 1.140625 -5.53125 C 1.679688 -6.144531 2.363281 -6.453125 3.1875 -6.453125 Z M 3.03125 -6.421875 Z M 3.03125 -6.421875 "/>
+</g>
+<g id="g2_glyph-0-7">
+</g>
+<g id="g2_glyph-0-8">
+<path d="M 0.78125 -6.28125 L 1.8125 -6.28125 L 1.8125 -5.390625 C 2.0625 -5.691406 2.289062 -5.914062 2.5 -6.0625 C 2.84375 -6.300781 3.238281 -6.421875 3.6875 -6.421875 C 4.1875 -6.421875 4.585938 -6.296875 4.890625 -6.046875 C 5.054688 -5.910156 5.210938 -5.703125 5.359375 -5.421875 C 5.585938 -5.765625 5.859375 -6.015625 6.171875 -6.171875 C 6.492188 -6.335938 6.851562 -6.421875 7.25 -6.421875 C 8.09375 -6.421875 8.664062 -6.113281 8.96875 -5.5 C 9.132812 -5.175781 9.21875 -4.734375 9.21875 -4.171875 L 9.21875 0 L 8.125 0 L 8.125 -4.359375 C 8.125 -4.773438 8.019531 -5.0625 7.8125 -5.21875 C 7.601562 -5.375 7.347656 -5.453125 7.046875 -5.453125 C 6.628906 -5.453125 6.269531 -5.3125 5.96875 -5.03125 C 5.675781 -4.757812 5.53125 -4.300781 5.53125 -3.65625 L 5.53125 0 L 4.453125 0 L 4.453125 -4.09375 C 4.453125 -4.519531 4.398438 -4.832031 4.296875 -5.03125 C 4.140625 -5.320312 3.84375 -5.46875 3.40625 -5.46875 C 3.007812 -5.46875 2.644531 -5.3125 2.3125 -5 C 1.988281 -4.695312 1.828125 -4.140625 1.828125 -3.328125 L 1.828125 0 L 0.78125 0 Z M 0.78125 -6.28125 "/>
+</g>
+<g id="g2_glyph-0-9">
+<path d="M 1.578125 -1.671875 C 1.578125 -1.367188 1.6875 -1.128906 1.90625 -0.953125 C 2.132812 -0.773438 2.398438 -0.6875 2.703125 -0.6875 C 3.078125 -0.6875 3.4375 -0.769531 3.78125 -0.9375 C 4.375 -1.226562 4.671875 -1.695312 4.671875 -2.34375 L 4.671875 -3.1875 C 4.535156 -3.113281 4.363281 -3.046875 4.15625 -2.984375 C 3.957031 -2.929688 3.757812 -2.894531 3.5625 -2.875 L 2.9375 -2.796875 C 2.550781 -2.742188 2.257812 -2.660156 2.0625 -2.546875 C 1.738281 -2.367188 1.578125 -2.078125 1.578125 -1.671875 Z M 4.140625 -3.796875 C 4.378906 -3.828125 4.539062 -3.929688 4.625 -4.109375 C 4.664062 -4.203125 4.6875 -4.335938 4.6875 -4.515625 C 4.6875 -4.867188 4.554688 -5.125 4.296875 -5.28125 C 4.046875 -5.445312 3.6875 -5.53125 3.21875 -5.53125 C 2.664062 -5.53125 2.273438 -5.382812 2.046875 -5.09375 C 1.910156 -4.925781 1.820312 -4.679688 1.78125 -4.359375 L 0.796875 -4.359375 C 0.816406 -5.128906 1.066406 -5.664062 1.546875 -5.96875 C 2.035156 -6.269531 2.597656 -6.421875 3.234375 -6.421875 C 3.972656 -6.421875 4.570312 -6.28125 5.03125 -6 C 5.488281 -5.71875 5.71875 -5.28125 5.71875 -4.6875 L 5.71875 -1.078125 C 5.71875 -0.972656 5.738281 -0.882812 5.78125 -0.8125 C 5.832031 -0.75 5.929688 -0.71875 6.078125 -0.71875 C 6.117188 -0.71875 6.164062 -0.71875 6.21875 -0.71875 C 6.28125 -0.726562 6.347656 -0.738281 6.421875 -0.75 L 6.421875 0.03125 C 6.253906 0.0703125 6.125 0.0976562 6.03125 0.109375 C 5.945312 0.128906 5.832031 0.140625 5.6875 0.140625 C 5.320312 0.140625 5.0625 0.0078125 4.90625 -0.25 C 4.8125 -0.382812 4.75 -0.578125 4.71875 -0.828125 C 4.5 -0.546875 4.1875 -0.300781 3.78125 -0.09375 C 3.382812 0.113281 2.945312 0.21875 2.46875 0.21875 C 1.882812 0.21875 1.40625 0.0390625 1.03125 -0.3125 C 0.664062 -0.664062 0.484375 -1.109375 0.484375 -1.640625 C 0.484375 -2.222656 0.664062 -2.675781 1.03125 -3 C 1.394531 -3.320312 1.867188 -3.519531 2.453125 -3.59375 Z M 3.265625 -6.421875 Z M 3.265625 -6.421875 "/>
+</g>
+<g id="g2_glyph-0-10">
+<path d="M 1.40625 -1.96875 C 1.4375 -1.613281 1.523438 -1.34375 1.671875 -1.15625 C 1.929688 -0.820312 2.390625 -0.65625 3.046875 -0.65625 C 3.441406 -0.65625 3.785156 -0.738281 4.078125 -0.90625 C 4.378906 -1.070312 4.53125 -1.332031 4.53125 -1.6875 C 4.53125 -1.957031 4.410156 -2.164062 4.171875 -2.3125 C 4.015625 -2.394531 3.710938 -2.492188 3.265625 -2.609375 L 2.421875 -2.8125 C 1.890625 -2.945312 1.5 -3.097656 1.25 -3.265625 C 0.789062 -3.546875 0.5625 -3.941406 0.5625 -4.453125 C 0.5625 -5.046875 0.773438 -5.523438 1.203125 -5.890625 C 1.628906 -6.253906 2.207031 -6.4375 2.9375 -6.4375 C 3.875 -6.4375 4.550781 -6.160156 4.96875 -5.609375 C 5.238281 -5.253906 5.367188 -4.875 5.359375 -4.46875 L 4.359375 -4.46875 C 4.335938 -4.707031 4.253906 -4.925781 4.109375 -5.125 C 3.867188 -5.394531 3.445312 -5.53125 2.84375 -5.53125 C 2.445312 -5.53125 2.144531 -5.453125 1.9375 -5.296875 C 1.738281 -5.148438 1.640625 -4.953125 1.640625 -4.703125 C 1.640625 -4.429688 1.773438 -4.210938 2.046875 -4.046875 C 2.203125 -3.953125 2.429688 -3.867188 2.734375 -3.796875 L 3.421875 -3.625 C 4.179688 -3.4375 4.691406 -3.257812 4.953125 -3.09375 C 5.359375 -2.820312 5.5625 -2.394531 5.5625 -1.8125 C 5.5625 -1.257812 5.347656 -0.78125 4.921875 -0.375 C 4.503906 0.0273438 3.863281 0.234375 3 0.234375 C 2.0625 0.234375 1.394531 0.0234375 1 -0.390625 C 0.613281 -0.816406 0.410156 -1.34375 0.390625 -1.96875 Z M 2.953125 -6.421875 Z M 2.953125 -6.421875 "/>
+</g>
+<g id="g2_glyph-0-11">
+<path d="M 4.15625 -4.96875 C 4.644531 -4.96875 5.023438 -5.035156 5.296875 -5.171875 C 5.722656 -5.390625 5.9375 -5.773438 5.9375 -6.328125 C 5.9375 -6.890625 5.707031 -7.269531 5.25 -7.46875 C 5 -7.582031 4.617188 -7.640625 4.109375 -7.640625 L 2.03125 -7.640625 L 2.03125 -4.96875 Z M 4.546875 -1 C 5.253906 -1 5.765625 -1.207031 6.078125 -1.625 C 6.265625 -1.882812 6.359375 -2.195312 6.359375 -2.5625 C 6.359375 -3.1875 6.078125 -3.613281 5.515625 -3.84375 C 5.222656 -3.96875 4.832031 -4.03125 4.34375 -4.03125 L 2.03125 -4.03125 L 2.03125 -1 Z M 0.890625 -8.609375 L 4.578125 -8.609375 C 5.585938 -8.609375 6.304688 -8.304688 6.734375 -7.703125 C 6.984375 -7.347656 7.109375 -6.9375 7.109375 -6.46875 C 7.109375 -5.925781 6.953125 -5.484375 6.640625 -5.140625 C 6.484375 -4.953125 6.253906 -4.785156 5.953125 -4.640625 C 6.390625 -4.472656 6.71875 -4.28125 6.9375 -4.0625 C 7.332031 -3.6875 7.53125 -3.171875 7.53125 -2.515625 C 7.53125 -1.960938 7.351562 -1.460938 7 -1.015625 C 6.476562 -0.335938 5.65625 0 4.53125 0 L 0.890625 0 Z M 0.890625 -8.609375 "/>
+</g>
+<g id="g2_glyph-0-12">
+<path d="M 0.796875 -8.609375 L 1.859375 -8.609375 L 1.859375 0 L 0.796875 0 Z M 0.796875 -8.609375 "/>
+</g>
+<g id="g2_glyph-0-13">
+<path d="M 1.4375 -3.0625 C 1.4375 -2.394531 1.578125 -1.832031 1.859375 -1.375 C 2.148438 -0.925781 2.609375 -0.703125 3.234375 -0.703125 C 3.722656 -0.703125 4.125 -0.910156 4.4375 -1.328125 C 4.757812 -1.742188 4.921875 -2.347656 4.921875 -3.140625 C 4.921875 -3.929688 4.753906 -4.515625 4.421875 -4.890625 C 4.097656 -5.273438 3.703125 -5.46875 3.234375 -5.46875 C 2.703125 -5.46875 2.269531 -5.265625 1.9375 -4.859375 C 1.601562 -4.453125 1.4375 -3.851562 1.4375 -3.0625 Z M 3.03125 -6.390625 C 3.507812 -6.390625 3.910156 -6.285156 4.234375 -6.078125 C 4.421875 -5.960938 4.632812 -5.757812 4.875 -5.46875 L 4.875 -8.640625 L 5.890625 -8.640625 L 5.890625 0 L 4.9375 0 L 4.9375 -0.875 C 4.695312 -0.488281 4.40625 -0.207031 4.0625 -0.03125 C 3.726562 0.132812 3.34375 0.21875 2.90625 0.21875 C 2.207031 0.21875 1.601562 -0.0703125 1.09375 -0.65625 C 0.582031 -1.25 0.328125 -2.03125 0.328125 -3 C 0.328125 -3.914062 0.5625 -4.707031 1.03125 -5.375 C 1.5 -6.050781 2.164062 -6.390625 3.03125 -6.390625 Z M 3.03125 -6.390625 "/>
+</g>
+<g id="g2_glyph-0-14">
+<path d="M 1.828125 -7.390625 L 0.78125 -7.390625 L 0.78125 -8.609375 L 1.828125 -8.609375 Z M -0.21875 1.59375 C 0.246094 1.570312 0.53125 1.523438 0.625 1.453125 C 0.726562 1.390625 0.78125 1.179688 0.78125 0.828125 L 0.78125 -6.25 L 1.828125 -6.25 L 1.828125 0.9375 C 1.828125 1.394531 1.753906 1.734375 1.609375 1.953125 C 1.359375 2.335938 0.890625 2.53125 0.203125 2.53125 C 0.148438 2.53125 0.09375 2.523438 0.03125 2.515625 C -0.0195312 2.515625 -0.101562 2.507812 -0.21875 2.5 Z M -0.21875 1.59375 "/>
+</g>
+<g id="g2_glyph-0-15">
+<path d="M 1.828125 -6.28125 L 1.828125 -2.109375 C 1.828125 -1.785156 1.878906 -1.523438 1.984375 -1.328125 C 2.171875 -0.953125 2.519531 -0.765625 3.03125 -0.765625 C 3.757812 -0.765625 4.257812 -1.09375 4.53125 -1.75 C 4.675781 -2.101562 4.75 -2.582031 4.75 -3.1875 L 4.75 -6.28125 L 5.796875 -6.28125 L 5.796875 0 L 4.8125 0 L 4.8125 -0.921875 C 4.675781 -0.679688 4.507812 -0.484375 4.3125 -0.328125 C 3.90625 0.00390625 3.414062 0.171875 2.84375 0.171875 C 1.945312 0.171875 1.335938 -0.128906 1.015625 -0.734375 C 0.835938 -1.046875 0.75 -1.472656 0.75 -2.015625 L 0.75 -6.28125 Z M 3.28125 -6.421875 Z M 3.28125 -6.421875 "/>
+</g>
+<g id="g2_glyph-0-16">
+<path d="M 0.984375 -8.03125 L 2.046875 -8.03125 L 2.046875 -6.28125 L 3.046875 -6.28125 L 3.046875 -5.421875 L 2.046875 -5.421875 L 2.046875 -1.3125 C 2.046875 -1.09375 2.125 -0.945312 2.28125 -0.875 C 2.351562 -0.832031 2.488281 -0.8125 2.6875 -0.8125 C 2.738281 -0.8125 2.789062 -0.8125 2.84375 -0.8125 C 2.90625 -0.820312 2.972656 -0.828125 3.046875 -0.828125 L 3.046875 0 C 2.929688 0.03125 2.804688 0.0507812 2.671875 0.0625 C 2.546875 0.0820312 2.40625 0.09375 2.25 0.09375 C 1.757812 0.09375 1.425781 -0.03125 1.25 -0.28125 C 1.070312 -0.53125 0.984375 -0.859375 0.984375 -1.265625 L 0.984375 -5.421875 L 0.140625 -5.421875 L 0.140625 -6.28125 L 0.984375 -6.28125 Z M 0.984375 -8.03125 "/>
+</g>
+<g id="g2_glyph-0-17">
+<path d="M 1.03125 -8.609375 L 4.90625 -8.609375 C 5.664062 -8.609375 6.28125 -8.390625 6.75 -7.953125 C 7.21875 -7.523438 7.453125 -6.921875 7.453125 -6.140625 C 7.453125 -5.472656 7.242188 -4.890625 6.828125 -4.390625 C 6.410156 -3.890625 5.769531 -3.640625 4.90625 -3.640625 L 2.1875 -3.640625 L 2.1875 0 L 1.03125 0 Z M 6.28125 -6.140625 C 6.28125 -6.765625 6.046875 -7.191406 5.578125 -7.421875 C 5.316406 -7.546875 4.960938 -7.609375 4.515625 -7.609375 L 2.1875 -7.609375 L 2.1875 -4.625 L 4.515625 -4.625 C 5.035156 -4.625 5.457031 -4.734375 5.78125 -4.953125 C 6.113281 -5.179688 6.28125 -5.578125 6.28125 -6.140625 Z M 6.28125 -6.140625 "/>
+</g>
+<g id="g2_glyph-0-18">
+<path d="M 3.265625 -0.6875 C 3.960938 -0.6875 4.441406 -0.945312 4.703125 -1.46875 C 4.960938 -2 5.09375 -2.585938 5.09375 -3.234375 C 5.09375 -3.828125 5 -4.304688 4.8125 -4.671875 C 4.507812 -5.242188 4 -5.53125 3.28125 -5.53125 C 2.632812 -5.53125 2.164062 -5.285156 1.875 -4.796875 C 1.582031 -4.304688 1.4375 -3.710938 1.4375 -3.015625 C 1.4375 -2.347656 1.582031 -1.789062 1.875 -1.34375 C 2.164062 -0.90625 2.628906 -0.6875 3.265625 -0.6875 Z M 3.3125 -6.453125 C 4.113281 -6.453125 4.789062 -6.179688 5.34375 -5.640625 C 5.90625 -5.109375 6.1875 -4.316406 6.1875 -3.265625 C 6.1875 -2.253906 5.941406 -1.414062 5.453125 -0.75 C 4.960938 -0.09375 4.203125 0.234375 3.171875 0.234375 C 2.304688 0.234375 1.617188 -0.0546875 1.109375 -0.640625 C 0.597656 -1.234375 0.34375 -2.019531 0.34375 -3 C 0.34375 -4.050781 0.609375 -4.890625 1.140625 -5.515625 C 1.679688 -6.140625 2.40625 -6.453125 3.3125 -6.453125 Z M 3.265625 -6.421875 Z M 3.265625 -6.421875 "/>
+</g>
+<g id="g2_glyph-0-19">
+<path d="M 0.5 -3.890625 L 3.4375 -3.890625 L 3.4375 -2.796875 L 0.5 -2.796875 Z M 0.5 -3.890625 "/>
+</g>
+<g id="g2_glyph-0-20">
+<path d="M 7.171875 -8.609375 L 7.171875 -7.578125 L 4.28125 -7.578125 L 4.28125 0 L 3.09375 0 L 3.09375 -7.578125 L 0.1875 -7.578125 L 0.1875 -8.609375 Z M 7.171875 -8.609375 "/>
+</g>
+<g id="g2_glyph-0-21">
+<path d="M 1.671875 -2.78125 C 1.703125 -2.289062 1.816406 -1.894531 2.015625 -1.59375 C 2.410156 -1.019531 3.09375 -0.734375 4.0625 -0.734375 C 4.5 -0.734375 4.898438 -0.796875 5.265625 -0.921875 C 5.960938 -1.160156 6.3125 -1.59375 6.3125 -2.21875 C 6.3125 -2.6875 6.160156 -3.019531 5.859375 -3.21875 C 5.566406 -3.414062 5.101562 -3.585938 4.46875 -3.734375 L 3.3125 -4 C 2.539062 -4.164062 2 -4.351562 1.6875 -4.5625 C 1.144531 -4.925781 0.875 -5.460938 0.875 -6.171875 C 0.875 -6.953125 1.140625 -7.585938 1.671875 -8.078125 C 2.203125 -8.578125 2.957031 -8.828125 3.9375 -8.828125 C 4.84375 -8.828125 5.609375 -8.609375 6.234375 -8.171875 C 6.867188 -7.734375 7.1875 -7.035156 7.1875 -6.078125 L 6.09375 -6.078125 C 6.03125 -6.546875 5.90625 -6.898438 5.71875 -7.140625 C 5.363281 -7.585938 4.757812 -7.8125 3.90625 -7.8125 C 3.21875 -7.8125 2.722656 -7.664062 2.421875 -7.375 C 2.117188 -7.09375 1.96875 -6.757812 1.96875 -6.375 C 1.96875 -5.957031 2.144531 -5.648438 2.5 -5.453125 C 2.726562 -5.328125 3.25 -5.171875 4.0625 -4.984375 L 5.28125 -4.703125 C 5.851562 -4.566406 6.300781 -4.382812 6.625 -4.15625 C 7.164062 -3.757812 7.4375 -3.175781 7.4375 -2.40625 C 7.4375 -1.457031 7.085938 -0.773438 6.390625 -0.359375 C 5.703125 0.0429688 4.898438 0.25 3.984375 0.25 C 2.910156 0.25 2.070312 -0.0195312 1.46875 -0.5625 C 0.863281 -1.113281 0.566406 -1.851562 0.578125 -2.78125 Z M 4.03125 -8.84375 Z M 4.03125 -8.84375 "/>
+</g>
+<g id="g2_glyph-1-0">
+<path d="M -8.84375 -4.546875 C -8.84375 -5.628906 -8.554688 -6.472656 -7.984375 -7.078125 C -7.410156 -7.679688 -6.757812 -8.015625 -6.03125 -8.078125 L -6.03125 -6.9375 C -6.582031 -6.8125 -7.019531 -6.554688 -7.34375 -6.171875 C -7.664062 -5.785156 -7.828125 -5.242188 -7.828125 -4.546875 C -7.828125 -3.703125 -7.53125 -3.019531 -6.9375 -2.5 C -6.34375 -1.976562 -5.429688 -1.71875 -4.203125 -1.71875 C -3.191406 -1.71875 -2.367188 -1.953125 -1.734375 -2.421875 C -1.109375 -2.890625 -0.796875 -3.59375 -0.796875 -4.53125 C -0.796875 -5.382812 -1.128906 -6.039062 -1.796875 -6.5 C -2.140625 -6.726562 -2.597656 -6.90625 -3.171875 -7.03125 L -3.171875 -8.15625 C -2.265625 -8.0625 -1.503906 -7.726562 -0.890625 -7.15625 C -0.148438 -6.46875 0.21875 -5.546875 0.21875 -4.390625 C 0.21875 -3.390625 -0.0820312 -2.550781 -0.6875 -1.875 C -1.488281 -0.976562 -2.722656 -0.53125 -4.390625 -0.53125 C -5.660156 -0.53125 -6.703125 -0.863281 -7.515625 -1.53125 C -8.398438 -2.257812 -8.84375 -3.265625 -8.84375 -4.546875 Z M -8.84375 -4.3125 Z M -8.84375 -4.3125 "/>
+</g>
+<g id="g2_glyph-1-1">
+<path d="M -0.6875 -3.265625 C -0.6875 -3.960938 -0.945312 -4.441406 -1.46875 -4.703125 C -2 -4.960938 -2.585938 -5.09375 -3.234375 -5.09375 C -3.828125 -5.09375 -4.304688 -5 -4.671875 -4.8125 C -5.242188 -4.507812 -5.53125 -4 -5.53125 -3.28125 C -5.53125 -2.632812 -5.285156 -2.164062 -4.796875 -1.875 C -4.304688 -1.582031 -3.710938 -1.4375 -3.015625 -1.4375 C -2.347656 -1.4375 -1.789062 -1.582031 -1.34375 -1.875 C -0.90625 -2.164062 -0.6875 -2.628906 -0.6875 -3.265625 Z M -6.453125 -3.3125 C -6.453125 -4.113281 -6.179688 -4.789062 -5.640625 -5.34375 C -5.109375 -5.90625 -4.316406 -6.1875 -3.265625 -6.1875 C -2.253906 -6.1875 -1.414062 -5.941406 -0.75 -5.453125 C -0.09375 -4.960938 0.234375 -4.203125 0.234375 -3.171875 C 0.234375 -2.304688 -0.0546875 -1.617188 -0.640625 -1.109375 C -1.234375 -0.597656 -2.019531 -0.34375 -3 -0.34375 C -4.050781 -0.34375 -4.890625 -0.609375 -5.515625 -1.140625 C -6.140625 -1.679688 -6.453125 -2.40625 -6.453125 -3.3125 Z M -6.421875 -3.265625 Z M -6.421875 -3.265625 "/>
+</g>
+<g id="g2_glyph-1-2">
+<path d="M -6.421875 -3.390625 C -6.421875 -3.835938 -6.316406 -4.269531 -6.109375 -4.6875 C -5.898438 -5.101562 -5.628906 -5.421875 -5.296875 -5.640625 C -4.972656 -5.847656 -4.601562 -5.988281 -4.1875 -6.0625 C -3.894531 -6.125 -3.429688 -6.15625 -2.796875 -6.15625 L -2.796875 -1.546875 C -2.160156 -1.566406 -1.648438 -1.71875 -1.265625 -2 C -0.878906 -2.28125 -0.6875 -2.71875 -0.6875 -3.3125 C -0.6875 -3.863281 -0.867188 -4.300781 -1.234375 -4.625 C -1.441406 -4.8125 -1.6875 -4.945312 -1.96875 -5.03125 L -1.96875 -6.0625 C -1.738281 -6.039062 -1.484375 -5.953125 -1.203125 -5.796875 C -0.921875 -5.640625 -0.6875 -5.46875 -0.5 -5.28125 C -0.1875 -4.957031 0.0195312 -4.554688 0.125 -4.078125 C 0.1875 -3.828125 0.21875 -3.539062 0.21875 -3.21875 C 0.21875 -2.4375 -0.0625 -1.773438 -0.625 -1.234375 C -1.195312 -0.691406 -1.992188 -0.421875 -3.015625 -0.421875 C -4.023438 -0.421875 -4.84375 -0.691406 -5.46875 -1.234375 C -6.101562 -1.785156 -6.421875 -2.503906 -6.421875 -3.390625 Z M -3.640625 -5.0625 C -4.097656 -5.019531 -4.460938 -4.921875 -4.734375 -4.765625 C -5.242188 -4.484375 -5.5 -4.003906 -5.5 -3.328125 C -5.5 -2.835938 -5.320312 -2.425781 -4.96875 -2.09375 C -4.625 -1.769531 -4.179688 -1.597656 -3.640625 -1.578125 Z M -6.421875 -3.28125 Z M -6.421875 -3.28125 "/>
+</g>
+<g id="g2_glyph-1-3">
+<path d="M -7.234375 -1.03125 C -7.671875 -1.050781 -7.988281 -1.128906 -8.1875 -1.265625 C -8.550781 -1.515625 -8.734375 -1.988281 -8.734375 -2.6875 C -8.734375 -2.757812 -8.726562 -2.828125 -8.71875 -2.890625 C -8.71875 -2.960938 -8.710938 -3.046875 -8.703125 -3.140625 L -7.75 -3.140625 C -7.757812 -3.023438 -7.765625 -2.941406 -7.765625 -2.890625 C -7.765625 -2.847656 -7.765625 -2.804688 -7.765625 -2.765625 C -7.765625 -2.441406 -7.679688 -2.25 -7.515625 -2.1875 C -7.347656 -2.125 -6.925781 -2.09375 -6.25 -2.09375 L -6.25 -3.140625 L -5.421875 -3.140625 L -5.421875 -2.078125 L 0 -2.078125 L 0 -1.03125 L -5.421875 -1.03125 L -5.421875 -0.171875 L -6.25 -0.171875 L -6.25 -1.03125 Z M -7.234375 -1.03125 "/>
+</g>
+<g id="g2_glyph-1-4">
+<path d="M -6.25 -0.78125 L -6.25 -1.84375 L 0 -1.84375 L 0 -0.78125 Z M -8.609375 -0.78125 L -8.609375 -1.84375 L -7.40625 -1.84375 L -7.40625 -0.78125 Z M -8.609375 -0.78125 "/>
+</g>
+<g id="g2_glyph-1-5">
+<path d="M -6.453125 -3.1875 C -6.453125 -3.894531 -6.28125 -4.46875 -5.9375 -4.90625 C -5.59375 -5.351562 -5.003906 -5.625 -4.171875 -5.71875 L -4.171875 -4.6875 C -4.554688 -4.625 -4.875 -4.484375 -5.125 -4.265625 C -5.382812 -4.046875 -5.515625 -3.6875 -5.515625 -3.1875 C -5.515625 -2.519531 -5.1875 -2.039062 -4.53125 -1.75 C -4.101562 -1.5625 -3.578125 -1.46875 -2.953125 -1.46875 C -2.328125 -1.46875 -1.796875 -1.597656 -1.359375 -1.859375 C -0.929688 -2.128906 -0.71875 -2.550781 -0.71875 -3.125 C -0.71875 -3.5625 -0.851562 -3.90625 -1.125 -4.15625 C -1.394531 -4.414062 -1.757812 -4.59375 -2.21875 -4.6875 L -2.21875 -5.71875 C -1.382812 -5.601562 -0.773438 -5.3125 -0.390625 -4.84375 C -0.00390625 -4.375 0.1875 -3.773438 0.1875 -3.046875 C 0.1875 -2.222656 -0.113281 -1.566406 -0.71875 -1.078125 C -1.320312 -0.585938 -2.070312 -0.34375 -2.96875 -0.34375 C -4.070312 -0.34375 -4.925781 -0.609375 -5.53125 -1.140625 C -6.144531 -1.679688 -6.453125 -2.363281 -6.453125 -3.1875 Z M -6.421875 -3.03125 Z M -6.421875 -3.03125 "/>
+</g>
+<g id="g2_glyph-1-6">
+<path d="M -6.28125 -0.78125 L -6.28125 -1.78125 L -5.390625 -1.78125 C -5.753906 -2.070312 -6.015625 -2.382812 -6.171875 -2.71875 C -6.335938 -3.050781 -6.421875 -3.421875 -6.421875 -3.828125 C -6.421875 -4.710938 -6.109375 -5.3125 -5.484375 -5.625 C -5.140625 -5.800781 -4.65625 -5.890625 -4.03125 -5.890625 L 0 -5.890625 L 0 -4.8125 L -3.953125 -4.8125 C -4.335938 -4.8125 -4.644531 -4.753906 -4.875 -4.640625 C -5.269531 -4.453125 -5.46875 -4.113281 -5.46875 -3.625 C -5.46875 -3.375 -5.441406 -3.171875 -5.390625 -3.015625 C -5.304688 -2.722656 -5.132812 -2.46875 -4.875 -2.25 C -4.664062 -2.070312 -4.453125 -1.957031 -4.234375 -1.90625 C -4.015625 -1.851562 -3.695312 -1.828125 -3.28125 -1.828125 L 0 -1.828125 L 0 -0.78125 Z M -6.421875 -3.25 Z M -6.421875 -3.25 "/>
+</g>
+<g id="g2_glyph-1-7">
+<path d="M -8.03125 -0.984375 L -8.03125 -2.046875 L -6.28125 -2.046875 L -6.28125 -3.046875 L -5.421875 -3.046875 L -5.421875 -2.046875 L -1.3125 -2.046875 C -1.09375 -2.046875 -0.945312 -2.125 -0.875 -2.28125 C -0.832031 -2.351562 -0.8125 -2.488281 -0.8125 -2.6875 C -0.8125 -2.738281 -0.8125 -2.789062 -0.8125 -2.84375 C -0.820312 -2.90625 -0.828125 -2.972656 -0.828125 -3.046875 L 0 -3.046875 C 0.03125 -2.929688 0.0507812 -2.804688 0.0625 -2.671875 C 0.0820312 -2.546875 0.09375 -2.40625 0.09375 -2.25 C 0.09375 -1.757812 -0.03125 -1.425781 -0.28125 -1.25 C -0.53125 -1.070312 -0.859375 -0.984375 -1.265625 -0.984375 L -5.421875 -0.984375 L -5.421875 -0.140625 L -6.28125 -0.140625 L -6.28125 -0.984375 Z M -8.03125 -0.984375 "/>
+</g>
+<g id="g2_glyph-1-8">
+</g>
+<g id="g2_glyph-1-9">
+<path d="M -1.671875 -1.578125 C -1.367188 -1.578125 -1.128906 -1.6875 -0.953125 -1.90625 C -0.773438 -2.132812 -0.6875 -2.398438 -0.6875 -2.703125 C -0.6875 -3.078125 -0.769531 -3.4375 -0.9375 -3.78125 C -1.226562 -4.375 -1.695312 -4.671875 -2.34375 -4.671875 L -3.1875 -4.671875 C -3.113281 -4.535156 -3.046875 -4.363281 -2.984375 -4.15625 C -2.929688 -3.957031 -2.894531 -3.757812 -2.875 -3.5625 L -2.796875 -2.9375 C -2.742188 -2.550781 -2.660156 -2.257812 -2.546875 -2.0625 C -2.367188 -1.738281 -2.078125 -1.578125 -1.671875 -1.578125 Z M -3.796875 -4.140625 C -3.828125 -4.378906 -3.929688 -4.539062 -4.109375 -4.625 C -4.203125 -4.664062 -4.335938 -4.6875 -4.515625 -4.6875 C -4.867188 -4.6875 -5.125 -4.554688 -5.28125 -4.296875 C -5.445312 -4.046875 -5.53125 -3.6875 -5.53125 -3.21875 C -5.53125 -2.664062 -5.382812 -2.273438 -5.09375 -2.046875 C -4.925781 -1.910156 -4.679688 -1.820312 -4.359375 -1.78125 L -4.359375 -0.796875 C -5.128906 -0.816406 -5.664062 -1.066406 -5.96875 -1.546875 C -6.269531 -2.035156 -6.421875 -2.597656 -6.421875 -3.234375 C -6.421875 -3.972656 -6.28125 -4.570312 -6 -5.03125 C -5.71875 -5.488281 -5.28125 -5.71875 -4.6875 -5.71875 L -1.078125 -5.71875 C -0.972656 -5.71875 -0.882812 -5.738281 -0.8125 -5.78125 C -0.75 -5.832031 -0.71875 -5.929688 -0.71875 -6.078125 C -0.71875 -6.117188 -0.71875 -6.164062 -0.71875 -6.21875 C -0.726562 -6.28125 -0.738281 -6.347656 -0.75 -6.421875 L 0.03125 -6.421875 C 0.0703125 -6.253906 0.0976562 -6.125 0.109375 -6.03125 C 0.128906 -5.945312 0.140625 -5.832031 0.140625 -5.6875 C 0.140625 -5.320312 0.0078125 -5.0625 -0.25 -4.90625 C -0.382812 -4.8125 -0.578125 -4.75 -0.828125 -4.71875 C -0.546875 -4.5 -0.300781 -4.1875 -0.09375 -3.78125 C 0.113281 -3.382812 0.21875 -2.945312 0.21875 -2.46875 C 0.21875 -1.882812 0.0390625 -1.40625 -0.3125 -1.03125 C -0.664062 -0.664062 -1.109375 -0.484375 -1.640625 -0.484375 C -2.222656 -0.484375 -2.675781 -0.664062 -3 -1.03125 C -3.320312 -1.394531 -3.519531 -1.867188 -3.59375 -2.453125 Z M -6.421875 -3.265625 Z M -6.421875 -3.265625 "/>
+</g>
+<g id="g2_glyph-1-10">
+<path d="M -6.28125 -0.796875 L -6.28125 -1.8125 L -5.1875 -1.8125 C -5.40625 -1.882812 -5.664062 -2.082031 -5.96875 -2.40625 C -6.269531 -2.726562 -6.421875 -3.097656 -6.421875 -3.515625 C -6.421875 -3.535156 -6.414062 -3.566406 -6.40625 -3.609375 C -6.40625 -3.660156 -6.398438 -3.742188 -6.390625 -3.859375 L -5.28125 -3.859375 C -5.289062 -3.796875 -5.296875 -3.738281 -5.296875 -3.6875 C -5.296875 -3.632812 -5.296875 -3.578125 -5.296875 -3.515625 C -5.296875 -2.984375 -5.125 -2.570312 -4.78125 -2.28125 C -4.445312 -2 -4.054688 -1.859375 -3.609375 -1.859375 L 0 -1.859375 L 0 -0.796875 Z M -6.28125 -0.796875 "/>
+</g>
+<g id="g2_glyph-1-11">
+<path d="M -8.609375 -0.796875 L -8.609375 -1.859375 L 0 -1.859375 L 0 -0.796875 Z M -8.609375 -0.796875 "/>
+</g>
+<g id="g2_glyph-1-12">
+<path d="M -6.28125 -4.6875 L -6.28125 -5.859375 C -5.875 -5.710938 -4.953125 -5.382812 -3.515625 -4.875 C -2.441406 -4.488281 -1.566406 -4.164062 -0.890625 -3.90625 C 0.710938 -3.300781 1.691406 -2.875 2.046875 -2.625 C 2.398438 -2.375 2.578125 -1.941406 2.578125 -1.328125 C 2.578125 -1.179688 2.566406 -1.066406 2.546875 -0.984375 C 2.535156 -0.910156 2.515625 -0.8125 2.484375 -0.6875 L 1.53125 -0.6875 C 1.582031 -0.875 1.613281 -1.007812 1.625 -1.09375 C 1.632812 -1.175781 1.640625 -1.25 1.640625 -1.3125 C 1.640625 -1.5 1.609375 -1.640625 1.546875 -1.734375 C 1.484375 -1.828125 1.40625 -1.90625 1.3125 -1.96875 C 1.28125 -1.988281 1.117188 -2.054688 0.828125 -2.171875 C 0.535156 -2.296875 0.320312 -2.382812 0.1875 -2.4375 L -6.28125 -0.125 L -6.28125 -1.3125 L -1.171875 -3 Z M -6.421875 -3 Z M -6.421875 -3 "/>
+</g>
+<g id="g2_glyph-1-13">
+<path d="M -1.96875 -1.40625 C -1.613281 -1.4375 -1.34375 -1.523438 -1.15625 -1.671875 C -0.820312 -1.929688 -0.65625 -2.390625 -0.65625 -3.046875 C -0.65625 -3.441406 -0.738281 -3.785156 -0.90625 -4.078125 C -1.070312 -4.378906 -1.332031 -4.53125 -1.6875 -4.53125 C -1.957031 -4.53125 -2.164062 -4.410156 -2.3125 -4.171875 C -2.394531 -4.015625 -2.492188 -3.710938 -2.609375 -3.265625 L -2.8125 -2.421875 C -2.945312 -1.890625 -3.097656 -1.5 -3.265625 -1.25 C -3.546875 -0.789062 -3.941406 -0.5625 -4.453125 -0.5625 C -5.046875 -0.5625 -5.523438 -0.773438 -5.890625 -1.203125 C -6.253906 -1.628906 -6.4375 -2.207031 -6.4375 -2.9375 C -6.4375 -3.875 -6.160156 -4.550781 -5.609375 -4.96875 C -5.253906 -5.238281 -4.875 -5.367188 -4.46875 -5.359375 L -4.46875 -4.359375 C -4.707031 -4.335938 -4.925781 -4.253906 -5.125 -4.109375 C -5.394531 -3.867188 -5.53125 -3.445312 -5.53125 -2.84375 C -5.53125 -2.445312 -5.453125 -2.144531 -5.296875 -1.9375 C -5.148438 -1.738281 -4.953125 -1.640625 -4.703125 -1.640625 C -4.429688 -1.640625 -4.210938 -1.773438 -4.046875 -2.046875 C -3.953125 -2.203125 -3.867188 -2.429688 -3.796875 -2.734375 L -3.625 -3.421875 C -3.4375 -4.179688 -3.257812 -4.691406 -3.09375 -4.953125 C -2.820312 -5.359375 -2.394531 -5.5625 -1.8125 -5.5625 C -1.257812 -5.5625 -0.78125 -5.347656 -0.375 -4.921875 C 0.0273438 -4.503906 0.234375 -3.863281 0.234375 -3 C 0.234375 -2.0625 0.0234375 -1.394531 -0.390625 -1 C -0.816406 -0.613281 -1.34375 -0.410156 -1.96875 -0.390625 Z M -6.421875 -2.953125 Z M -6.421875 -2.953125 "/>
+</g>
+<g id="g2_glyph-1-14">
+<path d="M -3.890625 -0.5 L -3.890625 -3.4375 L -2.796875 -3.4375 L -2.796875 -0.5 Z M -3.890625 -0.5 "/>
+</g>
+<g id="g2_glyph-1-15">
+<path d="M -8.390625 -3.25 C -8.390625 -4.332031 -7.941406 -5.117188 -7.046875 -5.609375 C -6.359375 -5.984375 -5.410156 -6.171875 -4.203125 -6.171875 C -3.066406 -6.171875 -2.125 -6 -1.375 -5.65625 C -0.300781 -5.164062 0.234375 -4.359375 0.234375 -3.234375 C 0.234375 -2.234375 -0.203125 -1.484375 -1.078125 -0.984375 C -1.816406 -0.578125 -2.800781 -0.375 -4.03125 -0.375 C -4.976562 -0.375 -5.796875 -0.5 -6.484375 -0.75 C -7.753906 -1.207031 -8.390625 -2.039062 -8.390625 -3.25 Z M -0.734375 -3.234375 C -0.734375 -3.785156 -0.972656 -4.222656 -1.453125 -4.546875 C -1.941406 -4.867188 -2.847656 -5.03125 -4.171875 -5.03125 C -5.117188 -5.03125 -5.898438 -4.910156 -6.515625 -4.671875 C -7.128906 -4.441406 -7.4375 -3.988281 -7.4375 -3.3125 C -7.4375 -2.6875 -7.144531 -2.226562 -6.5625 -1.9375 C -5.976562 -1.65625 -5.117188 -1.515625 -3.984375 -1.515625 C -3.128906 -1.515625 -2.441406 -1.609375 -1.921875 -1.796875 C -1.128906 -2.078125 -0.734375 -2.554688 -0.734375 -3.234375 Z M -0.734375 -3.234375 "/>
+</g>
+<g id="g2_glyph-1-16">
+<path d="M -1.28125 -1.03125 L -1.28125 -2.25 L 0 -2.25 L 0 -1.03125 Z M -1.28125 -1.03125 "/>
+</g>
+<g id="g2_glyph-1-17">
+<path d="M -2.140625 -1.484375 C -1.535156 -1.554688 -1.117188 -1.835938 -0.890625 -2.328125 C -0.773438 -2.578125 -0.71875 -2.863281 -0.71875 -3.1875 C -0.71875 -3.8125 -0.914062 -4.273438 -1.3125 -4.578125 C -1.707031 -4.878906 -2.148438 -5.03125 -2.640625 -5.03125 C -3.222656 -5.03125 -3.675781 -4.847656 -4 -4.484375 C -4.320312 -4.128906 -4.484375 -3.703125 -4.484375 -3.203125 C -4.484375 -2.835938 -4.410156 -2.523438 -4.265625 -2.265625 C -4.128906 -2.003906 -3.9375 -1.785156 -3.6875 -1.609375 L -3.734375 -0.6875 L -8.25 -1.328125 L -8.25 -5.6875 L -7.234375 -5.6875 L -7.234375 -2.125 L -4.90625 -1.765625 C -5.050781 -1.960938 -5.160156 -2.148438 -5.234375 -2.328125 C -5.359375 -2.640625 -5.421875 -3 -5.421875 -3.40625 C -5.421875 -4.175781 -5.171875 -4.828125 -4.671875 -5.359375 C -4.179688 -5.898438 -3.554688 -6.171875 -2.796875 -6.171875 C -2.003906 -6.171875 -1.300781 -5.921875 -0.6875 -5.421875 C -0.0820312 -4.929688 0.21875 -4.148438 0.21875 -3.078125 C 0.21875 -2.398438 0.0234375 -1.796875 -0.359375 -1.265625 C -0.742188 -0.742188 -1.335938 -0.453125 -2.140625 -0.390625 Z M -2.140625 -1.484375 "/>
+</g>
+<g id="g2_glyph-1-18">
+<path d="M -5.9375 -1.15625 L -6.75 -1.15625 C -6.820312 -1.914062 -6.945312 -2.441406 -7.125 -2.734375 C -7.300781 -3.035156 -7.710938 -3.265625 -8.359375 -3.421875 L -8.359375 -4.25 L 0 -4.25 L 0 -3.125 L -5.9375 -3.125 Z M -5.9375 -1.15625 "/>
+</g>
+</g>
+<clipPath id="g2_clip-0">
+<path clip-rule="nonzero" d="M 316 14.398438 L 317 14.398438 L 317 69 L 316 69 Z M 316 14.398438 "/>
+</clipPath>
+<clipPath id="g2_clip-1">
+<path clip-rule="nonzero" d="M 312 14.398438 L 321 14.398438 L 321 16 L 312 16 Z M 312 14.398438 "/>
+</clipPath>
+<clipPath id="g2_clip-2">
+<path clip-rule="nonzero" d="M 485 244 L 487 244 L 487 244.597656 L 485 244.597656 Z M 485 244 "/>
+</clipPath>
+<clipPath id="g2_clip-3">
+<path clip-rule="nonzero" d="M 481 244 L 490 244 L 490 244.597656 L 481 244.597656 Z M 481 244 "/>
+</clipPath>
+<clipPath id="g2_clip-4">
+<path clip-rule="nonzero" d="M 57.601562 55 L 575.601562 55 L 575.601562 58 L 57.601562 58 Z M 57.601562 55 "/>
+</clipPath>
+<clipPath id="g2_clip-5">
+<path clip-rule="nonzero" d="M 57.601562 109 L 575.601562 109 L 575.601562 111 L 57.601562 111 Z M 57.601562 109 "/>
+</clipPath>
+</defs>
+<rect x="-59" y="-33.1" width="708" height="397.2" fill="rgb(100%, 100%, 100%)" fill-opacity="1"/>
+<path fill-rule="nonzero" fill="rgb(10.196078%, 21.176471%, 36.470588%)" fill-opacity="1" d="M 76.785156 181.023438 L 217.851562 181.023438 L 217.851562 48.539062 L 76.785156 48.539062 Z M 76.785156 181.023438 "/>
+<path fill-rule="nonzero" fill="rgb(16.862745%, 42.352941%, 69.019608%)" fill-opacity="1" d="M 246.066406 181.023438 L 387.132812 181.023438 L 387.132812 41.691406 L 246.066406 41.691406 Z M 246.066406 181.023438 "/>
+<path fill-rule="nonzero" fill="rgb(77.254902%, 18.823529%, 18.823529%)" fill-opacity="1" d="M 415.347656 181.023438 L 556.414062 181.023438 L 556.414062 268.59375 L 415.347656 268.59375 Z M 415.347656 181.023438 "/>
+<g fill="rgb(0%, 0%, 0%)" fill-opacity="1">
+<use xlink:href="#g2_glyph-0-0" x="119.976562" y="256.121094"/>
+<use xlink:href="#g2_glyph-0-1" x="128.642578" y="256.121094"/>
+<use xlink:href="#g2_glyph-0-2" x="131.308594" y="256.121094"/>
+<use xlink:href="#g2_glyph-0-2" x="134.642578" y="256.121094"/>
+<use xlink:href="#g2_glyph-0-3" x="137.976562" y="256.121094"/>
+<use xlink:href="#g2_glyph-0-4" x="144.650391" y="256.121094"/>
+<use xlink:href="#g2_glyph-0-3" x="148.646484" y="256.121094"/>
+<use xlink:href="#g2_glyph-0-5" x="155.320312" y="256.121094"/>
+<use xlink:href="#g2_glyph-0-6" x="161.994141" y="256.121094"/>
+<use xlink:href="#g2_glyph-0-3" x="167.994141" y="256.121094"/>
+</g>
+<g fill="rgb(0%, 0%, 0%)" fill-opacity="1">
+<use xlink:href="#g2_glyph-0-1" x="122.976562" y="270.519531"/>
+<use xlink:href="#g2_glyph-0-5" x="125.642578" y="270.519531"/>
+<use xlink:href="#g2_glyph-0-7" x="132.316406" y="270.519531"/>
+<use xlink:href="#g2_glyph-0-8" x="135.650391" y="270.519531"/>
+<use xlink:href="#g2_glyph-0-3" x="145.646484" y="270.519531"/>
+<use xlink:href="#g2_glyph-0-9" x="152.320312" y="270.519531"/>
+<use xlink:href="#g2_glyph-0-5" x="158.994141" y="270.519531"/>
+<use xlink:href="#g2_glyph-0-10" x="165.667969" y="270.519531"/>
+</g>
+<g fill="rgb(0%, 0%, 0%)" fill-opacity="1">
+<use xlink:href="#g2_glyph-0-11" x="293.585938" y="256.121094"/>
+<use xlink:href="#g2_glyph-0-9" x="301.589844" y="256.121094"/>
+<use xlink:href="#g2_glyph-0-10" x="308.263672" y="256.121094"/>
+<use xlink:href="#g2_glyph-0-3" x="314.263672" y="256.121094"/>
+<use xlink:href="#g2_glyph-0-12" x="320.9375" y="256.121094"/>
+<use xlink:href="#g2_glyph-0-1" x="323.603516" y="256.121094"/>
+<use xlink:href="#g2_glyph-0-5" x="326.269531" y="256.121094"/>
+<use xlink:href="#g2_glyph-0-3" x="332.943359" y="256.121094"/>
+</g>
+<g fill="rgb(0%, 0%, 0%)" fill-opacity="1">
+<use xlink:href="#g2_glyph-0-9" x="293.917969" y="270.519531"/>
+<use xlink:href="#g2_glyph-0-13" x="300.591797" y="270.519531"/>
+<use xlink:href="#g2_glyph-0-14" x="307.265625" y="270.519531"/>
+<use xlink:href="#g2_glyph-0-15" x="309.931641" y="270.519531"/>
+<use xlink:href="#g2_glyph-0-10" x="316.605469" y="270.519531"/>
+<use xlink:href="#g2_glyph-0-16" x="322.605469" y="270.519531"/>
+<use xlink:href="#g2_glyph-0-3" x="325.939453" y="270.519531"/>
+<use xlink:href="#g2_glyph-0-13" x="332.613281" y="270.519531"/>
+</g>
+<g fill="rgb(0%, 0%, 0%)" fill-opacity="1">
+<use xlink:href="#g2_glyph-0-17" x="446.535156" y="256.121094"/>
+<use xlink:href="#g2_glyph-0-18" x="454.539062" y="256.121094"/>
+<use xlink:href="#g2_glyph-0-10" x="461.212891" y="256.121094"/>
+<use xlink:href="#g2_glyph-0-16" x="467.212891" y="256.121094"/>
+<use xlink:href="#g2_glyph-0-19" x="470.546875" y="256.121094"/>
+<use xlink:href="#g2_glyph-0-16" x="474.542969" y="256.121094"/>
+<use xlink:href="#g2_glyph-0-4" x="477.876953" y="256.121094"/>
+<use xlink:href="#g2_glyph-0-3" x="481.873047" y="256.121094"/>
+<use xlink:href="#g2_glyph-0-9" x="488.546875" y="256.121094"/>
+<use xlink:href="#g2_glyph-0-16" x="495.220703" y="256.121094"/>
+<use xlink:href="#g2_glyph-0-8" x="498.554688" y="256.121094"/>
+<use xlink:href="#g2_glyph-0-3" x="508.550781" y="256.121094"/>
+<use xlink:href="#g2_glyph-0-5" x="515.224609" y="256.121094"/>
+<use xlink:href="#g2_glyph-0-16" x="521.898438" y="256.121094"/>
+</g>
+<g fill="rgb(0%, 0%, 0%)" fill-opacity="1">
+<use xlink:href="#g2_glyph-0-6" x="467.875" y="270.519531"/>
+<use xlink:href="#g2_glyph-0-18" x="473.875" y="270.519531"/>
+<use xlink:href="#g2_glyph-0-5" x="480.548828" y="270.519531"/>
+<use xlink:href="#g2_glyph-0-16" x="487.222656" y="270.519531"/>
+<use xlink:href="#g2_glyph-0-4" x="490.556641" y="270.519531"/>
+<use xlink:href="#g2_glyph-0-18" x="494.552734" y="270.519531"/>
+<use xlink:href="#g2_glyph-0-12" x="501.226562" y="270.519531"/>
+</g>
+<g fill="rgb(0%, 0%, 0%)" fill-opacity="1">
+<use xlink:href="#g2_glyph-1-0" x="11.519531" y="201.203125"/>
+<use xlink:href="#g2_glyph-1-1" x="11.519531" y="192.537109"/>
+<use xlink:href="#g2_glyph-1-2" x="11.519531" y="185.863281"/>
+<use xlink:href="#g2_glyph-1-3" x="11.519531" y="179.189453"/>
+<use xlink:href="#g2_glyph-1-3" x="11.519531" y="175.855469"/>
+<use xlink:href="#g2_glyph-1-4" x="11.519531" y="172.521484"/>
+<use xlink:href="#g2_glyph-1-5" x="11.519531" y="169.855469"/>
+<use xlink:href="#g2_glyph-1-4" x="11.519531" y="163.855469"/>
+<use xlink:href="#g2_glyph-1-2" x="11.519531" y="161.189453"/>
+<use xlink:href="#g2_glyph-1-6" x="11.519531" y="154.515625"/>
+<use xlink:href="#g2_glyph-1-7" x="11.519531" y="147.841797"/>
+<use xlink:href="#g2_glyph-1-8" x="11.519531" y="144.507812"/>
+<use xlink:href="#g2_glyph-1-1" x="11.519531" y="141.173828"/>
+<use xlink:href="#g2_glyph-1-6" x="11.519531" y="134.5"/>
+<use xlink:href="#g2_glyph-1-8" x="11.519531" y="127.826172"/>
+<use xlink:href="#g2_glyph-1-2" x="11.519531" y="124.492188"/>
+<use xlink:href="#g2_glyph-1-9" x="11.519531" y="117.818359"/>
+<use xlink:href="#g2_glyph-1-10" x="11.519531" y="111.144531"/>
+<use xlink:href="#g2_glyph-1-11" x="11.519531" y="107.148438"/>
+<use xlink:href="#g2_glyph-1-12" x="11.519531" y="104.482422"/>
+<use xlink:href="#g2_glyph-1-8" x="11.519531" y="98.482422"/>
+<use xlink:href="#g2_glyph-1-9" x="11.519531" y="95.148438"/>
+<use xlink:href="#g2_glyph-1-5" x="11.519531" y="88.474609"/>
+<use xlink:href="#g2_glyph-1-5" x="11.519531" y="82.474609"/>
+<use xlink:href="#g2_glyph-1-2" x="11.519531" y="76.474609"/>
+<use xlink:href="#g2_glyph-1-13" x="11.519531" y="69.800781"/>
+<use xlink:href="#g2_glyph-1-13" x="11.519531" y="63.800781"/>
+</g>
+<path fill="none" stroke-width="0.75" stroke-linecap="round" stroke-linejoin="round" stroke="rgb(0%, 0%, 0%)" stroke-opacity="1" stroke-miterlimit="10" d="M 57.601562 225.449219 L 57.601562 47.746094 "/>
+<path fill="none" stroke-width="0.75" stroke-linecap="round" stroke-linejoin="round" stroke="rgb(0%, 0%, 0%)" stroke-opacity="1" stroke-miterlimit="10" d="M 57.601562 225.449219 L 50.398438 225.449219 "/>
+<path fill="none" stroke-width="0.75" stroke-linecap="round" stroke-linejoin="round" stroke="rgb(0%, 0%, 0%)" stroke-opacity="1" stroke-miterlimit="10" d="M 57.601562 181.023438 L 50.398438 181.023438 "/>
+<path fill="none" stroke-width="0.75" stroke-linecap="round" stroke-linejoin="round" stroke="rgb(0%, 0%, 0%)" stroke-opacity="1" stroke-miterlimit="10" d="M 57.601562 136.597656 L 50.398438 136.597656 "/>
+<path fill="none" stroke-width="0.75" stroke-linecap="round" stroke-linejoin="round" stroke="rgb(0%, 0%, 0%)" stroke-opacity="1" stroke-miterlimit="10" d="M 57.601562 92.171875 L 50.398438 92.171875 "/>
+<path fill="none" stroke-width="0.75" stroke-linecap="round" stroke-linejoin="round" stroke="rgb(0%, 0%, 0%)" stroke-opacity="1" stroke-miterlimit="10" d="M 57.601562 47.746094 L 50.398438 47.746094 "/>
+<g fill="rgb(0%, 0%, 0%)" fill-opacity="1">
+<use xlink:href="#g2_glyph-1-14" x="40.320312" y="239.125"/>
+<use xlink:href="#g2_glyph-1-15" x="40.320312" y="235.128906"/>
+<use xlink:href="#g2_glyph-1-16" x="40.320312" y="228.455078"/>
+<use xlink:href="#g2_glyph-1-15" x="40.320312" y="225.121094"/>
+<use xlink:href="#g2_glyph-1-17" x="40.320312" y="218.447266"/>
+</g>
+<g fill="rgb(0%, 0%, 0%)" fill-opacity="1">
+<use xlink:href="#g2_glyph-1-15" x="40.320312" y="192.703125"/>
+<use xlink:href="#g2_glyph-1-16" x="40.320312" y="186.029297"/>
+<use xlink:href="#g2_glyph-1-15" x="40.320312" y="182.695312"/>
+<use xlink:href="#g2_glyph-1-15" x="40.320312" y="176.021484"/>
+</g>
+<g fill="rgb(0%, 0%, 0%)" fill-opacity="1">
+<use xlink:href="#g2_glyph-1-15" x="40.320312" y="148.277344"/>
+<use xlink:href="#g2_glyph-1-16" x="40.320312" y="141.603516"/>
+<use xlink:href="#g2_glyph-1-15" x="40.320312" y="138.269531"/>
+<use xlink:href="#g2_glyph-1-17" x="40.320312" y="131.595703"/>
+</g>
+<g fill="rgb(0%, 0%, 0%)" fill-opacity="1">
+<use xlink:href="#g2_glyph-1-15" x="40.320312" y="103.851562"/>
+<use xlink:href="#g2_glyph-1-16" x="40.320312" y="97.177734"/>
+<use xlink:href="#g2_glyph-1-18" x="40.320312" y="93.84375"/>
+<use xlink:href="#g2_glyph-1-15" x="40.320312" y="87.169922"/>
+</g>
+<g fill="rgb(0%, 0%, 0%)" fill-opacity="1">
+<use xlink:href="#g2_glyph-1-15" x="40.320312" y="59.425781"/>
+<use xlink:href="#g2_glyph-1-16" x="40.320313" y="52.751953"/>
+<use xlink:href="#g2_glyph-1-18" x="40.320313" y="49.417969"/>
+<use xlink:href="#g2_glyph-1-17" x="40.320313" y="42.744141"/>
+</g>
+<path fill="none" stroke-width="0.75" stroke-linecap="round" stroke-linejoin="round" stroke="rgb(0%, 0%, 0%)" stroke-opacity="1" stroke-miterlimit="10" d="M 147.320312 78.605469 L 147.320312 18.476562 "/>
+<path fill="none" stroke-width="0.75" stroke-linecap="round" stroke-linejoin="round" stroke="rgb(0%, 0%, 0%)" stroke-opacity="1" stroke-miterlimit="10" d="M 143.71875 78.605469 L 150.917969 78.605469 "/>
+<path fill="none" stroke-width="0.75" stroke-linecap="round" stroke-linejoin="round" stroke="rgb(0%, 0%, 0%)" stroke-opacity="1" stroke-miterlimit="10" d="M 150.917969 18.476562 L 143.71875 18.476562 "/>
+<g clip-path="url(#g2_clip-0)">
+<path fill="none" stroke-width="0.75" stroke-linecap="round" stroke-linejoin="round" stroke="rgb(0%, 0%, 0%)" stroke-opacity="1" stroke-miterlimit="10" d="M 316.601562 68.433594 L 316.601562 14.945312 "/>
+</g>
+<path fill="none" stroke-width="0.75" stroke-linecap="round" stroke-linejoin="round" stroke="rgb(0%, 0%, 0%)" stroke-opacity="1" stroke-miterlimit="10" d="M 313 68.433594 L 320.199219 68.433594 "/>
+<g clip-path="url(#g2_clip-1)">
+<path fill="none" stroke-width="0.75" stroke-linecap="round" stroke-linejoin="round" stroke="rgb(0%, 0%, 0%)" stroke-opacity="1" stroke-miterlimit="10" d="M 320.199219 14.945312 L 313 14.945312 "/>
+</g>
+<g clip-path="url(#g2_clip-2)">
+<path fill="none" stroke-width="0.75" stroke-linecap="round" stroke-linejoin="round" stroke="rgb(0%, 0%, 0%)" stroke-opacity="1" stroke-miterlimit="10" d="M 485.882812 292.113281 L 485.882812 245.078125 "/>
+</g>
+<g clip-path="url(#g2_clip-3)">
+<path fill="none" stroke-width="0.75" stroke-linecap="round" stroke-linejoin="round" stroke="rgb(0%, 0%, 0%)" stroke-opacity="1" stroke-miterlimit="10" d="M 489.480469 245.078125 L 482.28125 245.078125 "/>
+</g>
+<g clip-path="url(#g2_clip-4)">
+<path fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke="rgb(29.019608%, 48.627451%, 34.901961%)" stroke-opacity="1" stroke-dasharray="6 6" stroke-miterlimit="10" d="M 57.601562 56.632812 L 575.601562 56.632812 "/>
+</g>
+<g clip-path="url(#g2_clip-5)">
+<path fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke="rgb(50.196078%, 35.294118%, 83.529412%)" stroke-opacity="1" stroke-dasharray="1.5 4.5" stroke-miterlimit="10" d="M 57.601562 109.941406 L 575.601562 109.941406 "/>
+</g>
+<path fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke="rgb(29.019608%, 48.627451%, 34.901961%)" stroke-opacity="1" stroke-dasharray="6 6" stroke-miterlimit="10" d="M 421.085938 28.800781 L 442.6875 28.800781 "/>
+<path fill="none" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke="rgb(50.196078%, 35.294118%, 83.529412%)" stroke-opacity="1" stroke-dasharray="1.5 4.5" stroke-miterlimit="10" d="M 421.085938 43.199219 L 442.6875 43.199219 "/>
+<g fill="rgb(0%, 0%, 0%)" fill-opacity="1">
+<use xlink:href="#g2_glyph-0-20" x="453.488281" y="33.105469"/>
+<use xlink:href="#g2_glyph-0-4" x="460.818359" y="33.105469"/>
+<use xlink:href="#g2_glyph-0-15" x="464.814453" y="33.105469"/>
+<use xlink:href="#g2_glyph-0-3" x="471.488281" y="33.105469"/>
+<use xlink:href="#g2_glyph-0-7" x="478.162109" y="33.105469"/>
+<use xlink:href="#g2_glyph-0-16" x="481.496094" y="33.105469"/>
+<use xlink:href="#g2_glyph-0-18" x="484.830078" y="33.105469"/>
+<use xlink:href="#g2_glyph-0-16" x="491.503906" y="33.105469"/>
+<use xlink:href="#g2_glyph-0-9" x="494.837891" y="33.105469"/>
+<use xlink:href="#g2_glyph-0-12" x="501.511719" y="33.105469"/>
+<use xlink:href="#g2_glyph-0-7" x="504.177734" y="33.105469"/>
+<use xlink:href="#g2_glyph-0-3" x="507.511719" y="33.105469"/>
+<use xlink:href="#g2_glyph-0-2" x="514.185547" y="33.105469"/>
+<use xlink:href="#g2_glyph-0-2" x="517.519531" y="33.105469"/>
+<use xlink:href="#g2_glyph-0-3" x="520.853516" y="33.105469"/>
+<use xlink:href="#g2_glyph-0-6" x="527.527344" y="33.105469"/>
+<use xlink:href="#g2_glyph-0-16" x="533.527344" y="33.105469"/>
+</g>
+<g fill="rgb(0%, 0%, 0%)" fill-opacity="1">
+<use xlink:href="#g2_glyph-0-21" x="453.488281" y="47.503906"/>
+<use xlink:href="#g2_glyph-0-16" x="461.492188" y="47.503906"/>
+<use xlink:href="#g2_glyph-0-4" x="464.826172" y="47.503906"/>
+<use xlink:href="#g2_glyph-0-15" x="468.822266" y="47.503906"/>
+<use xlink:href="#g2_glyph-0-6" x="475.496094" y="47.503906"/>
+<use xlink:href="#g2_glyph-0-16" x="481.496094" y="47.503906"/>
+<use xlink:href="#g2_glyph-0-15" x="484.830078" y="47.503906"/>
+<use xlink:href="#g2_glyph-0-4" x="491.503906" y="47.503906"/>
+<use xlink:href="#g2_glyph-0-9" x="495.5" y="47.503906"/>
+<use xlink:href="#g2_glyph-0-12" x="502.173828" y="47.503906"/>
+<use xlink:href="#g2_glyph-0-7" x="504.839844" y="47.503906"/>
+<use xlink:href="#g2_glyph-0-13" x="508.173828" y="47.503906"/>
+<use xlink:href="#g2_glyph-0-1" x="514.847656" y="47.503906"/>
+<use xlink:href="#g2_glyph-0-4" x="517.513672" y="47.503906"/>
+<use xlink:href="#g2_glyph-0-3" x="521.509766" y="47.503906"/>
+<use xlink:href="#g2_glyph-0-6" x="528.183594" y="47.503906"/>
+<use xlink:href="#g2_glyph-0-16" x="534.183594" y="47.503906"/>
+<use xlink:href="#g2_glyph-0-7" x="537.517578" y="47.503906"/>
+<use xlink:href="#g2_glyph-0-3" x="540.851562" y="47.503906"/>
+<use xlink:href="#g2_glyph-0-2" x="547.525391" y="47.503906"/>
+<use xlink:href="#g2_glyph-0-2" x="550.859375" y="47.503906"/>
+<use xlink:href="#g2_glyph-0-3" x="554.193359" y="47.503906"/>
+<use xlink:href="#g2_glyph-0-6" x="560.867188" y="47.503906"/>
+<use xlink:href="#g2_glyph-0-16" x="566.867188" y="47.503906"/>
+</g>
+</svg>
+<figcaption aria-hidden="true">Estimates of the early-access coefficient
+under three specifications. The first two center on the true total
+effect; controlling for post-treatment engagement flips the coefficient
+negative. The structural direct effect shown by the purple line is not
+identified by that bad-control regression either.</figcaption>
+</figure>
+<h3 id="the-full-reconciliation">6.3 The Full Reconciliation</h3>
+<p>The conflict in the opening is not that the experiment gives two
+answers, but that the third regression changed the conditional
+comparison. Both the difference in means and the baseline adjustment use
+the original randomization, estimating <span
+class="math inline">0.149</span> and <span
+class="math inline">0.157</span>, close to the true total effect <span
+class="math inline">0.140</span>. Controlling for engagement gives <span
+class="math inline">-0.099</span>, which is neither the total effect nor
+the structural direct effect <span class="math inline">0.080</span>. One
+more significant control makes the answer worse, not more credible.</p>
+<h2 id="failure-modes-and-robustness">7 Failure Modes and
+Robustness</h2>
+<p>The first kind of failure is that the treatment is unclear. Gaining
+the tool, opening the tool, accepting a recommendation, and following a
+recommendation are different interventions. If a paper says “AI
+adoption” in its motivation while the variable is only access exposure,
+the conclusion must narrow to an assignment effect.</p>
+<p>The second kind of failure is temporal misalignment. Using firm size,
+review score, or engagement updated after treatment as controls will
+control a mechanism, manufacture selection, or both at once. Building a
+table of variable timestamps usually prevents error better than running
+another set of fixed effects.</p>
+<p>The third kind of failure is a mismatch between the unit and the
+randomization level. If the policy is randomized by city while the
+regression treats millions of users as independent observations, the
+standard errors will be severely understated. The unit of analysis can
+be finer than the randomization unit, but inference must respect the
+assignment dependence.</p>
+<p>The fourth kind of failure is treating balance, placebo, or pre-trend
+as proof of the assumptions. They can reveal obvious implementation
+errors, but they cannot verify all unobserved counterfactuals. A
+research report should separate design evidence, diagnostic evidence,
+and untestable assumptions.</p>
+<p>The fifth kind of failure is mechanism overclaim. Treatment changes
+the mediator and the mediator predicts the outcome, which provides only
+mechanism-consistency evidence. Identifying mediation requires extra
+assignment, sequential ignorability, or other structural
+constraints.</p>
+<p>Last is external validity. Aurora identifies the short-run effect for
+eligible pilot merchants; it does not automatically answer the
+equilibrium consequences of all merchants, a mature version, or a
+whole-market rollout. Population, version, and horizon are all part of
+the estimand, not a range that the last sentence of the results section
+may freely widen.</p>
+<p>Threading these problems together, the core discipline of research
+design is a single sentence: first state where the counterfactual comes
+from, then decide which estimator to summarize it with. When the design
+is unclear, more controls, fancier machine learning, and smaller
+p-values will not fill in the missing counterfactual.</p>
+<h2 id="further-reading">8 Further Reading</h2>
+<div class="readings">
+<p>Required reading, in the suggested order:</p>
+<ul>
+<li>Rubin (1974). Uses potential outcomes to write the causal question
+as a missing-counterfactual problem.</li>
+<li>Athey and Imbens (2017). Understands the identification strategy
+from the whole landscape of applied econometrics.</li>
+<li>Imbens (2020). Compares the applicable boundaries of potential
+outcomes and DAGs.</li>
+<li>Hernán and Robins (2020). Builds a complete research-design language
+from the target trial, time-varying treatment, and causal diagrams.</li>
+</ul>
+<p>Further reading:</p>
+<ul>
+<li>Angrist and Pischke (2009). Understands empirical design from
+institutional variation and the experimental ideal.</li>
+<li>Imbens and Rubin (2015). Treats assignment mechanisms, randomization
+inference, and observational designs systematically.</li>
+</ul>
+</div>
+<div class="apa-refs">
+<ul>
+<li>Angrist, J. D., &amp; Pischke, J.-S. (2009). <em>Mostly harmless
+econometrics: An empiricist’s companion</em>. Princeton University
+Press.</li>
+<li>Athey, S., &amp; Imbens, G. W. (2017). The state of applied
+econometrics: Causality and policy evaluation. <em>Journal of Economic
+Perspectives, 31</em>(2), 3-32. <a
+href="https://doi.org/10.1257/jep.31.2.3"
+class="uri">https://doi.org/10.1257/jep.31.2.3</a></li>
+<li>Hernán, M. A., &amp; Robins, J. M. (2020). <em>Causal inference:
+What if</em>. Chapman &amp; Hall/CRC.</li>
+<li>Imbens, G. W. (2020). Potential outcome and directed acyclic graph
+approaches to causality: Relevance for empirical practice in economics.
+<em>Journal of Economic Literature, 58</em>(4), 1129-1179. <a
+href="https://doi.org/10.1257/jel.20191597"
+class="uri">https://doi.org/10.1257/jel.20191597</a></li>
+<li>Imbens, G. W., &amp; Rubin, D. B. (2015). <em>Causal inference for
+statistics, social, and biomedical sciences: An introduction</em>.
+Cambridge University Press. <a
+href="https://doi.org/10.1017/CBO9781139025751"
+class="uri">https://doi.org/10.1017/CBO9781139025751</a></li>
+<li>Rubin, D. B. (1974). Estimating causal effects of treatments in
+randomized and nonrandomized studies. <em>Journal of Educational
+Psychology, 66</em>(5), 688-701. <a
+href="https://doi.org/10.1037/h0037350"
+class="uri">https://doi.org/10.1037/h0037350</a></li>
+</ul>
+</div>
+    <footer class="page-footer">
+<span>Foundations of Information Systems Economics: Empirical Methods for Information Systems Economics</span>
+    </footer>
+  </main>
+</div>
+<script>
+(function(){var p=(location.pathname.split('/').pop()||'index.html');document.querySelectorAll('.file-nav a').forEach(function(a){if(a.getAttribute('href')===p)a.classList.add('current');});})();
+
+/* Preserve complete formulas without internal scrollbars. Only formulas whose
+   natural width exceeds their text column are reduced, and resize restores the
+   largest size that fits. */
+(function () {
+  function fitMath() {
+    document.querySelectorAll('span.math').forEach(function (host) {
+      var katex = host.querySelector('.katex');
+      if (!katex) return;
+      katex.style.fontSize = '';
+      var parent = host.classList.contains('display') ? host : host.parentElement;
+      var available = Math.max(1, parent.clientWidth);
+      /* KaTeX's box can be clipped to the host before measurement; scrollWidth
+         retains the full typeset width and is therefore the correct basis. */
+      var needed = Math.max(katex.scrollWidth, katex.getBoundingClientRect().width);
+      /* Keep a small safety margin for KaTeX glyph overhangs and browser
+         sub-pixel rounding, so the last radical/bar is never clipped. */
+      var target = available * 0.98;
+      if (needed > target) {
+        katex.style.fontSize = Math.max(0.34, target / needed) + 'em';
+      }
+    });
+  }
+  document.addEventListener('DOMContentLoaded', function () {
+    requestAnimationFrame(fitMath);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitMath);
+  });
+  window.addEventListener('resize', fitMath);
+}());
+</script>
+<script defer src="assets/notes.js"></script>
+</body>
+</html>

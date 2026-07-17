@@ -1,0 +1,1860 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Platforms, Network Effects &amp; Switching Costs | IS Economics
+· Empirical Methods</title>
+  <link rel="stylesheet" href="assets/style.css" />
+  <script defer="" src="assets/katex/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <link rel="stylesheet" href="assets/katex/katex.min.css" />
+</head>
+<body>
+<div class="page-wrapper">
+  <nav class="sidebar">
+    <div class="sidebar-title">Foundations of Information Systems Economics</div>
+    <div class="sidebar-subtitle">Theory · Methods · Applications</div>
+    <div class="toc-section-label">On this page</div>
+    <div class="toc">
+<ul>
+<li><a href="#introduction" id="toc-introduction">Introduction</a></li>
+<li><a href="#a-number-that-does-not-sit-right"
+id="toc-a-number-that-does-not-sit-right">1 A Number That Does Not Sit
+Right</a></li>
+<li><a href="#the-economic-model-and-the-estimand"
+id="toc-the-economic-model-and-the-estimand">2 The Economic Model and
+the Estimand</a></li>
+<li><a href="#identification-separating-lock-in-from-preference"
+id="toc-identification-separating-lock-in-from-preference">3
+Identification: Separating Lock-In from Preference</a></li>
+<li><a
+href="#estimation-from-the-failed-naive-logit-to-separating-heterogeneity"
+id="toc-estimation-from-the-failed-naive-logit-to-separating-heterogeneity">4
+Estimation: From the Failed Naive Logit to Separating
+Heterogeneity</a></li>
+<li><a href="#anchoring-papers" id="toc-anchoring-papers">5 Anchoring
+Papers</a></li>
+<li><a href="#a-full-walkthrough-on-the-cadence-data"
+id="toc-a-full-walkthrough-on-the-cadence-data">6 A Full Walkthrough on
+the Cadence Data</a></li>
+<li><a href="#failure-modes-of-identification-and-robustness"
+id="toc-failure-modes-of-identification-and-robustness">7 Failure Modes
+of Identification and Robustness</a></li>
+<li><a href="#further-reading" id="toc-further-reading">8 Further
+Reading</a></li>
+</ul>
+    </div>
+    <div class="file-nav">
+      <div class="nav-label">This series</div>
+      <a href="index.html">Home · Overview</a>
+      <a href="introduction.html">Introduction · How to Use</a>
+      <a href="01_consumer_producer_welfare.html">01 Consumer, Producer &amp; Welfare</a>
+      <a href="02_game_theory.html">02 Game Theory</a>
+      <a href="03_information_mechanism_design.html">03 Information &amp; Mechanism Design</a>
+      <a href="04_pricing_imperfect_competition.html">04 Pricing &amp; Imperfect Competition</a>
+      <a href="05_estimation_mle_gmm.html">05 Estimation: MLE &amp; GMM</a>
+      <a href="06_inference.html">06 Inference: Bootstrap &amp; Clustering</a>
+      <a href="07_panel_dynamic_panel.html">07 Panel &amp; Dynamic Panel</a>
+      <a href="08_nonparametrics.html">08 Nonparametrics &amp; Semiparametrics</a>
+      <a href="09_potential_outcomes.html">09 Potential Outcomes &amp; Selection</a>
+      <a href="10_research_design_architecture.html">10 Research Design</a>
+      <a href="11_measurement_digital_traces.html">11 Measurement &amp; Digital Traces</a>
+      <a href="12_iv_late_mte.html">12 IV: LATE &amp; MTE</a>
+      <a href="13_did_event_studies.html">13 DiD &amp; Event Studies</a>
+      <a href="14_rdd_synthetic_control.html">14 RDD &amp; Synthetic Control</a>
+      <a href="15_sensitivity_partial_identification.html">15 Sensitivity &amp; Partial Identification</a>
+      <a href="16_causal_ml_dml.html">16 Causal ML &amp; DML</a>
+      <a href="17_digital_experimentation.html">17 Digital Experimentation</a>
+      <a href="18_interference_marketplace_experiments.html">18 Interference &amp; Marketplace Experiments</a>
+      <a href="19_discrete_choice.html">19 Discrete Choice &amp; Mixed Logit</a>
+      <a href="20_demand_blp.html">20 Demand Estimation &amp; BLP</a>
+      <a href="21_supply_markups_mergers.html">21 Supply, Markups &amp; Mergers</a>
+      <a href="22_entry_partial_id.html">22 Entry &amp; Partial Identification</a>
+      <a href="23_dynamic_structural.html">23 Dynamic Structural Models</a>
+      <a href="24_platforms_networks.html">24 Platforms &amp; Network Effects</a>
+      <a href="25_search_advertising.html">25 Search, Advertising &amp; Information Goods</a>
+      <a href="26_ai_algorithms_data.html">26 AI, Adoption &amp; Data Economics</a>
+      <a href="27_quick_reference.html">27 Quick Reference &amp; Tools</a>
+    </div>
+  </nav>
+  <main class="main-content" id="top">
+    <header class="page-header">
+      <h1>Platforms, Network Effects &amp; Switching Costs</h1>
+      <div class="subtitle">Two-Sided Pricing, Lock-In, and the
+Measurement of State Dependence</div>
+      <div class="meta">Foundations of Information Systems Economics · Chapter 24</div>
+    </header>
+<h2 id="introduction">Introduction</h2>
+<p>Why does a credit card pay cash back to its cardholders and yet
+charge fees to merchants? Why is an app store willing to subsidize
+developer tools while taking a cut from successful apps? In an ordinary
+market, pushing one side’s price down to zero or below looks like
+leaving money on the table. In a platform market, it may be exactly the
+condition for making money on the other side. Participants attract one
+another across the two sides, so the platform cannot price each side in
+isolation, nor judge the strength of competition by looking at the
+profit from a single side.</p>
+<p>The self-reinforcing nature of scale brings a thornier problem.
+Network effects can push a market past a critical size and tip it toward
+a handful of platforms, while multihoming lets users stand on several
+sides at once, turning one side into a competitive bottleneck.
+Compatibility, the installed base, preannouncements of new products, and
+even vaporware all reshape today’s adoption, because what a consumer
+buys is not only the current functionality but also a bet on who else
+will still be in the ecosystem tomorrow. At the same time, the value of
+a platform comes from more than scale: P2P markets need liquidity and
+trust, and public collaborations like open-source communities and
+Wikipedia must additionally solve contribution incentives and
+governance.</p>
+<p>Empirically the thing most easily misjudged is “staying.” A merchant
+that has used the same payment platform for years may be bearing real
+switching costs, or may simply have preferred that platform all along.
+The first is state dependence, the second is persistent heterogeneity,
+and in a short panel the sequence of choices often makes the two nearly
+impossible to tell apart. If a naive logit counts all of
+preference-driven loyalty as lock-in, the switching cost comes out
+systematically too large. Network effects raise a similar reflection
+problem: a user influences peers, peers simultaneously influence the
+user, and correlation by itself cannot tell us which way the arrow
+points.</p>
+<p>This chapter builds a map of platform-economics mechanisms from
+two-sided pricing, network effects, multihoming, and compatibility, and
+then uses a payment-platform case to focus on the identification of
+switching costs, initial conditions, and unobserved heterogeneity. You
+will learn how to interpret one side’s price by putting it back into the
+platform’s overall profit, how to separate genuine lock-in from choice
+persistence, and how to judge what evidence tipping, competitive
+bottlenecks, and community governance each require. The most dangerous
+shortcut in platform research is to see scale and call it a network
+effect, to see retention and call it a switching cost. The task of this
+chapter is to turn these attractive labels back into economic
+propositions that can be tested.</p>
+<h2 id="a-number-that-does-not-sit-right">1 A Number That Does Not Sit
+Right</h2>
+<div class="case">
+<p>Cadence is a fictional market for payment-processing platforms, in
+which two platforms A and B compete for the card-acquiring business of
+small merchants. We use simulated data to tell this story. The advantage
+is that the data-generating process is fully known, so the behavior of
+every estimator can be reconciled against the truth, a teaching
+condition that real data can never provide. The setup is as follows. The
+market contains 5000 small merchants observed over 10 months. Each month
+each merchant routes its card payments to either A or B. A merchant’s
+choice moves with the fees the platforms charge each month, and is also
+pulled by two persistent forces: first, each merchant has a fixed, to us
+unobserved preference between A and B (which platform fits its business
+model better), and second, a real switching cost, in that having used
+one platform last month, staying with it this month saves a migration
+expense. The platform’s question is direct: how deeply are merchants
+locked in, that is, how large is the switching cost?</p>
+<p>Because this is a simulation, we know the answer. The true switching
+cost corresponds to a state-dependence parameter <span
+class="math inline">\delta = 0.90</span> (in logit utility units), which
+converts to roughly $1.64 per month in migration cost. The true fee
+sensitivity is <span class="math inline">\beta = -0.55</span>, and the
+standard deviation of persistent preferences across merchants is <span
+class="math inline">\sigma_\theta = 1.40</span>.</p>
+</div>
+<p>Start with the most naive approach. The choices clearly show inertia:
+comparing each merchant’s choice this month with last month’s, across
+the 10 months 79.2% of observations stay with the same platform and only
+20.8% switch. This high degree of persistence looks like exactly the
+evidence for lock-in. So a researcher runs a dynamic logit: regress
+whether A is chosen this month on this month’s fee difference and last
+month’s choice, and read the coefficient on last month’s choice as state
+dependence, that is, the switching cost.</p>
+<p><span class="math display">\Pr(\text{choose A}_{it}) =
+\Lambda\big(\theta_0 + \beta\, \Delta\mathrm{fee}_t + \delta\,
+L_{i,t-1}\big)</span></p>
+<p>Here <span class="math inline">\Delta\mathrm{fee}_t</span> is the
+monthly fee difference between A and B, <span
+class="math inline">L_{i,t-1} \in \{-1, +1\}</span> marks which platform
+was chosen last month, and <span class="math inline">\Lambda</span> is
+the logistic function. The result is <span
+class="math inline">\hat\delta_{\text{naive}} = 1.357</span> (SE 0.012),
+with a fee coefficient <span class="math inline">\hat\beta =
+-0.424</span>. Converting state dependence into money, <span
+class="math inline">\hat\delta / |\hat\beta| = 3.20</span>, the naive
+estimate says merchants face a switching cost of about $3.20 per month.
+Written into a report to the platform, the conclusion would read
+“merchants are firmly locked in, switching is expensive, and the
+incumbency advantage is secure.”</p>
+<p>The problem is that we know the truth is <span
+class="math inline">\delta = 0.90</span>, about $1.64 in money terms.
+The naive estimate overstates the switching cost by fully 51%, nearly
+doubling it in dollar terms. The regression is not written wrong, the
+logit is used correctly, and the fee is included, so what exactly is
+<span class="math inline">\hat\delta_{\text{naive}}</span> estimating?
+This is the main thread of the chapter. The answer comes in Section 3:
+when there is persistent, unobserved preference heterogeneity across
+merchants, a dynamic logit that does not control for that heterogeneity
+mistakes preference-generated persistence for lock-in, so the
+coefficient on last month’s choice is systematically too high. In
+Section 6 we will take this 51% overstatement apart precisely, see where
+it comes from, and see how an appropriate estimator pushes it back
+down.</p>
+<h2 id="the-economic-model-and-the-estimand">2 The Economic Model and
+the Estimand</h2>
+<p>Before estimating anything, we need to be clear about two things: why
+platform markets have dynamics like switching costs and network effects,
+and which of these quantities we actually want to estimate. The former
+determines the economic meaning of the object of estimation, the latter
+determines the target of identification. This section first lays out the
+theoretical skeleton of platform pricing and network effects, and then
+writes down precisely the object of estimation for switching costs.</p>
+<h3 id="two-sided-pricing-why-one-side-is-subsidized">2.1 Two-Sided
+Pricing: Why One Side Is Subsidized</h3>
+<p>The most counterintuitive thing about a platform is its pricing. In a
+one-sided market, a monopolist marks up over marginal cost according to
+demand elasticity, and price always lies above cost. A platform is not
+like this. It serves two interdependent groups of users, where the size
+of one side is the source of value for the other, so the optimal pricing
+can set one side’s price below cost, or even at a loss, and recoup
+profit from the other side. To understand this we need a model that
+writes the cross-group externality into utility.</p>
+<p>The membership model of Armstrong (2006) is the clearest starting
+point. Let the platform connect two groups of users <span
+class="math inline">i \in \{1, 2\}</span>, where members of one group
+care about the size of the other group. The utility of a member of group
+<span class="math inline">i</span> is</p>
+<p><span class="math display">u_i = \alpha_i\, n_j - p_i, \qquad j \neq
+i</span></p>
+<p>where <span class="math inline">n_j</span> is the number of members
+of the other group <span class="math inline">j</span> who join the
+platform, <span class="math inline">\alpha_i</span> is the per-member
+external benefit that a group <span class="math inline">i</span> member
+obtains from each member of group <span class="math inline">j</span>,
+and <span class="math inline">p_i</span> is the access price the
+platform charges group <span class="math inline">i</span>. The number
+joining each group depends on that group’s own utility, <span
+class="math inline">n_i = \phi_i(\alpha_i n_j - p_i)</span>, and the two
+group sizes cause one another, forming a fulfilled-expectations fixed
+point. The platform incurs a connection cost <span
+class="math inline">f_i</span> for each member of group <span
+class="math inline">i</span>, and monopoly profit is</p>
+<p><span class="math display">\Pi = n_1 (p_1 - f_1) + n_2 (p_2 -
+f_2)</span></p>
+<p>Optimizing over <span class="math inline">p_1, p_2</span>, the
+profit-maximizing prices satisfy Armstrong’s pricing formula:</p>
+<p><span class="math display">p_i = f_i - \alpha_j\, n_j +
+\frac{n_i}{\partial n_i / \partial u_i}</span></p>
+<p>Each of the three terms on the right has a meaning. <span
+class="math inline">f_i</span> is the own connection cost, the last term
+is the usual monopoly markup, and the term that truly distinguishes a
+platform from a one-sided market is the middle one, <span
+class="math inline">-\alpha_j n_j</span>. It says that when pricing
+group <span class="math inline">i</span>, the platform must subtract a
+piece from cost, and the piece it subtracts is exactly the external
+benefit that one more member of group <span class="math inline">i</span>
+brings to the other group: each additional group <span
+class="math inline">i</span> member benefits each of the <span
+class="math inline">n_j</span> members of group <span
+class="math inline">j</span> by <span
+class="math inline">\alpha_j</span>, for a total of <span
+class="math inline">\alpha_j n_j</span>. The platform internalizes this
+external benefit by lowering group <span class="math inline">i</span>’s
+price to attract more group <span class="math inline">i</span> members,
+thereby enlarging the whole platform. The comparative statics are clean:
+<span class="math inline">\partial p_i / \partial \alpha_j &lt;
+0</span>, the larger the externality one group brings to the other, the
+lower the price charged to that group. When <span
+class="math inline">\alpha_j</span> is large enough, <span
+class="math inline">p_i</span> can fall below cost, and that group
+becomes the subsidy side, while the other becomes the money side that
+pays.</p>
+<div class="case">
+<p>Compute this formula once on Cadence. Suppose merchants (group 1)
+obtain an external benefit <span class="math inline">\alpha_1 =
+3.0</span> from each cardholder (merchants value reach highly),
+cardholders (group 2) obtain an external benefit <span
+class="math inline">\alpha_2 = 0.6</span> from each merchant (one more
+store that accepts cards is a nice extra for a cardholder), and both
+groups have a unit connection cost of 1.0. Solving the monopoly
+platform’s optimal pricing with linear membership demand gives: charge
+merchants <span class="math inline">p_1^\ast = 1.384</span>, charge
+cardholders <span class="math inline">p_2^\ast = 0.684</span>, with
+group sizes <span class="math inline">n_1^\ast = 0.263</span> and <span
+class="math inline">n_2^\ast = 0.237</span>. The cardholder side’s price
+of 0.684 is below its connection cost of 1.0, so it is subsidized; the
+merchant side’s price of 1.384 is above cost, so it is taxed. For
+comparison, if the platform ignored the cross-group externality and
+priced the two sides as isolated markets, it would obtain <span
+class="math inline">p_1 = 1.100</span> and <span class="math inline">p_2
+= 1.000</span>, with neither side below cost and neither side
+subsidized. The entire difference comes from that <span
+class="math inline">-\alpha_j n_j</span> term: because merchants bring a
+small externality to cardholders and cardholders bring a large
+externality to merchants, the platform pushes the cardholder side below
+cost to build scale, and recoups the money from the merchants who value
+reach more. Real-world payment networks, freemium software, and the
+subsidized side of ride-hailing all follow this same logic.</p>
+</div>
+<p>Rochet and Tirole (2003) reach the same insight from another angle,
+with a model that is usage-based rather than membership-based. The
+transaction volume of the two groups is the product of their respective
+willingness to participate, <span class="math inline">V = D^1(p^1)\,
+D^2(p^2)</span>, because a transaction requires both sides to be
+willing, so how the total price <span class="math inline">p = p^1 +
+p^2</span> is split between the two sides is what the platform truly
+decides. Their central conclusion is that even for a monopoly platform,
+the problem cannot be reduced to setting price at marginal cost on each
+side; what matters is not the level of price but the price structure,
+that is, how a given total price <span class="math inline">p</span> is
+divided between the two sides. This structure depends on the elasticity
+of each side, with the more elastic side getting the lower price. This
+also leads to the seesaw principle of the Rochet and Tirole (2006)
+survey: any factor that raises the optimal price on one side generally
+lowers the price on the other, so the two prices move like a seesaw, up
+on one side and down on the other, because the platform must continually
+reallocate the burden to keep both sides on board.</p>
+<p>The distinction between these two models is worth remembering:
+Armstrong is about membership externalities, where you pay to join and
+your utility depends on how many people are on the other side;
+Rochet-Tirole is about usage externalities, where you pay per
+interaction and transaction volume is the product of the two sides’
+willingness. Real platforms often have both, charging an entry fee as
+well as a transaction commission. For this chapter, the significance of
+two-sided pricing is that it explains why platforms care so much about
+attracting and retaining users: once one side’s scale becomes the source
+of the other side’s value, capturing and locking in users has a direct
+profit motive, and this is precisely why switching costs sit at the
+center of platform strategy.</p>
+<h3 id="network-effects-tipping-and-critical-mass">2.2 Network Effects,
+Tipping, and Critical Mass</h3>
+<p>Network effects make platform markets naturally prone to
+concentration. When a platform’s value rises with its user base, a
+user’s willingness to join depends on their expectation of the eventual
+size, and the expectation is itself self-fulfilling. Katz and Shapiro
+(1985) characterize this with fulfilled-expectations demand. Let the
+willingness to pay of the marginal consumer at quantity position <span
+class="math inline">q</span> consist of two parts: first, a stand-alone
+intrinsic value <span class="math inline">r(q)</span> that decreases in
+<span class="math inline">q</span> (heterogeneous preferences), and
+second, a network value <span class="math inline">v(y^e)</span> that
+increases in the expected network size <span
+class="math inline">y^e</span>. Equilibrium requires expectations to be
+correct, <span class="math inline">y^e = q</span>, so the
+fulfilled-expectations demand curve is</p>
+<p><span class="math display">P(q) = r(q) + v(q)</span></p>
+<p>The key is that <span class="math inline">P(q)</span> can be
+non-monotonic. With <span class="math inline">r(q)</span> decreasing and
+<span class="math inline">v(q)</span> increasing, over the range where
+the network effect overpowers preference heterogeneity the demand curve
+rises with scale, forming a hump. Given a price <span
+class="math inline">p</span>, a horizontal line can intersect this
+humped demand curve at multiple points, corresponding to multiple
+equilibria.</p>
+<figure>
+<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' viewBox='0 0 518.40 331.20' role="img" aria-label="The fulfilled-expectations demand curve under network effects (blue) and a given price (orange dashed line). The curve first rises then falls with scale; the price line intersects it at two points, the lower one being the unstable critical mass and the higher one the stable high-adoption equilibrium." style="max-width:100%;height:auto;display:block;margin:0 auto">
+<g class='svglite'>
+<defs>
+  <style type='text/css'><![CDATA[
+    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {
+      fill: none;
+      stroke: #000000;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-miterlimit: 10.00;
+    }
+    .svglite text {
+      white-space: pre;
+    }
+    .svglite g.glyphgroup path {
+      fill: inherit;
+      stroke: none;
+    }
+  ]]></style>
+</defs>
+<rect width='100%' height='100%' style='stroke: none; fill: #FFFFFF;'/>
+<defs>
+  <clipPath id='g1_cpMC4wMHw1MTguNDB8MC4wMHwzMzEuMjA='>
+    <rect x='0.00' y='0.00' width='518.40' height='331.20' />
+  </clipPath>
+</defs>
+<g clip-path='url(#g1_cpMC4wMHw1MTguNDB8MC4wMHwzMzEuMjA=)'>
+<rect x='-0.000000000000064' y='0.00' width='518.40' height='331.20' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
+</g>
+<defs>
+  <clipPath id='g1_cpMzUuNTZ8NTEyLjkyfDUuNDh8MjYwLjUx'>
+    <rect x='35.56' y='5.48' width='477.36' height='255.03' />
+  </clipPath>
+</defs>
+<g clip-path='url(#g1_cpMzUuNTZ8NTEyLjkyfDUuNDh8MjYwLjUx)'>
+<polyline points='35.56,248.91 512.92,248.91 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='35.56,193.27 512.92,193.27 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='35.56,137.63 512.92,137.63 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='35.56,81.99 512.92,81.99 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='35.56,26.34 512.92,26.34 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='57.26,260.51 57.26,5.48 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='144.05,260.51 144.05,5.48 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='230.85,260.51 230.85,5.48 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='317.64,260.51 317.64,5.48 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='404.43,260.51 404.43,5.48 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='491.22,260.51 491.22,5.48 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='57.26,165.45 58.35,163.78 59.44,162.12 60.53,160.47 61.61,158.83 62.70,157.20 63.79,155.58 64.88,153.97 65.96,152.36 67.05,150.77 68.14,149.19 69.23,147.61 70.31,146.05 71.40,144.49 72.49,142.95 73.58,141.41 74.66,139.88 75.75,138.37 76.84,136.86 77.93,135.36 79.02,133.87 80.10,132.39 81.19,130.92 82.28,129.46 83.37,128.01 84.45,126.56 85.54,125.13 86.63,123.71 87.72,122.29 88.80,120.89 89.89,119.49 90.98,118.11 92.07,116.73 93.15,115.36 94.24,114.01 95.33,112.66 96.42,111.32 97.50,109.99 98.59,108.67 99.68,107.36 100.77,106.06 101.86,104.77 102.94,103.49 104.03,102.22 105.12,100.95 106.21,99.70 107.29,98.46 108.38,97.22 109.47,96.00 110.56,94.78 111.64,93.57 112.73,92.38 113.82,91.19 114.91,90.01 115.99,88.84 117.08,87.68 118.17,86.53 119.26,85.39 120.34,84.26 121.43,83.14 122.52,82.03 123.61,80.93 124.69,79.83 125.78,78.75 126.87,77.68 127.96,76.61 129.05,75.56 130.13,74.51 131.22,73.47 132.31,72.45 133.40,71.43 134.48,70.42 135.57,69.42 136.66,68.43 137.75,67.45 138.83,66.48 139.92,65.52 141.01,64.57 142.10,63.63 143.18,62.70 144.27,61.77 145.36,60.86 146.45,59.95 147.53,59.06 148.62,58.17 149.71,57.30 150.80,56.43 151.89,55.57 152.97,54.73 154.06,53.89 155.15,53.06 156.24,52.24 157.32,51.43 158.41,50.63 159.50,49.84 160.59,49.06 161.67,48.28 162.76,47.52 163.85,46.77 164.94,46.02 166.02,45.29 167.11,44.56 168.20,43.85 169.29,43.14 170.37,42.45 171.46,41.76 172.55,41.08 173.64,40.41 174.73,39.75 175.81,39.10 176.90,38.46 177.99,37.83 179.08,37.21 180.16,36.60 181.25,36.00 182.34,35.40 183.43,34.82 184.51,34.25 185.60,33.68 186.69,33.13 187.78,32.58 188.86,32.04 189.95,31.52 191.04,31.00 192.13,30.49 193.21,29.99 194.30,29.50 195.39,29.02 196.48,28.55 197.57,28.09 198.65,27.64 199.74,27.20 200.83,26.77 201.92,26.34 203.00,25.93 204.09,25.53 205.18,25.13 206.27,24.75 207.35,24.37 208.44,24.00 209.53,23.65 210.62,23.30 211.70,22.96 212.79,22.63 213.88,22.31 214.97,22.00 216.05,21.70 217.14,21.41 218.23,21.13 219.32,20.86 220.41,20.60 221.49,20.34 222.58,20.10 223.67,19.86 224.76,19.64 225.84,19.42 226.93,19.22 228.02,19.02 229.11,18.83 230.19,18.66 231.28,18.49 232.37,18.33 233.46,18.18 234.54,18.04 235.63,17.91 236.72,17.79 237.81,17.68 238.89,17.57 239.98,17.48 241.07,17.40 242.16,17.32 243.25,17.26 244.33,17.21 245.42,17.16 246.51,17.12 247.60,17.10 248.68,17.08 249.77,17.07 250.86,17.07 251.95,17.08 253.03,17.10 254.12,17.13 255.21,17.17 256.30,17.22 257.38,17.28 258.47,17.35 259.56,17.43 260.65,17.51 261.73,17.61 262.82,17.71 263.91,17.83 265.00,17.95 266.09,18.09 267.17,18.23 268.26,18.38 269.35,18.54 270.44,18.72 271.52,18.90 272.61,19.09 273.70,19.29 274.79,19.50 275.87,19.71 276.96,19.94 278.05,20.18 279.14,20.43 280.22,20.68 281.31,20.95 282.40,21.22 283.49,21.51 284.57,21.80 285.66,22.11 286.75,22.42 287.84,22.74 288.93,23.07 290.01,23.41 291.10,23.77 292.19,24.13 293.28,24.50 294.36,24.87 295.45,25.26 296.54,25.66 297.63,26.07 298.71,26.48 299.80,26.91 300.89,27.35 301.98,27.79 303.06,28.25 304.15,28.71 305.24,29.18 306.33,29.67 307.41,30.16 308.50,30.66 309.59,31.17 310.68,31.69 311.77,32.22 312.85,32.76 313.94,33.31 315.03,33.87 316.12,34.44 317.20,35.01 318.29,35.60 319.38,36.20 320.47,36.80 321.55,37.42 322.64,38.04 323.73,38.68 324.82,39.32 325.90,39.97 326.99,40.63 328.08,41.31 329.17,41.99 330.25,42.68 331.34,43.38 332.43,44.09 333.52,44.80 334.61,45.53 335.69,46.27 336.78,47.02 337.87,47.77 338.96,48.54 340.04,49.32 341.13,50.10 342.22,50.89 343.31,51.70 344.39,52.51 345.48,53.33 346.57,54.17 347.66,55.01 348.74,55.86 349.83,56.72 350.92,57.59 352.01,58.47 353.09,59.36 354.18,60.25 355.27,61.16 356.36,62.08 357.45,63.00 358.53,63.94 359.62,64.89 360.71,65.84 361.80,66.80 362.88,67.78 363.97,68.76 365.06,69.75 366.15,70.76 367.23,71.77 368.32,72.79 369.41,73.82 370.50,74.86 371.58,75.91 372.67,76.97 373.76,78.03 374.85,79.11 375.93,80.20 377.02,81.29 378.11,82.40 379.20,83.51 380.29,84.64 381.37,85.77 382.46,86.92 383.55,88.07 384.64,89.23 385.72,90.40 386.81,91.58 387.90,92.77 388.99,93.97 390.07,95.18 391.16,96.40 392.25,97.63 393.34,98.87 394.42,100.12 395.51,101.37 396.60,102.64 397.69,103.91 398.77,105.20 399.86,106.49 400.95,107.80 402.04,109.11 403.13,110.43 404.21,111.77 405.30,113.11 406.39,114.46 407.48,115.82 408.56,117.19 409.65,118.57 410.74,119.96 411.83,121.36 412.91,122.76 414.00,124.18 415.09,125.61 416.18,127.04 417.26,128.49 418.35,129.94 419.44,131.41 420.53,132.88 421.61,134.36 422.70,135.86 423.79,137.36 424.88,138.87 425.97,140.39 427.05,141.92 428.14,143.46 429.23,145.01 430.32,146.57 431.40,148.14 432.49,149.71 433.58,151.30 434.67,152.90 435.75,154.50 436.84,156.12 437.93,157.74 439.02,159.38 440.10,161.02 441.19,162.67 442.28,164.34 443.37,166.01 444.45,167.69 445.54,169.38 446.63,171.08 447.72,172.79 448.81,174.51 449.89,176.24 450.98,177.98 452.07,179.72 453.16,181.48 454.24,183.25 455.33,185.02 456.42,186.81 457.51,188.60 458.59,190.41 459.68,192.22 460.77,194.04 461.86,195.87 462.94,197.72 464.03,199.57 465.12,201.43 466.21,203.30 467.29,205.18 468.38,207.07 469.47,208.96 470.56,210.87 471.65,212.79 472.73,214.72 473.82,216.65 474.91,218.60 476.00,220.55 477.08,222.52 478.17,224.49 479.26,226.47 480.35,228.47 481.43,230.47 482.52,232.48 483.61,234.50 484.70,236.53 485.78,238.57 486.87,240.62 487.96,242.68 489.05,244.75 490.13,246.83 491.22,248.91 ' style='stroke-width: 1.71; stroke: #0072B2; stroke-linecap: butt;' />
+<line x1='35.56' y1='126.50' x2='512.92' y2='126.50' style='stroke-width: 1.07; stroke: #D55E00; stroke-dasharray: 5.69,5.69; stroke-linecap: butt;' />
+<circle cx='84.50' cy='126.50' r='3.13' style='stroke-width: 0.71; stroke: #D55E00;' />
+<circle cx='415.77' cy='126.50' r='3.13' style='stroke-width: 0.71; stroke: none; fill: #D55E00;' />
+<text x='65.94' y='121.62' style='font-size: 9.67px;fill: #D55E00; font-family: "Arial";' textLength='29.03px' lengthAdjust='spacingAndGlyphs'>price p</text>
+</g>
+<g clip-path='url(#g1_cpMC4wMHw1MTguNDB8MC4wMHwzMzEuMjA=)'>
+<text x='30.63' y='252.06' text-anchor='end' style='font-size: 8.80px;fill: #4D4D4D; font-family: "Arial";' textLength='12.22px' lengthAdjust='spacingAndGlyphs'>0.0</text>
+<text x='30.63' y='196.42' text-anchor='end' style='font-size: 8.80px;fill: #4D4D4D; font-family: "Arial";' textLength='12.22px' lengthAdjust='spacingAndGlyphs'>0.1</text>
+<text x='30.63' y='140.78' text-anchor='end' style='font-size: 8.80px;fill: #4D4D4D; font-family: "Arial";' textLength='12.22px' lengthAdjust='spacingAndGlyphs'>0.2</text>
+<text x='30.63' y='85.14' text-anchor='end' style='font-size: 8.80px;fill: #4D4D4D; font-family: "Arial";' textLength='12.22px' lengthAdjust='spacingAndGlyphs'>0.3</text>
+<text x='30.63' y='29.49' text-anchor='end' style='font-size: 8.80px;fill: #4D4D4D; font-family: "Arial";' textLength='12.22px' lengthAdjust='spacingAndGlyphs'>0.4</text>
+<text x='57.26' y='271.74' text-anchor='middle' style='font-size: 8.80px;fill: #4D4D4D; font-family: "Arial";' textLength='12.22px' lengthAdjust='spacingAndGlyphs'>0.0</text>
+<text x='144.05' y='271.74' text-anchor='middle' style='font-size: 8.80px;fill: #4D4D4D; font-family: "Arial";' textLength='12.22px' lengthAdjust='spacingAndGlyphs'>0.2</text>
+<text x='230.85' y='271.74' text-anchor='middle' style='font-size: 8.80px;fill: #4D4D4D; font-family: "Arial";' textLength='12.22px' lengthAdjust='spacingAndGlyphs'>0.4</text>
+<text x='317.64' y='271.74' text-anchor='middle' style='font-size: 8.80px;fill: #4D4D4D; font-family: "Arial";' textLength='12.22px' lengthAdjust='spacingAndGlyphs'>0.6</text>
+<text x='404.43' y='271.74' text-anchor='middle' style='font-size: 8.80px;fill: #4D4D4D; font-family: "Arial";' textLength='12.22px' lengthAdjust='spacingAndGlyphs'>0.8</text>
+<text x='491.22' y='271.74' text-anchor='middle' style='font-size: 8.80px;fill: #4D4D4D; font-family: "Arial";' textLength='12.22px' lengthAdjust='spacingAndGlyphs'>1.0</text>
+<text x='274.24' y='284.20' text-anchor='middle' style='font-size: 11.00px; font-family: "Arial";' textLength='198.28px' lengthAdjust='spacingAndGlyphs'>Installed base / expected network size  n</text>
+<text transform='translate(13.36,132.99) rotate(-90)' text-anchor='middle' style='font-size: 11.00px; font-family: "Arial";' textLength='218.38px' lengthAdjust='spacingAndGlyphs'>Fulfilled-expectations willingness to pay  p(n)</text>
+<circle cx='200.69' cy='311.60' r='3.13' style='stroke-width: 0.71; stroke: none; fill: #D55E00;' />
+<circle cx='252.40' cy='311.60' r='3.13' style='stroke-width: 0.71; stroke: #D55E00;' />
+<text x='214.81' y='314.75' style='font-size: 8.80px; font-family: "Arial";' textLength='23.47px' lengthAdjust='spacingAndGlyphs'>stable</text>
+<text x='266.52' y='314.75' style='font-size: 8.80px; font-family: "Arial";' textLength='89.92px' lengthAdjust='spacingAndGlyphs'>unstable (critical mass)</text>
+</g>
+</g>
+</svg>
+<figcaption aria-hidden="true">The fulfilled-expectations demand curve
+under network effects (blue) and a given price (orange dashed line). The
+curve first rises then falls with scale; the price line intersects it at
+two points, the lower one being the unstable critical mass and the
+higher one the stable high-adoption equilibrium.</figcaption>
+</figure>
+<p>The figure above draws out this mechanism. At a specific set of
+parameters, the price line <span class="math inline">p = 0.22</span>
+intersects the demand curve at two points: <span class="math inline">n
+\approx 0.063</span> is the unstable critical mass, and <span
+class="math inline">n \approx 0.826</span> is the stable high-adoption
+equilibrium, with a further equilibrium at adoption near zero. The
+meaning is this: if actual adoption exceeds the critical mass of 0.063,
+expectations spiral upward and the market rolls toward the high
+equilibrium; if it falls below, adoption collapses toward zero. This is
+tipping. When network effects are strong enough, only extreme equilibria
+(either no one at all or a captured market) are stable, so the market
+tilts toward a single platform or standard. The condition for local
+stability is that the demand curve crosses the price line from above at
+that point, <span class="math inline">P&#39;(q^\ast) = r&#39;(q^\ast) +
+v&#39;(q^\ast) &lt; 0</span>.</p>
+<p>This logic of network effects has two implications for this chapter.
+First, it explains why platforms subsidize at a loss early on: crossing
+the critical mass is a matter of life and death, and a temporary low
+price buys the momentum to roll toward the high equilibrium, a motive
+that stacks on top of the two-sided subsidy motive of Section 2.1.
+Second, it reminds us that observed high concentration and a user’s long
+stay on some platform need not come from switching costs; they can also
+come from the equilibrium selection of network effects. Conflating the
+two makes one read lock-in where there is none. This is precisely why
+defining the object of estimation clearly matters so much.</p>
+<h3
+id="multihoming-the-competitive-bottleneck-and-platform-competition">2.3
+Multihoming, the Competitive Bottleneck, and Platform Competition</h3>
+<p>Competition among two-sided platforms cannot be assessed by asking
+only how many users each side has; one must also ask whether users
+multihome. If consumers join only one platform while merchants join
+several at once, the platform forms a competitive bottleneck on the
+consumer side: to reach the consumers that each platform holds
+exclusively, merchants must be present on multiple platforms. In this
+case the consumer side is fiercely contested and easily subsidized,
+while the merchant side may bear high fees. Food delivery is a ready
+example: most users keep a single delivery app on their phone
+(single-home), while restaurants list on nearly every platform
+(multihome), so each platform holds the sole gateway to “its own batch
+of exclusive users,” showering subsidies on users to win installs on one
+side while charging high commissions to restaurants on the other. This
+is the typical face of a competitive bottleneck. Conversely, if both
+sides multihome widely, the value of a platform’s exclusive access
+falls, and pricing and market power change accordingly.</p>
+<p>This yields three empirical predictions. First, the scarcer the
+single-homing side and the more it attracts the other side, the stronger
+the subsidy. Second, interoperability or data-portability policies that
+lower multihoming cost should weaken bottleneck rents, but the effect
+depends on which side they change. Third, observing a price of zero on
+one side does not imply that side has no market power; a zero price may
+be exactly the price structure the platform chooses to win exclusive
+users.</p>
+<p>A platform can also use a membership fee and a transaction fee at the
+same time. A two-part tariff in a two-sided market not only allocates
+surplus but also changes transaction intensity and the size of joining.
+When comparing platforms one must look at the price structure and not
+just compare total prices; the core criterion of Rochet-Tirole is
+exactly whether reallocating the two sides’ prices while holding total
+charges fixed changes transaction volume.</p>
+<h3 id="compatibility-preannouncement-and-adoption-inertia">2.4
+Compatibility, Preannouncement, and Adoption Inertia</h3>
+<p>The installed base means that even a superior technology may not
+immediately replace an old standard. When users switch, they compare not
+only how good the product is on its own (stand-alone quality) but also
+weigh the network size after migrating, whether complements will keep
+up, and whether others will move together. The Farrell-Saloner logic
+allows three kinds of inefficiency, two of them at opposite extremes:
+the market can be locked onto an inferior old standard and refuse to
+move, which is excess inertia, switching too late; conversely a stampede
+onto a new standard that prematurely abandons a still-valuable old one
+is excess momentum, switching too early; and in between there is the
+case where no one dares move first and everyone is stuck in place.
+Standards wars over videotape formats or charging connectors are often
+used to illustrate this coordination dilemma: beyond how good a standard
+is to use, changing standards requires everyone to change at once, so
+either the matter drags on unresolved or a sudden shift in expectations
+ignites a collective switch.</p>
+<p>Product preannouncement changes this coordination game. A credible
+preannouncement can make users wait for a new platform and coordinate a
+future migration; incredible vaporware can also freeze the demand of
+competitors and delay effective adoption. So preannouncement is neither
+necessarily pro-competitive nor necessarily exclusionary, and its effect
+depends on credibility, the distance to the release date, the installed
+base, and compatibility. Empirically one should observe the adoption
+hazard, delays in purchasing the old product, and developer investment,
+rather than looking only at prices after the preannouncement.</p>
+<h3 id="p2p-markets-trust-and-commons-governance">2.5 P2P Markets,
+Trust, and Commons Governance</h3>
+<p>Sharing-economy platforms lower search, price-discovery, and
+settlement costs through digital matching, reputation, payment, and
+dispute resolution, enabling dispersed individuals to supply services.
+But a P2P market must solve liquidity, trust, and scale all at once, and
+these often pull against one another. The hardest part is the cold
+start: a newly launched short-term rental platform cannot attract guests
+without hosts and cannot retain hosts without guests, the
+chicken-and-egg problem of liquidity; to make strangers willing to
+transact, it must also erect identity verification, reviews, and dispute
+handling, which is trust; and once the verifiable bar is raised, early
+supply is blocked at the door and scale cannot grow. Supply without
+demand forms no liquidity, scale without verifiable quality invites
+adverse selection, and strict vetting raises trust but may block entry,
+three goals bearing down at once, which is exactly what makes the early
+stage of a P2P platform so treacherous.</p>
+<p>Another kind of digital platform is not a market but commons-based
+peer production, for example Wikipedia and open-source communities. Its
+core is not two-sided pricing but the provision of a public good,
+contributor motivation, content bias, and governance. Symbolic
+recognition may raise retention, while prefilled content or AI seeding
+may crowd out volunteer contribution. Thus “more auto-generated content”
+can raise quantity in the short run but weaken the human capital and
+community production base in the long run; platform governance should
+jointly evaluate contribution quantity, quality, diversity, and
+contributor retention.</p>
+<h3 id="the-estimand-for-switching-costs">2.6 The Estimand for Switching
+Costs</h3>
+<p>Now write down the object of estimation precisely. Individual <span
+class="math inline">i</span> (a merchant in Cadence) chooses among
+several platforms <span class="math inline">j</span> in period <span
+class="math inline">t</span>, and the utility of choosing <span
+class="math inline">j</span> takes a random-utility form, with the
+previous period’s choice entered explicitly:</p>
+<p><span class="math display">u_{ijt} = x_{jt}&#39;\beta + \alpha_{ij} +
+\delta\, \mathbf{1}\{y_{i,t-1} = j\} + \varepsilon_{ijt}</span></p>
+<p>where <span class="math inline">x_{jt}</span> are the observable
+characteristics of platform <span class="math inline">j</span> in period
+<span class="math inline">t</span> (the fee in Cadence), <span
+class="math inline">\alpha_{ij}</span> is the individual’s persistent,
+time-invariant preference fixed effect for platform <span
+class="math inline">j</span> (unobserved to the researcher; note that it
+is not the same as the <span class="math inline">\alpha_i</span> that
+denotes price sensitivity in the unified notation, since the price
+sensitivity to fees in this chapter is folded into <span
+class="math inline">\beta</span>), <span
+class="math inline">\mathbf{1}\{y_{i,t-1} = j\}</span> indicates whether
+<span class="math inline">j</span> was chosen last period, and <span
+class="math inline">\varepsilon_{ijt}</span> is an i.i.d. logit shock.
+The coefficient <span class="math inline">\delta</span> is the estimand
+of this chapter: structural state dependence, that is, the causal effect
+of the previous period’s choice on this period’s utility. <span
+class="math inline">\delta &gt; 0</span> means that repeating last
+period’s choice brings extra utility, equivalently that a switching cost
+is paid whenever <span class="math inline">y_{it} \neq y_{i,t-1}</span>.
+It captures the real forces (learning, integration, accumulated data,
+staff habit) that make “staying put” easier, and is the econometric
+measure of platform lock-in.</p>
+<p>Converting <span class="math inline">\delta</span> into money is
+direct: <span class="math inline">\delta / |\beta|</span> is how many
+dollars of fee the switching cost is equivalent to, because <span
+class="math inline">\beta</span> is the marginal response of utility to
+a dollar of fee. In Cadence the truth is <span
+class="math inline">\delta = 0.90</span>, <span
+class="math inline">\beta = -0.55</span>, so the switching cost is about
+$1.64 per month.</p>
+<p>We must stress the division of labor between <span
+class="math inline">\delta</span> and <span
+class="math inline">\alpha_{ij}</span>, which is the pivot of the whole
+chapter’s identification. <span class="math inline">\alpha_{ij}</span>
+is persistent preference, making certain merchants always lean toward A
+regardless of history; <span class="math inline">\delta</span> is path
+dependence, making any merchant more willing to stay wherever it was
+last period, regardless of its intrinsic preference. Both produce choice
+persistence in the data, but they are two entirely different economic
+mechanisms with different meaning and different policy implications. In
+a market dominated by <span class="math inline">\alpha_{ij}</span>,
+users stay because they have already found the platform that suits them,
+and there is no welfare loss; in a market dominated by <span
+class="math inline">\delta</span>, users stay because migrating is
+costly, and the incumbent enjoys market power as a result, which can
+bring welfare loss. Estimating <span class="math inline">\delta</span>
+correctly means separating these two mechanisms.</p>
+<p>This section can be summarized as follows: two-sided pricing and
+network effects explain why platforms have strong incentives to attract
+and lock in users, and remind us that persistence can come from several
+mechanisms; the estimand of this chapter is the state-dependence
+parameter <span class="math inline">\delta</span> in the utility model,
+the switching cost, which is meaningful only when separated from
+persistent preference heterogeneity <span
+class="math inline">\alpha_{ij}</span>.</p>
+<h2 id="identification-separating-lock-in-from-preference">3
+Identification: Separating Lock-In from Preference</h2>
+<p>Identification logically precedes estimation. The identification
+problem here is: under what assumptions can the observed sequence of
+choices separate structural state dependence <span
+class="math inline">\delta</span> from persistent heterogeneity <span
+class="math inline">\alpha_{ij}</span>? The answer to this question
+depends only on the data structure and the assumptions, and is
+independent of whether MLE or Bayes is used afterward. This is the most
+detailed section of the chapter, broken into numbered subsections that
+dissect this classic difficulty layer by layer.</p>
+<h3 id="two-sources-of-persistence">3.1 Two Sources of Persistence</h3>
+<p>Let us first make the core of the problem plain. Choice persistence,
+that is, “this period’s choice is highly correlated with last period’s,”
+is an observable fact in the data. In Cadence, 79.2% of observations
+stay unchanged, and this number itself is not in dispute. What is in
+dispute is where it comes from. Two entirely different mechanisms can
+produce the same persistence.</p>
+<p>The first is genuine state dependence, <span
+class="math inline">\delta &gt; 0</span>. Last period’s choice causally
+changed this period’s utility, and the user stays put because migrating
+is costly. This is the lock-in we want to measure.</p>
+<p>The second is spurious state dependence, arising from persistent
+unobserved heterogeneity <span class="math inline">\alpha_{ij}</span>.
+Imagine a set of merchants that innately prefer platform A (say A’s
+interface fits their business better) and another set that innately
+prefer B. A merchant that prefers A chose A this period, chose A last
+period, and will choose A next period, not because of any lock-in but
+simply because it has always preferred A. Its choice sequence is highly
+persistent, but there is not a shred of switching cost in that
+persistence. This is spurious state dependence, and Heckman’s (1981)
+characterization of it is the starting point for this whole
+literature.</p>
+<p>The difficulty is that these two mechanisms look almost identical
+within a single choice sequence. For a merchant that is always at A, you
+cannot conclude it is locked in merely because it is always at A, since
+a merchant that simply prefers A looks exactly the same. To separate
+them requires more information, and also assumptions.</p>
+<div class="intuition">
+<p>Here is an analogy. You notice that a person goes to the same
+restaurant every year. Does this count as being “locked into” that
+restaurant? Two possibilities: one is that they find changing
+restaurants a hassle (a real switching cost), the other is that they
+simply love this restaurant’s flavor the most (a persistent preference).
+Just seeing “they come every year” cannot tell the two apart. The way to
+distinguish is to see whether they move under some other force: if the
+restaurant raises prices sharply one year and others run promotions, and
+they still come without fail, that looks more like taste lock-in
+(preference); if they briefly leave when prices change and then drift
+back, that “drifting back” is the evidence for a switching cost.
+Identifying switching costs relies precisely on observing users switch
+away and switch back under exogenous pushes, not on observing where they
+statically sit.</p>
+</div>
+<h3 id="why-the-naive-estimate-is-systematically-too-high">3.2 Why the
+Naive Estimate Is Systematically Too High</h3>
+<p>Now explain where the 51% overstatement of Section 1 comes from. The
+naive dynamic logit puts last period’s choice in as an ordinary
+regressor while leaving out persistent heterogeneity <span
+class="math inline">\alpha_{ij}</span>. The problem is that the omitted
+<span class="math inline">\alpha_{ij}</span> is positively correlated
+with the included lagged choice.</p>
+<p>The reasoning is this: a merchant with high <span
+class="math inline">\alpha_{ij}</span> (strongly preferring <span
+class="math inline">j</span>) is both more likely to have chosen <span
+class="math inline">j</span> last period and more likely to choose <span
+class="math inline">j</span> this period. So the regressor “last
+period’s choice” is positively correlated with the favorable <span
+class="math inline">\alpha_{ij}</span> left in the error term. MLE
+cannot tell the two apart, so it attributes this positive correlation
+entirely to <span class="math inline">\delta</span>. Formally, when
+<span class="math inline">\alpha_{ij}</span> is ignored, <span
+class="math inline">\mathrm{plim}\,\hat\delta &gt; \delta</span>, and
+the estimate is systematically too high. This is Heckman’s (1981)
+classic conclusion: insufficient control of heterogeneity exaggerates
+state dependence.</p>
+<div class="warning">
+<p>The direction of this bias is definite: upward. As long as persistent
+heterogeneity is not adequately controlled, state dependence is
+overstated and almost never understated. The reason is that persistent
+preference and last period’s choice are always positively correlated (a
+person who prefers <span class="math inline">j</span> was more likely to
+choose <span class="math inline">j</span> last period), and this
+positive correlation only pushes <span class="math inline">\delta</span>
+upward. So when you see a dynamic choice model that does not control for
+heterogeneity report a large switching cost, the correct reaction is not
+to believe it, but to ask how much preference it has counted as
+lock-in.</p>
+</div>
+<p>The Cadence simulation displays this mechanism cleanly: the truth is
+<span class="math inline">\delta = 0.90</span>, the naive logit
+estimates 1.357, 51% too high. The standard deviation of <span
+class="math inline">\alpha_{ij}</span> in the data-generating process is
+1.40, a sizable amount, and it is precisely this ignored heterogeneity
+that is misread as lock-in.</p>
+<h3 id="the-initial-conditions-problem">3.3 The Initial Conditions
+Problem</h3>
+<p>Even if we decide to model persistent heterogeneity <span
+class="math inline">\alpha_{ij}</span> explicitly, there is a more
+hidden hurdle, called the initial conditions problem, also from Heckman
+(1981).</p>
+<p>The problem is this: in a dynamic model, the first-period choice we
+observe, <span class="math inline">y_{i0}</span>, is not exogenous. It
+is itself generated by the same <span
+class="math inline">\alpha_{ij}</span> process before the sample begins.
+A merchant that prefers <span class="math inline">j</span> already
+tended to choose <span class="math inline">j</span> before we began
+observing, so its initial choice <span class="math inline">y_{i0}</span>
+is correlated with its <span class="math inline">\alpha_{ij}</span>. If
+we treat <span class="math inline">y_{i0}</span> as exogenously given
+during estimation, or simply condition it out, we are pretending that
+the initial state is independent of the individual effect, and this
+assumption is wrong. The consequence is that <span
+class="math inline">\hat\delta</span> remains inconsistent.</p>
+<p>This is clearer in the language of likelihood. The joint likelihood
+of a sequence can be written as</p>
+<p><span class="math display">\ell(y_{i1}, \dots, y_{iT} \mid y_{i0},
+\alpha_i) = \prod_{t=1}^{T} \Pr\big(y_{it} \mid y_{i,t-1}, x_{it},
+\alpha_i\big)</span></p>
+<p>Each term conditions on <span class="math inline">\alpha_i</span>.
+The difficulty is that to write the likelihood of the whole sequence
+with respect to the observed data, one must integrate over <span
+class="math inline">\alpha_i</span>, and the distribution used in the
+integration should be the conditional distribution of <span
+class="math inline">\alpha_i</span> given the initial choice <span
+class="math inline">y_{i0}</span>, not its unconditional distribution,
+because <span class="math inline">y_{i0}</span> carries information
+about <span class="math inline">\alpha_i</span>. Use the wrong
+distribution and the estimate is biased. In the Cadence data-generating
+process, the first month’s choice is determined precisely by the
+merchant’s <span class="math inline">\theta_i</span> (that is, <span
+class="math inline">\alpha_{ij}</span>) plus noise, and this correlation
+between the initial condition and the individual effect is deliberately
+built in, so that we can see the cost of ignoring it.</p>
+<h3 id="the-conditional-independence-assumption">3.4 The Conditional
+Independence Assumption</h3>
+<p>To identify <span class="math inline">\delta</span> in a dynamic
+discrete-choice model, one usually cannot get around a key assumption,
+called conditional independence. It requires that, given last period’s
+choice and observable characteristics, this period’s utility shocks
+<span class="math inline">\varepsilon_{ijt}</span> are no longer
+correlated over time, so the remaining persistence in the sequence can
+only come from the explicitly modeled <span
+class="math inline">\alpha_{ij}</span> and state dependence <span
+class="math inline">\delta</span>.</p>
+<p>This assumption carries a lot of weight, and it is worth stating
+head-on what it constrains.</p>
+<div class="assumption">
+<p><strong>(conditional independence)</strong> Given <span
+class="math inline">(\alpha_i, y_{i,t-1}, x_{it})</span>, this period’s
+idiosyncratic shock <span class="math inline">\varepsilon_{ijt}</span>
+is independent of the past. Equivalently, once persistent heterogeneity
+and last period’s choice are controlled, the choice sequence has no
+other source of persistence.</p>
+</div>
+<p>Why it matters, and why it is uncomfortable: it routes all
+persistence in the sequence into two exits, either through <span
+class="math inline">\alpha_{ij}</span> (persistent preference) or
+through <span class="math inline">\delta</span> (state dependence). If
+reality has a third exit, say the idiosyncratic shock is itself serially
+correlated (a merchant does good business for several months in a row,
+or one of a platform’s services is unstable for several months in a
+row), then this extra persistence has nowhere to go and gets squeezed
+into <span class="math inline">\delta</span>, causing fresh
+overstatement. This is exactly why many people are reserved about the
+assumption: it is not a testable fact but a modeling decision that
+forces complex reality into two categories. Acknowledging this is more
+honest than pretending it must hold.</p>
+<h3 id="isomorphism-with-the-reflection-problem">3.5 Isomorphism with
+the Reflection Problem</h3>
+<p>Pulling the lens back, the identification difficulty for switching
+costs is actually a special case of a broader class of problems, which
+in social economics is called the reflection problem, characterized
+precisely by Manski (1993). Seeing this isomorphism is especially useful
+for studying network and peer effects on platforms, because there one
+hits exactly the same identification wall.</p>
+<p>Manski distinguishes three mechanisms that make individuals within a
+group behave similarly. The endogenous effect: an individual’s outcome
+depends on the outcomes of others in the group (a genuine behavioral
+spillover, a social multiplier). The contextual effect: an individual’s
+outcome depends on the exogenous characteristics of others in the group.
+The correlated effect: people in the group behave alike merely because
+they share an environment or shock, or self-selected into the same
+group, and there is no spillover at all. The classic linear-in-means
+model writes in the first two:</p>
+<p><span class="math display">y = \alpha + \beta\, \mathbb{E}[y \mid g]
++ \mathbb{E}[x \mid g]&#39;\gamma + x&#39;\delta + u</span></p>
+<p>Here the <span class="math inline">\alpha, \beta, \gamma,
+\delta</span> in Manski’s model are local notation for this passage,
+unrelated to the <span class="math inline">\delta</span> denoting state
+dependence and the <span class="math inline">\beta</span> denoting price
+sensitivity earlier in the chapter.</p>
+<p>Here <span class="math inline">\beta</span> is the endogenous
+spillover and <span class="math inline">\gamma</span> is the contextual
+effect. Manski’s conclusion is that this model is not identified. Taking
+the group expectation solves for</p>
+<p><span class="math display">\mathbb{E}[y \mid g] = \frac{\alpha}{1 -
+\beta} + \bar{x}_g&#39;\,\frac{\gamma + \delta}{1 - \beta}</span></p>
+<p>The group mean <span class="math inline">\mathbb{E}[y \mid g]</span>
+becomes an exact linear function of the group characteristic <span
+class="math inline">\bar{x}_g</span>. Substituting it back into the
+original equation, the structural parameters <span
+class="math inline">(\beta, \gamma, \delta)</span> cannot be recovered
+from the observable reduced-form coefficients. Intuitively, the “image
+in the mirror” (the peer mean) and the regressors that generate it move
+in lockstep, and you cannot tell whether group members behave alike
+because behavior is contagious among peers (<span
+class="math inline">\beta</span>), because peer characteristics
+themselves matter (<span class="math inline">\gamma</span>), or because
+everyone shares a common shock.</p>
+<p>This is the same thing as the switching-cost difficulty, seen from
+two faces. There we must separate “the causal effect of last period’s
+choice” (<span class="math inline">\delta</span>, state dependence) from
+“the correlation created by persistent preference” (<span
+class="math inline">\alpha_{ij}</span>, a kind of correlated effect);
+here we must separate the endogenous spillover from the correlated
+effect. In both cases the obstacle is that an endogenous,
+self-reinforcing quantity (peer behavior, or one’s own history) and a
+static source of confounding (peer characteristics plus common shocks,
+or persistent preference) move in lockstep in the observed data. The way
+out is also shared: break this lockstep. In the network setting,
+Bramoullé, Djebbari and Fortin (2009) point out that as long as
+reference groups do not completely overlap (my neighbors differ from
+yours, the network has intransitivity), <span
+class="math inline">Gy</span> and <span class="math inline">Gx</span>
+are no longer collinear, so <span class="math inline">\beta</span> can
+be identified, and the characteristics of “friends of friends” can serve
+as instruments. In the switching-cost setting, the way out is to find
+exogenous price variation that pushes users away from their preferred
+platform and see whether they drift back, which is the formal version of
+the analogy in Section 3.1, developed in the next subsection.</p>
+<h3 id="what-can-pin-down-delta">3.6 What Can Pin Down <span
+class="math inline">\delta</span></h3>
+<p>Since statically observing where users sit cannot separate lock-in
+from preference, identifying <span class="math inline">\delta</span>
+must rely on variation, specifically exogenous price variation that can
+push users to switch. Imagine a merchant who, in the months when A’s fee
+is high, moves to B, and then, when A cuts its fee, returns to A. This
+behavior of “being pushed to switch by price and switching back” cannot
+be explained by persistent preference: a merchant that simply prefers A
+would not leave and return because of a single price rise, since its
+preference is constant. It is exactly this round trip driven by
+exogenous prices that exposes the existence of state dependence and
+calibrates its size, because the price magnitude needed to make a user
+switch corresponds directly to how many dollars the switching cost is
+worth. This is why the fee difference in the Cadence data-generating
+process varies month to month; without this variation, <span
+class="math inline">\delta</span> cannot be identified.</p>
+<p>Dubé, Hitsch and Rossi (2010) nail this logic with an elegant test.
+If the observed persistence were purely due to persistent heterogeneity
+(<span class="math inline">\delta = 0</span>), then randomly shuffling
+each individual’s purchase sequence and re-estimating would still yield
+a large, spurious state dependence, because heterogeneity-generated
+persistence does not depend on time order. Conversely, if the
+persistence is genuine state dependence, shuffling the time order
+destroys it, and the estimate after shuffling should fall sharply. They
+ran this permutation test and found that state dependence weakened
+significantly after shuffling, which separates “there really is lock-in”
+from “it is just heterogeneity,” a robust piece of evidence that does
+not rely on parametric assumptions.</p>
+<p>The key points of this section can be summarized as follows: the core
+obstacle to identifying switching costs is that genuine state dependence
+and persistent heterogeneity produce the same persistence in the choice
+sequence; the naive estimate systematically overstates <span
+class="math inline">\delta</span> by ignoring heterogeneity, and the
+initial conditions problem further aggravates the inconsistency; this
+difficulty is isomorphic to Manski’s reflection problem, and the way out
+in both is to break the lockstep between the endogenous quantity and the
+confounding source using exogenous variation or network structure; what
+can pin down <span class="math inline">\delta</span> is exogenous price
+variation that pushes users to switch and switch back, not static
+staying.</p>
+<h2
+id="estimation-from-the-failed-naive-logit-to-separating-heterogeneity">4
+Estimation: From the Failed Naive Logit to Separating Heterogeneity</h2>
+<p>This section advances by “where the previous method fails gives rise
+to the next method.” Every step answers the same question: how to peel
+persistent heterogeneity out of state dependence.</p>
+<h3 id="the-naive-pooled-logit">4.1 The Naive Pooled Logit</h3>
+<p>The easiest thing to do is to stack the whole panel and run one
+logit, treating last period’s choice as an ordinary regressor and making
+no distinction between individuals:</p>
+<p><span class="math display">\Pr(y_{it} = 1) = \Lambda\big(\theta_0 +
+\beta\, \Delta\mathrm{fee}_t + \delta\, L_{i,t-1}\big)</span></p>
+<p>Its failure has already been laid out in Section 3: ignoring <span
+class="math inline">\alpha_{ij}</span>, last period’s choice absorbs
+persistent preference, and <span class="math inline">\hat\delta</span>
+is biased upward. In Cadence it delivers 1.357, 51% above the truth.
+This is not a bias that a larger sample can rescue; however large the
+sample, <span class="math inline">\mathrm{plim}\,\hat\delta</span>
+remains above the truth, because it is a specification error rather than
+sampling noise. Its only use is as a reference upper bound, telling you
+“how wrong you would be if you ignored heterogeneity entirely.”</p>
+<h3 id="random-effects-logit-a-partial-fix">4.2 Random-Effects Logit: A
+Partial Fix</h3>
+<p>The natural first patch is to add a random intercept for each
+individual to absorb persistent preference:</p>
+<p><span class="math display">\Pr(y_{it} = 1 \mid \theta_i) =
+\Lambda\big(\theta_i + \beta\, \Delta\mathrm{fee}_t + \delta\,
+L_{i,t-1}\big), \qquad \theta_i \sim \mathcal{N}(0,
+\sigma_\theta^2)</span></p>
+<p>Estimation integrates over <span class="math inline">\theta_i</span>
+according to its normal distribution (numerically via a Laplace
+approximation, nAGQ=1), which is the standard random-effects logit. It
+gathers most of the persistent heterogeneity into <span
+class="math inline">\theta_i</span>, so <span
+class="math inline">\hat\delta</span> falls substantially. But it does
+not handle the initial conditions problem of Section 3.3: the model
+assumes <span class="math inline">\theta_i</span> is independent of the
+initial choice <span class="math inline">y_{i0}</span>, while in reality
+the two are correlated (a merchant that prefers A is initially more
+likely to be at A). This ignored correlation leaves <span
+class="math inline">\hat\delta</span> still slightly too high. In
+Cadence it estimates 0.978, about 9% above the truth of 0.90, already a
+huge improvement over the naive 1.357 but not yet on target, and <span
+class="math inline">\hat\sigma_\theta = 1.257</span> also understates
+the true 1.40, because part of the heterogeneity is still misassigned
+elsewhere.</p>
+<h3 id="the-wooldridge-cre-logit-handling-initial-conditions">4.3 The
+Wooldridge CRE Logit: Handling Initial Conditions</h3>
+<p>Wooldridge (2005) gives a surprisingly simple solution to the initial
+conditions problem, and it is the workhorse of this chapter. Since <span
+class="math inline">\theta_i</span> is correlated with the initial
+choice, do not assume they are independent; instead model the
+distribution of <span class="math inline">\theta_i</span> explicitly as
+a conditional distribution depending on the initial choice and the
+history of covariates:</p>
+<p><span class="math display">\theta_i \mid (y_{i0}, \bar{x}_i) \sim
+\mathcal{N}\big(\lambda_0 + \lambda_1 y_{i0} + \bar{x}_i&#39;\lambda_2,\
+\sigma_u^2\big)</span></p>
+<p>where <span class="math inline">y_{i0}</span> is the initial choice
+and <span class="math inline">\bar{x}_i = T^{-1}\sum_t x_{it}</span> is
+the individual’s time-average of covariates, which is the classic device
+of Chamberlain (1980) and Mundlak (1978). The implementation is
+extremely light: simply add the initial choice <span
+class="math inline">y_{i0}</span> (and the covariate means, if they vary
+across individuals) as extra regressors in the random-effects logit.</p>
+<p><span class="math display">\Pr(y_{it} = 1 \mid \theta_i) =
+\Lambda\big(\theta_i + \beta\, \Delta\mathrm{fee}_t + \delta\, L_{i,t-1}
++ \lambda_1\, y_{i0}\big)</span></p>
+<p>Entering <span class="math inline">y_{i0}</span> into the conditional
+distribution amounts to absorbing the information the initial choice
+carries about <span class="math inline">\theta_i</span>, thereby
+sidestepping the initial conditions problem. Its cost is a parametric
+assumption: <span class="math inline">\theta_i</span> is normal given
+<span class="math inline">(y_{i0}, \bar{x}_i)</span>. Under this
+assumption <span class="math inline">\hat\delta</span> is consistent. In
+Cadence it estimates 0.893 (SE 0.014), almost exactly the truth of 0.90,
+and in money $1.66 against the truth of $1.64, a negligible error. The
+standard deviation of the random intercept is now estimated at <span
+class="math inline">\hat\sigma_\theta = 1.180</span>, which is the
+conditional heterogeneity (conditional variance) given the initial
+choice, and being smaller than the RE unconditional version is natural;
+it should not be compared directly with the truth of 1.40, and what
+really matters is that <span class="math inline">\delta</span> is now
+essentially unbiased. Taking the three steps in order, from the naive
+1.357 to the RE 0.978 to the CRE 0.893, one can clearly see that each
+added layer of treatment for heterogeneity and initial conditions peels
+off one more layer of the spurious part of state dependence.</p>
+<h3 id="honoré-kyriazidou-no-distributional-assumption">4.4
+Honoré-Kyriazidou: No Distributional Assumption</h3>
+<p>Wooldridge’s solution requires a parametric assumption on the
+distribution of <span class="math inline">\theta_i</span>. If you are
+unwilling to assume even that, Honoré and Kyriazidou (2000) give a
+semiparametric dynamic-logit estimator that allows the fixed effect
+<span class="math inline">\alpha_i</span> to be entirely arbitrary. Its
+idea inherits Chamberlain’s conditional logit: find events under which
+<span class="math inline">\alpha_i</span> is exactly canceled. For the
+binary dynamic logit, when the panel length <span class="math inline">T
+\geq 4</span>, one can construct a conditional likelihood on the
+subsample where the individual’s first and last choices are fixed and
+the middle two periods switch, and its contribution takes the form</p>
+<p><span class="math display">\Pr\big(y_{i2} = 1 \mid y_{i2} + y_{i3} =
+1,\ y_{i1}, y_{i4}, x_i, \alpha_i\big) = \frac{1}{1 + \exp\big((x_{i3} -
+x_{i2})&#39;\beta + \delta(y_{i4} - y_{i1})\big)}</span></p>
+<p>In this expression <span class="math inline">\alpha_i</span> has
+vanished. The cost is threefold: continuous covariates must be
+approximated to <span class="math inline">x_{i3} \approx x_{i4}</span>
+by kernel weighting <span class="math inline">K((x_{i3} -
+x_{i4})/h_n)</span>, the convergence rate is slower than parametric
+methods (<span class="math inline">\sqrt{n h_n}</span> rather than <span
+class="math inline">\sqrt{n}</span>), and it fails when the regressors
+contain time dummies or are highly persistent. It forms a trade-off with
+Wooldridge: Wooldridge places a parametric assumption on the
+distribution of <span class="math inline">\alpha_i</span> in exchange
+for fast convergence and simple implementation; Honoré-Kyriazidou makes
+no distributional assumption in exchange for robustness, at the cost of
+precision and range of applicability. Which to choose depends on which
+end you worry more about going wrong.</p>
+<h3 id="dhrs-mixture-of-normals">4.5 DHR’s Mixture-of-Normals</h3>
+<p>Dubé, Hitsch and Rossi (2010) take the route of modeling
+heterogeneity extremely flexibly. Not content with a single normal
+random intercept, they let the entire parameter vector <span
+class="math inline">\theta_i = [\alpha_i, \beta_i, \delta_i]</span>
+(preference, price sensitivity, and state dependence all varying across
+individuals) follow a mixture of normals:</p>
+<p><span class="math display">P(\theta_i \mid \pi, \mu, \Sigma) =
+\sum_{k} \pi_k\, \phi(\theta_i \mid \mu_k, \Sigma_k)</span></p>
+<p>First draw a latent class <span class="math inline">k</span> with
+probability <span class="math inline">\pi</span>, then draw <span
+class="math inline">\theta_i</span> from that class’s multivariate
+normal, and four or five normal components can approximate a fairly
+complex heterogeneity distribution. Estimation uses hierarchical Bayes
+plus MCMC. The philosophy of this approach is: rather than worry that an
+underspecified heterogeneity overstates state dependence, build
+heterogeneity rich enough and let the data decide how much persistence
+remains attributable to genuine state dependence. After doing this on
+consumer-goods panels, they find that even after throwing in such rich
+heterogeneity, a substantial part of the inertia is still genuine state
+dependence, and combined with the permutation test of Section 3.6 they
+conclude that lock-in is not a pure artifact of heterogeneity.</p>
+<h3 id="the-supply-side-harvesting-or-investment">4.6 The Supply Side:
+Harvesting or Investment</h3>
+<p>Having estimated the switching cost, it is natural to ask how it
+affects the platform’s pricing, a step that takes us back to the
+two-sided pricing of Section 2.1. Switching costs make the platform’s
+pricing a dynamic problem, and models like Cabral (2011) decompose this
+dynamic optimal price into two opposing forces. The first-order
+condition of the platform’s value function can be arranged into</p>
+<p><span class="math display">p_i - c_i =
+\underbrace{\frac{q_i}{-\,\partial q_i / \partial
+p_i}}_{\text{harvesting}} - \underbrace{\rho\, \frac{\partial
+\tilde{V}_i}{\partial q_i}}_{\text{investment}}</span></p>
+<p>The first term is harvesting: switching costs make locked-in users
+insensitive to price, so <span class="math inline">|\partial q_i /
+\partial p_i|</span> falls with the switching cost, and the platform can
+therefore raise prices on existing users to harvest them. The second
+term is investment, where <span class="math inline">\rho</span> is the
+discount factor (local notation for this section, unrelated to the <span
+class="math inline">\beta</span> denoting fee price sensitivity
+earlier): winning one more user who will be locked in has value that is
+realized continually in the future, so the platform has an incentive to
+cut prices now to grab share, and this term vanishes when the switching
+cost is zero and grows as the switching cost rises. The two forces point
+in opposite directions, so the net effect of switching costs on prices
+and competition is ambiguous. The common intuition is that harvesting
+prevails and switching costs raise prices, but this is not a theorem; a
+very small switching cost may instead make the market more competitive,
+because the investment motive dominates during the fight for share. This
+ambiguity is itself an important conclusion: high switching costs do not
+necessarily mean high prices, and it depends on whether the market is in
+the phase of fighting for share or harvesting the installed base. It
+also explains why estimating <span class="math inline">\delta</span>
+correctly is so crucial, because whether assessing a platform’s market
+power or simulating the price effect of a platform merger, one must
+first know how deeply users are locked in.</p>
+<p>The comparison of the three main estimators is summarized in the
+table below.</p>
+<div class="table-scroll">
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr>
+<th>Dimension</th>
+<th>Naive pooled logit</th>
+<th>RE / Wooldridge CRE</th>
+<th>Honoré-Kyriazidou</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Heterogeneity <span class="math inline">\alpha_i</span></td>
+<td>Ignored entirely</td>
+<td>Parametric distribution (normal)</td>
+<td>Arbitrary fixed effect, no distribution</td>
+</tr>
+<tr>
+<td>Initial conditions</td>
+<td>Not handled</td>
+<td>Wooldridge corrects with <span
+class="math inline">y_{i0}</span></td>
+<td>Canceled by conditioning</td>
+</tr>
+<tr>
+<td><span class="math inline">\delta</span> bias</td>
+<td>Systematically upward (Cadence +51%)</td>
+<td>Essentially unbiased after correction</td>
+<td>Consistent, but low precision</td>
+</tr>
+<tr>
+<td>Convergence rate</td>
+<td><span class="math inline">\sqrt{n}</span></td>
+<td><span class="math inline">\sqrt{n}</span></td>
+<td><span class="math inline">\sqrt{n h_n}</span>, slower</td>
+</tr>
+<tr>
+<td>Main cost</td>
+<td>Overstates lock-in</td>
+<td>Distributional assumption on <span
+class="math inline">\alpha_i</span></td>
+<td>Needs <span class="math inline">T \geq 4</span> and covariate
+overlap</td>
+</tr>
+<tr>
+<td>Implementation</td>
+<td>glm</td>
+<td>glmer plus initial choice</td>
+<td>Semiparametric conditional likelihood</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The roadmap of this section is now complete: the naive logit
+systematically overstates lock-in by ignoring heterogeneity; random
+effects reclaim most of the heterogeneity but miss the initial
+conditions; Wooldridge patches this with the initial choice as an
+auxiliary regressor, a simple and reliable workhorse; when unwilling to
+assume a distribution use Honoré-Kyriazidou, at the cost of precision;
+when seeking flexibility use DHR’s mixture-of-normals; and the estimated
+<span class="math inline">\delta</span> returns to platform pricing via
+the harvesting-investment decomposition.</p>
+<h2 id="anchoring-papers">5 Anchoring Papers</h2>
+<p>Methods only stand up when they land in real research. Two anchoring
+papers, one that establishes the methodology of switching-cost
+estimation and one that pushes it into a policy setting with a
+surprising welfare conclusion, are each laid out along five elements
+(paper, method, data, results, limitations), with emphasis on how the
+identification assumptions are defended.</p>
+<h3 id="dubé-hitsch-and-rossi-2010-rand-journal-of-economics">5.1 Dubé,
+Hitsch and Rossi (2010, RAND Journal of Economics)</h3>
+<div class="case">
+<p>Paper and place in the history of the method: “State Dependence and
+Alternative Explanations for Consumer Inertia,” RAND Journal of
+Economics 41(3), 417-445. This paper is the methodological benchmark for
+empirical switching costs, and it answers the main thread of this
+chapter head-on: of the observed brand inertia, how much is genuine
+state dependence and how much is merely an artifact of persistent
+heterogeneity?</p>
+<p>Method: a random-coefficients logit with a lagged-choice dummy,
+modeling the heterogeneity of <span class="math inline">\theta_i =
+[\alpha_i, \beta_i, \delta_i]</span> extremely flexibly with a mixture
+of normals, estimated by hierarchical Bayes and MCMC (Section 4.5 of
+this chapter). Identification relies on consumers switching away and
+switching back under price promotions (Section 3.6 of this chapter), and
+uses a permutation test to separate state dependence from heterogeneity:
+after shuffling the time order of individual purchase sequences and
+re-estimating, if inertia were pure heterogeneity state dependence
+should not fall, and it in fact falls significantly.</p>
+<p>Data: household purchase panels of consumer goods; the paper analyzes
+categories such as refrigerated orange juice and margarine, which are
+purchased frequently and heavily promoted, providing exactly the price
+variation identification requires.</p>
+<p>Results: after throwing in very rich heterogeneity, a substantial
+part of the inertia is still genuine structural state dependence, with
+<span class="math inline">\delta &gt; 0</span> economically significant
+and surviving the permutation test. In other words, inertia is not pure
+spurious heterogeneity, switching costs genuinely exist, and their
+magnitude relative to price is large enough to affect firms’ dynamic
+pricing.</p>
+<p>Limitations: the conclusion depends on the conditional independence
+assumption (Section 3.4 of this chapter), that idiosyncratic shocks are
+no longer serially correlated after controlling for rich heterogeneity,
+and this assumption is untestable. The price variation needed for
+identification must be sufficiently exogenous; if promotions themselves
+respond to demand, price is no longer a clean push. The heterogeneity is
+approximated by a finite number of normal components, and the choice of
+the number of components is a modeling decision.</p>
+</div>
+<p>This paper’s defense strategy is worth emulating: not by asserting
+that heterogeneity has been controlled clean, but by using the
+permutation test, a design that does not rely on parametric assumptions,
+to positively demonstrate that state dependence would not survive
+shuffling of the time order. Turning an identification claim into a
+robustness test that can actually be carried out is far more forceful
+than piling up assumptions in the text.</p>
+<h3 id="handel-2013-american-economic-review">5.2 Handel (2013, American
+Economic Review)</h3>
+<div class="case">
+<p>Paper: “Adverse Selection and Inertia in Health Insurance Markets:
+When Nudging Hurts,” American Economic Review 103(7), 2643-2682. The
+question is how large the inertia in health insurance is, and whether
+reducing that inertia is good or bad for welfare, with a surprising
+answer.</p>
+<p>Method: write switching costs into a CARA expected-utility model of
+insurance choice, in which employees choose among several plans, and
+utility contains a switching-cost parameter <span
+class="math inline">\eta</span> that is paid only when “not re-enrolling
+in last period’s plan,” estimated by simulated MLE of a
+random-coefficients probit. The key to identification comes from an
+institutional detail: in one year the employer forced everyone to
+re-choose a plan, so there was no default and the switching cost was
+zero, and this period’s choices cleanly reveal preferences free of
+inertia; in later years the default is to stay in the current plan and
+the switching cost reappears. Using the inertia-free year as a baseline
+separates inertia from preference.</p>
+<p>Data: the insurance-choice and claims panel of employees at a large
+self-insured employer, where the plans differ in financial terms but
+share the same medical network, which makes the argument that “choice
+differences come from inertia rather than network differences”
+cleaner.</p>
+<p>Results: the estimated switching cost is large, about $1729 for
+single employees and about $2480 per year for those with dependents.
+More important is the counterfactual: cutting the switching cost by
+three-quarters, with premiums fixed, appears to improve matching and add
+about $114 of consumer surplus; but once premiums are allowed to adjust
+endogenously with the enrollment mix, welfare instead falls by about
+7.7% (roughly $115 per person per year), because the adverse selection
+that inertia had been holding down is released, healthy people rush to
+cheap plans and push generous plans into a death spiral, so switchers
+gain while stayers lose.</p>
+<p>Limitations: the CARA and claims-distribution specifications affect
+the estimated risk premium. Identification leans on the exogeneity of
+the forced re-enrollment year; if employees already anticipated the
+future default rule in that year and chose strategically, the baseline
+is no longer clean. The policy implication of the conclusion is highly
+sensitive to how premiums respond endogenously, which is both where the
+paper’s insight lies and where it is fragile.</p>
+</div>
+<p>Taking the two papers together, the meaning of anchoring is clear:
+Dubé-Hitsch-Rossi show how to use flexible heterogeneity plus a
+permutation test to separate genuine lock-in from artifacts and to prove
+it exists; Handel shows how a clean exogenous event (forced
+re-enrollment) calibrates the switching cost and reveals a
+counterintuitive welfare lesson, namely that reducing switching costs
+need not improve welfare because it loosens the constraint on adverse
+selection. The latter especially reminds platform and policy researchers
+that measuring lock-in is itself a means, and what really must be
+evaluated is its role in the whole market equilibrium.</p>
+<h2 id="a-full-walkthrough-on-the-cadence-data">6 A Full Walkthrough on
+the Cadence Data</h2>
+<p>Now run the tools of Section 4 in full on the Cadence panel. The code
+below uses R 4.5.3 and fixes set.seed(20) for reproducibility, and every
+number cited in the text comes from the actual run output of this
+code.</p>
+<h3 id="the-dgp">6.1 The DGP</h3>
+<p>The design parameters are as follows: 5000 merchants, 10 months, the
+first month’s choice as the initial condition, and months 2 through 10
+(9 periods) used for dynamic estimation. The latent utility of a
+merchant choosing A relative to B is</p>
+<p><span class="math display">U^\ast_{it} = \theta_i + \beta\,
+\Delta\mathrm{fee}_t + \delta\, L_{i,t-1} + \nu_{it}, \qquad \nu_{it}
+\sim \text{Logistic}(0, 1)</span></p>
+<p><span class="math inline">\Delta\mathrm{fee}_t</span> is the monthly
+fee difference between A and B (in dollars, an exogenous AR(1) time
+series), <span class="math inline">L_{i,t-1} \in \{-1, +1\}</span> marks
+which platform was chosen last month, and <span
+class="math inline">\theta_i \sim \mathcal{N}(0, \sigma_\theta^2)</span>
+is persistent preference. A is chosen when <span
+class="math inline">U^\ast_{it} &gt; 0</span>.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">20</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>N_merch  <span class="ot">&lt;-</span> <span class="dv">5000</span>; T_months <span class="ot">&lt;-</span> <span class="dv">10</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>beta_true <span class="ot">&lt;-</span> <span class="sc">-</span><span class="fl">0.55</span>; delta_true <span class="ot">&lt;-</span> <span class="fl">0.90</span>; sigma_theta <span class="ot">&lt;-</span> <span class="fl">1.40</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>theta <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(N_merch, <span class="dv">0</span>, sigma_theta)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>dfee  <span class="ot">&lt;-</span> <span class="fu">numeric</span>(T_months); dfee[<span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">1</span>, <span class="dv">0</span>, <span class="fl">1.2</span>)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (t <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span>T_months) dfee[t] <span class="ot">&lt;-</span> <span class="fl">0.5</span> <span class="sc">*</span> dfee[t <span class="sc">-</span> <span class="dv">1</span>] <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="dv">1</span>, <span class="dv">0</span>, <span class="fl">1.2</span>)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>choiceA <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="cn">NA_integer_</span>, N_merch, T_months)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>u0 <span class="ot">&lt;-</span> theta <span class="sc">+</span> <span class="fu">rlogis</span>(N_merch) <span class="sc">+</span> beta_true <span class="sc">*</span> dfee[<span class="dv">1</span>]   <span class="co"># initial condition</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>choiceA[, <span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="fu">as.integer</span>(u0 <span class="sc">&gt;</span> <span class="dv">0</span>)</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (t <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span>T_months) {</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  L_prev <span class="ot">&lt;-</span> <span class="dv">2</span><span class="dt">L</span> <span class="sc">*</span> choiceA[, t <span class="sc">-</span> <span class="dv">1</span>] <span class="sc">-</span> <span class="dv">1</span><span class="dt">L</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  ustar  <span class="ot">&lt;-</span> theta <span class="sc">+</span> beta_true <span class="sc">*</span> dfee[t] <span class="sc">+</span> delta_true <span class="sc">*</span> L_prev <span class="sc">+</span> <span class="fu">rlogis</span>(N_merch)</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>  choiceA[, t] <span class="ot">&lt;-</span> <span class="fu">as.integer</span>(ustar <span class="sc">&gt;</span> <span class="dv">0</span>)</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>There are two key design decisions. First, the initial choice is
+generated by <span class="math inline">\theta_i</span> plus noise,
+correlated with persistent preference, which deliberately creates the
+initial conditions problem of Section 3.3. Second, the fee difference
+varies month to month, providing the exogenous variation that pushes
+merchants to switch and switch back for identification. The truth is
+recorded as follows: <span class="math inline">\delta = 0.90</span>, a
+monetized switching cost of about $1.64 per month; and the overall share
+of merchants choosing A over months 2 through 10 is 0.466.</p>
+<h3 id="the-observed-inertia">6.2 The Observed Inertia</h3>
+<p>First look at the persistence in the data. Compare each merchant’s
+choice this month with last month’s:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>est <span class="ot">&lt;-</span> dt[month <span class="sc">&gt;=</span> <span class="dv">2</span>]</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>stay_rate <span class="ot">&lt;-</span> est[, <span class="fu">mean</span>(choiceA <span class="sc">==</span> lagA)]     <span class="co"># 0.792</span></span></code></pre></div>
+<p>79.2% of observations stay with the same platform, a switch rate of
+20.8%. Viewed in isolation, this high inertia looks like evidence of
+deep lock-in. Section 6.5 will take it apart and see how much of it
+truly belongs to the switching cost.</p>
+<h3 id="the-naive-and-random-effects-estimates">6.3 The Naive and
+Random-Effects Estimates</h3>
+<p>The naive pooled logit, making no distinction between
+individuals:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>m_naive <span class="ot">&lt;-</span> <span class="fu">glm</span>(choiceA <span class="sc">~</span> dfee <span class="sc">+</span> Lprev, <span class="at">family =</span> binomial, <span class="at">data =</span> est)</span></code></pre></div>
+<p>gives <span class="math inline">\hat\delta_{\text{naive}} =
+1.357</span> (SE 0.012), <span class="math inline">\hat\beta =
+-0.424</span>, a monetized switching cost of $3.20. This is the number
+that did not sit right in Section 1, 51% above the truth. Add a random
+intercept to absorb persistent preference, but do not handle initial
+conditions:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>m_re <span class="ot">&lt;-</span> <span class="fu">glmer</span>(choiceA <span class="sc">~</span> dfee <span class="sc">+</span> Lprev <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> merchant),</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>              <span class="at">family =</span> binomial, <span class="at">data =</span> est, <span class="at">nAGQ =</span> <span class="dv">1</span>)</span></code></pre></div>
+<p><span class="math inline">\hat\delta_{\text{RE}} = 0.978</span> (SE
+0.014), <span class="math inline">\hat\sigma_\theta = 1.257</span>,
+monetized $1.87. A substantial drop from the naive 1.357, but still
+about 9% above the truth of 0.90, because the correlation between the
+initial choice and <span class="math inline">\theta_i</span> is not
+handled, and this correlation keeps pushing <span
+class="math inline">\hat\delta</span> upward.</p>
+<h3 id="the-wooldridge-cre">6.4 The Wooldridge CRE</h3>
+<p>Add the initial choice initA as an auxiliary regressor to handle
+initial conditions:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>m_cre <span class="ot">&lt;-</span> <span class="fu">glmer</span>(choiceA <span class="sc">~</span> dfee <span class="sc">+</span> Lprev <span class="sc">+</span> initA <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">|</span> merchant),</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>               <span class="at">family =</span> binomial, <span class="at">data =</span> est, <span class="at">nAGQ =</span> <span class="dv">1</span>)</span></code></pre></div>
+<p><span class="math inline">\hat\delta_{\text{CRE}} = 0.893</span> (SE
+0.014), <span class="math inline">\hat\beta = -0.537</span>, <span
+class="math inline">\hat\sigma_\theta = 1.180</span>, a monetized
+switching cost of $1.66. Almost exactly the truth of 0.90 and $1.64. The
+three-step progression is plain to see: naive 1.357, RE 0.978, CRE
+0.893, and each layer of confounding handled peels off one more layer of
+spurious state dependence.</p>
+<h3 id="decomposing-the-inertia-how-much-of-the-79-is-lock-in">6.5
+Decomposing the Inertia: How Much of the 79% Is Lock-In</h3>
+<p>How much of the 79.2% inertia actually comes from genuine switching
+costs? A simulation can answer this directly, by turning off one channel
+at a time while holding the rest of the structure fixed and
+re-simulating to see where the inertia drops to.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>sim_stay <span class="ot">&lt;-</span> <span class="cf">function</span>(delta_c, sigma_c, seed) { ... }  <span class="co"># re-simulate stay rate</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>stay_full      <span class="ot">&lt;-</span> <span class="fu">sim_stay</span>(delta_true, sigma_theta, <span class="dv">20</span>)  <span class="co"># 0.790  both</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>stay_no_sd     <span class="ot">&lt;-</span> <span class="fu">sim_stay</span>(<span class="dv">0</span>,          sigma_theta, <span class="dv">20</span>)  <span class="co"># 0.628  heterogeneity only</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>stay_no_hetero <span class="ot">&lt;-</span> <span class="fu">sim_stay</span>(delta_true, <span class="dv">0</span>,           <span class="dv">20</span>)  <span class="co"># 0.708  state dep only</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>stay_neither   <span class="ot">&lt;-</span> <span class="fu">sim_stay</span>(<span class="dv">0</span>,          <span class="dv">0</span>,           <span class="dv">20</span>)  <span class="co"># 0.509  fees + noise only</span></span></code></pre></div>
+<figure>
+<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' viewBox='0 0 547.20 331.20' role="img" aria-label="Decomposing the inertia: the stay rate in four counterfactual worlds. With only fees and noise the baseline is about 0.509; turning on heterogeneity alone raises it to 0.628, turning on state dependence alone raises it to 0.708, and both together reach 0.790. The observed high inertia is supported jointly by the two forces, and dropping either one causes a marked decline." style="max-width:100%;height:auto;display:block;margin:0 auto">
+<g class='svglite'>
+<defs>
+  <style type='text/css'><![CDATA[
+    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {
+      fill: none;
+      stroke: #000000;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-miterlimit: 10.00;
+    }
+    .svglite text {
+      white-space: pre;
+    }
+    .svglite g.glyphgroup path {
+      fill: inherit;
+      stroke: none;
+    }
+  ]]></style>
+</defs>
+<rect width='100%' height='100%' style='stroke: none; fill: #FFFFFF;'/>
+<defs>
+  <clipPath id='g2_cpMC4wMHw1NDcuMjB8MC4wMHwzMzEuMjA='>
+    <rect x='0.00' y='0.00' width='547.20' height='331.20' />
+  </clipPath>
+</defs>
+<g clip-path='url(#g2_cpMC4wMHw1NDcuMjB8MC4wMHwzMzEuMjA=)'>
+<rect x='0.00' y='0.00' width='547.20' height='331.20' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
+</g>
+<defs>
+  <clipPath id='g2_cpMzUuNTZ8NTQxLjcyfDUuNDh8MzAzLjEz'>
+    <rect x='35.56' y='5.48' width='506.16' height='297.66' />
+  </clipPath>
+</defs>
+<g clip-path='url(#g2_cpMzUuNTZ8NTQxLjcyfDUuNDh8MzAzLjEz)'>
+<polyline points='35.56,289.60 541.72,289.60 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='35.56,229.47 541.72,229.47 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='35.56,169.34 541.72,169.34 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='35.56,109.21 541.72,109.21 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='35.56,49.08 541.72,49.08 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
+<rect x='68.10' y='136.63' width='79.54' height='152.97' style='stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #666666;' />
+<rect x='188.62' y='100.67' width='79.54' height='188.94' style='stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #0072B2;' />
+<rect x='309.13' y='76.77' width='79.54' height='212.84' style='stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #009E73;' />
+<rect x='429.64' y='52.04' width='79.54' height='237.56' style='stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D55E00;' />
+<text x='107.87' y='133.07' text-anchor='middle' style='font-size: 9.96px; font-family: "Arial";' textLength='24.89px' lengthAdjust='spacingAndGlyphs'>0.509</text>
+<text x='228.39' y='97.10' text-anchor='middle' style='font-size: 9.96px; font-family: "Arial";' textLength='24.89px' lengthAdjust='spacingAndGlyphs'>0.628</text>
+<text x='348.90' y='73.21' text-anchor='middle' style='font-size: 9.96px; font-family: "Arial";' textLength='24.89px' lengthAdjust='spacingAndGlyphs'>0.708</text>
+<text x='469.41' y='48.48' text-anchor='middle' style='font-size: 9.96px; font-family: "Arial";' textLength='24.89px' lengthAdjust='spacingAndGlyphs'>0.790</text>
+<line x1='35.56' y1='136.63' x2='541.72' y2='136.63' style='stroke-width: 0.85; stroke: #666666; stroke-dasharray: 1.14,3.41; stroke-linecap: butt;' />
+</g>
+<g clip-path='url(#g2_cpMC4wMHw1NDcuMjB8MC4wMHwzMzEuMjA=)'>
+<text x='30.63' y='292.75' text-anchor='end' style='font-size: 8.80px;fill: #4D4D4D; font-family: "Arial";' textLength='12.22px' lengthAdjust='spacingAndGlyphs'>0.0</text>
+<text x='30.63' y='232.62' text-anchor='end' style='font-size: 8.80px;fill: #4D4D4D; font-family: "Arial";' textLength='12.22px' lengthAdjust='spacingAndGlyphs'>0.2</text>
+<text x='30.63' y='172.49' text-anchor='end' style='font-size: 8.80px;fill: #4D4D4D; font-family: "Arial";' textLength='12.22px' lengthAdjust='spacingAndGlyphs'>0.4</text>
+<text x='30.63' y='112.36' text-anchor='end' style='font-size: 8.80px;fill: #4D4D4D; font-family: "Arial";' textLength='12.22px' lengthAdjust='spacingAndGlyphs'>0.6</text>
+<text x='30.63' y='52.23' text-anchor='end' style='font-size: 8.80px;fill: #4D4D4D; font-family: "Arial";' textLength='12.22px' lengthAdjust='spacingAndGlyphs'>0.8</text>
+<text x='107.87' y='314.37' text-anchor='middle' style='font-size: 8.80px;fill: #4D4D4D; font-family: "Arial";' textLength='50.61px' lengthAdjust='spacingAndGlyphs'>Fees + noise</text>
+<text x='107.87' y='323.87' text-anchor='middle' style='font-size: 8.80px;fill: #4D4D4D; font-family: "Arial";' textLength='16.14px' lengthAdjust='spacingAndGlyphs'>only</text>
+<text x='228.39' y='314.37' text-anchor='middle' style='font-size: 8.80px;fill: #4D4D4D; font-family: "Arial";' textLength='54.75px' lengthAdjust='spacingAndGlyphs'>Heterogeneity</text>
+<text x='228.39' y='323.87' text-anchor='middle' style='font-size: 8.80px;fill: #4D4D4D; font-family: "Arial";' textLength='53.52px' lengthAdjust='spacingAndGlyphs'>only (delta=0)</text>
+<text x='348.90' y='314.37' text-anchor='middle' style='font-size: 8.80px;fill: #4D4D4D; font-family: "Arial";' textLength='71.39px' lengthAdjust='spacingAndGlyphs'>State dependence</text>
+<text x='348.90' y='323.87' text-anchor='middle' style='font-size: 8.80px;fill: #4D4D4D; font-family: "Arial";' textLength='57.92px' lengthAdjust='spacingAndGlyphs'>only (sigma=0)</text>
+<text x='469.41' y='314.37' text-anchor='middle' style='font-size: 8.80px;fill: #4D4D4D; font-family: "Arial";' textLength='55.75px' lengthAdjust='spacingAndGlyphs'>Both channels</text>
+<text transform='translate(13.36,154.31) rotate(-90)' text-anchor='middle' style='font-size: 11.00px; font-family: "Arial";' textLength='235.19px' lengthAdjust='spacingAndGlyphs'>Share repeating last month's platform (stay rate)</text>
+</g>
+</g>
+</svg>
+<figcaption aria-hidden="true">Decomposing the inertia: the stay rate in
+four counterfactual worlds. With only fees and noise the baseline is
+about 0.509; turning on heterogeneity alone raises it to 0.628, turning
+on state dependence alone raises it to 0.708, and both together reach
+0.790. The observed high inertia is supported jointly by the two forces,
+and dropping either one causes a marked decline.</figcaption>
+</figure>
+<p>The figure above draws the four counterfactual worlds together. With
+only fees and noise, the baseline stay rate is 0.509, the repetition
+produced by random fluctuation alone in a world with neither persistent
+preference nor lock-in. Turning on persistent heterogeneity alone raises
+it to 0.628; turning on state dependence alone raises it to 0.708; both
+together reach 0.790, agreeing with the observed inertia of 0.792
+computed directly from the panel in Section 6.2 (the two come from two
+simulation paths of the same data-generating process with slightly
+different random-number sequences, so they differ slightly in the third
+decimal). The meaning is clear: the observed high inertia is not the
+achievement of any single mechanism, heterogeneity and state dependence
+each contribute a sizable piece, and dropping either one causes inertia
+to decline markedly. This is the concrete rendering on Cadence of the
+question Dubé-Hitsch-Rossi set out to answer, and it explains why a 79%
+inertia number, viewed statically, can be read neither directly as
+lock-in nor directly as preference.</p>
+<h3 id="the-overall-reconciliation">6.6 The Overall Reconciliation</h3>
+<p>Line up the estimators and view them against the truth:</p>
+<div class="table-scroll">
+<table>
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 20%" />
+</colgroup>
+<thead>
+<tr>
+<th>Estimator</th>
+<th><span class="math inline">\hat\delta</span></th>
+<th>SE</th>
+<th>Monetized (USD/month)</th>
+<th>Relative to truth</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>True (DGP)</td>
+<td>0.900</td>
+<td></td>
+<td>1.64</td>
+<td>100%</td>
+</tr>
+<tr>
+<td>Naive pooled logit</td>
+<td>1.357</td>
+<td>0.012</td>
+<td>3.20</td>
+<td>+51%</td>
+</tr>
+<tr>
+<td>RE logit (no IC fix)</td>
+<td>0.978</td>
+<td>0.014</td>
+<td>1.87</td>
+<td>+9%</td>
+</tr>
+<tr>
+<td>Wooldridge CRE logit</td>
+<td>0.893</td>
+<td>0.014</td>
+<td>1.66</td>
+<td>-1%</td>
+</tr>
+</tbody>
+</table>
+</div>
+<figure>
+<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' viewBox='0 0 532.80 244.80' role="img" aria-label="The three estimates of state dependence \delta against the truth (dashed line, 0.90). The naive pooled logit lies far above the truth, random effects fall back significantly but remain too high, and the Wooldridge CRE is almost exactly on target. Error bars are 95% confidence intervals." style="max-width:100%;height:auto;display:block;margin:0 auto">
+<g class='svglite'>
+<defs>
+  <style type='text/css'><![CDATA[
+    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {
+      fill: none;
+      stroke: #000000;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-miterlimit: 10.00;
+    }
+    .svglite text {
+      white-space: pre;
+    }
+    .svglite g.glyphgroup path {
+      fill: inherit;
+      stroke: none;
+    }
+  ]]></style>
+</defs>
+<rect width='100%' height='100%' style='stroke: none; fill: #FFFFFF;'/>
+<defs>
+  <clipPath id='g3_cpMC4wMHw1MzIuODB8MC4wMHwyNDQuODA='>
+    <rect x='0.00' y='0.00' width='532.80' height='244.80' />
+  </clipPath>
+</defs>
+<g clip-path='url(#g3_cpMC4wMHw1MzIuODB8MC4wMHwyNDQuODA=)'>
+<rect x='0.00' y='0.00' width='532.80' height='244.80' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
+</g>
+<defs>
+  <clipPath id='g3_cpOTQuMzJ8NTI3LjMyfDUuNDh8MjEzLjMw'>
+    <rect x='94.32' y='5.48' width='433.00' height='207.82' />
+  </clipPath>
+</defs>
+<g clip-path='url(#g3_cpOTQuMzJ8NTI3LjMyfDUuNDh8MjEzLjMw)'>
+<polyline points='94.32,174.34 527.32,174.34 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='94.32,109.39 527.32,109.39 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='94.32,44.45 527.32,44.45 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='114.00,213.30 114.00,5.48 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='235.12,213.30 235.12,5.48 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='356.24,213.30 356.24,5.48 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='477.36,213.30 477.36,5.48 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
+<line x1='174.56' y1='213.30' x2='174.56' y2='5.48' style='stroke-width: 1.07; stroke: #666666; stroke-dasharray: 5.69,5.69; stroke-linecap: butt;' />
+<text x='177.96' y='187.76' style='font-size: 9.39px;fill: #666666; font-family: "Arial";' textLength='68.08px' lengthAdjust='spacingAndGlyphs'>true delta = 0.90</text>
+<polyline points='465.58,49.64 465.58,39.25 ' style='stroke-width: 1.07; stroke: #0072B2; stroke-linecap: butt;' />
+<polyline points='465.58,44.45 437.25,44.45 ' style='stroke-width: 1.07; stroke: #0072B2; stroke-linecap: butt;' />
+<polyline points='437.25,49.64 437.25,39.25 ' style='stroke-width: 1.07; stroke: #0072B2; stroke-linecap: butt;' />
+<polyline points='238.69,114.59 238.69,104.20 ' style='stroke-width: 1.07; stroke: #0072B2; stroke-linecap: butt;' />
+<polyline points='238.69,109.39 205.50,109.39 ' style='stroke-width: 1.07; stroke: #0072B2; stroke-linecap: butt;' />
+<polyline points='205.50,114.59 205.50,104.20 ' style='stroke-width: 1.07; stroke: #0072B2; stroke-linecap: butt;' />
+<polyline points='187.23,179.53 187.23,169.14 ' style='stroke-width: 1.07; stroke: #0072B2; stroke-linecap: butt;' />
+<polyline points='187.23,174.34 153.85,174.34 ' style='stroke-width: 1.07; stroke: #0072B2; stroke-linecap: butt;' />
+<polyline points='153.85,179.53 153.85,169.14 ' style='stroke-width: 1.07; stroke: #0072B2; stroke-linecap: butt;' />
+<circle cx='451.41' cy='44.45' r='3.13' style='stroke-width: 0.71; stroke: #0072B2; fill: #0072B2;' />
+<circle cx='222.10' cy='109.39' r='3.13' style='stroke-width: 0.71; stroke: #0072B2; fill: #0072B2;' />
+<circle cx='170.54' cy='174.34' r='3.13' style='stroke-width: 0.71; stroke: #0072B2; fill: #0072B2;' />
+<text x='451.41' y='37.52' text-anchor='middle' style='font-size: 9.67px; font-family: "Arial";' textLength='24.19px' lengthAdjust='spacingAndGlyphs'>1.357</text>
+<text x='222.10' y='102.47' text-anchor='middle' style='font-size: 9.67px; font-family: "Arial";' textLength='24.19px' lengthAdjust='spacingAndGlyphs'>0.978</text>
+<text x='170.54' y='167.41' text-anchor='middle' style='font-size: 9.67px; font-family: "Arial";' textLength='24.19px' lengthAdjust='spacingAndGlyphs'>0.893</text>
+</g>
+<g clip-path='url(#g3_cpMC4wMHw1MzIuODB8MC4wMHwyNDQuODA=)'>
+<text x='89.39' y='177.49' text-anchor='end' style='font-size: 8.80px;fill: #4D4D4D; font-family: "Arial";' textLength='83.91px' lengthAdjust='spacingAndGlyphs'>Wooldridge CRE logit</text>
+<text x='89.39' y='112.54' text-anchor='end' style='font-size: 8.80px;fill: #4D4D4D; font-family: "Arial";' textLength='71.33px' lengthAdjust='spacingAndGlyphs'>RE logit (no IC fix)</text>
+<text x='89.39' y='47.60' text-anchor='end' style='font-size: 8.80px;fill: #4D4D4D; font-family: "Arial";' textLength='69.91px' lengthAdjust='spacingAndGlyphs'>Naive pooled logit</text>
+<text x='114.00' y='224.54' text-anchor='middle' style='font-size: 8.80px;fill: #4D4D4D; font-family: "Arial";' textLength='12.22px' lengthAdjust='spacingAndGlyphs'>0.8</text>
+<text x='235.12' y='224.54' text-anchor='middle' style='font-size: 8.80px;fill: #4D4D4D; font-family: "Arial";' textLength='12.22px' lengthAdjust='spacingAndGlyphs'>1.0</text>
+<text x='356.24' y='224.54' text-anchor='middle' style='font-size: 8.80px;fill: #4D4D4D; font-family: "Arial";' textLength='12.22px' lengthAdjust='spacingAndGlyphs'>1.2</text>
+<text x='477.36' y='224.54' text-anchor='middle' style='font-size: 8.80px;fill: #4D4D4D; font-family: "Arial";' textLength='12.22px' lengthAdjust='spacingAndGlyphs'>1.4</text>
+<text x='310.82' y='237.00' text-anchor='middle' style='font-size: 11.00px; font-family: "Arial";' textLength='251.50px' lengthAdjust='spacingAndGlyphs'>Estimated state dependence  delta  (switching cost)</text>
+</g>
+</g>
+</svg>
+<figcaption aria-hidden="true">The three estimates of state dependence
+<span class="math inline">\delta</span> against the truth (dashed line,
+0.90). The naive pooled logit lies far above the truth, random effects
+fall back significantly but remain too high, and the Wooldridge CRE is
+almost exactly on target. Error bars are 95% confidence
+intervals.</figcaption>
+</figure>
+<p>The figure above draws the three estimates together with their 95%
+confidence intervals, with the dashed line at the truth of 0.90. The
+naive estimate’s point and interval both lie far to the right of the
+truth, random effects pull it back a good deal but the interval still
+does not cover the truth, and the Wooldridge CRE’s point falls almost on
+the dashed line with its interval firmly covering the truth.</p>
+<p>The reconciliation of this section can be summarized as follows: on
+the same data, with the price variation needed for identification
+available, the naive logit overstates the switching cost by 51% by
+ignoring heterogeneity, random effects correct most of it but still run
+9% high by missing initial conditions, and the Wooldridge CRE is
+essentially unbiased once it patches initial conditions; the observed
+79% inertia, through counterfactual decomposition, is seen to be
+supported jointly by persistent heterogeneity and genuine state
+dependence, and separating the two is exactly the purpose of the whole
+chapter.</p>
+<h2 id="failure-modes-of-identification-and-robustness">7 Failure Modes
+of Identification and Robustness</h2>
+<p>In the simulation, persistent heterogeneity and state dependence are
+constructed, but in real research their separation can fail at any
+moment. This section lays out the most common ways it fails and the
+actionable responses.</p>
+<p>Underspecified heterogeneity is the number-one threat and also the
+most hidden. Section 3 proved that insufficient control of heterogeneity
+biases upward, but there is no hard standard for “enough.” A single
+normal random intercept may not capture the true preference
+distribution, and residual heterogeneity keeps seeping into <span
+class="math inline">\hat\delta</span>. There are two actionable
+responses: first, like Dubé-Hitsch-Rossi, model heterogeneity more
+flexibly (a mixture of normals) and see whether <span
+class="math inline">\hat\delta</span> keeps falling as heterogeneity
+grows richer, and if it falls that means the previous layer was
+underspecified; second, run a permutation test, shuffling the time order
+of individual sequences and re-estimating, since genuine state
+dependence should weaken sharply, and the more it weakens the more solid
+the genuine lock-in component in the original estimate.</p>
+<p>The handling of initial conditions cannot be skipped. This is
+especially true in short panels, since the shorter the panel the greater
+the weight of the initial period, and the larger the bias from ignoring
+its correlation with <span class="math inline">\theta_i</span>. Cadence
+has only 10 periods, and the gap between RE and CRE (0.978 versus 0.893)
+comes mainly from this initial-conditions term. In practice, as long as
+the panel is not long, one should default to Wooldridge’s approach and
+put the initial choice in, at almost zero cost yet eliminating a
+systematic bias.</p>
+<p>Once conditional independence fails, <span
+class="math inline">\hat\delta</span> becomes too high again. If the
+idiosyncratic shock is itself serially correlated (a merchant does
+especially good business for several months in a row, or one of a
+platform’s services is unstable for several months in a row), this extra
+persistence has nowhere to go and gets counted into state dependence.
+The diagnostic idea is to see whether the residuals or the choice
+sequence still have persistence beyond first-order Markov after the
+model is controlled for; if so, consider adding a richer dynamic
+structure or explicitly modeling serially correlated shocks, rather than
+quietly handing it to <span class="math inline">\delta</span>.</p>
+<p>Insufficient exogenous price variation leaves identification without
+a fulcrum. As Section 3.6 explained, <span
+class="math inline">\delta</span> is calibrated by price variation that
+pushes users to switch and switch back. If prices hardly move, or price
+changes are themselves endogenous responses to demand, identification
+hangs in the air. The diagnostic is to check how many such round-trip
+switches there actually are in the data, and whether the source of price
+variation is credibly exogenous (a platform’s pricing experiment, a
+regulatory shock, or cost pass-through are relatively clean sources).
+When variation is too scarce, the honest thing is to admit that the
+switching cost can only be bounded within a wide interval, rather than
+to report a precise but fragile point estimate.</p>
+<p>The reflection problem shadows research on network and peer effects
+on platforms. If the research question is not the history dependence of
+a single user but the spillovers among users (whether one merchant’s
+adoption of a feature drives its neighbors to adopt), then the Manski
+dilemma of Section 3.5 enters directly: the endogenous spillover and the
+correlated effect move in lockstep at the group-mean level and cannot be
+separated. The response is to exploit network structure itself, since
+when reference groups partially overlap (my neighbors differ from yours)
+collinearity can be broken, using the exogenous characteristics of
+“friends of friends” as instruments, or relying on exogenous group
+assignment. Treating this problem as a simple regression usually yields
+spillovers that are artifacts of common shocks.</p>
+<p>Forward-looking behavior blurs the boundary between switching costs
+and expectations. The state dependence in this chapter is
+backward-looking, with last period’s choice affecting this period. But
+if users are forward-looking, they will choose cautiously now because
+they anticipate future lock-in, which entangles with switching costs.
+Identifying forward-looking behavior requires a dynamic structural model
+(the single-agent dynamic framework of Chapter 23 in this series), and a
+static state-dependence specification will count part of the
+forward-looking behavior into <span class="math inline">\delta</span>.
+Judging whether you need a dynamic model depends on whether the
+switching cost is large enough relative to the user’s decision horizon
+to be worth looking ahead over.</p>
+<p>Stringing these failure modes together, the credibility of
+switching-cost estimation ultimately rests not on the sophistication of
+the estimator but on two things: whether heterogeneity is modeled fully
+enough that the residual no longer contaminates <span
+class="math inline">\delta</span>, and whether there is credibly
+exogenous price variation to calibrate switching. The permutation test,
+flexible heterogeneity, the initial-conditions correction, and the
+argument for an exogenous price source are all evidence provided around
+these two questions, and none of them can substitute for a substantive
+judgment about the mechanism of “why users stay.”</p>
+<h2 id="further-reading">8 Further Reading</h2>
+<div class="readings">
+<p>Required reading, in suggested order:</p>
+<ul>
+<li>Dubé, Hitsch and Rossi (2010, RAND Journal of Economics). The
+methodological benchmark for empirical switching costs, the full version
+of Sections 3.6 and 4.5 of this chapter; focus on how the permutation
+test separates state dependence from heterogeneity.</li>
+<li>Handel (2013, American Economic Review). A model for the policy
+consequences of measuring inertia; focus on how forced re-enrollment
+calibrates the switching cost, and why reducing inertia instead worsens
+adverse selection.</li>
+<li>Armstrong (2006, RAND Journal of Economics). The core of two-sided
+pricing; focus on membership externalities and the competitive
+bottleneck, understanding why one side is subsidized.</li>
+<li>Rochet and Tirole (2003, Journal of the European Economic
+Association). The founding work on two-sided markets; focus on the
+argument that the price structure rather than the price level is the
+platform’s decision.</li>
+<li>Manski (1993, Review of Economic Studies). The origin of the
+reflection problem; understand why the endogenous, contextual, and
+correlated effects are inseparable in the linear-in-means model.</li>
+</ul>
+<p>Further reading:</p>
+<ul>
+<li>Katz and Shapiro (1985, American Economic Review). The classic
+source of fulfilled-expectations demand and tipping.</li>
+<li>Rysman (2004, Review of Economic Studies). An exemplar of structural
+estimation of two-sided platforms, with indirect network effects and
+welfare in the Yellow Pages market.</li>
+<li>Wooldridge (2005, Journal of Applied Econometrics). The simple
+solution to the initial conditions problem, the theoretical basis for
+the workhorse of Section 4.3 of this chapter.</li>
+<li>Honoré and Kyriazidou (2000, Econometrica). The dynamic FE logit
+with no distributional assumption; read how the conditional likelihood
+cancels the fixed effect.</li>
+<li>Farrell and Klemperer (2007, Handbook of Industrial Organization).
+The authoritative survey of switching costs and network effects, with a
+full discussion of harvesting and investment.</li>
+<li>Bramoullé, Djebbari and Fortin (2009, Journal of Econometrics). The
+identification result that cracks the reflection problem using network
+structure.</li>
+<li>Dubé, Hitsch and Chintagunta (2010, Marketing Science). A structural
+model and counterfactual of tipping and concentration under indirect
+network effects.</li>
+</ul>
+</div>
+<div class="apa-refs">
+<ul>
+<li>Armstrong, M. (2006). Competition in two-sided markets. <em>The RAND
+Journal of Economics, 37</em>(3), 668-691. <a
+href="https://doi.org/10.1111/j.1756-2171.2006.tb00037.x"
+class="uri">https://doi.org/10.1111/j.1756-2171.2006.tb00037.x</a></li>
+<li>Bramoullé, Y., Djebbari, H., &amp; Fortin, B. (2009). Identification
+of peer effects through social networks. <em>Journal of Econometrics,
+150</em>(1), 41-55.</li>
+<li>Cabral, L. (2011). Dynamic price competition with network effects.
+<em>The Review of Economic Studies, 78</em>(1), 83-111. <a
+href="https://doi.org/10.1093/restud/rdq007"
+class="uri">https://doi.org/10.1093/restud/rdq007</a></li>
+<li>Caillaud, B., &amp; Jullien, B. (2003). Chicken &amp; egg:
+Competition among intermediation service providers. <em>The RAND Journal
+of Economics, 34</em>(2), 309-328. <a
+href="https://doi.org/10.2307/1593720"
+class="uri">https://doi.org/10.2307/1593720</a></li>
+<li>Chamberlain, G. (1980). Analysis of covariance with qualitative
+data. <em>The Review of Economic Studies, 47</em>(1), 225-238. <a
+href="https://doi.org/10.2307/2297110"
+class="uri">https://doi.org/10.2307/2297110</a></li>
+<li>Dubé, J.-P., Hitsch, G. J., &amp; Chintagunta, P. K. (2010). Tipping
+and concentration in markets with indirect network effects.
+<em>Marketing Science, 29</em>(2), 216-249. <a
+href="https://doi.org/10.1287/mksc.1090.0541"
+class="uri">https://doi.org/10.1287/mksc.1090.0541</a></li>
+<li>Dubé, J.-P., Hitsch, G. J., &amp; Rossi, P. E. (2010). State
+dependence and alternative explanations for consumer inertia. <em>The
+RAND Journal of Economics, 41</em>(3), 417-445. <a
+href="https://doi.org/10.1111/j.1756-2171.2010.00106.x"
+class="uri">https://doi.org/10.1111/j.1756-2171.2010.00106.x</a></li>
+<li>Farrell, J., &amp; Klemperer, P. (2007). Coordination and lock-in:
+Competition with switching costs and network effects. In M. Armstrong
+&amp; R. Porter (Eds.), <em>Handbook of industrial organization</em>
+(Vol. 3, pp. 1967-2072). Elsevier.</li>
+<li>Farrell, J., &amp; Saloner, G. (1986). Installed base and
+compatibility: Innovation, product preannouncements, and predation.
+<em>American Economic Review, 76</em>(5), 940-955.</li>
+<li>Einav, L., Farronato, C., &amp; Levin, J. (2016). Peer-to-peer
+markets. <em>Annual Review of Economics, 8</em>, 615-635. <a
+href="https://doi.org/10.1146/annurev-economics-080315-015334"
+class="uri">https://doi.org/10.1146/annurev-economics-080315-015334</a></li>
+<li>Gallus, J. (2017). Fostering public good contributions with symbolic
+awards: A large-scale natural field experiment at Wikipedia.
+<em>Management Science, 63</em>(12), 3999-4015. <a
+href="https://doi.org/10.1287/mnsc.2016.2540"
+class="uri">https://doi.org/10.1287/mnsc.2016.2540</a></li>
+<li>Handel, B. R. (2013). Adverse selection and inertia in health
+insurance markets: When nudging hurts. <em>American Economic Review,
+103</em>(7), 2643-2682. <a href="https://doi.org/10.1257/aer.103.7.2643"
+class="uri">https://doi.org/10.1257/aer.103.7.2643</a></li>
+<li>Heckman, J. J. (1981). The incidental parameters problem and the
+problem of initial conditions in estimating a discrete time-discrete
+data stochastic process. In C. F. Manski &amp; D. McFadden (Eds.),
+<em>Structural analysis of discrete data with econometric
+applications</em> (pp. 179-195). MIT Press.</li>
+<li>Honoré, B. E., &amp; Kyriazidou, E. (2000). Panel data discrete
+choice models with lagged dependent variables. <em>Econometrica,
+68</em>(4), 839-874. <a href="https://doi.org/10.1111/1468-0262.00139"
+class="uri">https://doi.org/10.1111/1468-0262.00139</a></li>
+<li>Katz, M. L., &amp; Shapiro, C. (1985). Network externalities,
+competition, and compatibility. <em>American Economic Review,
+75</em>(3), 424-440.</li>
+<li>Katz, M. L., &amp; Shapiro, C. (1994). Systems competition and
+network effects. <em>Journal of Economic Perspectives, 8</em>(2),
+93-115. <a href="https://doi.org/10.1257/jep.8.2.93"
+class="uri">https://doi.org/10.1257/jep.8.2.93</a></li>
+<li>Manski, C. F. (1993). Identification of endogenous social effects:
+The reflection problem. <em>The Review of Economic Studies, 60</em>(3),
+531-542. <a href="https://doi.org/10.2307/2298123"
+class="uri">https://doi.org/10.2307/2298123</a></li>
+<li>Mundlak, Y. (1978). On the pooling of time series and cross section
+data. <em>Econometrica, 46</em>(1), 69-85. <a
+href="https://doi.org/10.2307/1913646"
+class="uri">https://doi.org/10.2307/1913646</a></li>
+<li>Rochet, J.-C., &amp; Tirole, J. (2003). Platform competition in
+two-sided markets. <em>Journal of the European Economic Association,
+1</em>(4), 990-1029. <a
+href="https://doi.org/10.1162/154247603322493212"
+class="uri">https://doi.org/10.1162/154247603322493212</a></li>
+<li>Rochet, J.-C., &amp; Tirole, J. (2006). Two-sided markets: A
+progress report. <em>The RAND Journal of Economics, 37</em>(3), 645-667.
+<a href="https://doi.org/10.1111/j.1756-2171.2006.tb00036.x"
+class="uri">https://doi.org/10.1111/j.1756-2171.2006.tb00036.x</a></li>
+<li>Rysman, M. (2004). Competition between networks: A study of the
+market for Yellow Pages. <em>The Review of Economic Studies, 71</em>(2),
+483-512. <a href="https://doi.org/10.1111/0034-6527.00512"
+class="uri">https://doi.org/10.1111/0034-6527.00512</a></li>
+<li>Rysman, M. (2009). The economics of two-sided markets. <em>Journal
+of Economic Perspectives, 23</em>(3), 125-143. <a
+href="https://doi.org/10.1257/jep.23.3.125"
+class="uri">https://doi.org/10.1257/jep.23.3.125</a></li>
+<li>Shcherbakov, O. (2016). Measuring consumer switching costs in the
+television industry. <em>The RAND Journal of Economics, 47</em>(2),
+366-393. <a href="https://doi.org/10.1111/1756-2171.12131"
+class="uri">https://doi.org/10.1111/1756-2171.12131</a></li>
+<li>Weyl, E. G. (2010). A price theory of multi-sided platforms.
+<em>American Economic Review, 100</em>(4), 1642-1672. <a
+href="https://doi.org/10.1257/aer.100.4.1642"
+class="uri">https://doi.org/10.1257/aer.100.4.1642</a></li>
+<li>Wooldridge, J. M. (2005). Simple solutions to the initial conditions
+problem in dynamic, nonlinear panel data models with unobserved
+heterogeneity. <em>Journal of Applied Econometrics, 20</em>(1), 39-54.
+<a href="https://doi.org/10.1002/jae.770"
+class="uri">https://doi.org/10.1002/jae.770</a></li>
+</ul>
+</div>
+    <footer class="page-footer">
+<span>Foundations of Information Systems Economics: Empirical Methods for Information Systems Economics</span>
+    </footer>
+  </main>
+</div>
+<script>
+(function(){var p=(location.pathname.split('/').pop()||'index.html');document.querySelectorAll('.file-nav a').forEach(function(a){if(a.getAttribute('href')===p)a.classList.add('current');});})();
+
+/* Preserve complete formulas without internal scrollbars. Only formulas whose
+   natural width exceeds their text column are reduced, and resize restores the
+   largest size that fits. */
+(function () {
+  function fitMath() {
+    document.querySelectorAll('span.math').forEach(function (host) {
+      var katex = host.querySelector('.katex');
+      if (!katex) return;
+      katex.style.fontSize = '';
+      var parent = host.classList.contains('display') ? host : host.parentElement;
+      var available = Math.max(1, parent.clientWidth);
+      /* KaTeX's box can be clipped to the host before measurement; scrollWidth
+         retains the full typeset width and is therefore the correct basis. */
+      var needed = Math.max(katex.scrollWidth, katex.getBoundingClientRect().width);
+      /* Keep a small safety margin for KaTeX glyph overhangs and browser
+         sub-pixel rounding, so the last radical/bar is never clipped. */
+      var target = available * 0.98;
+      if (needed > target) {
+        katex.style.fontSize = Math.max(0.34, target / needed) + 'em';
+      }
+    });
+  }
+  document.addEventListener('DOMContentLoaded', function () {
+    requestAnimationFrame(fitMath);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitMath);
+  });
+  window.addEventListener('resize', fitMath);
+}());
+</script>
+<script defer src="assets/notes.js"></script>
+</body>
+</html>

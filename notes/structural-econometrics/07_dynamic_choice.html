@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script>(function(){try{var t=localStorage.getItem('theme');if(t==='dark'||t==='light')document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <title>07 Dynamic Discrete Choice | From Choices to Counterfactuals</title>
+  <link rel="stylesheet" href="assets/katex/katex.min.css">
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="page-wrapper">
+
+  <!-- ==================== SIDEBAR ==================== -->
+  <nav class="sidebar">
+    <div class="sidebar-title">From Choices to Counterfactuals: Structural Estimation for Digital Platform Research</div>
+    <div class="sidebar-subtitle">Chapter 07 · Dynamic Discrete Choice</div>
+
+    <div class="toc-section-label">Contents</div>
+    <div class="toc">
+      <a href="#when-dynamic">7.1 When You Must Go Dynamic</a>
+      <a href="#rust-setup">7.2 Rust's Bus-Engine Replacement Problem</a>
+      <a href="#bellman">7.3 From Myopic to Forward-Looking: The Bellman Equation</a>
+      <a href="#myopic-bridge" class="level-3">The myopic model is just binary logit</a>
+      <a href="#worked-t2">7.4 Worked Example: A Two-Period Model</a>
+      <a href="#estimation-menu">7.5 A Menu of Estimation Methods</a>
+      <a href="#beta-identification">7.6 The Identification Problem for β</a>
+      <a href="#counterfactuals">7.7 Counterfactuals</a>
+      <a href="#platform-applications">7.8 Platform Applications</a>
+      <a href="#misconceptions">7.9 Common Pitfalls</a>
+      <a href="#summary">7.10 Chapter Summary</a>
+      <a href="#readings">Further Reading</a>
+    </div>
+
+    <div class="file-nav">
+      <div class="nav-label">Chapters</div>
+      <a href="01_overview_roadmap.html">01 Overview & Decision Framework</a>
+      <a href="02_why_structural.html">02 Why Structural Models</a>
+      <a href="03_rum_logit.html">03 RUM and Logit</a>
+      <a href="04_gev_mixed_logit.html">04 Nested and Mixed Logit</a>
+      <a href="05_simulation_estimation.html">05 Simulation and Numerical Estimation</a>
+      <a href="06_endogeneity_blp.html">06 Endogeneity and BLP</a>
+      <a href="07_dynamic_choice.html" class="current">07 Dynamic Discrete Choice</a>
+      <a href="08_applications.html">08 Platform Research Applications</a>
+      <a href="09_workflow_reference.html">09 Workflow, Validation, and Reference</a>
+    </div>
+  </nav>
+
+  <!-- ==================== MAIN ==================== -->
+  <main class="main-content">
+
+    <header class="page-header">
+      <h1>Dynamic Discrete Choice</h1>
+      <div class="subtitle">Dynamic Discrete Choice: Rust, Bellman, and CCP Methods</div>
+      <div class="meta">From Choices to Counterfactuals: Structural Estimation for Digital Platform Research · Chapter 07</div>
+    </header>
+
+    <div class="global-legend">
+      <span class="legend-label">Variable colors</span>
+      <span><span class="dot dot-observed"></span>Observed in data</span>
+      <span><span class="dot dot-estimated"></span>Parameters to estimate</span>
+      <span><span class="dot dot-researcher"></span>Set by the researcher</span>
+    </div>
+
+    <p>In the first five chapters every choice was one-shot: the decision-maker stands at a point in time, puts the current-period utility of each option on the scale, picks the highest one, and that is that; tomorrow has nothing to do with today. But a large class of real decisions does not work this way. When you hesitate over whether to upgrade to a new device right now, what runs through your head is usually more than "is the new model any good"; there is also "maybe I should wait and see whether it gets cheaper or more useful." That one act of waiting ties today to tomorrow: waiting itself becomes a valuable option, and a static model has no place for it at all. What this chapter takes seriously is precisely the family of questions captured by "how much is waiting worth?" Put more fully: when a decision-maker plans for the future, how do we write down the choice model, how do we estimate its parameters, and how do we use it for counterfactuals? The example that runs through the chapter is Harold Zurcher's decision about when to replace the engines in a fleet of buses, which distills the tension between "repair now or replace now" into an optimal-stopping problem that can be solved completely. One more thread will keep us company throughout: the choice probability of a dynamic model is still the logit of Chapter 03, only with current-period utility replaced by a choice-specific value that carries the future inside it. The strategy is therefore an economical one: first reduce the dynamic problem to the familiar logit, then add the forward-looking structure back one piece at a time.</p>
+
+    <!-- ============================================ -->
+    <h2 id="when-dynamic">7.1 When You Must Go Dynamic</h2>
+
+    <p>Return to that opening hesitation over "should I upgrade now," and take it apart. The user can adopt today or wait a little longer, because next month may bring a lower price or a more polished version. What matters is that "waiting" here is not doing nothing; it is a concrete and quite valuable option, one that preserves the user's chance to act later at a lower price or on a better version. The static models of the first five chapters simply have no room for this kind of decision. In a static setup the user makes a one-shot choice independently each period, the periods are unrelated to one another, and there is no place in the model for "waiting for the sake of the future."</p>
+
+    <p>The problem lies in an assumption a static model quietly carries: today's choice changes neither tomorrow's choice set nor the payoffs of tomorrow's options. It is exactly this assumption that lets the user pick the current-period optimum independently each period, with the periods never entangled. But once "waiting" can bring a benefit, today's "don't adopt yet" becomes an option held for tomorrow, the current-period optimum is no longer the long-run optimum, and the static setup fails on the spot. Such situations are in fact common in platform settings, and their sources fall roughly into four types.</p>
+
+    <div class="table-scroll">
+    <table>
+      <thead>
+        <tr><th>Source of dynamics</th><th>Mechanism</th><th>Platform example</th><th>Key state variable</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Switching costs</strong></td>
+          <td>After settling on one option, switching to another carries a one-time cost, so past choices create inertia</td>
+          <td>Migrating between subscription platforms (re-registering, transferring data, learning a new interface)</td>
+          <td>Current platform, subscription tenure</td>
+        </tr>
+        <tr>
+          <td><strong>Durable goods and adoption timing</strong></td>
+          <td>Buying now forecloses waiting for something cheaper or better later, so waiting itself has value</td>
+          <td>Whether to upgrade to a new device, whether to adopt a paid new feature</td>
+          <td>Whether already adopted, current price, expected price path</td>
+        </tr>
+        <tr>
+          <td><strong>Learning</strong></td>
+          <td>Use updates beliefs about quality, so early choices change the future information set</td>
+          <td>Deciding after a trial whether to stay long-term, whether to upgrade membership</td>
+          <td>Posterior beliefs about quality (mean and uncertainty)</td>
+        </tr>
+        <tr>
+          <td><strong>Inventory and stockpiling</strong></td>
+          <td>Anticipating a future promotion, stockpiling now to avoid a high price</td>
+          <td>Buying ahead of an anticipated big sale, timing of points redemption</td>
+          <td>Current inventory, promotion expectations</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+
+    <p>These four cases look different but share the same underlying structure: the current choice connects to the future through a <strong>state variable</strong>. The user can no longer just watch which option has the highest current-period utility; the calculation must also fold in "where does today's step take the future."</p>
+
+    <div class="intuition-box">
+      <div class="box-title">Intuition: whether you can "wait" is the dividing line</div>
+      Distill that opening example into a rough but useful rule of thumb: if "waiting" itself constitutes a valuable option, you most likely need a dynamic model. Waiting for a new model's price to drop, for a platform to update its content, for a big sale before ordering: each of these "waits" holds an option on the future, and a static model cannot see them. Conversely, when consumption is one-shot and the current choice is fully decoupled from the future, a static model is already enough: which ride-hailing app you use to hail a car tonight changes neither tomorrow night's choice set nor tomorrow night's prices at each service, and treating it as a static problem loses nothing.
+    </div>
+
+    <p>Reaching for a static model where it does not belong costs you more than a little precision; it skews the whole interpretation of the parameters. Take a concrete example: a user renews the same platform twelve months running. The naive reading is "this person is intensely loyal to this platform," because a static model has no place for state dependence, so all that persistence gets crammed into a large brand constant or unobserved preference. Yet the same data admit a completely different reading: the user has no particular fondness for the platform at all, but the switching cost is simply too high, and leaving would cost a considerable amount, so the user is locked in place.</p>
+
+    <p>The two readings cannot be told apart within a static framework, yet their counterfactual predictions are diametrically opposed. Suppose a competitor cuts its price, or the platform itself raises its own: the "strong preference" reading predicts little churn; the "high switching cost" reading predicts little churn in the short run but more in the long run, because a one-time switching cost merely pushes churn back, and as natural reset points such as a subscription lapsing or a device being replaced arrive one by one, the deferred churn accumulates period by period. It is here that the thing we actually want to estimate surfaces: genuine state dependence, that is, "the extra stickiness that shows up this period only because A was chosen last period," rather than "a stable leaning toward A in every period."</p>
+
+    <p>Recognizing this stickiness relies on the same user's choices across periods in panel data. A stable preference pushes the user toward A in every period, whereas a switching cost bites only when "A was already in place last period"; the two leave different traces in the data, and that difference is precisely the key to separating them. So when can they not be told apart? The answer is equally clear: with only cross-sectional data, or without properly handling the initial conditions (the choice history a user has already built up before entering the sample), preference differences that predate entry blur together with lock-in accumulated after entry, the two components are squeezed into the same coefficient, and the counterfactual may get even the sign wrong. The pitfall below is the most common face this confusion wears.</p>
+
+    <div class="warn-box">
+      <div class="box-title">Pitfall: treating the lagged choice as just another control</div>
+      <p style="margin-bottom:0">A very common shortcut is to drop a lagged-choice term into a static regression to soak up persistence. But the lagged choice reflects both genuine lock-in and a correlation with stable unobserved preference; the two components merge into a single coefficient, and the switching cost cannot be identified on its own. To separate them you need a panel that captures the same user's choices across periods, and an initial-conditions specification that distinguishes preference differences predating entry from lock-in accumulated by choices after entry: the switching cost corresponds to "the extra retention that exists only because A was chosen last period," the unobserved preference to "a stable leaning toward A in every period," and in a dynamic model these are distinct parameters identified by different variation in the data.</p>
+    </div>
+
+    <div class="takeaway-box">
+      <div class="box-title">Bottom Line</div>
+      When the current choice connects to the future through a state, a static model misreads dynamics as preference. The rule of thumb is to ask whether waiting has value. The signals that genuinely call for dynamic modeling are switching costs, adoption timing, learning, and stockpiling, all of which require an explicit state variable.
+    </div>
+
+    <!-- ============================================ -->
+    <h2 id="rust-setup">7.2 Rust's Bus-Engine Replacement Problem</h2>
+
+    <p>The canonical problem in dynamic discrete choice comes from Rust's (1987) study of Harold Zurcher. Zurcher was the maintenance superintendent at the Madison Metro bus company, and every month he had to settle one thing for each bus in his charge: this engine, do we maintain it as usual, or simply swap in a new one? The logic is not convoluted. The more miles an engine has run, the more prone it is to trouble and the more expensive maintenance becomes. Replacing an engine means paying a fixed cost up front, with the benefit that mileage resets to zero and a stretch of cheap-maintenance days follows. So every month Zurcher weighs a dilemma: bite the bullet now and pay the high cost of replacement, or keep making do with the old engine and bear the ever-rising maintenance bill. This is a textbook optimal-stopping problem.</p>
+
+    <p>To translate this decision into a model, we first lay out four primitives. The state is cumulative mileage since the last replacement, <span class="var-observed">$x_t$</span>; the decision is binary, <span class="var-observed">$d_t \in \{0,1\}$</span>, where $d=0$ means maintain and $d=1$ means replace; per-period utility is the negative of cost plus a shock <span class="var-researcher">$\varepsilon_d$</span> that only the decision-maker observes; and mileage evolves according to <span class="var-estimated">$f(x'\mid x,d)$</span>, accumulating afresh from zero after a replacement.</p>
+
+    <div class="formula-box">
+      <div class="formula-title">Per-period utility and state transition</div>
+      <div class="formula-math">$$u(x,d;\theta) + \varepsilon_d = \begin{cases} -\,c(x;\theta_1) + \varepsilon_0 & d=0\ (\text{keep}) \\[4pt] -\,RC + \varepsilon_1 & d=1\ (\text{replace}) \end{cases}$$</div>
+      <div class="formula-explain">
+        <table>
+          <tr><td class="var-observed">$x$</td><td>Cumulative mileage bin (the state, observed in data)</td></tr>
+          <tr><td class="var-observed">$d$</td><td>Current decision: maintain or replace (observed)</td></tr>
+          <tr><td class="var-estimated">$c(x;\theta_1)$</td><td>Maintenance-cost function rising in mileage, normalized so $c(0)=0$ (to be estimated)</td></tr>
+          <tr><td class="var-estimated">$RC$</td><td>One-time net cost of replacement (to be estimated)</td></tr>
+          <tr><td class="var-researcher">$\varepsilon_d$</td><td>Choice-specific shock, i.i.d. Type I extreme value (the researcher sets its distribution)</td></tr>
+          <tr><td class="var-estimated">$f(x'\mid x,d)$</td><td>Mileage transition probability: mileage rises under maintenance, accumulates from zero after replacement (to be estimated)</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <p>That the whole framework admits a closed-form solution rests entirely on one <strong>conditional independence (CI)</strong> assumption. What it requires, in a sentence: the shock $\varepsilon$ that only the decision-maker sees must be "one-shot," neither secretly steering the path of mileage nor piling up from one period to the next. Unpacked, it has two parts. First, the transition of the observed state is determined by $(x,d)$ alone and does not depend on the shock $\varepsilon$, so the distribution of $x'$ is just $f(x'\mid x,d)$, with $\varepsilon$ playing no part. Second, each period's $\varepsilon$ is drawn fresh and independently, and given $(x,d)$ it is independent of the next-period state $x'$. Together the two parts keep $\varepsilon$ from snowballing over time into an extra state that would have to be tracked on its own. And what does this buy us? Something direct: in computing the future value, we can first average out the current, unseen $\varepsilon$, leaving a function of mileage $x$ alone. Without it, the future value would have to be taken in expectation over both $x$ and an entire history of $\varepsilon$, and a closed-form solution would be out of the question.</p>
+
+    <div class="info-box">
+      <div class="box-title">Rust's (1987) data and setup</div>
+      <p>The data are monthly odometer readings and maintenance logs for the entire Madison Metro fleet of <strong>162</strong> buses, covering <strong>December 1974 to May 1985</strong>, split into 8 groups. The empirical estimates in Section 5 of Rust's paper concentrate on groups 1 through 4, <strong>104</strong> buses in all. The state variable is cumulative mileage since the last replacement, discretized into <strong>90 bins of 5,000 miles each</strong> (covering 0 to 450,000 miles). The cost function was tried in several forms (linear, square-root, quadratic, cubic), and the <strong>linear and square-root forms fit best</strong>. The estimation method is <strong>NFXP with maximum likelihood</strong>, not GMM; $\varepsilon$ is taken Type I extreme value, so the choice probabilities take a logit form. Taking the main result for linear cost with groups 1 through 4 pooled, the replacement cost is $RC = 9.76$ and the maintenance-cost slope is $\theta_{11} = 2.63$ (both statistically significant). As for the dollar scaling of costs, Rust's paper converts it on the subsample of groups 1 through 3 (whose slope is steeper, $\theta_{11}\approx 4.83$): maintenance cost rises by about 3.75 dollars per 5,000 miles accumulated, which is not the same subsample as the pooled groups 1 through 4 estimate above.</p>
+    </div>
+
+    <!-- ============================================ -->
+    <h2 id="bellman">7.3 From Myopic to Forward-Looking: The Bellman Equation</h2>
+
+    <h3 id="myopic-bridge">The myopic model is just binary logit</h3>
+
+    <p>We tell this in two passes, and we start with the easy one. Suppose Zurcher is a thoroughgoing myopic, caring about nothing beyond the current period, that is, a discount factor $\beta=0$. Then each period he watches only the current-period utility, and the choice-specific value is simply $v_d(x)=u(x,d;\theta)$. Plugging this into the Type I extreme-value distribution, the replacement probability is</p>
+
+    <div class="formula-box">
+      <div class="formula-title">Choice probability in the myopic model (β = 0)</div>
+      <div class="formula-math">$$P(d\mid x) = \frac{\exp\big(u(x,d;\theta)\big)}{\exp\big(u(x,0;\theta)\big) + \exp\big(u(x,1;\theta)\big)}$$</div>
+      <div class="formula-explain">
+        <table>
+          <tr><td class="var-observed">$x$</td><td>Current mileage bin</td></tr>
+          <tr><td class="var-estimated">$u(x,d;\theta)$</td><td>Current-period utility (negative cost), current-period terms only</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <p>See it? This is exactly the binary logit of Chapter 03, identical in every respect. If you can estimate a logit, you can already estimate the myopic version of the Rust model: treat maintenance cost $-c(x)$ and replacement cost $-RC$ as the deterministic utilities of the two options and estimate a binary logit. So what more does the dynamic model ask of us? Really just one thing: replace "current-period utility" with "current-period utility plus the discounted future value."</p>
+
+    <div class="info-box">
+      <div class="box-title">Background you'll need: discounting and expectations</div>
+      <p>The next few paragraphs lean repeatedly on three of the most basic tools, so here is a one-line refresher on each, enough that readers unfamiliar with discounting and expectations can still follow the Bellman equation to come.</p>
+      <p><strong>Discounting</strong>: the same one yuan is worth more in hand today than in hand next period. Converted to today, next period's one yuan is worth only $\beta$ yuan. Here $\beta$ is a number between 0 and 1: the closer to 1, the more the future matters; $\beta=0$ means the future is ignored entirely, with an eye only on the current period's tally.</p>
+      <p><strong>Expectation</strong> (expected value): once today's choice is made, which mileage bin the next step lands in is not yet revealed. The "expected future value" simply weights each possible future value by the probability it occurs and averages them. Cases that are more likely carry more weight, less likely ones less.</p>
+      <p><strong>A logit refresher</strong>: as Chapter 03 explained, the logit choice probability is each option's exponentiated utility as a share of the total. By the end of this section you will see that the dynamic model's choice probability keeps this same shape, only with utility replaced by a quantity that carries the future value inside it.</p>
+    </div>
+
+    <p>To spell out "the discounted future value," it helps to return to Zurcher's side. Now that he looks ahead, he no longer watches only the current period's tally. Choosing maintenance today lets mileage keep climbing, which pushes him toward a future where maintenance grows ever more expensive; choosing replacement today resets mileage to zero and buys a quiet stretch of cheap maintenance. So what he weighs is no longer just "which is cheaper today" but "where does today's step take me."</p>
+
+    <div class="intuition-box">
+      <div class="box-title">Intuition: reckoning like a chess player</div>
+      A forward-looking decision is a lot like chess. Whether a move is good is never just about which piece it captures; it is about the position the move steers the whole board into, and the gap between an expert and a novice usually lives in that second half. Zurcher's reckoning for each option has these same two parts: how much the current period saves or spends, plus "how much the future this step delivers him into is itself worth." The discount factor $\beta$ measures how much he cares about that future position. At $\beta=0$ he minds only the present, one move at a time, back to the binary logit of the previous passage; the closer $\beta$ is to 1, the more the future game weighs in his mind against the move in front of him.
+    </div>
+
+    <p>Translating that plain-language passage into a formula gives the Bellman equation that the <strong>value function</strong> satisfies. It says the very same thing: in the current period pick the higher-value of the two options, where each option's value is "current-period utility plus the discounted expected future value."</p>
+
+    <div class="formula-box">
+      <div class="formula-title">The value function: the Bellman equation</div>
+      <div class="formula-math">$$V(x,\varepsilon) = \max_{d\in\{0,1\}} \Big\{ u(x,d;\theta) + \varepsilon_d + \beta\, \mathbb{E}\big[\,V(x',\varepsilon') \mid x,d\,\big] \Big\}$$</div>
+      <div class="formula-explain">
+        <table>
+          <tr><td class="var-estimated">$V(x,\varepsilon)$</td><td>Lifetime value in state $(x,\varepsilon)$</td></tr>
+          <tr><td class="var-researcher">$\beta$</td><td>Discount factor, gauging how much the future counts (usually fixed by the researcher, see 7.6)</td></tr>
+          <tr><td class="var-estimated">$\mathbb{E}[\,\cdot\,]$</td><td>Conditional expectation over the next-period state and shock $(x',\varepsilon')$</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <p>A $V$ stands on both sides of the equation, which at first looks like spinning in place, but it is saying something quite concrete: today's value is determined by the future's value, and the future's value obeys the same equation. Whether such a self-defining equation has a solution at all, and whether that solution is unique, has to be argued separately. Readers on the main track can accept that it "has one and only one solution" and move on; those who want to know "what guarantees existence and uniqueness" will find a derivation at the end of this section.</p>
+
+    <p>Next we need to knock this equation into a shape we can actually compute with. The first nuisance is that $V(x,\varepsilon)$ contains the continuous $\varepsilon$, which is awkward to solve directly. Fortunately the CI assumption from 7.2 comes into play precisely here: it lets us average out $\varepsilon$ first, yielding two objects that depend on mileage $x$ alone and are far easier to handle. One is the <strong>choice-specific value</strong> $v_d(x)$, the current-period utility after choosing $d$ plus the discounted expected future value, but without the current period's $\varepsilon_d$; the other is the <strong>integrated value function</strong> (also called the ex-ante value function) $\bar V(x)$, the value function after taking expectation over $\varepsilon$.</p>
+
+    <div class="formula-box">
+      <div class="formula-title">Choice-specific value and integrated value function</div>
+      <div class="formula-math">$$v_d(x) = u(x,d;\theta) + \beta \sum_{x'} f(x'\mid x,d)\, \bar V(x'), \qquad \bar V(x) = \mathbb{E}_{\varepsilon}\,\max_{d}\big\{ v_d(x) + \varepsilon_d \big\}$$</div>
+      <div class="formula-explain">
+        <table>
+          <tr><td class="var-estimated">$v_d(x)$</td><td>Value of choosing $d$, including the discounted future but not the current $\varepsilon_d$</td></tr>
+          <tr><td class="var-estimated">$\bar V(x)$</td><td>Ex-ante value function after integrating out $\varepsilon$, depending on $x$ alone</td></tr>
+          <tr><td class="var-estimated">$f(x'\mid x,d)$</td><td>State transition, weighting future value by probability</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <p>Put simply, $v_d(x)$ answers "with $d$ chosen but the current $\varepsilon$ not yet revealed, how much is this step worth," and serves to compare options; $\bar V(x)$ answers "before any choice, knowing only that you stand at mileage $x$, how much is this position worth," and serves to pass future value back. Each lives inside the other: $v_d$ uses the future $\bar V$, and $\bar V$ is obtained as the expected maximum over the current-period $v_d$'s.</p>
+
+    <p>One step remains: what exactly does that "take the expectation over $\varepsilon$, then the maximum" in the definition of $\bar V$ equal? The answer is a pretty one. As long as $\varepsilon$ follows a Type I extreme-value distribution, two clean closed forms fall out here. First, this expected maximum is exactly the logsum seen in Chapter 03, carrying only an extra Euler constant $\gamma \approx 0.5772$, which smooths the non-smooth "take the maximum" into a smooth log-sum. Second, the choice probability keeps its logit shape, only with the deterministic utility replaced by the choice-specific value $v_d$.</p>
+
+    <div class="formula-box">
+      <div class="formula-title">Two closed forms under Type I extreme value</div>
+      <div class="formula-math">$$\bar V(x) = \gamma + \ln \sum_{j} \exp\big(v_j(x)\big), \qquad P(d\mid x) = \frac{\exp\big(v_d(x)\big)}{\sum_{j}\exp\big(v_j(x)\big)}$$</div>
+      <div class="formula-explain">
+        <table>
+          <tr><td>$\gamma$</td><td>Euler constant $\approx 0.5772$, a fixed constant implied by the Type I extreme-value distribution, the location correction to the logsum</td></tr>
+          <tr><td class="var-estimated">$v_j(x)$</td><td>Choice-specific value of option $j$</td></tr>
+          <tr><td class="var-estimated">$P(d\mid x)$</td><td>Conditional choice probability (CCP), logit shape</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <p>By this point the dynamic model has settled squarely back onto the logit we know: the choice probability is still that exponentiated share, only with each option's deterministic utility replaced by a $v_d$ that carries the future value inside it. If you can compute a logit, you can compute this. The promise made at the outset, "first reduce to logit, then add the forward-looking structure back step by step," has now come full circle.</p>
+
+    <p>The $\gamma$ in the formula comes from the standard Type I extreme-value distribution, whose mean is not zero but is exactly $\gamma$. If the location of $\varepsilon$ is normalized to mean zero, the $\gamma$ term disappears and $\bar V(x) = \ln\sum_j \exp(v_j(x))$. The difference between the two conventions is nothing more than adding a common constant to all options, which cancels top and bottom in the logit and leaves the choice probability entirely unaffected. The two-period worked example later in this chapter uses the mean-zero convention throughout.</p>
+
+    <p>Talk is not enough, so let us feel out this logsum with concrete numbers. <span class="demo-badge">illustrative data</span> Suppose that in some state the two choice-specific values are $v_{\text{keep}} = -8.08$ and $v_{\text{replace}} = -12.43$. Under the mean-zero convention just described, the ex-ante value function is $\bar V = \ln\!\big(e^{-8.08} + e^{-12.43}\big) \approx -8.067$. Notice that this sits about 0.013 above the larger of the two values ($-8.08$). Do not dismiss this sliver of a gap: it is exactly the option value that comes from "still getting to pick the higher-value option when the moment arrives." Because $\varepsilon$ always mixes in a little randomness, replacing occasionally turns out to be the better deal, and that "kept a way out" flexibility is itself worth a little something.</p>
+
+    <div class="takeaway-box">
+      <div class="box-title">Bottom Line</div>
+      The dynamic model's choice probability is still logit, only with deterministic utility replaced by the choice-specific value $v_d$. The static model is the special case of the dynamic model at $\beta=0$. The conditional independence assumption and the Type I extreme value reduce the "expected future value" to a logsum with an Euler constant, and this is the key to the whole framework being solvable.
+    </div>
+
+    <details>
+      <summary>Infinite horizon: why the fixed point must exist and be unique</summary>
+      <div class="detail-content">
+        <p>The bus-engine problem has no endpoint, the decision rule is the same every period, and the value function does not depend on time. Chaining the definitions above, $\bar V$ satisfies a self-referential equation $\bar V = \Gamma(\bar V)$, where the operator $\Gamma$ first computes each $v_d$ from $\bar V$ and then takes the logsum to get a new $\bar V$. Because $\beta &lt; 1$, this operator is a <strong>contraction mapping</strong>: after $\Gamma$ acts on any two candidate value functions, the largest gap between them shrinks to at most $\beta$ times the original. The Banach fixed-point theorem therefore guarantees that $\bar V$ exists and is unique, and that iterating $\bar V \leftarrow \Gamma(\bar V)$ from any starting value converges to it. Successive approximation converges on its own; to speed things up, Rust switches to Newton-Kantorovich once the iteration nears the solution, reaching very high precision fairly quickly even with a 90-dimensional state and the computing resources of the day. This inner fixed-point solve is the heart of estimation methods like NFXP.</p>
+      </div>
+    </details>
+
+    <!-- ============================================ -->
+        <div class="figure">
+    <svg viewBox="0 0 700 322" role="img" aria-label="Replacement probability rises with mileage: at every mileage the forward-looking decision-maker replaces the engine sooner than the myopic one">
+      <line class="gr dash" x1="64" y1="280.0" x2="660" y2="280.0"></line><text x="56" y="284.0" text-anchor="end" class="mut lbl-s">0</text><line class="gr dash" x1="64" y1="160.0" x2="660" y2="160.0"></line><text x="56" y="164.0" text-anchor="end" class="mut lbl-s">0.5</text><line class="gr dash" x1="64" y1="40.0" x2="660" y2="40.0"></line><text x="56" y="44.0" text-anchor="end" class="mut lbl-s">1</text>
+      <line class="ax" x1="64" y1="280" x2="660" y2="280"></line>
+      <line class="ax" x1="64" y1="34" x2="64" y2="280"></line>
+      <polyline points="64.0,279.1 75.9,278.9 87.8,278.7 99.8,278.4 111.7,278.0 123.6,277.6 135.5,277.1 147.4,276.5 159.4,275.7 171.3,274.7 183.2,273.6 195.1,272.2 207.0,270.6 219.0,268.6 230.9,266.2 242.8,263.4 254.7,260.0 266.6,256.1 278.6,251.4 290.5,246.0 302.4,239.7 314.3,232.5 326.2,224.4 338.2,215.5 350.1,205.6 362.0,195.0 373.9,183.7 385.8,172.0 397.8,160.0 409.7,148.0 421.6,136.3 433.5,125.0 445.4,114.4 457.4,104.5 469.3,95.6 481.2,87.5 493.1,80.3 505.0,74.0 517.0,68.6 528.9,63.9 540.8,60.0 552.7,56.6 564.6,53.8 576.6,51.4 588.5,49.4 600.4,47.8 612.3,46.4 624.2,45.3 636.2,44.3 648.1,43.5 660.0,42.9" style="fill:none;stroke:var(--fig-1);stroke-width:2.5"></polyline>
+      <polyline points="64.0,279.8 75.9,279.8 87.8,279.7 99.8,279.7 111.7,279.6 123.6,279.5 135.5,279.4 147.4,279.3 159.4,279.1 171.3,278.9 183.2,278.7 195.1,278.4 207.0,278.0 219.0,277.6 230.9,277.1 242.8,276.5 254.7,275.7 266.6,274.7 278.6,273.6 290.5,272.2 302.4,270.6 314.3,268.6 326.2,266.2 338.2,263.4 350.1,260.0 362.0,256.1 373.9,251.4 385.8,246.0 397.8,239.7 409.7,232.5 421.6,224.4 433.5,215.5 445.4,205.6 457.4,195.0 469.3,183.7 481.2,172.0 493.1,160.0 505.0,148.0 517.0,136.3 528.9,125.0 540.8,114.4 552.7,104.5 564.6,95.6 576.6,87.5 588.5,80.3 600.4,74.0 612.3,68.6 624.2,63.9 636.2,60.0 648.1,56.6 660.0,53.8" style="fill:none;stroke:var(--fig-2);stroke-width:2.5;stroke-dasharray:6 4"></polyline>
+      <text x="250" y="90" class="lbl-s" style="fill:var(--fig-1);font-weight:700">Forward-looking (β&gt;0) · replaces sooner</text>
+      <text x="470" y="215" class="lbl-s" style="fill:var(--fig-2);font-weight:700">Myopic (β=0) · binary logit</text>
+      <text x="362" y="300" text-anchor="middle" class="mut lbl-s">Mileage x →</text>
+      <text x="20" y="160" text-anchor="middle" transform="rotate(-90 20 160)" class="mut lbl-s">Replacement probability P(replace | x)</text>
+    </svg>
+    <div class="figcaption"><span class="fig-label">Figure 7.2</span>Replacement probability rises with mileage, but the forward-looking and myopic cases trace two different curves (<span class="demo-badge">illustrative data</span>, utility parameters fixed). The myopic decision-maker (β=0) compares only the current maintenance bill against the replacement cost, which is just a binary logit. The forward-looking decision-maker also sees that keeping the engine pushes toward a future of ever-more-expensive maintenance, and so leans more toward replacing at every mileage: the whole curve shifts left, triggering replacement sooner. Section 7.6 explains why choice data alone often make it hard to separate β from the cost parameters.</div>
+    </div>
+
+    <h2 id="worked-t2">7.4 Worked Example: A Two-Period Model</h2>
+
+    <p>The infinite horizon has to be solved by iteration, layer nested within layer, and the intuition is not easy to see at a glance. So let us cut the horizon down to two periods and use backward induction to lay every step of the computation out in the open, one clear step at a time. The example below uses a set of teaching numbers, carried from the setup all the way to the replacement probability.</p>
+
+    <div class="worked-example">
+      <div class="worked-title">Two-period engine replacement: from setup to replacement probability <span class="demo-badge">illustrative data</span></div>
+
+      <p style="margin-top:6px"><strong>Setup.</strong> Horizon $T=2$, period-1 mileage $x_1 = 1$. Take a quadratic maintenance cost $c(x) = 2x + 0.5x^2$, a replacement cost $RC = 10$, and a discount factor $\beta = 0.9$. The mileage increment $\Delta = x' - x$ (relative to the current bin under maintenance, relative to the zero bin after replacement) follows $\Pr(\Delta{=}0)=0.2$, $\Pr(\Delta{=}1)=0.6$, $\Pr(\Delta{=}2)=0.2$. The shock $\varepsilon$ is i.i.d. Type I extreme value. These are all teaching numbers, not the estimates of Rust (1987); the quadratic form is taken purely for hand-computation convenience, whereas Rust's preferred specifications are actually linear and square-root (see 7.2).</p>
+
+      <div class="worked-step">Step 1: List the terminal-period (period 2) values</div>
+      <p>Following the finite-horizon teaching convention, we set the terminal period to maintenance only, with no further replacement ($T=2$ is a horizon truncated to make backward induction visible, not a conclusion the model itself implies). The period-2 per-period value is then the negative maintenance cost ($\varepsilon$ has mean zero and disappears once expectation is taken). Substituting $c(x)=2x+0.5x^2$:</p>
+      <div class="table-scroll">
+      <table>
+        <thead><tr><th>$x_2$</th><th>$c(x_2)$</th><th>$\bar V_2(x_2) = -c(x_2)$</th></tr></thead>
+        <tbody>
+          <tr><td>0</td><td>0</td><td>0</td></tr>
+          <tr><td>1</td><td>2.5</td><td>−2.5</td></tr>
+          <tr><td>2</td><td>6</td><td>−6</td></tr>
+          <tr><td>3</td><td>10.5</td><td>−10.5</td></tr>
+        </tbody>
+      </table>
+      </div>
+
+      <div class="worked-step">Step 2: Compute expected future value with the transition probabilities</div>
+      <p>Starting from $x_1 = 1$, the two decisions carry mileage to different bins. Under maintenance $x_2 = 1 + \Delta \in \{1,2,3\}$; after replacement mileage resets to zero, $x_2 = 0 + \Delta \in \{0,1,2\}$.</p>
+      <div class="table-scroll">
+      <table>
+        <thead><tr><th>Decision</th><th>$x_2=0$</th><th>$x_2=1$</th><th>$x_2=2$</th><th>$x_2=3$</th><th>Expected future value $\sum_{x_2} q\cdot \bar V_2$</th></tr></thead>
+        <tbody>
+          <tr><td>Maintain $d=0$</td><td>0</td><td>0.2</td><td>0.6</td><td>0.2</td><td>$(-2.5)(0.2)+(-6)(0.6)+(-10.5)(0.2) = -6.2$</td></tr>
+          <tr><td>Replace $d=1$</td><td>0.2</td><td>0.6</td><td>0.2</td><td>0</td><td>$(0)(0.2)+(-2.5)(0.6)+(-6)(0.2) = -2.7$</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <p>Replacement lifts the expected future value from $-6.2$ to $-2.7$, because the low mileage after a reset means lower future maintenance cost. This is precisely where the value of looking ahead lies.</p>
+
+      <div class="worked-step">Step 3: Discount, add the current cost, and get the choice-specific values</div>
+      <p>The choice-specific value equals current-period utility plus the discounted expected future value. The current maintenance cost is $c(1) = 2.5$ and the replacement cost is $RC = 10$:</p>
+      <div class="formula-box" style="margin:14px 0">
+        <div class="formula-math">$$v_{\text{keep}} = -c(1) + \beta(-6.2) = -2.5 + 0.9(-6.2) = -2.5 - 5.58 = -8.08$$
+        $$v_{\text{replace}} = -RC + \beta(-2.7) = -10 + 0.9(-2.7) = -10 - 2.43 = -12.43$$</div>
+      </div>
+      <p style="margin-bottom:0">The $-8.08$ and $-12.43$ used in 7.3 to illustrate the logsum and the option value are exactly these two values computed here.</p>
+
+      <div class="worked-step">Step 4: Plug into logit and get the replacement probability</div>
+      <p>The two values differ by $v_{\text{keep}} - v_{\text{replace}} = -8.08 - (-12.43) = 4.35$. The replacement probability is</p>
+      <div class="formula-box" style="margin:14px 0">
+        <div class="formula-math">$$P(\text{replace}\mid x_1{=}1) = \frac{e^{-12.43}}{e^{-12.43} + e^{-8.08}} = \frac{1}{1 + e^{4.35}} = \frac{1}{1 + 77.48} \approx 0.0127$$</div>
+      </div>
+      <p>The replacement probability is about <strong>1.27%</strong> and the maintenance probability about <strong>98.73%</strong>. At the low bin of mileage $x=1$, the cost of replacing the engine far outweighs the benefit, so the model returns a low replacement probability, in line with intuition.</p>
+
+      <div class="worked-step">Step 5: Compare against the myopic model</div>
+      <p>If the maintenance superintendent were fully myopic ($\beta=0$), he would compare only current-period costs: $v_{\text{keep}} = -2.5$, $v_{\text{replace}} = -10$, giving a replacement probability of $\tfrac{1}{1+e^{7.5}} \approx 0.00055$, that is, about <strong>0.055%</strong>. The replacement probability from the forward-looking model (1.27%) is about <strong>23 times</strong> that from the myopic model (0.055%).</p>
+    </div>
+
+    <div class="figure">
+    <svg viewBox="0 0 640 340" role="img" aria-label="Backward-induction decision tree for two-period engine replacement: starting from mileage x1=1, maintain and replace each lead through transition probabilities to the period-two terminal values">
+      <text x="334" y="34" class="mut lbl-s">Period-2 terminal value · transition prob.</text>
+
+      <line x1="88" y1="177" x2="150" y2="98" style="stroke:var(--fig-axis);stroke-width:1.4"></line>
+      <line x1="88" y1="177" x2="150" y2="262" style="stroke:var(--fig-axis);stroke-width:1.4"></line>
+      <text x="104" y="130" class="mut lbl-s">Now −2.5</text>
+      <text x="104" y="228" class="mut lbl-s">Now −10</text>
+
+      <line x1="254" y1="98" x2="326" y2="58" style="stroke:var(--fig-axis);stroke-width:1.2"></line>
+      <line x1="254" y1="98" x2="326" y2="98" style="stroke:var(--fig-axis);stroke-width:1.2"></line>
+      <line x1="254" y1="98" x2="326" y2="138" style="stroke:var(--fig-axis);stroke-width:1.2"></line>
+      <line x1="254" y1="262" x2="326" y2="222" style="stroke:var(--fig-axis);stroke-width:1.2"></line>
+      <line x1="254" y1="262" x2="326" y2="262" style="stroke:var(--fig-axis);stroke-width:1.2"></line>
+      <line x1="254" y1="262" x2="326" y2="302" style="stroke:var(--fig-axis);stroke-width:1.2"></line>
+
+      <rect x="14" y="158" width="74" height="38" rx="8" class="bx"></rect>
+      <text x="51" y="182" text-anchor="middle" class="ink lbl">x₁ = 1</text>
+      <rect x="150" y="80" width="104" height="36" rx="8" style="fill:var(--fig-1-soft);stroke:var(--fig-1);stroke-width:1.8"></rect>
+      <text x="202" y="102" text-anchor="middle" class="ink lbl">Maintain d=0</text>
+      <rect x="150" y="244" width="104" height="36" rx="8" class="bx"></rect>
+      <text x="202" y="266" text-anchor="middle" class="ink lbl">Replace d=1</text>
+
+      <text x="334" y="62" class="ink lbl-s">−2.5 · p 0.2</text>
+      <text x="334" y="102" class="ink lbl-s">−6 · p 0.6</text>
+      <text x="334" y="142" class="ink lbl-s">−10.5 · p 0.2</text>
+      <text x="334" y="226" class="ink lbl-s">0 · p 0.2</text>
+      <text x="334" y="266" class="ink lbl-s">−2.5 · p 0.6</text>
+      <text x="334" y="306" class="ink lbl-s">−6 · p 0.2</text>
+
+      <text x="470" y="102" class="lbl-s" style="fill:var(--fig-1);font-weight:700">E[future] = −6.2</text>
+      <text x="470" y="266" class="lbl-s" style="fill:var(--fig-1);font-weight:700">E[future] = −2.7</text>
+    </svg>
+    <div class="figcaption"><span class="fig-label">Figure 7.1</span>Backward induction for two-period engine replacement. Starting from mileage x₁=1, maintain and replace each lead through their transition probabilities to the period-2 terminal values, which weight up to the expected future values (maintain −6.2, replace −2.7). Discounting by β=0.9 and adding the current cost gives the choice-specific values v_keep=−8.08, v_replace=−12.43, and plugging into logit gives a replacement probability of about 1.27%. Replacement lifts the future value higher (maintenance is cheaper once mileage resets), but at a low mileage bin like x=1 that still cannot overcome its steep current cost.</div>
+    </div>
+
+    <p>This comparison makes one thing plain first: replacement is not a rigid all-or-nothing decision; what the model produces is a probability lying between 0 and 1. The root is $\varepsilon$. It stands for the factors the model cannot see yet that genuinely sway the decision, smoothing a hard threshold into a smooth probability curve.</p>
+
+    <div class="intuition-box">
+      <div class="box-title">Intuition: looking ahead moves two opposing forces at once</div>
+      Set the forward-looking model beside the myopic one and you find that looking ahead actually pulls two opposing forces at once. One is "replace early": swapping in a new engine dodges the future's ever-climbing maintenance-cost curve, and this force pushes the replacement probability up. The other is "wait a bit longer": mileage is still low right now, current maintenance spending is not high, and deferring an expensive replacement, keeping the "replace or not" decision for later, is itself a valuable option, a force that presses the replacement probability down. In the low-mileage state $x=1$, the "dodge future high maintenance cost" side wins out, the net effect is that looking ahead raises the replacement probability, and so 1.27% exceeds the myopic 0.055%. As mileage climbs all the way up and current maintenance spending nears the replacement cost, the myopic decision-maker starts replacing frequently too, and the two replacement-probability curves rise together toward the upper bound; but at every mileage bin the forward-looking curve sits no lower than the myopic one, shifted left overall, exactly as drawn in Figure 7.2. This state-dependent trade-off is precisely what a dynamic model can capture and a myopic model can never reach.
+    </div>
+
+    <!-- ============================================ -->
+    <h2 id="estimation-menu">7.5 A Menu of Estimation Methods</h2>
+
+    <p>The model is built; the next question is how to estimate the parameters $\theta = (RC, \theta_1)$ from data. There is really only one obstacle in the way: the choice probability $P(d\mid x)$ needs the choice-specific value $v_d$, and $v_d$ cannot get around the $\bar V$ that has to be solved by a fixed point. The assorted estimation methods in the literature all, at bottom, answer the same question: does this fixed point have to be solved at every step?</p>
+
+    <h3>NFXP: nested fixed point</h3>
+
+    <p>Rust's (1987) original method is the nested fixed point (NFXP). As the name says, it nests the estimation into an outer and an inner layer. The outer layer is maximum likelihood, searching for $\theta$ in parameter space; each time the outer layer floats a candidate $\theta$, the inner layer dutifully solves the corresponding $\bar V$ fixed point, computes the choice probabilities, and hands them back to the outer likelihood. The procedure also has a separability convenience: the mileage transition $f$ appears in only one part of the likelihood, so it can be estimated separately first (the first stage), and then, with $f$ held fixed, the utility parameters $(RC,\theta_1)$ can be estimated (the second stage). NFXP's virtue is that its logic is straightforward and its statistical properties are well behaved; its weakness is speed, since every step the outer layer takes forces the inner layer to solve a high-dimensional fixed point from scratch.</p>
+
+    <div class="pipeline-bar">
+      <span class="pipe-step">Given a candidate $\theta$</span>
+      <span class="pipe-arrow">→</span>
+      <span class="pipe-step here">Inner layer solves the $\bar V$ fixed point</span>
+      <span class="pipe-arrow">→</span>
+      <span class="pipe-step">Compute choice probabilities $P(d\mid x)$</span>
+      <span class="pipe-arrow">→</span>
+      <span class="pipe-step">Compute the log-likelihood</span>
+      <span class="pipe-arrow">→</span>
+      <span class="pipe-step">Update $\theta$, return to start</span>
+    </div>
+
+    <h3>MPEC: the fixed point as a constraint</h3>
+
+    <p>Su and Judd (2012) took a different tack. If the inner fixed point is the computational bottleneck, why solve it exactly, over and over, in an inner layer? Simply write the fixed-point equation itself as a set of equality constraints and hand it, together with the parameters, to a constrained optimizer. This is MPEC (mathematical programming with equilibrium constraints): the objective is the likelihood, the constraint is $\bar V = \Gamma(\bar V)$, the optimizer searches over $\theta$ and $\bar V$ jointly, and it only requires the constraint to hold at the optimum. It spares thousands upon thousands of exact fixed-point solves and is faster than NFXP on many problems, at the cost of needing a solver that can chew through large-scale constrained optimization. Whether MPEC is genuinely faster is not settled, however: how much faster depends on both the specific implementation and the problem size, and the point has long been debated. Iskhakov, Lee, Rust, Schjerning, and Seo (2016) redid this comparison and found that once the inner fixed point is solved by Newton-Kantorovich iteration, a well-implemented NFXP is often just as fast as MPEC. How to choose between the two turns more on implementation quality and the dimension of the fixed point than on any inherent speed advantage of the method itself.</p>
+
+    <h3>CCP: the Hotz-Miller inversion</h3>
+
+    <p>Hotz and Miller (1993) were bolder still, solving no fixed point at all, relying instead on an inversion theorem. Under Type I extreme value, the difference in choice-specific values can be inverted directly from the observed choice probabilities. Taking maintenance ($d=0$) as the baseline,</p>
+
+    <div class="formula-box">
+      <div class="formula-title">The Hotz-Miller inversion</div>
+      <div class="formula-math">$$v_d(x) - v_0(x) = \ln P(d\mid x) - \ln P(0\mid x)$$</div>
+      <div class="formula-explain">
+        <table>
+          <tr><td class="var-estimated">$v_d(x)-v_0(x)$</td><td>Difference in choice-specific values, an object internal to the model</td></tr>
+          <tr><td class="var-observed">$P(d\mid x)$</td><td>Conditional choice probability, estimable directly from data (the first stage)</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <p>This identity carries real weight: once the choice probabilities for each state are estimated from data (a nonparametric or flexible parametric method suffices for the first stage), the value difference is in hand at once, with no fixed point to solve. Check it against the numbers in 7.4: the identity holds exactly for the un-rounded choice probabilities, and $\ln\!\big(P(\text{replace})/P(\text{keep})\big)$ equals precisely $v_{\text{replace}} - v_{\text{keep}} = -12.43-(-8.08) = -4.35$ (computing on the rounded display values $0.0127/0.9873$ with a calculator gives about $-4.353$, the difference being only rounding). The second stage of CCP takes these inverted value differences to build a likelihood or moment conditions and estimate the utility parameters.</p>
+
+    <p>There is a further clever construction that makes CCP even lighter, called <strong>finite dependence</strong>. The idea is ingenious: if the action sequences following different initial decisions are chosen carefully so that they converge to the same state distribution after a few periods, then the more distant future values cancel in pairs when differenced, and estimation needs only the choice probabilities a few periods ahead rather than chasing an entire infinitely long chain of values. This can sharply reduce the number of future-period CCPs that must be plugged in when constructing the value differences.</p>
+
+    <p>Doing two-step estimation with CCP has one thing to watch: the first-stage choice probabilities are themselves estimated and carry sampling error; when computing standard errors at the second stage, the propagation of that error must be corrected for, or the inference will be overconfident.</p>
+
+    <h3>NPL and unobserved heterogeneity</h3>
+
+    <p>The nested pseudo-likelihood (NPL) of Aguirregabiria and Mira (2002) sits right between the exactness of NFXP and the speed of CCP. Starting from an initial set of CCPs, it iterates round by round, updating values and choice probabilities and drawing a little closer to the fixed point each turn, borrowing CCP's speed without giving up the precision of approaching the full solution.</p>
+
+    <p>One more step toward reality and we must face unobserved heterogeneity: different users may simply differ in preferences or switching costs, and the researcher cannot see those differences. Arcidiacono and Miller (2011) fuse the CCP method with the EM algorithm, allowing discrete unobserved types and using expectation-maximization to alternate between "weighting the types" and "estimating parameters given a type," holding on to CCP's computational advantage while capturing the persistent heterogeneity that lingers in a panel. This step matters especially for platform data, because separating switching costs from stable preferences (the problem in 7.1) rests on it.</p>
+
+    <div class="table-scroll">
+    <table>
+      <thead>
+        <tr><th>Method</th><th>Core approach</th><th>Computational cost</th><th>Solves a fixed point?</th><th>Reliance on distributional assumptions</th><th>Representative reference</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>NFXP</strong></td>
+          <td>Outer MLE searches $\theta$, inner layer solves a fixed point at every step</td>
+          <td>High (naive inner iteration) / medium (Newton-Kantorovich)</td>
+          <td>Yes, solved at every step</td>
+          <td>High (the likelihood depends entirely on Type I extreme value)</td>
+          <td>Rust (1987)</td>
+        </tr>
+        <tr>
+          <td><strong>MPEC</strong></td>
+          <td>Hands the fixed-point equation to the optimizer as a constraint</td>
+          <td>Medium</td>
+          <td>Satisfied only at the optimum</td>
+          <td>High</td>
+          <td>Su &amp; Judd (2012)</td>
+        </tr>
+        <tr>
+          <td><strong>CCP</strong></td>
+          <td>Inverts value differences from observed choice probabilities, no fixed point</td>
+          <td>Low</td>
+          <td>No</td>
+          <td>Medium at the first stage (can be nonparametric) / high at the second stage (the inversion pins down the extreme-value distribution)</td>
+          <td>Hotz &amp; Miller (1993)</td>
+        </tr>
+        <tr>
+          <td><strong>NPL</strong></td>
+          <td>Iterates from an initial CCP toward the fixed point</td>
+          <td>Medium-low</td>
+          <td>Approximate, need not be exact</td>
+          <td>Medium</td>
+          <td>Aguirregabiria &amp; Mira (2002)</td>
+        </tr>
+        <tr>
+          <td><strong>CCP + unobserved types</strong></td>
+          <td>CCP combined with EM, accommodating discrete unobserved heterogeneity</td>
+          <td>Medium</td>
+          <td>No</td>
+          <td>Medium</td>
+          <td>Arcidiacono &amp; Miller (2011)</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+
+    <div class="takeaway-box">
+      <div class="box-title">Bottom Line</div>
+      The through-line of these methods is "whether a fixed point must be solved at every step." NFXP is exact but slow, MPEC trades constraints for speed, and CCP relies on $v_d - v_0 = \ln(p_d/p_0)$ to reduce dynamic estimation to a string of logits with correction terms. Logit is already a familiar tool, so between CCP and dynamic estimation lies nothing more than a first-stage choice probability.
+    </div>
+
+    <!-- ============================================ -->
+    <h2 id="beta-identification">7.6 The Identification Problem for β</h2>
+
+    <p>The discount factor $\beta$ is equally part of the model. The most natural thought is this: if $RC$ can be estimated, then hand $\beta$ to maximum likelihood as well and let the data speak. But Rust did no such thing; he pinned $\beta$ firmly at 0.9999 and simply did not estimate it. This was not for computational convenience but because the identification conditions flatly refuse. What this section spells out is exactly this "why $\beta$ cannot be estimated," the most representative identification difficulty in the chapter.</p>
+
+    <div class="intuition-box">
+      <div class="box-title">Intuition: two Zurchers who look exactly alike</div>
+      Picture two maintenance superintendents, both fonder than their peers of replacing engines early, but for different reasons. The first is unusually patient (large $\beta$) and puts special weight on the long-run payoff that "replacing early dodges high future maintenance cost." The second finds replacement genuinely cheap in his shop (small $RC$), so it already pays off in the current period. The trouble is that the data record only the one action, "replace or not," and the two men's actions look exactly the same. From behavior alone you cannot tell whether someone replaces early "because he is patient" or "because replacement is cheap." It is like seeing only a total expenditure and being unable to guess whether the unit price was high or the quantity large.
+    </div>
+
+    <p>In the language of identification: $\beta$ and the replacement cost $RC$ are nearly collinear, both push in the same direction on "whether to replace early," and no variation in the data pries them apart. Rust offered a very direct piece of evidence: moving $\beta$ from 0.98 all the way to 0.9999 and on to 0.99999 leaves the likelihood value and the other parameters almost unmoved, and the information matrix at the estimate is nearly singular. Magnac and Thesmar (2002) put it beyond doubt: given choice probabilities and state transitions, per-period utility can be identified at most up to "first fixing a $\beta$, then choosing a normalization," and $\beta$ itself is nonparametrically unidentified in the standard setup.</p>
+
+    <p>Walking through the three identification questions makes $\beta$'s predicament plain at a glance. What exactly are we trying to estimate? $\beta$, that is, how much the decision-maker cares about the future. Which variation lets us pick it out on its own? We need a very particular kind: some state variable that influences the decision only through future payoffs while not touching current-period payoffs at all. Such an "only through future payoffs, never entering current payoffs" specification is called an <strong>exclusion restriction</strong>, and a state variable that satisfies it becomes the lever for identifying $\beta$; it manufactures a disturbance that "stirs the future without disturbing the present," which is exactly what pries apart "how patient" and "how expensive in the current period." The ideal experiment looks roughly like this: find a variable that changes how fast future mileage grows while not touching current maintenance cost in the slightest, so that the behavioral change it induces can only be attributed to how much the user weights the future, and $\beta$ is thereby identified. Conversely, when does it fail? As long as no such variable can be found, $\beta$ stays tangled up with $RC$, and the likelihood is nearly flat in $\beta$: pick any $\beta$, pair it with a correspondingly adjusted $RC$, and the data fit equally well, so the point estimate has nowhere to settle. In practice such exclusion variables are often nowhere to be found however hard you look, and this is the real reason most papers simply fix $\beta$.</p>
+
+    <div class="warn-box">
+      <div class="box-title">Pitfall: reporting an "estimated β" without an identification argument</div>
+      <p style="margin-bottom:0">If a paper claims to have estimated the discount factor but cannot say which "affects the future, not current payoffs" variable is identifying it, then the point estimate is a castle in the air, and the reader has no way to judge which slice of data variation it rests on. The safe default is to fix $\beta$, run a sensitivity analysis over a few reasonable values, and make clear whether the main conclusion moves with $\beta$. That said, to be precise, the inability to point-estimate $\beta$ does not mean the data know nothing about discounting: Rust used a likelihood-ratio test to compare $\beta=0$ against $\beta=0.9999$, with a statistic of 12.78 and marginal significance of 0.0035, cleanly <strong>rejecting the myopic model</strong>. The data can determine that "this person is by no means fully myopic" while unable to determine "just how patient he is."</p>
+    </div>
+
+    <p>Fixing $\beta$ is the first gate dynamic identification must pass; there is a second, equally easy to overlook: the absolute level of utility must also be pinned down by a normalization. Choice probabilities recognize only differences in utility, so in each state a baseline action must be chosen and its per-period utility set to zero, giving the other actions a reference. This step is indispensable and is done every day in static models too, most commonly by normalizing the outside option's utility to zero. What genuinely calls for a second thought is whether that static "outside-option utility = 0" carries over unchanged to a dynamic model. The answer is not to be taken for granted. A static setup is independent across periods, and the normalization cancels within the current period without a trace; in a dynamic setup, the zeroed-out utility propagates forward through the value function, so it is no longer an inconsequential bookkeeping convention but a specification with real consequences, and a different choice of normalization can change the counterfactual conclusions.</p>
+
+    <p>Here two kinds of normalization must be told apart. Rust's $c(0)=0$ belongs to the harmless kind: it merely takes the zero-mileage-bin maintenance cost as a baseline, a location normalization within a single state in a single period, and canceling it out is just canceling it out, leaving the future untouched. The kind to watch out for is another: pressing some action's per-period utility to zero uniformly across all states. This remains harmless in a static model ($T=1$), an important exception; but once there are multiple periods, that action's per-period utility accumulates through the value function into each state's future value, and forcing it to zero quietly rewrites those future values, so counterfactuals that depend on them are duly skewed. Magnac and Thesmar (2002) already pointed out that per-period utility is identified at most up to "first fixing $\beta$, then fixing a normalization"; Kalouptsidi, Scott, and Souza-Rodrigues (2021) go further, showing that it is exactly this kind of cross-state utility normalization that renders some counterfactuals unidentified. The safe practice is to bring every normalization in a dynamic model into the open and think through which way it pushes the conclusions, rather than importing the old static habit wholesale.</p>
+
+    <!-- ============================================ -->
+    <h2 id="counterfactuals">7.7 Counterfactuals</h2>
+
+    <p>Once the primitives are estimated, the dynamic model's real payoff arrives: counterfactuals. The counterfactual Rust himself ran is a model of the genre: he wanted to know what the implied demand curve for engine replacement looks like, more concretely, how the long-run annual number of replacements moves as the replacement cost $RC$ varies up and down.</p>
+
+    <p>This counterfactual walks the full standard procedure of the structural method in three steps:</p>
+    <ol>
+      <li>Alter a primitive: sweep the replacement cost $RC$ up and down parametrically.</li>
+      <li>For each $RC$, re-solve the dynamic program to obtain a new optimal decision rule.</li>
+      <li>Combine the decision rule with the state transition to find the long-run stationary distribution of the controlled process, that is, the equilibrium share of the fleet across mileage bins, and from it compute the equilibrium annual number of replacements.</li>
+    </ol>
+    <p>Stringing together the replacement counts computed under different $RC$ values gives a replacement demand curve $d(RC)$ built from the bottom up. This curve is not regressed directly from data but re-solved from the estimated preferences, state transition, and optimal decision rule. The model can therefore deliver predictions for an $RC$ that was never implemented, but whether those predictions are credible depends on whether preferences and technology stay stable under the policy change, and on whether the functional form is still appropriate beyond the support of the data.</p>
+
+    <p>It is on this curve that the dynamic and myopic models part ways. The myopic model's ($\beta=0$) demand curve is far more sensitive to replacement cost: it overstates demand when cost is low and understates it when cost is high, the whole curve steep and abrupt. The dynamic model's curve is much gentler, because forward-looking users spread a cost change across the entire future path, so their response is naturally more muted.</p>
+
+    <p>That the two curves meet near the true cost point is no coincidence. Both models are fit on the same data and must roughly reproduce the true replacement behavior at the observed cost level, so the real divergence hides in the cost range the data do not cover. This comparison also illustrates one thing: a reduced-form regression alone, regressing replacement counts directly on cost, cannot reliably identify the stretch of the demand curve beyond the data's support, because such an approach has no means of distinguishing dynamic from myopic.</p>
+
+    <div class="info-box">
+      <div class="box-title">Fit check: can the solved equilibrium reproduce the data</div>
+      <p style="margin-bottom:0">Whether a counterfactual can be trusted rests first on a bottom line: the model must be able to reproduce the world it was estimated on. Rust reports that the equilibrium distribution predicts an average mileage at replacement of <strong>287,892 miles</strong> against an actual 257,336, and an average mileage when not replaced of <strong>159,305 miles</strong> predicted against an actual 134,862, both in a reasonable range. The implied replacement hazard also squares with intuition: the dynamic setup yields a hazard that rises gently and caps at about <strong>7%</strong> at 450,000 miles, whereas the myopic setup lets the hazard shoot past 20%, plainly unreasonable. To be clear, the myopic and dynamic cases here each re-estimate their own parameters, and the myopic model has to push the maintenance-cost slope to an extreme to fit at all, which is what makes its high-mileage hazard overtake the dynamic one; this is not the same comparison as the "forward-looking replaces more everywhere" of Figure 7.2 in Section 7.3, which fixes the utility parameters and compares behavior only, so the two rest on different assumptions and do not conflict. Only when equilibrium behavior matches the data does the counterfactual stand.</p>
+    </div>
+
+    <p>Set this procedure beside a static counterfactual and the difference leaps out. A static counterfactual usually moves just one input on the demand side (a price, say) and reads off the new choice probabilities, and that is that. A dynamic structural counterfactual moves a primitive, and after moving it the whole model must be re-solved so the state distribution walks back to equilibrium before equilibrium behavior can be compared. Do not begrudge these extra steps: they are exactly what gives the dynamic model the standing to answer "what happens in the long run."</p>
+
+    <!-- ============================================ -->
+    <h2 id="platform-applications">7.8 Platform Applications</h2>
+
+    <p>A bus engine looks worlds apart from a digital platform, yet the skeleton is one and the same: a state that evolves slowly with choices, a forward-looking decision-maker, and a value function that stitches the present to the future. The three settings below carry Rust's framework over to platform research, focusing on how the method maps across and inventing no empirical numbers.</p>
+
+    <h3>Subscription switching and churn</h3>
+
+    <p>Whether to renew each month is a dynamic decision by nature. Write the switching cost into the state: which platform the user was on last period and how long the subscription has run are both state variables, and only when the user actually switches away from the current platform is the one-time switching cost paid (transferring data, re-registering, getting used to a new interface from scratch). Current-period utility is then expected use value minus price, minus the switching cost that surfaces only at the moment of switching. Set up this way, the model can immediately answer a question a static model is helpless before: splitting a promotion into a short-run and a long-run piece. A temporary discount cuts the current price directly and pulls back users who would otherwise have left; yet it also quietly changes the state: the user's subscription tenure advances one notch, and the longer the tenure, the more usage habits and data have settled in and the deeper the lock-in. So even after the discount lapses and the price springs back, this cohort's later retention rate has already risen. A static model sees only the current-period price elasticity, not this long-run effect propagating quietly along the state.</p>
+
+    <p>Estimating this model requires an individual-level monthly panel: which platform each user is on, how much they paid, and how platform attributes change over time. The state must hold at least the current platform and the subscription tenure. So when is a static approximation good enough? If switching costs are small enough to ignore and users do not anticipate future price changes, then each period's decision is approximately independent and a static model suffices. But once lock-in effects become pronounced, or users reckon with future price and content changes, a dynamic model becomes unavoidable.</p>
+
+    <h3>Adoption timing for new features and new devices</h3>
+
+    <p>At the heart of durable-goods adoption is a waiting option. Each period the user weighs "adopt now" against "wait a bit longer": as long as they still expect the price to fall or the quality to rise, waiting itself has value, and adoption is pushed back again and again. To capture this option, price expectations must enter the model: pack the current price together with its law of motion into the state, let the user form a sense of future prices from it, and weigh "adopt now and lock in the current price" against "keep waiting and bet on a lower price or better quality." The observed distribution of adoption timing, paired with the true path of prices and quality over time, is precisely the data foundation for identifying these dynamic parameters. The state usually holds whether adoption has already occurred, the current price, and the expected trajectory of price or quality. So when is a static approximation good enough? When the good is essentially fast-moving rather than durable, or when the user has no anticipable future change at all and thus nothing to wait for.</p>
+
+    <h3>Learning in membership upgrades</h3>
+
+    <p>The third kind of setting adds one more layer of uncertainty. Users are often unsure whether a premium membership is worth it and can only learn by using: each period's use updates their beliefs about quality, so that early trial rewrites the later information set. The state in such a model must include a belief variable, usually a posterior over quality (its mean and uncertainty, say), updated by Bayes' rule as observed experience comes in. A forward-looking user knows that "continuing to use buys still more information," so the current-period decision carries an information value inside it. Learning models are pickier about data: they need a panel long enough to reveal the dynamics of use and upgrading, ideally with variation that identifies the speed of learning. They are also the hardest to handle, and only when uncertainty and learning are squarely the bullseye of the research question is it worth bringing them out.</p>
+
+    <div class="warn-box">
+      <div class="box-title">Pitfall: substituting static-plus-dummy for a dynamic model</div>
+      <p style="margin-bottom:0">Slotting a switching-cost dummy into a static model can indeed soak up the persistence of choices, but it cannot make the decision-maker respond to the future, so it cannot compute a promotion's long-run lock-in effect, nor forward-looking behavior such as "swallowing a current price increase because you expect future increases or new content." Only when the counterfactual genuinely involves forward-looking motives, when static and dynamic give genuinely different answers, and when the panel is long enough, spanning years, to identify the dynamic parameters, is the cost of a full dynamic model worth paying. Conversely, if the research question does not touch these forward-looking effects, then all the more reason to weigh, before starting, what identifies the discount factor and whether the conditional independence assumption is credible. Whether a method is worth it turns on whether the problem truly needs it, not on how complex it is in itself.</p>
+    </div>
+
+    <!-- ============================================ -->
+    <h2 id="misconceptions">7.9 Common Pitfalls</h2>
+
+    <div class="table-scroll">
+    <table>
+      <thead>
+        <tr><th>Pitfall</th><th>Why it's wrong</th><th>What to do instead</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>"Add as many state variables as you like"</td>
+          <td>The state space grows exponentially in the number of variables (the curse of dimensionality), and each added dimension slows the fixed-point solve markedly</td>
+          <td>Keep only the states the decision truly depends on; trade off discretization fineness against computational cost, and run a sensitivity analysis</td>
+        </tr>
+        <tr>
+          <td>"Estimate and report β as a parameter"</td>
+          <td>$\beta$ is nearly collinear with the replacement cost and is nonparametrically unidentified in the standard setup; a seemingly precise point estimate is most likely imposed by functional form</td>
+          <td>Fix $\beta$ and run a sensitivity analysis; to estimate it, you must supply an exclusion variable that affects the future but not current payoffs (Section 7.6)</td>
+        </tr>
+        <tr>
+          <td>"The CI assumption is just a technicality"</td>
+          <td>Conditional independence has testable empirical content (given current mileage and decision $(x_t, d_t)$, the next-period mileage transition should not further depend on earlier mileage or decisions, that is, first-order Markov in the chosen state; its observable implication can be checked via the extra predictive power of lagged terms). If a test signals an omitted state or serially correlated shocks, the Bellman equation, CCP, and likelihood under the current state definition are wrong; the logsum identity implied by the Type I extreme-value shock itself does not thereby vanish mathematically, but must be re-solved on an expanded state or a more general shock process</td>
+          <td>Explain why CI is reasonable in the specific setting, test its observable implications where possible, and switch to a specification allowing serial correlation when necessary</td>
+        </tr>
+        <tr>
+          <td>"Persistent choices mean strong preferences"</td>
+          <td>Switching costs (genuine state dependence) and stable unobserved preferences (spurious state dependence) look the same in the data</td>
+          <td>Separate the two with a panel plus initial conditions; use an estimator that accommodates unobserved types (Arcidiacono &amp; Miller 2011)</td>
+        </tr>
+        <tr>
+          <td>"Any rough first-stage CCP will do"</td>
+          <td>If the first-stage choice probabilities use too crude a nonparametric estimate, the error propagates through the inversion onto the structural parameters, and without correction the standard errors are understated</td>
+          <td>Use a sufficiently flexible but stable estimate at the first stage; correct the first-stage sampling error into the standard errors at the second</td>
+        </tr>
+        <tr>
+          <td>"Having a panel means you must go dynamic"</td>
+          <td>Dynamic models are costly and worth it only when the problem involves forward-looking behavior, static and dynamic answers differ, and the panel is long enough</td>
+          <td>First ask whether the counterfactual needs forward-looking behavior; for questions a static model or reduced form can answer, the simpler method is safer</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+
+    <!-- ============================================ -->
+    <h2 id="summary">7.10 Chapter Summary</h2>
+
+    <p>Dynamic discrete choice extends the decision-maker's gaze from the current period all the way to the future. When today's choice connects to tomorrow through a state variable and the user folds the future in, it is time to discard the static "choose once independently each period" setup and use a value function to knead current-period utility together with the discounted future value. That the whole framework can be solved rests on two pillars: the conditional independence assumption keeps the shock from accumulating over time, and the Type I extreme-value distribution reduces the expected future value to a logsum with an Euler constant while also keeping the choice probability in its logit shape. A judgment hammered home throughout the chapter is that the static model is merely the special case of the dynamic model at $\beta=0$, and the dynamic model's choice probability does nothing more than replace deterministic utility with the choice-specific value $v_d$. The two-period worked example in 7.4 carries this chain from the setup all the way to the 1.27% replacement probability, every step of it holding up to a recomputation.</p>
+
+    <p>On the estimation side the through-line is still that same line, "must a fixed point be solved at every step": NFXP is exact but slow, MPEC treats the fixed point as a constraint to buy speed, CCP relies on $v_d - v_0 = \ln(p_d/p_0)$ to pull dynamic estimation back to a logit with correction terms, and NPL along with the unobserved-type-accommodating CCP-EM sits between the exact and the fast. The discount factor $\beta$ is usually held fixed, because it is nearly collinear with the replacement cost and nonparametrically unidentified; without borrowing an exclusion variable that affects the future but not current payoffs, it cannot be estimated on its own. Counterfactuals are the dynamic model's payoff: alter a primitive, re-solve the model, and compare equilibrium behavior to obtain the long-run and forward-looking effects a static method cannot give. Brought down to platform research, this toolkit becomes lock-in decomposition in subscription switching, the waiting option in adoption timing, and learning in membership upgrades. Chapter 08 will place this chapter's tools, together with those of earlier chapters, back into real research settings in platforms and digital markets.</p>
+
+    <!-- ============================================ -->
+    <h2 id="readings">Further Reading</h2>
+
+    <h4>Core of this chapter: the model and the classic methods</h4>
+    <ul>
+      <li>Rust, J. (1987). Optimal replacement of GMC bus engines: An empirical model of Harold Zurcher. <em>Econometrica</em>, <em>55</em>(5), 999–1033. <a href="https://doi.org/10.2307/1911259">https://doi.org/10.2307/1911259</a> (the running example of this chapter; NFXP + MLE, $\beta$ fixed, the myopic model rejected)</li>
+      <li>Hotz, V. J., &amp; Miller, R. A. (1993). Conditional choice probabilities and the estimation of dynamic models. <em>Review of Economic Studies</em>, <em>60</em>(3), 497–529. <a href="https://doi.org/10.2307/2298122">https://doi.org/10.2307/2298122</a> (the origin of the CCP inversion)</li>
+      <li>Rust, J. (1994). Structural estimation of Markov decision processes. In R. F. Engle &amp; D. L. McFadden (Eds.), <em>Handbook of Econometrics</em> (Vol. 4, pp. 3081–3143). North-Holland. <a href="https://doi.org/10.1016/S1573-4412(05)80020-0">https://doi.org/10.1016/S1573-4412(05)80020-0</a> (a systematic review of the framework)</li>
+    </ul>
+
+    <h4>Developments in estimation methods</h4>
+    <ul>
+      <li>Su, C.-L., &amp; Judd, K. L. (2012). Constrained optimization approaches to estimation of structural models. <em>Econometrica</em>, <em>80</em>(5), 2213–2230. <a href="https://doi.org/10.3982/ECTA7925">https://doi.org/10.3982/ECTA7925</a> (MPEC)</li>
+      <li>Iskhakov, F., Lee, J., Rust, J., Schjerning, B., &amp; Seo, K. (2016). Comment on "Constrained optimization approaches to estimation of structural models." <em>Econometrica</em>, <em>84</em>(1), 365–370. <a href="https://doi.org/10.3982/ECTA12605">https://doi.org/10.3982/ECTA12605</a> (a comment on Su &amp; Judd: once the inner fixed point uses Newton-Kantorovich iteration, NFXP and MPEC are comparable in speed)</li>
+      <li>Aguirregabiria, V., &amp; Mira, P. (2002). Swapping the nested fixed point algorithm: A class of estimators for discrete Markov decision models. <em>Econometrica</em>, <em>70</em>(4), 1519–1543. <a href="https://doi.org/10.1111/1468-0262.00340">https://doi.org/10.1111/1468-0262.00340</a> (NPL)</li>
+      <li>Aguirregabiria, V., &amp; Mira, P. (2007). Sequential estimation of dynamic discrete games. <em>Econometrica</em>, <em>75</em>(1), 1–53. <a href="https://doi.org/10.1111/j.1468-0262.2007.00731.x">https://doi.org/10.1111/j.1468-0262.2007.00731.x</a> (extends NPL to sequential estimation of dynamic games)</li>
+      <li>Arcidiacono, P., &amp; Miller, R. A. (2011). Conditional choice probability estimation of dynamic discrete choice models with unobserved heterogeneity. <em>Econometrica</em>, <em>79</em>(6), 1823–1867. <a href="https://doi.org/10.3982/ECTA7743">https://doi.org/10.3982/ECTA7743</a> (CCP with unobserved heterogeneity)</li>
+    </ul>
+
+    <h4>Identification</h4>
+    <ul>
+      <li>Magnac, T., &amp; Thesmar, D. (2002). Identifying dynamic discrete decision processes. <em>Econometrica</em>, <em>70</em>(2), 801–816. <a href="https://doi.org/10.1111/1468-0262.00306">https://doi.org/10.1111/1468-0262.00306</a> (the formal result on nonparametric non-identification of the discount factor)</li>
+      <li>Kalouptsidi, M., Scott, P. T., &amp; Souza-Rodrigues, E. (2021). Identification of counterfactuals in dynamic discrete choice models. <em>Quantitative Economics</em>, <em>12</em>(2), 351–403. <a href="https://doi.org/10.3982/QE1253">https://doi.org/10.3982/QE1253</a> (cross-state utility normalizations render some counterfactuals unidentified; cited in Section 7.6)</li>
+    </ul>
+
+    <h4>Surveys</h4>
+    <ul>
+      <li>Aguirregabiria, V., &amp; Mira, P. (2010). Dynamic discrete choice structural models: A survey. <em>Journal of Econometrics</em>, <em>156</em>(1), 38–67. <a href="https://doi.org/10.1016/j.jeconom.2009.09.007">https://doi.org/10.1016/j.jeconom.2009.09.007</a> (a systematic survey of models and estimation methods)</li>
+      <li>Arcidiacono, P., &amp; Ellickson, P. B. (2011). Practical methods for estimation of dynamic discrete choice models. <em>Annual Review of Economics</em>, <em>3</em>, 363–394. <a href="https://doi.org/10.1146/annurev-economics-111809-125038">https://doi.org/10.1146/annurev-economics-111809-125038</a> (a practical guide to estimation methods)</li>
+    </ul>
+
+    <footer class="page-footer">
+      From Choices to Counterfactuals: Structural Estimation for Digital Platform Research · 07 Dynamic Discrete Choice
+    </footer>
+
+  </main>
+</div>
+
+<script defer src="assets/katex/katex.min.js"></script>
+<script defer src="assets/katex/auto-render.min.js"></script>
+<script defer src="assets/notes.js"></script>
+</body>
+</html>

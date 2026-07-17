@@ -1,0 +1,954 @@
+/*
+ * Structural Econometrics 讲义 v8 — 共享样式表
+ * 版本：v4.0 (2026-07)
+ * v4 变更：外置共享（不再逐文件内联）；KaTeX 本地化配套；
+ *          全局变量图例；新增 worked-example / pipeline-bar /
+ *          intuition-box / takeaway-box / demo-badge 组件；打印样式。
+ * 引用方式：<link rel="stylesheet" href="assets/style.css">
+ */
+
+/* ============================================================
+   0. CSS VARIABLES
+   ============================================================ */
+:root {
+  --primary: #1a365d;
+  --primary-light: #2a4a7f;
+  --accent: #c53030;
+  --accent-light: #e53e3e;
+  --link: #2b6cb0;
+
+  --bg: #fafaf9;
+  --bg-code: #f7f6f3;
+  --bg-sidebar: #1a365d;
+  --bg-card: #ffffff;
+
+  --text: #2d3748;
+  --text-light: #718096;
+  --text-sidebar: rgba(255,255,255,0.85);
+  --text-sidebar-muted: rgba(255,255,255,0.6);
+
+  --must-know: #e53e3e;
+  --good-to-know: #d69e2e;
+  --optional: #38a169;
+  --is-app: #3182ce;
+
+  /* 变量类型色（公式说明框用） */
+  --var-observed: #3182ce;    /* 蓝：数据中观测到的 */
+  --var-estimated: #e53e3e;   /* 红：待估计的 */
+  --var-researcher: #c05621;  /* 橙：研究者设定的 */
+
+  --border: #e2e0dc;
+  --radius: 6px;
+  --radius-lg: 8px;
+
+  /* 语义色（供深色模式覆写；浅色下回落到既有取值） */
+  --table-head-bg: var(--primary);
+  --table-head-text: #ffffff;
+  --box-success: #276749;
+  --box-intuition: #553c9a;
+  --shadow-card: rgba(26,54,93,0.08);
+
+  /* 配图调色板（分类色，明暗两套；SVG 内以 var() 引用） */
+  --fig-ink: #2d3748;      /* 主墨色，文字与主轮廓 */
+  --fig-axis: #718096;     /* 坐标轴 */
+  --fig-grid: #e2e0dc;     /* 网格线 */
+  --fig-fill: #ffffff;     /* 图元填充底 */
+  --fig-muted: #a0aec0;    /* 弱化元素 */
+  --fig-1: #3182ce;        /* 蓝（与"观测"同源） */
+  --fig-2: #dd6b20;        /* 橙 */
+  --fig-3: #38a169;        /* 绿 */
+  --fig-4: #805ad5;        /* 紫 */
+  --fig-5: #d53f8c;        /* 品红 */
+  --fig-1-soft: rgba(49,130,206,0.14);
+  --fig-2-soft: rgba(221,107,32,0.14);
+  --fig-3-soft: rgba(56,161,105,0.14);
+  --fig-4-soft: rgba(128,90,213,0.14);
+  --fig-5-soft: rgba(213,63,140,0.14);
+}
+
+/* ============================================================
+   0b. 深色模式
+   规则：无 data-theme 时跟随系统；data-theme="dark" 强制深色；
+        data-theme="light" 强制浅色（覆盖系统深色偏好）。
+   ============================================================ */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --primary: #8fb4e8;
+    --primary-light: #a9c6f0;
+    --accent: #ff7a7a;
+    --accent-light: #ff9a9a;
+    --link: #7db3f0;
+
+    --bg: #0f1621;
+    --bg-code: #161f2b;
+    --bg-sidebar: #131c29;
+    --bg-card: #1a2432;
+
+    --text: #d6deea;
+    --text-light: #8b9bb2;
+
+    --border: #2a3547;
+
+    --var-observed: #6ba6ff;
+    --var-estimated: #ff8a8a;
+    --var-researcher: #e6975a;
+
+    --table-head-bg: #223449;
+    --table-head-text: #eaf1fb;
+    --box-success: #68d391;
+    --box-intuition: #c4a7f5;
+    --shadow-card: rgba(0,0,0,0.45);
+
+    --fig-ink: #d6deea;
+    --fig-axis: #8b9bb2;
+    --fig-grid: #2a3547;
+    --fig-fill: #1a2432;
+    --fig-muted: #5b6b82;
+    --fig-1: #6ba6ff;
+    --fig-2: #f6a15a;
+    --fig-3: #68d391;
+    --fig-4: #b794f4;
+    --fig-5: #f472b6;
+    --fig-1-soft: rgba(107,166,255,0.16);
+    --fig-2-soft: rgba(246,161,90,0.16);
+    --fig-3-soft: rgba(104,211,145,0.16);
+    --fig-4-soft: rgba(183,148,244,0.16);
+    --fig-5-soft: rgba(244,114,182,0.16);
+  }
+}
+
+:root[data-theme="dark"] {
+  --primary: #8fb4e8;
+  --primary-light: #a9c6f0;
+  --accent: #ff7a7a;
+  --accent-light: #ff9a9a;
+  --link: #7db3f0;
+
+  --bg: #0f1621;
+  --bg-code: #161f2b;
+  --bg-sidebar: #131c29;
+  --bg-card: #1a2432;
+
+  --text: #d6deea;
+  --text-light: #8b9bb2;
+
+  --border: #2a3547;
+
+  --var-observed: #6ba6ff;
+  --var-estimated: #ff8a8a;
+  --var-researcher: #e6975a;
+
+  --table-head-bg: #223449;
+  --table-head-text: #eaf1fb;
+  --box-success: #68d391;
+  --box-intuition: #c4a7f5;
+  --shadow-card: rgba(0,0,0,0.45);
+
+  --fig-ink: #d6deea;
+  --fig-axis: #8b9bb2;
+  --fig-grid: #2a3547;
+  --fig-fill: #1a2432;
+  --fig-muted: #5b6b82;
+  --fig-1: #6ba6ff;
+  --fig-2: #f6a15a;
+  --fig-3: #68d391;
+  --fig-4: #b794f4;
+  --fig-5: #f472b6;
+  --fig-1-soft: rgba(107,166,255,0.16);
+  --fig-2-soft: rgba(246,161,90,0.16);
+  --fig-3-soft: rgba(104,211,145,0.16);
+  --fig-4-soft: rgba(183,148,244,0.16);
+  --fig-5-soft: rgba(244,114,182,0.16);
+}
+
+/* ============================================================
+   1. RESET & BASE
+   ============================================================ */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.85;
+  font-size: 16px;
+}
+
+/* ============================================================
+   2. LAYOUT
+   ============================================================ */
+.page-wrapper { display: flex; width: 100%; }
+
+.sidebar {
+  position: sticky;
+  top: 0;
+  width: 300px;
+  min-width: 280px;
+  height: 100vh;
+  overflow-y: auto;
+  background: var(--bg-sidebar);
+  color: var(--text-sidebar);
+  padding: 28px 18px;
+  border-right: 3px solid var(--accent);
+  font-size: 13px;
+}
+
+.sidebar-title {
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  margin-bottom: 4px;
+  color: #fff;
+}
+
+.sidebar-subtitle {
+  font-size: 11px;
+  color: var(--text-sidebar-muted);
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.15);
+}
+
+.sidebar .toc-section-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-sidebar-muted);
+  margin-top: 16px;
+  margin-bottom: 6px;
+}
+
+.sidebar .toc { margin-bottom: 24px; }
+
+.sidebar .toc a {
+  display: block;
+  padding: 5px 10px;
+  margin: 1px 0;
+  color: var(--text-sidebar);
+  text-decoration: none;
+  border-radius: 4px;
+  border-left: 3px solid transparent;
+  transition: all 0.15s;
+  font-size: 13px;
+}
+
+.sidebar .toc a:hover {
+  background: rgba(255,255,255,0.12);
+  color: #fff;
+  border-left-color: var(--accent);
+}
+
+.sidebar .toc a.level-3 {
+  padding-left: 22px;
+  font-size: 12px;
+  color: var(--text-sidebar-muted);
+}
+
+.sidebar .toc a.active {
+  background: rgba(255,255,255,0.12);
+  color: #fff;
+  border-left-color: var(--accent);
+}
+
+.sidebar .file-nav {
+  margin-top: 24px;
+  padding-top: 16px;
+  border-top: 1px solid rgba(255,255,255,0.15);
+}
+
+.sidebar .file-nav .nav-label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-sidebar-muted);
+  margin-bottom: 8px;
+}
+
+.sidebar .file-nav a {
+  display: block;
+  padding: 5px 10px;
+  font-size: 12px;
+  color: var(--text-sidebar);
+  text-decoration: none;
+  border-radius: 4px;
+  margin: 2px 0;
+  transition: background 0.15s;
+}
+
+.sidebar .file-nav a:hover { background: rgba(255,255,255,0.1); }
+
+.sidebar .file-nav a.current {
+  background: var(--accent);
+  color: #fff;
+  font-weight: 600;
+}
+
+.main-content {
+  flex: 0 1 auto;
+  width: 100%;
+  max-width: 1240px;
+  margin: 0 auto; /* 在侧边栏之外的剩余空间内居中 */
+  padding: 44px 56px 80px;
+  min-width: 0; /* 允许内部表格滚动而不是撑破布局 */
+}
+
+@media (min-width: 1800px) {
+  .main-content { max-width: 1340px; }
+  .sidebar { width: 320px; }
+}
+
+@media (max-width: 1100px) and (min-width: 769px) {
+  .sidebar { width: 260px; min-width: 240px; padding: 24px 14px; }
+  .main-content { padding: 36px 32px 64px; }
+}
+
+/* ============================================================
+   3. TYPOGRAPHY
+   ============================================================ */
+.page-header {
+  margin-bottom: 28px;
+  padding-bottom: 24px;
+  border-bottom: 3px solid var(--accent);
+}
+
+.page-header h1 {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+  font-size: 2.2rem;
+  color: var(--primary);
+  font-weight: 800;
+  letter-spacing: -0.3px;
+  margin-bottom: 8px;
+}
+
+.page-header .subtitle {
+  font-size: 16px;
+  color: var(--text-light);
+  font-style: italic;
+}
+
+.page-header .meta {
+  font-size: 12px;
+  color: var(--text-light);
+  margin-top: 12px;
+  letter-spacing: 0.8px;
+}
+
+h2 {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+  font-size: 1.5rem;
+  color: var(--primary);
+  margin-top: 52px;
+  margin-bottom: 22px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--border);
+  font-weight: 700;
+}
+
+h3 {
+  font-size: 1.15rem;
+  color: var(--primary);
+  margin-top: 36px;
+  margin-bottom: 14px;
+  font-weight: 700;
+}
+
+h4 {
+  font-size: 1rem;
+  color: var(--text);
+  margin-top: 28px;
+  margin-bottom: 12px;
+  font-weight: 700;
+}
+
+p { margin-bottom: 18px; letter-spacing: 0.02em; }
+
+a { color: var(--link); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+ul, ol { margin: 14px 0 14px 28px; }
+li { margin-bottom: 8px; line-height: 1.8; }
+
+/* ============================================================
+   4. TAGS
+   ============================================================ */
+.tag {
+  display: inline-block;
+  padding: 3px 9px;
+  border-radius: 3px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  color: #fff;
+  margin-right: 6px;
+  vertical-align: middle;
+}
+
+.tag-must { background: var(--must-know); }
+.tag-good { background: var(--good-to-know); }
+.tag-opt  { background: var(--optional); }
+.tag-is   { background: var(--is-app); }
+
+/* 演示数据标注：用于所有非真实论文数字的教学例子 */
+.demo-badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 3px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  color: #975a16;
+  background: rgba(214,158,46,0.15);
+  border: 1px solid rgba(214,158,46,0.45);
+  margin-left: 6px;
+  vertical-align: middle;
+}
+
+/* ============================================================
+   5. CALLOUT BOXES
+   ============================================================ */
+.info-box, .warn-box, .success-box, .intuition-box, .takeaway-box {
+  padding: 18px 24px;
+  margin: 26px 0;
+  border-radius: 0 var(--radius) var(--radius) 0;
+  font-size: 15px;
+}
+
+.info-box {
+  background: rgba(49,130,206,0.07);
+  border-left: 4px solid var(--is-app);
+}
+.info-box .box-title { font-weight: 700; color: var(--primary); margin-bottom: 6px; font-size: 15px; }
+
+.warn-box {
+  background: rgba(229,62,62,0.06);
+  border-left: 4px solid var(--accent-light);
+}
+.warn-box .box-title { font-weight: 700; color: var(--accent); margin-bottom: 6px; }
+
+.success-box {
+  background: rgba(56,161,105,0.06);
+  border-left: 4px solid var(--optional);
+}
+.success-box .box-title { font-weight: 700; color: var(--box-success); margin-bottom: 6px; }
+
+/* 直觉框：全书唯一允许口语化语气的容器 */
+.intuition-box {
+  background: rgba(128,90,213,0.06);
+  border-left: 4px solid #805ad5;
+}
+.intuition-box .box-title { font-weight: 700; color: var(--box-intuition); margin-bottom: 6px; }
+
+/* 一句话总结框：每个大节末尾 */
+.takeaway-box {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--primary);
+}
+.takeaway-box .box-title {
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: 6px;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+
+/* ============================================================
+   6. FORMULA BOX
+   ============================================================ */
+.formula-math {
+  max-width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.formula-box {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  margin: 30px 0;
+  overflow: hidden;
+}
+
+.formula-box .formula-title {
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--primary);
+  padding: 12px 20px;
+  background: var(--bg-code);
+  border-bottom: 1px solid var(--border);
+}
+
+.formula-box .formula-math {
+  padding: 22px 28px;
+  text-align: center;
+  overflow-x: auto;
+  font-size: 1.1em;
+  background: var(--bg-code);
+}
+
+.formula-box .formula-explain { padding: 16px 22px; font-size: 14px; }
+
+.formula-box .formula-explain table { width: 100%; border-collapse: collapse; border: none; margin: 0; }
+
+.formula-box .formula-explain td {
+  padding: 7px 10px;
+  border-bottom: 1px solid #f0efed;
+  vertical-align: top;
+}
+
+.formula-box .formula-explain tr:last-child td { border-bottom: none; }
+
+.formula-box .formula-explain td:first-child {
+  font-family: "SF Mono", Monaco, Consolas, monospace;
+  white-space: nowrap;
+  width: 130px;
+  font-weight: 600;
+}
+
+/* 变量类型颜色：只给符号上色，不再写"红/蓝/橙"字样 */
+.var-observed   { color: var(--var-observed) !important; }
+.var-estimated  { color: var(--var-estimated) !important; }
+.var-researcher { color: var(--var-researcher) !important; }
+
+/* 全局变量图例：每页页眉下方出现一次 */
+.global-legend {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 18px;
+  margin: 0 0 34px;
+  padding: 10px 16px;
+  font-size: 13px;
+  color: var(--text-light);
+  background: var(--bg-card);
+  border: 1px dashed var(--border);
+  border-radius: var(--radius);
+}
+
+.global-legend .legend-label {
+  font-weight: 700;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+}
+
+.global-legend .dot {
+  display: inline-block;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  margin-right: 5px;
+  vertical-align: baseline;
+}
+
+.global-legend .dot-observed   { background: var(--var-observed); }
+.global-legend .dot-estimated  { background: var(--var-estimated); }
+.global-legend .dot-researcher { background: var(--var-researcher); }
+
+/* ============================================================
+   7. EXAMPLE BOX 与 WORKED EXAMPLE
+   ============================================================ */
+.example-box {
+  background: rgba(56,161,105,0.04);
+  border: 1px solid rgba(56,161,105,0.2);
+  border-left: 4px solid var(--optional);
+  padding: 22px 26px;
+  margin: 28px 0;
+  border-radius: 0 var(--radius) var(--radius) 0;
+}
+
+.example-box .example-title { font-weight: 700; color: var(--box-success); margin-bottom: 10px; font-size: 15px; }
+
+/* 手算数值例：从设定到数字算通的完整例子，视觉上更"作业纸" */
+.worked-example {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-top: 4px solid var(--primary);
+  padding: 24px 28px;
+  margin: 30px 0;
+  border-radius: var(--radius-lg);
+}
+
+.worked-example .worked-title {
+  font-weight: 700;
+  color: var(--primary);
+  font-size: 15px;
+  margin-bottom: 4px;
+}
+
+.worked-example .worked-title::before { content: '✎ '; color: var(--accent); }
+
+.worked-example .worked-step {
+  margin: 14px 0 6px;
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--text);
+}
+
+/* ============================================================
+   8. REVIEWER QUESTION BOX
+   ============================================================ */
+.reviewer-box {
+  background: rgba(214,158,46,0.06);
+  border-left: 4px solid var(--good-to-know);
+  padding: 18px 24px;
+  margin: 26px 0;
+  border-radius: 0 var(--radius) var(--radius) 0;
+}
+
+.reviewer-box .reviewer-q { font-weight: 700; color: #975a16; margin-bottom: 8px; }
+
+.reviewer-box .answer-good {
+  margin-top: 8px;
+  padding-left: 12px;
+  border-left: 2px solid var(--optional);
+}
+
+.reviewer-box .answer-weak {
+  margin-top: 8px;
+  padding-left: 12px;
+  border-left: 2px solid var(--accent-light);
+  color: var(--text-light);
+}
+
+/* ============================================================
+   9. PIPELINE BAR（BLP 等章的流程面包屑）
+   ============================================================ */
+.pipeline-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  margin: 20px 0;
+  padding: 12px 16px;
+  background: var(--bg-code);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 13px;
+}
+
+.pipeline-bar .pipe-step {
+  padding: 4px 12px;
+  background: var(--bg-card);
+  border: 1.5px solid var(--border);
+  border-radius: 999px;
+  font-weight: 600;
+  color: var(--text-light);
+}
+
+.pipeline-bar .pipe-step.here {
+  background: var(--primary);
+  border-color: var(--primary);
+  color: #fff;
+}
+
+.pipeline-bar .pipe-arrow { color: var(--text-light); }
+
+/* ============================================================
+   10. COLLAPSIBLE
+   ============================================================ */
+details {
+  margin: 22px 0;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+details summary {
+  padding: 14px 18px;
+  background: var(--bg-card);
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--primary);
+  user-select: none;
+  list-style: none;
+  transition: background 0.15s;
+}
+
+details summary::-webkit-details-marker { display: none; }
+details summary::before { content: '▸ '; color: var(--text-light); }
+details[open] summary::before { content: '▾ '; }
+details[open] summary { border-bottom: 1px solid var(--border); background: var(--bg-code); }
+details .detail-content { padding: 18px 22px; background: var(--bg); font-size: 15px; }
+
+/* ============================================================
+   11. TABLES
+   ============================================================ */
+.table-scroll { overflow-x: auto; margin: 16px 0; }
+.table-scroll table { margin: 0; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0;
+  font-size: 14px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+thead { background: var(--table-head-bg); color: var(--table-head-text); }
+
+th { padding: 10px 14px; text-align: left; font-weight: 600; font-size: 13px; }
+
+td { padding: 10px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
+
+tbody tr:hover { background: rgba(26,54,93,0.03); }
+
+/* ============================================================
+   12. CODE
+   ============================================================ */
+pre {
+  background: #1e293b;
+  color: #e2e8f0;
+  padding: 18px 22px;
+  border-radius: var(--radius);
+  overflow-x: auto;
+  font-size: 13px;
+  line-height: 1.55;
+  margin: 18px 0;
+}
+
+pre code { background: none; padding: 0; color: inherit; }
+
+code {
+  font-family: "SF Mono", "Fira Code", Monaco, Consolas, monospace;
+  background: var(--bg-code);
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 0.88em;
+  color: var(--accent);
+}
+
+.code-tabs { margin: 18px 0; }
+
+.code-tabs .tab-bar {
+  display: flex;
+  background: #1e293b;
+  border-radius: var(--radius) var(--radius) 0 0;
+  border-bottom: 2px solid var(--accent);
+  overflow: hidden;
+}
+
+.code-tabs .tab-btn {
+  flex: 1;
+  padding: 8px 12px;
+  background: none;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  transition: all 0.15s;
+}
+
+.code-tabs .tab-btn:hover { color: #e2e8f0; background: rgba(255,255,255,0.05); }
+.code-tabs .tab-btn.active { color: #fff; border-bottom: 2px solid var(--accent); }
+.code-tabs .tab-panel { display: none; }
+.code-tabs .tab-panel.active { display: block; }
+.code-tabs .tab-panel pre { border-radius: 0 0 var(--radius) var(--radius); margin-top: 0; }
+
+/* ============================================================
+   13. FLOW
+   ============================================================ */
+.flow-container {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 24px 0;
+  padding: 22px;
+  background: var(--bg-code);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border);
+}
+
+.flow-item {
+  padding: 10px 16px;
+  background: var(--bg-card);
+  border: 2px solid var(--primary);
+  border-radius: var(--radius);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--primary);
+  text-align: center;
+}
+
+.flow-item.highlight { background: var(--primary); color: #fff; }
+.flow-arrow { font-size: 18px; color: var(--text-light); }
+
+/* ============================================================
+   14. TIER 标记
+   ============================================================ */
+.tier1 td:first-child { border-left: 4px solid var(--must-know); }
+.tier2 td:first-child { border-left: 4px solid var(--good-to-know); }
+.tier3 td:first-child { border-left: 4px solid var(--optional); }
+
+/* ============================================================
+   15. FOOTER / SCROLLBAR
+   ============================================================ */
+.page-footer {
+  margin-top: 52px;
+  padding-top: 22px;
+  border-top: 2px solid var(--border);
+  font-size: 12px;
+  color: var(--text-light);
+  text-align: center;
+}
+
+::-webkit-scrollbar { width: 7px; height: 7px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: var(--text-light); }
+
+/* ============================================================
+   16. RESPONSIVE
+   ============================================================ */
+@media (max-width: 768px) {
+  html, body { max-width: 100%; overflow-x: clip; }
+  .page-wrapper { flex-direction: column; }
+  .sidebar {
+    position: relative;
+    width: 100%;
+    height: auto;
+    max-height: 280px;
+    border-right: none;
+    border-bottom: 3px solid var(--accent);
+  }
+  .main-content { padding: 32px 20px 60px; max-width: 100%; }
+  .page-header h1 { font-size: 1.6rem; }
+  h2 { font-size: 1.3rem; }
+  .table-scroll { max-width: 100%; -webkit-overflow-scrolling: touch; }
+  .main-content pre { max-width: 100%; }
+  .main-content a { overflow-wrap: anywhere; }
+  .katex .katex-mathml { display: none; }
+}
+
+/* ============================================================
+   17. PRINT
+   ============================================================ */
+@media print {
+  .sidebar { display: none; }
+  .page-wrapper { display: block; }
+  .main-content { max-width: 100%; padding: 0; }
+  body { background: #fff; font-size: 12pt; }
+  h2 { page-break-after: avoid; }
+  .formula-box, .worked-example, .example-box, .info-box, .warn-box,
+  .success-box, .intuition-box, .takeaway-box, table, pre, .figure {
+    page-break-inside: avoid;
+  }
+  a { color: var(--text); }
+  .theme-toggle, .chapter-nav { display: none; }
+}
+
+/* ============================================================
+   18. 配图（自包含内联 SVG；随主题自适应，零外部依赖）
+   ============================================================ */
+.figure {
+  margin: 30px 0;
+  padding: 20px 22px 14px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  text-align: center;
+}
+.figure svg { max-width: 100%; height: auto; display: block; margin: 0 auto; }
+.figure svg text { fill: var(--fig-ink); font-family: -apple-system, "Noto Sans SC", sans-serif; }
+.figure .figcaption {
+  margin-top: 12px;
+  font-size: 13px;
+  color: var(--text-light);
+  line-height: 1.7;
+  text-align: center;
+}
+.figure .figcaption .fig-label {
+  font-weight: 700;
+  color: var(--primary);
+  margin-right: 6px;
+}
+/* SVG 内可复用的工具类（配合内联 style 使用系列色 var(--fig-N)） */
+.figure svg .ax   { stroke: var(--fig-axis); stroke-width: 1.3; fill: none; }
+.figure svg .gr   { stroke: var(--fig-grid); stroke-width: 1; fill: none; }
+.figure svg .bx   { fill: var(--fig-fill); stroke: var(--fig-axis); stroke-width: 1.5; }
+.figure svg .mut  { fill: var(--fig-muted); }
+.figure svg .ink  { fill: var(--fig-ink); }
+.figure svg .lbl  { font-size: 13px; }
+.figure svg .lbl-s{ font-size: 11px; }
+.figure svg .dash { stroke-dasharray: 4 3; }
+
+/* ============================================================
+   19. 主题切换按钮
+   ============================================================ */
+.theme-toggle {
+  position: fixed;
+  right: 18px;
+  bottom: 18px;
+  z-index: 50;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  color: var(--text);
+  cursor: pointer;
+  font-size: 18px;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 10px var(--shadow-card);
+  transition: transform 0.15s, border-color 0.15s;
+}
+.theme-toggle:hover { transform: translateY(-2px); border-color: var(--primary); }
+
+/* ============================================================
+   20. 章节导航（上一章 / 下一章，由 notes.js 注入）
+   ============================================================ */
+.chapter-nav {
+  display: flex;
+  gap: 14px;
+  margin-top: 48px;
+  padding-top: 8px;
+}
+.chapter-nav a {
+  flex: 1 1 0;
+  display: block;
+  padding: 14px 18px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  text-decoration: none;
+  color: var(--text);
+  transition: border-color 0.15s, transform 0.15s, box-shadow 0.15s;
+}
+.chapter-nav a:hover {
+  text-decoration: none;
+  border-color: var(--primary);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 14px var(--shadow-card);
+}
+.chapter-nav a.nav-next { text-align: right; }
+.chapter-nav .nav-dir {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: var(--text-light);
+  font-weight: 700;
+}
+.chapter-nav .nav-title { font-size: 15px; font-weight: 700; color: var(--primary); margin-top: 4px; }
+@media (max-width: 560px) { .chapter-nav { flex-direction: column; } }
+
+/* 深色模式下几处硬编码色的收尾 */
+:root[data-theme="dark"] .demo-badge,
+:root[data-theme="dark"] .warn-box .box-title,
+:root[data-theme="dark"] details summary { color: inherit; }
+:root[data-theme="dark"] .demo-badge { color: #f0c674; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .demo-badge { color: #f0c674; }
+}

@@ -1,0 +1,1779 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Consumer, Producer &amp; Welfare | Foundations of Information Systems Economics</title>
+  <link rel="stylesheet" href="assets/style.css" />
+  <script defer="" src="assets/katex/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <link rel="stylesheet" href="assets/katex/katex.min.css" />
+</head>
+<body>
+<div class="page-wrapper">
+  <nav class="sidebar">
+    <div class="sidebar-title">Foundations of Information Systems Economics</div>
+    <div class="sidebar-subtitle">Theory · Methods · Applications</div>
+    <div class="toc-section-label">On this page</div>
+    <div class="toc">
+<ul>
+<li><a href="#introduction" id="toc-introduction">Introduction</a></li>
+<li><a href="#a-loss-you-cannot-pin-down"
+id="toc-a-loss-you-cannot-pin-down">1 A Loss You Cannot Pin
+Down</a></li>
+<li><a href="#the-economic-model-and-the-target-quantity"
+id="toc-the-economic-model-and-the-target-quantity">2 The Economic Model
+and the Target Quantity</a></li>
+<li><a href="#the-core-structure-ump-emp-and-duality"
+id="toc-the-core-structure-ump-emp-and-duality">3 The Core Structure:
+UMP, EMP, and Duality</a></li>
+<li><a href="#welfare-measures-and-two-extensions-of-duality"
+id="toc-welfare-measures-and-two-extensions-of-duality">4 Welfare
+Measures, and Two Extensions of Duality</a></li>
+<li><a href="#anchoring-papers" id="toc-anchoring-papers">5 Anchoring
+Papers</a></li>
+<li><a href="#running-case-settling-lumens-accounts"
+id="toc-running-case-settling-lumens-accounts">6 Running Case: Settling
+Lumen’s Accounts</a></li>
+<li><a href="#failure-modes-of-measurement-and-robustness"
+id="toc-failure-modes-of-measurement-and-robustness">7 Failure Modes of
+Measurement and Robustness</a></li>
+<li><a href="#further-reading" id="toc-further-reading">8 Further
+Reading</a></li>
+</ul>
+    </div>
+    <div class="file-nav">
+      <div class="nav-label">This series</div>
+      <a href="index.html">Home · Overview</a>
+      <a href="introduction.html">Introduction · How to Use</a>
+      <a href="01_consumer_producer_welfare.html">01 Consumer, Producer &amp; Welfare</a>
+      <a href="02_game_theory.html">02 Game Theory</a>
+      <a href="03_information_mechanism_design.html">03 Information &amp; Mechanism Design</a>
+      <a href="04_pricing_imperfect_competition.html">04 Pricing &amp; Imperfect Competition</a>
+      <a href="05_estimation_mle_gmm.html">05 Estimation: MLE &amp; GMM</a>
+      <a href="06_inference.html">06 Inference: Bootstrap &amp; Clustering</a>
+      <a href="07_panel_dynamic_panel.html">07 Panel &amp; Dynamic Panel</a>
+      <a href="08_nonparametrics.html">08 Nonparametrics &amp; Semiparametrics</a>
+      <a href="09_potential_outcomes.html">09 Potential Outcomes &amp; Selection</a>
+      <a href="10_research_design_architecture.html">10 Research Design</a>
+      <a href="11_measurement_digital_traces.html">11 Measurement &amp; Digital Traces</a>
+      <a href="12_iv_late_mte.html">12 IV: LATE &amp; MTE</a>
+      <a href="13_did_event_studies.html">13 DiD &amp; Event Studies</a>
+      <a href="14_rdd_synthetic_control.html">14 RDD &amp; Synthetic Control</a>
+      <a href="15_sensitivity_partial_identification.html">15 Sensitivity &amp; Partial Identification</a>
+      <a href="16_causal_ml_dml.html">16 Causal ML &amp; DML</a>
+      <a href="17_digital_experimentation.html">17 Digital Experimentation</a>
+      <a href="18_interference_marketplace_experiments.html">18 Interference &amp; Marketplace Experiments</a>
+      <a href="19_discrete_choice.html">19 Discrete Choice &amp; Mixed Logit</a>
+      <a href="20_demand_blp.html">20 Demand Estimation &amp; BLP</a>
+      <a href="21_supply_markups_mergers.html">21 Supply, Markups &amp; Mergers</a>
+      <a href="22_entry_partial_id.html">22 Entry &amp; Partial Identification</a>
+      <a href="23_dynamic_structural.html">23 Dynamic Structural Models</a>
+      <a href="24_platforms_networks.html">24 Platforms &amp; Network Effects</a>
+      <a href="25_search_advertising.html">25 Search, Advertising &amp; Information Goods</a>
+      <a href="26_ai_algorithms_data.html">26 AI, Adoption &amp; Data Economics</a>
+      <a href="27_quick_reference.html">27 Quick Reference &amp; Tools</a>
+    </div>
+  </nav>
+  <main class="main-content" id="top">
+    <header class="page-header">
+      <h1>Consumer, Producer &amp; Welfare</h1>
+      <div class="subtitle">Duality, Demand, and the Measurement of
+Welfare</div>
+      <div class="meta">Foundations of Information Systems Economics · Chapter 1</div>
+    </header>
+<h2 id="introduction">Introduction</h2>
+<p>A platform raises the price of a feature from 2 to 4. Users spend no
+more on that feature than they did before, so the first analyst declares
+the welfare loss to be zero. The second analyst integrates the demand
+curve and gets 27.73. Working more carefully still, the compensating
+variation and the equivalent variation come out to 31.95 and 24.21. All
+four numbers could go on a respectable slide. The trouble is that they
+are not answers to the same question.</p>
+<p>Welfare is not a column that sits ready-made in the transaction log.
+To get from prices, quantities, and income to “how much did the consumer
+actually lose,” you first have to say how a person chooses under a
+budget constraint, and then separate the substitution effect from the
+income effect inside a price change. That is exactly the job of consumer
+theory. Utility maximization and expenditure minimization describe one
+and the same choice from two directions, and duality is what ties
+Marshallian demand, Hicksian demand, indirect utility, and the
+expenditure function together. Roy’s identity, Shephard’s lemma, and the
+Slutsky equation are not a set of formulas to be memorized for an exam.
+They are the drivetrain that turns observable demand into welfare
+measures and empirical predictions. On the producer side, cost
+minimization and profit maximization follow the same structure, and
+choice under uncertainty extends the same language to adoption,
+investment, and risk decisions.</p>
+<p>This chapter reconciles Lumen’s price increase line by line. You will
+see why the three welfare numbers differ, when consumer surplus is only
+an approximation, and how to push theoretical comparative statics all
+the way into predictions you can take to data. Later chapters on demand
+estimation, market power, merger simulation, and the welfare analysis of
+digital goods borrow this machinery again and again. If we do not settle
+the accounting conventions here, the more precisely you compute later,
+the more you may just be reporting the wrong decimal places.</p>
+<h2 id="a-loss-you-cannot-pin-down">1 A Loss You Cannot Pin Down</h2>
+<div class="case">
+<p>Lumen is a heavy user of a digital content platform. To shrink the
+problem down to something you can do by hand, we group her monthly
+spending into two categories. One is premium content (paid content time,
+call it good 1, unit price <span class="math inline">p_1</span>,
+starting at 2 per hour), the other is an outside good that packages
+everything else she consumes (a composite outside good, call it good 2,
+unit price <span class="math inline">p_2 = 1</span>, which you can read
+as “everything else you get for each dollar spent”). Her disposable
+budget each month is <span class="math inline">w = 100</span>. Her
+preferences can be summarized by a Cobb-Douglas utility <span
+class="math inline">u(x_1, x_2) = x_1^{2/5}\, x_2^{3/5}</span>. The
+virtue of this form is that every step can be checked with elementary
+algebra, and its drawback is discussed in Section 7.</p>
+<p>Now the platform raises the price of premium content from 2 to 4. The
+operations team wants to know something that sounds simple: how much did
+this price increase cost Lumen?</p>
+</div>
+<p>Start with the two answers two analysts might give. Neither is
+exactly wrong, yet they are wildly far apart.</p>
+<p>The first analyst leafs through the transaction log. Before the
+increase, Lumen bought 20 hours of premium content a month, spending 40.
+After the increase she bought less, only 10 hours, but at double the
+price, still 40. Her spending on the feature did not move by a cent. So
+the conclusion is: her wallet is no lighter, the increase was revenue
+neutral for her, and there is no loss to speak of. The flaw in this
+reasoning is that it mistakes spending for welfare. Spending stayed flat
+precisely because she was forced to cut consumption sharply, offsetting
+the higher unit price by buying much less, and it is exactly that cut
+she has to endure.</p>
+<p>The second analyst knows the trade better, and goes to integrate the
+demand curve. Lumen’s demand for good 1 is <span class="math inline">x_1
+= (2/5)\,w / p_1 = 40 / p_1</span>. Integrating this curve as <span
+class="math inline">p_1</span> moves from 2 to 4 gives a consumer
+surplus loss of <span class="math inline">\int_2^4 (40/p_1)\, dp_1 =
+40\ln 2 \approx 27.73</span>. This is a proper welfare number, close in
+magnitude to three tenths of her monthly budget, and far more credible
+than the first analyst’s zero.</p>
+<p>The trouble is that there are a third and a fourth number, every bit
+as proper. If you ask “how much would we have to pay Lumen so that she
+is as well off after the increase as before,” the answer is 31.95. If
+you ask “before the increase, how much could we take away from her to
+make her exactly as unhappy as the increase makes her,” the answer is
+24.21. The former is called compensating variation, the latter
+equivalent variation. Both are logically airtight welfare measures, yet
+they differ by nearly a third, with the 27.73 of consumer surplus
+sitting squarely between them. The phrase “how much did she lose” does
+not point to a unique number, unless we say which compensation we want
+and at which prices it is valued.</p>
+<p>What this chapter builds is precisely the machine that makes clear
+what each of these numbers means exactly, how they rank against one
+another, and when they collapse into one. The machine is called duality,
+and its two engines are utility maximization and expenditure
+minimization. Section 6 recomputes every one of the numbers above from
+scratch, showing which part of the machine each falls out of.</p>
+<h2 id="the-economic-model-and-the-target-quantity">2 The Economic Model
+and the Target Quantity</h2>
+<p>Before doing anything, pin down two things: which quantity we
+ultimately want, and what notation we use to write down the consumer’s
+behavior.</p>
+<p>Take the target quantity first. On the surface the operations team
+wants a welfare number, but welfare is not a primitive. It is derived
+from something more basic. The true primitives are preferences, and the
+choices those preferences generate under a budget constraint, that is,
+demand. Demand is observable (it is right there in the log), while
+welfare is not directly observable (no table records “how much the
+increase hurt her”). The logical spine of the whole chapter is therefore
+a bridge: from observable demand, back out unobservable welfare. Duality
+is the piers of that bridge. So the target quantity of this chapter
+really has two layers. The bottom layer is the demand function and the
+utility structure behind it, and the top layer is the welfare measures
+CV and EV built on top of it, which can only be computed once the bottom
+layer is in place.</p>
+<p>Now the notation. A consumption bundle is <span class="math inline">x
+= (x_1, x_2) \in \mathbb{R}^2_+</span>, prices are <span
+class="math inline">p = (p_1, p_2) \gg 0</span>, and income is <span
+class="math inline">w &gt; 0</span>. The consumer’s preferences are
+represented by a continuous, increasing, quasi-concave utility function
+<span class="math inline">u(x)</span>. Increasing (more is better)
+guarantees she spends her whole budget, and quasi-concave (convex upper
+contour sets) guarantees that the first-order conditions characterize an
+optimum rather than a worst point. These two are the minimal regularity
+that makes all the differentiation below valid. We assume them
+throughout the chapter, and revisit what happens when they fail in
+Section 7.</p>
+<p>Given these primitives, the consumer’s problem is to pick the most
+preferred bundle among the affordable ones:</p>
+<p><span class="math display">\max_{x \geq 0}\; u(x) \quad \text{s.t.}
+\quad p \cdot x \leq w</span></p>
+<p>This is the utility maximization problem (UMP). Its solution is
+Walrasian demand (also called Marshallian demand) <span
+class="math inline">x(p, w)</span>, and recording the utility value of
+that optimal bundle gives the indirect utility function <span
+class="math inline">v(p, w) = u(x(p, w))</span>, which answers “at these
+prices and this income, what is the best she can do.” The UMP is the
+engine on the demand side.</p>
+<p>The welfare side needs another engine. To measure what a price change
+is worth in money, the natural question is “to hold some given level of
+welfare fixed, what is the cheapest way to pay for it.” When prices
+change, that cheapest outlay changes, and the size of that change is the
+monetary value of the price change. This engine is the expenditure
+minimization problem (EMP):</p>
+<p><span class="math display">\min_{x \geq 0}\; p \cdot x \quad
+\text{s.t.} \quad u(x) \geq \bar u</span></p>
+<p>Its solution is Hicksian demand (also called compensated demand)
+<span class="math inline">h(p, \bar u)</span>, and the minimal outlay
+itself is the expenditure function <span class="math inline">e(p, \bar
+u) = p \cdot h(p, \bar u)</span>. Hicksian demand is called
+“compensated” because, as you move along it, utility is held fixed at
+<span class="math inline">\bar u</span>, the real income effect of the
+price change is compensated away in lockstep, and what remains is pure
+substitution.</p>
+<p>With the expenditure function in hand, the welfare measures have
+precise definitions. Let prices change from <span
+class="math inline">p^0</span> to <span class="math inline">p^1</span>,
+with utility before the increase <span class="math inline">u^0 = v(p^0,
+w)</span> and after the increase <span class="math inline">u^1 = v(p^1,
+w)</span>. The two monetized welfare measures are</p>
+<p><span class="math display">\mathrm{CV} = e(p^1, u^0) - e(p^1, u^1) =
+e(p^1, u^0) - w, \qquad \mathrm{EV} = e(p^0, u^0) - e(p^0, u^1) = w -
+e(p^0, u^1)</span></p>
+<p>CV is valued at the new prices <span class="math inline">p^1</span>
+and asks how much extra we must give her to compensate her back to the
+old utility <span class="math inline">u^0</span>. EV is valued at the
+old prices <span class="math inline">p^0</span> and asks how much we
+could take away, absent the increase, to drop her to the new utility
+<span class="math inline">u^1</span>. The two definitions differ only in
+which prices serve as the measuring stick, and it is precisely this
+difference in the ruler that makes them give different numbers in
+general. Section 4 sets them side by side with consumer surplus, and
+Section 6 plugs in Lumen’s numbers.</p>
+<p>Here is an idea that runs through the whole chapter, and through the
+whole series that follows: define the target quantity first, then talk
+about how to compute it. The operations team’s “how much did she lose”
+must first be translated into “do you want CV or EV, valued at which
+prices,” before computation even makes sense. Skip that step and
+integrate the demand curve directly, and whether the consumer surplus
+you get approximates CV or EV, and how well, is a muddle. This
+discipline of “estimand first” reappears with exactly the same face
+later in the series when we cover demand estimation and merger
+simulation, where the target quantity is the market-level change in
+consumer surplus, and the logic is identical to here.</p>
+<p>To summarize: consumer theory has two engines, the UMP producing
+demand and indirect utility, the EMP producing compensated demand and
+the expenditure function. The welfare measures CV and EV are differences
+of two values of the expenditure function. They are the top-layer target
+quantities of this chapter, and to compute them you first need the
+bottom-layer demand and utility structure. The next section takes the
+two engines apart to see their internal structure and the drivetrain
+between them.</p>
+<h2 id="the-core-structure-ump-emp-and-duality">3 The Core Structure:
+UMP, EMP, and Duality</h2>
+<p>This is the most finely worked section of the chapter, and the
+load-bearing block in the theoretical foundation of the whole series.
+The goal is to work through the solutions and properties of the UMP and
+EMP, then build the duality relations between the two one by one, and
+finally land on three results that later chapters use over and over: the
+Slutsky equation, Roy’s identity, and Shephard’s lemma. The exposition
+goes from shallow to deep, giving each object a geometric or algebraic
+intuition first, then the formalization.</p>
+<h3 id="ump-from-geometry-to-first-order-conditions">3.1 UMP: From
+Geometry to First-Order Conditions</h3>
+<p>Look at the UMP once on a two-dimensional picture. The budget
+constraint <span class="math inline">p_1 x_1 + p_2 x_2 = w</span> is a
+downward-sloping line with slope <span
+class="math inline">-p_1/p_2</span> and horizontal and vertical
+intercepts <span class="math inline">w/p_1</span> and <span
+class="math inline">w/p_2</span>. The level curves of the utility
+function are a family of indifference curves, with utility rising toward
+the upper right. Picking the highest-utility point on the budget line
+is, geometrically, letting the budget line reach the highest
+indifference curve it can, which it does at a point of tangency.
+Tangency means the slope of the indifference curve equals the slope of
+the budget line, and the slope of the indifference curve is the marginal
+rate of substitution <span class="math inline">\mathrm{MRS} = (\partial
+u/\partial x_1)/(\partial u/\partial x_2)</span>. So the
+characterization of an interior optimum is a very intuitive sentence:
+the subjective rate at which she is willing to trade good 2 for good 1
+equals exactly the objective rate <span
+class="math inline">p_1/p_2</span> the market forces her to pay.</p>
+<figure>
+<svg viewBox="0 0 830 340" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, 'Noto Sans SC', sans-serif" role="img" aria-label="The geometry of the UMP: the budget line is tangent to the highest attainable indifference curve at the optimal bundle x(p,w), where the MRS equals the price ratio p_1/p_2." style="max-width:100%;height:auto;display:block;margin:0 auto">
+  <line x1="70" y1="40" x2="70" y2="300" stroke="#94a1b2" stroke-width="1.5"/>
+  <line x1="70" y1="300" x2="690" y2="300" stroke="#94a1b2" stroke-width="1.5"/>
+  <text x="70" y="30" text-anchor="start" font-size="13" fill="#64748b">x2 (outside good)</text>
+  <text x="690" y="320" text-anchor="end" font-size="13" fill="#64748b">x1 (premium content) →</text>
+
+  <line x1="70" y1="72.7" x2="633.6" y2="300" stroke="#2b6cb0" stroke-width="2.5"/>
+  <text x="640" y="296" text-anchor="start" font-size="12.5" fill="#2b6cb0">budget line, slope -p1/p2</text>
+
+  <polyline fill="none" stroke="#c53030" stroke-width="2.5"
+    points="160.2,48.8 172.9,70.0 185.6,87.2 198.3,101.5 211.1,113.6 223.8,124.0 236.5,133.1 249.2,141.1 261.9,148.2 274.6,154.5 287.4,160.3 300.1,165.5 312.8,170.2 325.5,174.6 338.2,178.6 351.0,182.2 363.7,185.7 376.4,188.9 389.1,191.8 401.8,194.6 414.5,197.2 427.3,199.7 440.0,202.0 452.7,204.2 465.4,206.2 478.1,208.2 490.8,210.1 503.6,211.8 516.3,213.5 529.0,215.1 541.7,216.6 554.4,218.1 567.2,219.5 579.9,220.9 592.6,222.1 605.3,223.4 618.0,224.6 630.7,225.7 643.5,226.8 656.2,227.9"/>
+  <text x="176" y="60" text-anchor="start" font-size="12.5" fill="#c53030">indifference curve u(x) = u0</text>
+
+  <line x1="295.5" y1="163.6" x2="295.5" y2="300" stroke="#cfccc4" stroke-width="1.3" stroke-dasharray="4 4"/>
+  <line x1="70" y1="163.6" x2="295.5" y2="163.6" stroke="#cfccc4" stroke-width="1.3" stroke-dasharray="4 4"/>
+  <circle cx="295.5" cy="163.6" r="4.5" fill="#1a365d"/>
+  <text x="305" y="150" text-anchor="start" font-size="13" fill="#1a365d">x(p, w): MRS = p1/p2</text>
+  <text x="295.5" y="318" text-anchor="middle" font-size="12" fill="#2d3748">x1 = 20</text>
+  <text x="62" y="167" text-anchor="end" font-size="12" fill="#2d3748">60</text>
+</svg>
+<figcaption aria-hidden="true">The geometry of the UMP: the budget line
+is tangent to the highest attainable indifference curve at the optimal
+bundle <span class="math inline">x(p,w)</span>, where the MRS equals the
+price ratio <span class="math inline">p_1/p_2</span>.</figcaption>
+</figure>
+<p>Writing that sentence as algebra gives the Lagrangian first-order
+conditions. Form <span class="math inline">\mathcal{L} = u(x) +
+\lambda(w - p \cdot x)</span> and differentiate with respect to each
+<span class="math inline">x_\ell</span>:</p>
+<p><span class="math display">\frac{\partial u}{\partial x_\ell} =
+\lambda\, p_\ell, \qquad \ell = 1, 2</span></p>
+<p>Dividing the two equations to cancel <span
+class="math inline">\lambda</span> returns <span
+class="math inline">\mathrm{MRS} = p_1/p_2</span>. The multiplier <span
+class="math inline">\lambda</span> is not a pure mathematical accessory.
+It has a real economic meaning: <span class="math inline">\lambda =
+\partial v(p,w)/\partial w</span>, the marginal utility of income, the
+extra utility one more dollar can buy. This identity is used when we
+derive Roy’s identity in Section 3.4.</p>
+<p>The solution of the first-order conditions, <span
+class="math inline">x(p, w)</span>, is Walrasian demand, and it has
+three properties that matter, because they are used everywhere later.
+First, homogeneity of degree zero: <span class="math inline">x(\alpha p,
+\alpha w) = x(p, w)</span> for any <span class="math inline">\alpha &gt;
+0</span>. Scaling prices and income together cannot move the real
+choice, because the budget set does not change at all, which is also why
+only relative prices matter in economics. Second, Walras’ law: <span
+class="math inline">p \cdot x(p, w) = w</span>. Under increasing
+preferences she spends every cent, and the budget constraint holds with
+equality. Third, when preferences are strictly quasi-concave and the
+solution is interior, <span class="math inline">x(p,w)</span> is
+single-valued and varies continuously with prices. Quasi-concavity alone
+guarantees only that the solution set is convex, and strict
+quasi-concavity (strictly convex upper contour sets) is needed to rule
+out the multivaluedness that a flat segment in an indifference curve
+would cause. Indirect utility <span class="math inline">v(p,w) =
+u(x(p,w))</span> is correspondingly increasing in <span
+class="math inline">w</span>, decreasing in each <span
+class="math inline">p_\ell</span>, homogeneous of degree zero, and
+quasi-convex in prices. The intuition for this last property is that the
+more extreme prices are, the worse off she is, and the harm is not
+averaged away by extreme price combinations.</p>
+<h3 id="emp-the-expenditure-function-and-compensated-demand">3.2 EMP:
+The Expenditure Function and Compensated Demand</h3>
+<p>The EMP is the mirror image of the UMP: instead of spending a given
+amount of money to reach the highest utility, it holds a given utility
+fixed and finds the cheapest way to pay for it. Geometrically, fix an
+indifference curve <span class="math inline">u(x) = \bar u</span>, and
+among all bundles that land on this curve (or above it), pick the one
+that makes the constant <span class="math inline">k</span> in an
+iso-expenditure line <span class="math inline">p \cdot x = k</span>
+smallest. The iso-expenditure line is also a line of slope <span
+class="math inline">-p_1/p_2</span>, and pushing it outward from the
+origin until it just touches the indifference curve gives a tangency,
+whose point is Hicksian demand <span class="math inline">h(p, \bar
+u)</span>. The tangency condition is again <span
+class="math inline">\mathrm{MRS} = p_1/p_2</span>, exactly as in the
+UMP, and this is the root of duality: the two problems satisfy the same
+tangency condition at the optimum, only one treats the budget as the
+constraint and utility as the objective while the other reverses
+them.</p>
+<p>The expenditure function <span class="math inline">e(p, \bar u) = p
+\cdot h(p, \bar u)</span> has a set of properties symmetric to those of
+<span class="math inline">v</span>. It is increasing in each <span
+class="math inline">p_\ell</span> (when things get more expensive,
+holding utility fixed of course costs more), increasing in <span
+class="math inline">\bar u</span>, homogeneous of degree one in prices
+(<span class="math inline">e(\alpha p, \bar u) = \alpha\, e(p, \bar
+u)</span>, so doubling all prices doubles the cost of holding utility
+fixed), and concave in prices. Concavity is the least obvious property
+but the most useful. The intuition is that when a price rises, the
+consumer substitutes consumption toward goods that got less expensive,
+so the actual rise in expenditure is smaller than the linear
+extrapolation “with the bundle held fixed,” and concavity is the
+mathematical expression of exactly this “substitution saves you money.”
+This concavity translates directly into the sign of the substitution
+effect in Section 3.5.</p>
+<p>Hicksian demand itself has its signature property, also stemming from
+concavity: it is nonincreasing in its own price, <span
+class="math inline">\partial h_\ell/\partial p_\ell \leq 0</span>, which
+is the so-called compensated law of demand, and compensated demand
+slopes down without exception. Note that no “normal good” qualification
+is needed here, because utility is held fixed, the income effect is
+compensated away, and the pure substitution that remains must make one
+buy less of what got more expensive. Walrasian demand is different,
+since it can slope up because of a strong income effect (a Giffen good),
+and the whole difference is whether or not there is compensation.</p>
+<h3 id="the-four-duality-identities">3.3 The Four Duality
+Identities</h3>
+<p>Now connect the outputs of the two engines. Under continuous,
+increasing, quasi-concave preferences, there are four groups of
+identities among the solutions and value functions of the UMP and EMP
+that pin the four objects <span class="math inline">x, v, h, e</span>
+down to one another pairwise. Let <span class="math inline">u^* = v(p,
+w)</span>. Then</p>
+<p><span class="math display">e(p, v(p, w)) = w, \qquad v(p, e(p, \bar
+u)) = \bar u</span></p>
+<p><span class="math display">x_\ell(p, w) = h_\ell(p, v(p, w)), \qquad
+h_\ell(p, \bar u) = x_\ell(p, e(p, \bar u))</span></p>
+<p>The first row says <span class="math inline">v</span> and <span
+class="math inline">e</span> are inverses of each other (fix prices,
+convert utility into money and money back into utility, and return to
+where you started). The second row says Walrasian and Hicksian demand
+take the same value at the “matching income-utility point”: if your
+income is exactly the cheapest outlay that holds utility <span
+class="math inline">u^*</span>, then your uncompensated choice and your
+compensated choice are the same bundle. These four identities are not
+coincidences. They are the inevitable result of one tangency described
+in two ways. Their use is that the property of any one object can be
+carried to another object through these identities, and the three
+signature results in the next three subsections are all products of this
+carrying.</p>
+<div class="intuition">
+<p>Why is duality worth all the trouble? Because it swaps “quantities
+that are hard to find” for “quantities that are easy to find.” Welfare
+wants a difference of <span class="math inline">e</span>, but <span
+class="math inline">e</span> is defined over unobservable utility,
+whereas demand <span class="math inline">x</span> is observable. Of the
+four identities, <span class="math inline">h_\ell = x_\ell(p, e(p,\bar
+u))</span> is exactly the channel that lets us assemble compensated
+demand from observed Walrasian demand, and from there the expenditure
+function and welfare. Later, when we cover demand estimation, what is
+estimated is <span class="math inline">x</span> and what is wanted is
+welfare, and the procedure in between is the duality here. So this
+section is not theoretical fastidiousness, it is the construction
+blueprint for the whole of empirical welfare analysis.</p>
+</div>
+<h3 id="roys-identity-and-shephards-lemma">3.4 Roy’s Identity and
+Shephard’s Lemma</h3>
+<p>Both results are direct applications of the envelope theorem, so give
+the intuition for the envelope theorem first and then apply it. The
+envelope theorem says that once you already stand at an optimum, the
+effect of a small change in a parameter on the optimal value only
+requires the direct effect of the parameter, and you need not worry
+about how you would reoptimize, because at the optimum the first-order
+gain from reoptimizing is zero (guaranteed by the first-order
+conditions).</p>
+<p>Shephard’s lemma is the envelope theorem applied to the EMP.
+Differentiating the expenditure function <span class="math inline">e(p,
+\bar u) = \min_x \{p \cdot x : u(x) \geq \bar u\}</span> with respect to
+price <span class="math inline">p_\ell</span>, the direct effect is the
+quantity held <span class="math inline">x_\ell</span>, and the indirect
+effect of the consumer readjusting the bundle is zero at the optimum,
+so</p>
+<p><span class="math display">\frac{\partial e(p, \bar u)}{\partial
+p_\ell} = h_\ell(p, \bar u)</span></p>
+<p>In one sentence: the slope of the expenditure function with respect
+to a price is the compensated demand for that good. The result looks
+plain, and its power is that it turns the abstract object “compensated
+demand” into a single derivative of the expenditure function, which is
+how Section 6 computes Lumen’s Hicksian demand. Its twin on the producer
+side (the derivative of the cost function with respect to a factor price
+gives conditional factor demand) is the star of Section 4.2.</p>
+<p>Roy’s identity is the envelope theorem applied to the UMP, but with
+one more step. Differentiating indirect utility <span
+class="math inline">v(p, w)</span> with respect to <span
+class="math inline">p_\ell</span>, by the envelope theorem only the
+direct effect <span class="math inline">-\lambda x_\ell</span> remains
+(a price rose, so at the original bundle she spends <span
+class="math inline">x_\ell\,dp_\ell</span> more, at <span
+class="math inline">\lambda</span> utility lost per dollar), and
+differentiating with respect to <span class="math inline">w</span> gives
+<span class="math inline">\partial v/\partial w = \lambda</span>.
+Dividing the two cancels the unobservable multiplier <span
+class="math inline">\lambda</span>:</p>
+<p><span class="math display">x_\ell(p, w) = -\frac{\partial v(p,
+w)/\partial p_\ell}{\partial v(p, w)/\partial w}</span></p>
+<p>In one sentence: demand equals the gradient of indirect utility with
+respect to prices divided by the marginal utility of income, with the
+minus sign coming from the fact that a price increase is a bad thing.
+The practical value of Roy’s identity is in running it backwards: if you
+have a functional form for <span class="math inline">v</span> (many
+demand systems specify <span class="math inline">v</span> first and
+derive demand), one differentiation gives you all the demand functions,
+without solving the UMP again.</p>
+<h3 id="the-slutsky-equation-splitting-the-slope-of-demand-in-two">3.5
+The Slutsky Equation: Splitting the Slope of Demand in Two</h3>
+<p>Now to the centerpiece of the section. The response of Walrasian
+demand to price, <span class="math inline">\partial x_\ell/\partial
+p_k</span>, is observable, and it is exactly what demand estimation
+spits out directly, but it mixes together two things of different
+natures: when a price rises, one thing is that relative prices change
+and prompt substitution (the substitution effect), and the other is that
+real purchasing power shrinks (the income effect). The Slutsky equation
+separates these two halves precisely.</p>
+<p>The derivation starts from the duality identity <span
+class="math inline">h_\ell(p, \bar u) = x_\ell(p, e(p, \bar u))</span>
+and differentiates with respect to <span class="math inline">p_k</span>
+(chain rule, noting that <span class="math inline">e</span> on the right
+also contains <span class="math inline">p_k</span>):</p>
+<p><span class="math display">\frac{\partial h_\ell}{\partial p_k} =
+\frac{\partial x_\ell}{\partial p_k} + \frac{\partial x_\ell}{\partial
+w}\cdot\frac{\partial e}{\partial p_k}</span></p>
+<p>Then use Shephard’s lemma to replace <span
+class="math inline">\partial e/\partial p_k</span> with <span
+class="math inline">h_k = x_k</span> (the two are equal at the matching
+point), and rearranging gives the Slutsky equation:</p>
+<p><span class="math display">\underbrace{\frac{\partial x_\ell(p,
+w)}{\partial p_k}}_{\text{total}} = \underbrace{\frac{\partial h_\ell(p,
+\bar u)}{\partial p_k}}_{\text{substitution}}\; \underbrace{-\; x_k(p,
+w)\,\frac{\partial x_\ell(p, w)}{\partial w}}_{\text{income}}</span></p>
+<p>Read the terms as follows: on the left the total effect (observable),
+on the right the substitution effect first, then the income effect
+(together with the minus sign in front, written <span
+class="math inline">-x_k\,\partial x_\ell/\partial w</span>).</p>
+<p>This equation explains a lot. Take the own-price case (<span
+class="math inline">\ell = k</span>): the substitution term <span
+class="math inline">\partial h_\ell/\partial p_\ell \leq 0</span> is
+always negative (the compensated law of demand from Section 3.2), so
+whether Walrasian demand slopes down at all comes entirely down to the
+income term <span class="math inline">-x_\ell\,\partial x_\ell/\partial
+w</span>. For a normal good (<span class="math inline">\partial
+x_\ell/\partial w &gt; 0</span>) the income term is also negative, and
+demand is guaranteed to slope down. For an inferior good (<span
+class="math inline">\partial x_\ell/\partial w &lt; 0</span>) the income
+term turns positive, and if it is strong enough to overwhelm the
+substitution term, you get an upward-sloping Giffen good. This explains
+a question that often puzzles undergraduates: why does the law of demand
+have exceptions, and what exactly are the conditions for the exception,
+with the answer written entirely in this decomposition.</p>
+<p>The substitution effect has two more structural properties, both
+stemming from the fact that it is really a second derivative of the
+expenditure function, <span class="math inline">\partial h_\ell/\partial
+p_k = \partial^2 e/\partial p_\ell \partial p_k</span>. First, symmetry
+<span class="math inline">\partial h_\ell/\partial p_k = \partial
+h_k/\partial p_\ell</span> (mixed partials commute), which is completely
+invisible in Walrasian demand and is a gift from duality, and is also
+the core testable implication for judging, in Section 7, “whether a set
+of demand functions really comes from some rational preference.” Second,
+the Slutsky matrix <span class="math inline">\big[\partial
+h_\ell/\partial p_k\big]</span> is negative semidefinite with
+nonpositive diagonal, which translates “substitution saves you money”
+concavity into the language of matrices.</p>
+<h3 id="revealed-preference-backing-preferences-out-of-demand">3.6
+Revealed Preference: Backing Preferences Out of Demand</h3>
+<p>Everything up to here has run forward: preferences first, then solve
+for demand. But the empirical worker gets the reverse end of things.
+What is observed is choices (the prices and quantities in the log), and
+what is wanted is preferences and the welfare hidden behind them. So an
+unavoidable question surfaces: on what grounds can a pile of observed
+choices be said to come from some rational preference? And if it can,
+how much can we back out from it? This is what revealed preference and
+integrability answer, and it is the identification foundation for all
+the demand estimation that follows, and the flip side that this section
+naturally turns up from forward duality.</p>
+<p>Start with the finite-observation version. Suppose we see a consumer
+pick a bundle in each of several price-income situations. If at some
+point she faced prices <span class="math inline">p^0</span> and picked
+<span class="math inline">x^0</span> while another bundle <span
+class="math inline">x^1</span> was clearly affordable at the time (<span
+class="math inline">p^0 \cdot x^1 \leq p^0 \cdot x^0</span>) yet was not
+picked, then rationality requires: whenever <span
+class="math inline">x^0</span> is affordable, <span
+class="math inline">x^1</span> should not be picked in its place. In
+terms of prices, as long as <span class="math inline">x^1 \neq
+x^0</span> and <span class="math inline">p^0 \cdot x^1 \leq p^0 \cdot
+x^0</span>, we must have <span class="math inline">p^1 \cdot x^0 &gt;
+p^1 \cdot x^1</span>. This is the weak axiom of revealed preference
+(WARP). Its geometric meaning is plain: since you insisted on <span
+class="math inline">x^0</span> when <span class="math inline">x^1</span>
+was within reach, you value <span class="math inline">x^0</span> more,
+and from then on, unless <span class="math inline">x^0</span> really
+becomes unaffordable, you cannot turn around and pick <span
+class="math inline">x^1</span>. Passing this “directly revealed
+preference” along a chain, and forbidding cycles (<span
+class="math inline">x^0</span> revealed preferred to <span
+class="math inline">x^1</span>, <span class="math inline">x^1</span> to
+<span class="math inline">x^2</span>, and <span
+class="math inline">x^2</span> back to <span
+class="math inline">x^0</span>), gives the strong axiom of revealed
+preference (SARP). SARP is the rationalizability condition Houthakker
+(1950) gave for single-valued demand. To handle the more general case of
+finite observations (where demand may be multivalued and indifference
+curves may contain flat segments), the correct necessary and sufficient
+condition is the generalized axiom of revealed preference (GARP): Afriat
+(1967) and Varian (1982) proved that a set of finite observations can be
+rationalized by some well-behaved preference (locally nonsatiated,
+continuous, concave, monotone) if and only if it satisfies GARP. GARP
+and SARP differ only in whether the end of the chain takes a weak or a
+strict inequality, and when demand is single-valued the two are
+equivalent, which is where the running Cobb-Douglas case of this chapter
+falls. With two goods WARP already suffices, and it is only when there
+are more goods, where WARP cannot block cycles, that you need SARP or
+GARP.</p>
+<p>The version for a continuously differentiable demand function is
+called integrability, and it translates the combinatorial condition
+above into a requirement on derivatives. The question is posed this way:
+given a demand function <span class="math inline">x(p, w)</span> that
+satisfies Walras’ law and homogeneity of degree zero, when is it exactly
+the UMP solution of some rational preference? The answer is
+astonishingly clean: if and only if its Slutsky matrix <span
+class="math inline">S(p,w) = \big[\partial x_\ell/\partial p_k +
+x_k\,\partial x_\ell/\partial w\big]</span> is symmetric and negative
+semidefinite. Negative semidefiniteness we already know from Section 3.5
+as a corollary of the substitution effect “sloping down,” and what
+really brings the binding force is symmetry <span
+class="math inline">\partial h_\ell/\partial p_k = \partial h_k/\partial
+p_\ell</span>, which is completely invisible in Walrasian demand and is
+a testable restriction that rationality imposes on the data. Once these
+two hold, you can integrate the expenditure function back: Shephard’s
+lemma says <span class="math inline">\partial e/\partial p_\ell =
+h_\ell</span>, which is a system of partial differential equations with
+<span class="math inline">e</span> as the unknown, and symmetry is
+exactly the consistency condition for it to have a solution (to be
+integrable), and solving out <span class="math inline">e(p, \bar
+u)</span> is equivalent to recovering preferences. This step is
+recoverability, and it is the fundamental reason welfare analysis can
+hold up: welfare wants <span class="math inline">e</span>, and <span
+class="math inline">e</span> is defined over unobservable utility, and
+integrability guarantees that as long as demand is estimated well
+enough, <span class="math inline">e</span> can be recovered from it (up
+to at most an irrelevant utility scale). The “assemble the expenditure
+function from demand” done for Lumen in Section 6.2 is one concrete
+execution of this recovery.</p>
+<div class="intuition">
+<p>Revealed preference gives demand estimation two things. One is
+falsifiability: Slutsky symmetry and negative semidefiniteness are
+restrictions the data could have violated but, because of rationality,
+should not, which turns “the consumer is rational” from a slogan into a
+proposition testable against data. The other is the boundary of
+identification: all that can be recovered is ordinal preference (the
+shapes of the indifference curves), and the specific scale of utility is
+smoothed away by monotone transformations anyway, cannot be recovered,
+and need not be, because the welfare measures CV and EV depend only on
+<span class="math inline">e</span> and not on the scale. The legitimacy
+of the “estimate demand first, then recover welfare via duality” that
+recurs later in demand estimation is anchored right here.</p>
+</div>
+<h3
+id="from-individual-to-market-aggregation-and-the-representative-consumer">3.7
+From Individual to Market: Aggregation and the Representative
+Consumer</h3>
+<p>Every step so far has been about a single consumer, but demand
+estimation and policy evaluation almost always play out at the market
+level, with market demand, the sum over everyone, in hand. So another
+unavoidable question: when you add up the demand of a crowd of people,
+does the resulting total demand still look like it came from a single
+rational consumer? If it does, we can legitimately model the whole
+market with one representative consumer, sparing ourselves the trouble
+of tracking each person. If it does not, doing so will compute welfare
+wrong.</p>
+<p>The trouble is obvious at a glance. Market demand <span
+class="math inline">X_\ell(p, w_1, \dots, w_I) = \sum_i x_{\ell i}(p,
+w_i)</span> in general depends not only on total income <span
+class="math inline">W = \sum_i w_i</span> but also on how income is
+distributed across people: move money from one person’s hands to
+another’s, and even if <span class="math inline">W</span> is unchanged,
+as long as the two people have different marginal propensities to
+consume the good, total demand will move. To make total demand recognize
+only <span class="math inline">W</span> and not the distribution, so
+that it can be rationalized by a representative consumer, requires that
+every person spend each marginal dollar of income across goods in the
+same proportions, independent of the income level. In terms of Engel
+curves: each person’s demand must be linear in income, with slopes that
+are the same across people and intercepts that may differ.</p>
+<p>Writing this condition as a value function gives the Gorman polar
+form: each consumer’s indirect utility can be written as</p>
+<p><span class="math display">v_i(p, w_i) = a_i(p) + b(p)\,
+w_i</span></p>
+<p>where <span class="math inline">b(p)</span> is the same for everyone
+and <span class="math inline">a_i(p)</span> may vary by person. Why
+exactly this form works is checked in one step with Roy’s identity.
+Apply the Roy’s identity of Section 3.4 to <span
+class="math inline">v_i</span>:</p>
+<p><span class="math display">x_{\ell i}(p, w_i) = -\frac{\partial
+v_i/\partial p_\ell}{\partial v_i/\partial w_i} = -\frac{\partial
+a_i/\partial p_\ell}{b(p)} - \frac{\partial b/\partial p_\ell}{b(p)}\,
+w_i</span></p>
+<p>The key is the last term: the slope of <span
+class="math inline">x_{\ell i}</span> in <span
+class="math inline">w_i</span> is <span class="math inline">-(\partial
+b/\partial p_\ell)/b(p)</span>, which depends only on the common <span
+class="math inline">b(p)</span> and is independent of <span
+class="math inline">i</span>. So when we aggregate, that pile of
+person-specific intercepts each stands on its own and can be merged into
+a single constant, and the part that varies with income recognizes only
+the total:</p>
+<p><span class="math display">X_\ell(p, W) = -\frac{\sum_i \partial
+a_i/\partial p_\ell}{b(p)} - \frac{\partial b/\partial p_\ell}{b(p)}\,
+W</span></p>
+<p>Total demand indeed depends only on <span class="math inline">(p,
+W)</span>, and it is exactly the Walrasian demand of the representative
+consumer whose indirect utility is <span class="math inline">v(p, W) =
+\sum_i a_i(p) + b(p)\,W</span>. Several familiar faces fall inside the
+Gorman form: homothetic preferences (<span class="math inline">a_i
+\equiv 0</span>, in which case even the income distribution is
+irrelevant), quasi-linear preferences (linear in some common numeraire),
+and the linear expenditure system (subsistence demands may differ across
+people, but the marginal budget share is the same). Section 6.6 uses
+this last class to work out by hand an example where “redistribution
+does not change total demand.”</p>
+<div class="warning">
+<p>The crux of the Gorman condition is the “common slope <span
+class="math inline">b(p)</span>,” that is, everyone’s marginal budget
+share must agree, not that price sensitivity is free to be
+heterogeneous. In reality consumers’ responses to prices differ
+enormously, and that difference shows up precisely in the slope rather
+than the intercept, and once the slope varies by person, aggregate
+demand can no longer be rationalized by any single rational consumer,
+and forcing a representative consumer on it systematically distorts
+elasticities and welfare. This is precisely why the demand estimation
+later in this series would rather spend great effort modeling consumer
+heterogeneity (moving toward mixed logit and random coefficients) than
+take the easy road of a representative consumer.</p>
+</div>
+<p>To summarize: this section started from two engines, used four
+duality identities to stitch demand, indirect utility, compensated
+demand, and the expenditure function into one, then used the envelope
+theorem to squeeze out Roy’s identity and Shephard’s lemma, and used one
+chain-rule differentiation to get the Slutsky equation, splitting the
+observable demand slope into the compensated substitution and the
+purchasing-power income halves. The two subsequent subsections used this
+machine in reverse and sideways: revealed preference and integrability
+made clear the conditions (symmetry plus negative semidefiniteness) for
+backing preferences out of observed demand, and thence recovering the
+expenditure function and welfare, and aggregation and the Gorman form
+made clear the legitimate boundary for summing individual demand into
+market demand and modeling it with a representative consumer. Every part
+of this machine has a corresponding use in later empirical chapters:
+demand estimation estimates the total effect, welfare computation wants
+the expenditure function behind the substitution effect, the necessity
+of modeling heterogeneity hinges on the failure of the Gorman condition,
+and duality is always the drivetrain between them. The next section
+drives this machine off to compute welfare, and copies the same logic
+onto the producer and onto uncertainty.</p>
+<h2 id="welfare-measures-and-two-extensions-of-duality">4 Welfare
+Measures, and Two Extensions of Duality</h2>
+<p>The last section built the machine, and this section puts it to work
+on three jobs: measuring consumer welfare, characterizing the producer,
+and handling uncertainty. The three jobs share the same
+optimization-plus-duality skeleton, and lining them up makes clear they
+are really one idea performing three times.</p>
+<h3 id="cv-ev-and-consumer-surplus">4.1 CV, EV, and Consumer
+Surplus</h3>
+<p>Return to the CV and EV defined in Section 2. Let prices change from
+<span class="math inline">p^0</span> to <span
+class="math inline">p^1</span> (in this chapter’s example only <span
+class="math inline">p_1</span> moves). Shephard’s lemma lets us write
+these two expenditure differences as areas under the compensated demand
+curve, and this step is the key to turning abstract definitions into
+computable integrals. Because <span class="math inline">\partial
+e/\partial p_1 = h_1</span>, integrating along <span
+class="math inline">p_1</span> from <span
+class="math inline">p_1^0</span> to <span
+class="math inline">p_1^1</span>:</p>
+<p><span class="math display">\mathrm{CV} = \int_{p_1^0}^{p_1^1}
+h_1(p_1, p_{-1}, u^0)\, dp_1, \qquad \mathrm{EV} = \int_{p_1^0}^{p_1^1}
+h_1(p_1, p_{-1}, u^1)\, dp_1</span></p>
+<p>Both are “the area under some Hicksian demand curve, between two
+prices,” differing only in whether the utility pinned down is the old
+<span class="math inline">u^0</span> or the new <span
+class="math inline">u^1</span>. And the change in consumer surplus
+everyone is familiar with, <span class="math inline">\Delta \mathrm{CS}
+= \int_{p_1^0}^{p_1^1} x_1(p_1, p_{-1}, w)\, dp_1</span>, uses Walrasian
+demand. By the duality identity <span class="math inline">h_\ell(p, u) =
+x_\ell(p, e(p, u))</span>, the Walrasian curve intersects some Hicksian
+curve only at the price where expenditure equals exactly <span
+class="math inline">w</span>: it intersects the Hicksian pinned at <span
+class="math inline">u^0</span> at the initial price <span
+class="math inline">p^0</span>, and the one pinned at <span
+class="math inline">u^1</span> at the final price <span
+class="math inline">p^1</span>, and the three curves do not share a
+common point, and the two Hicksian curves never intersect at all, so the
+three areas are in general unequal.</p>
+<figure>
+<svg viewBox="0 0 720 340" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, 'Noto Sans SC', sans-serif" role="img" aria-label="The three demand curves for good 1: the u^0 and u^1 Hicksian (compensated) demands, and the Walrasian demand in between; as p_1 rises from 2 to 4, the areas under the three curves give CV, EV, and \DeltaCS respectively." style="max-width:100%;height:auto;display:block;margin:0 auto">
+  <line x1="80" y1="50" x2="80" y2="300" stroke="#94a1b2" stroke-width="1.5"/>
+  <line x1="80" y1="300" x2="690" y2="300" stroke="#94a1b2" stroke-width="1.5"/>
+  <text x="80" y="40" text-anchor="start" font-size="13" fill="#64748b">p1 (price)</text>
+  <text x="690" y="320" text-anchor="end" font-size="13" fill="#64748b">x1 (quantity) →</text>
+
+  <polygon opacity="0.14" fill="#2b6cb0" points="80,204.0 80,108.0 303.1,108.0 307.0,111.3 311.0,114.6 315.2,117.9 319.6,121.2 324.1,124.6 328.8,127.9 333.7,131.2 338.8,134.5 344.1,137.8 349.6,141.1 355.3,144.4 361.3,147.7 367.5,151.0 374.1,154.3 380.9,157.7 388.1,161.0 395.6,164.3 403.5,167.6 411.8,170.9 420.5,174.2 429.7,177.5 439.4,180.8 449.7,184.1 460.5,187.4 472.1,190.8 484.3,194.1 497.4,197.4 511.3,200.7 526.2,204.0"/>
+
+  <line x1="80" y1="204" x2="560" y2="204" stroke="#cfccc4" stroke-width="1.2" stroke-dasharray="4 4"/>
+  <line x1="80" y1="108" x2="560" y2="108" stroke="#cfccc4" stroke-width="1.2" stroke-dasharray="4 4"/>
+  <text x="74" y="208" text-anchor="end" font-size="12" fill="#2d3748">p1 = 2</text>
+  <text x="74" y="112" text-anchor="end" font-size="12" fill="#2d3748">p1 = 4</text>
+
+  <polyline fill="none" stroke="#7c7f46" stroke-width="2" stroke-dasharray="5 4"
+    points="539.4,242.4 523.3,238.9 508.6,235.3 495.2,231.8 482.8,228.3 471.4,224.8 460.8,221.2 450.9,217.7 441.7,214.2 433.0,210.7 424.9,207.1 417.3,203.6 410.1,200.1 403.3,196.6 396.9,193.0 390.8,189.5 385.0,186.0 379.4,182.4 374.2,178.9 369.1,175.4 364.3,171.9 359.7,168.3 355.3,164.8 351.1,161.3 347.1,157.8 343.2,154.2 339.4,150.7 335.8,147.2 332.3,143.7 329.0,140.1 325.7,136.6 322.6,133.1 319.6,129.6 316.7,126.0 313.8,122.5 311.1,119.0 308.4,115.4 305.9,111.9 303.4,108.4 300.9,104.9 298.6,101.3 296.3,97.8 294.0,94.3 291.9,90.8 289.7,87.2 287.7,83.7 285.7,80.2 283.7,76.7 281.8,73.1 280.0,69.6"/>
+
+  <polyline fill="none" stroke="#2b6cb0" stroke-width="2.5"
+    points="823.6,242.4 780.7,238.9 742.5,235.3 708.2,231.8 677.3,228.3 649.3,224.8 623.8,221.2 600.5,217.7 579.1,214.2 559.4,210.7 541.2,207.1 524.3,203.6 508.7,200.1 494.0,196.6 480.4,193.0 467.6,189.5 455.6,186.0 444.4,182.4 433.7,178.9 423.7,175.4 414.3,171.9 405.3,168.3 396.8,164.8 388.8,161.3 381.1,157.8 373.8,154.2 366.9,150.7 360.3,147.2 354.0,143.7 347.9,140.1 342.1,136.6 336.6,133.1 331.3,129.6 326.2,126.0 321.3,122.5 316.6,119.0 312.1,115.4 307.7,111.9 303.5,108.4 299.5,104.9 295.6,101.3 291.8,97.8 288.2,94.3 284.7,90.8 281.3,87.2 278.0,83.7 274.8,80.2 271.8,76.7 268.8,73.1 265.9,69.6"/>
+
+  <polyline fill="none" stroke="#c53030" stroke-width="2" stroke-dasharray="5 4"
+    points="686.2,242.4 664.9,238.9 645.6,235.3 627.8,231.8 611.5,228.3 596.4,224.8 582.4,221.2 569.4,217.7 557.2,214.2 545.8,210.7 535.1,207.1 525.1,203.6 515.6,200.1 506.6,196.6 498.1,193.0 490.0,189.5 482.4,186.0 475.1,182.4 468.2,178.9 461.5,175.4 455.2,171.9 449.1,168.3 443.3,164.8 437.8,161.3 432.4,157.8 427.3,154.2 422.3,150.7 417.6,147.2 413.0,143.7 408.5,140.1 404.3,136.6 400.1,133.1 396.1,129.6 392.3,126.0 388.5,122.5 384.9,119.0 381.4,115.4 378.0,111.9 374.7,108.4 371.5,104.9 368.4,101.3 365.4,97.8 362.4,94.3 359.6,90.8 356.8,87.2 354.0,83.7 351.4,80.2 348.8,76.7 346.3,73.1 343.9,69.6"/>
+
+  <circle cx="526.2" cy="204" r="4" fill="#1a365d"/>
+  <circle cx="303.1" cy="108" r="4" fill="#1a365d"/>
+
+  <text x="470" y="58" text-anchor="start" font-size="12" fill="#7c7f46">Hicksian @ u1 → EV</text>
+  <text x="470" y="78" text-anchor="start" font-size="12" fill="#2b6cb0">Walrasian → ΔCS</text>
+  <text x="470" y="98" text-anchor="start" font-size="12" fill="#c53030">Hicksian @ u0 → CV</text>
+  <text x="150" y="160" text-anchor="middle" font-size="12.5" fill="#2b6cb0">ΔCS</text>
+  <text x="360" y="285" text-anchor="middle" font-size="12.5" fill="#334155">EV &lt; ΔCS &lt; CV</text>
+</svg>
+<figcaption aria-hidden="true">The three demand curves for good 1: the
+<span class="math inline">u^0</span> and <span
+class="math inline">u^1</span> Hicksian (compensated) demands, and the
+Walrasian demand in between; as <span class="math inline">p_1</span>
+rises from 2 to 4, the areas under the three curves give CV, EV, and
+<span class="math inline">\Delta</span>CS respectively.</figcaption>
+</figure>
+<p>For a single price increase, with good 1 a normal good, the three
+have a definite ranking <span class="math inline">\mathrm{EV} \leq
+\Delta\mathrm{CS} \leq \mathrm{CV}</span>. The intuition is this: for a
+normal good the Walrasian demand is flatter than the Hicksian (the
+income effect amplifies the price response), and CV is pinned at the
+higher old utility <span class="math inline">u^0</span>, whose Hicksian
+curve sits farthest out, while EV is pinned at the lower new utility
+<span class="math inline">u^1</span>, sitting farthest in, with
+Walrasian squeezed in between. Consumer surplus is therefore an
+approximation lying between two exact welfare measures, and its
+convenience (only observable Walrasian demand is needed, with no
+knowledge of utility) has a cost: as long as the income effect is
+nonnegligible, it equals neither CV nor EV. Section 6 shows that in
+Lumen’s example these three numbers are 24.21, 27.73, 31.95, ranked
+without the slightest deviation.</p>
+<p>When do the three collapse into one? When good 1 has no income
+effect, the two Hicksian curves coincide with the Walrasian curve into a
+single curve, and <span class="math inline">\mathrm{CV} =
+\Delta\mathrm{CS} = \mathrm{EV}</span>. To make good 1, the good whose
+price moves, free of income effects, preferences must be quasi-linear in
+the outside good, that is, linear in good 2, <span class="math inline">u
+= \phi(x_1) + x_2</span> (quasi-linear, in which case the first-order
+condition <span class="math inline">\phi&#39;(x_1) = p_1/p_2</span> pins
+down <span class="math inline">x_1</span> alone, without <span
+class="math inline">w</span>, and all income variation is absorbed by
+good 2). Note the direction of quasi-linearity: the linear term goes on
+the outside good whose price does not move, so that it is the good 1
+whose price does move that is spared income effects. This explains why
+consumer surplus can be used with confidence in undergraduate textbooks:
+they default to quasi-linearity in the numeraire. In reality, when good
+1 takes up only a small slice of the budget and the income effect is
+weak, this approximation is also good enough. The criterion for whether
+consumer surplus can be used is a single one: whether the income effect
+of good 1 can be neglected.</p>
+<h3 id="the-producer-side-the-duality-of-cost-and-production">4.2 The
+Producer Side: The Duality of Cost and Production</h3>
+<p>Producer theory is almost a word-for-word translation of consumer
+theory: replace utility with output, income with cost, the consumer with
+the firm, and the whole of duality carries over unchanged. The firm uses
+inputs <span class="math inline">z = (z_1, z_2)</span> to make output
+via a production function <span class="math inline">f(z)</span>, with
+factor prices <span class="math inline">r = (r_1, r_2)</span>. Given the
+output <span class="math inline">y</span> to be produced, the cost
+minimization problem</p>
+<p><span class="math display">c(r, y) = \min_{z \geq 0}\; r \cdot z
+\quad \text{s.t.} \quad f(z) \geq y</span></p>
+<p>is the same mathematical problem as the EMP: replace <span
+class="math inline">u</span> with <span class="math inline">f</span>,
+<span class="math inline">\bar u</span> with <span
+class="math inline">y</span>, and <span class="math inline">p</span>
+with <span class="math inline">r</span>, word for word. The solution
+<span class="math inline">z(r, y)</span> is conditional factor demand,
+corresponding to Hicksian demand, and the value function <span
+class="math inline">c(r, y)</span> is the cost function, corresponding
+to the expenditure function. So all the properties of the EMP hold
+unchanged: <span class="math inline">c</span> is homogeneous of degree
+one in <span class="math inline">r</span>, concave, and increasing, and
+Shephard’s lemma here reads</p>
+<p><span class="math display">\frac{\partial c(r, y)}{\partial r_\ell} =
+z_\ell(r, y)</span></p>
+<p>The slope of the cost function with respect to a factor price is the
+conditional demand for that factor. This is extremely important in
+structural IO: later in the series, when we recover marginal cost and
+estimate production functions, we repeatedly use this layer of duality
+between the cost function and factor demand.</p>
+<p>The firm’s problem one level up is profit maximization. A
+price-taking firm takes the output price <span
+class="math inline">p</span> and factor prices <span
+class="math inline">r</span> as given and chooses output to maximize
+profit, which, with the help of the cost function, can be written as a
+one-dimensional problem</p>
+<p><span class="math display">\pi(p, r) = \max_{y \geq 0}\; \big[\, p\,
+y - c(r, y)\,\big]</span></p>
+<p>The first-order condition for an interior solution is <span
+class="math inline">p = \partial c(r, y)/\partial y</span>, that is,
+price equals marginal cost, the old refrain of a competitive firm’s
+supply decision, only here derived in one step from the cost function.
+The second-order condition requires marginal cost to be increasing, that
+is, cost to be convex in output, so that the supply curve slopes up and
+the optimum is an optimum and not a worst point. This <span
+class="math inline">\pi(p, r)</span> is the profit function, playing the
+role that corresponds to indirect utility <span
+class="math inline">v</span> on the consumer side: both are value
+functions obtained by substituting the optimal decision back into the
+objective.</p>
+<p>The envelope result for the profit function is Hotelling’s lemma, the
+twin of Roy’s identity and Shephard’s lemma on the producer side, and
+even cleaner than Roy’s identity, because here no multiplier need be
+canceled. Applying the envelope theorem to <span
+class="math inline">\pi(p, r) = \max_{y, z}[\, p f(z) - r \cdot
+z\,]</span>, a small change in the price and factor prices leaves only
+the direct effect:</p>
+<p><span class="math display">\frac{\partial \pi(p, r)}{\partial p} =
+y(p, r), \qquad \frac{\partial \pi(p, r)}{\partial r_\ell} = -\,
+z_\ell(p, r)</span></p>
+<p>In one sentence: differentiating the profit function with respect to
+the output price gives supply, and with respect to a factor price gives
+negative factor demand (the true unconditional factor demand, without an
+output constraint, distinct from the conditional factor demand in cost
+minimization that holds <span class="math inline">y</span> fixed). The
+profit function also has a set of properties symmetric to, but opposite
+in sign from, the expenditure function: it is homogeneous of degree one
+in <span class="math inline">(p, r)</span> (scaling all prices scales
+profit in proportion), and convex in <span class="math inline">(p,
+r)</span>. Convexity is the most useful, and its intuition mirrors the
+concavity of the expenditure function exactly: when the price
+environment changes, the firm reallocates output and inputs in a
+favorable direction, so profit rises by more than the linear
+extrapolation “with the decision held fixed.” Taking second derivatives
+of convexity in <span class="math inline">p</span> and in <span
+class="math inline">r_\ell</span> separately immediately gives two
+comparative statics: <span class="math inline">\partial y/\partial p
+\geq 0</span>, supply is nondecreasing in its own price, and <span
+class="math inline">\partial z_\ell/\partial r_\ell \leq 0</span>,
+factor demand is nonincreasing in its own price. The latter is
+completely isomorphic to the compensated law of demand for Hicksian
+demand, both being direct consequences of the direction the value
+function bends.</p>
+<p>The last piece is returns to scale, which determines what the cost
+function looks like and thus whether competitive supply is well defined,
+a point that bears directly on the later chapters on market structure.
+If the production function is homogeneous of degree one (constant
+returns to scale, CRS, doubling all inputs doubles output), then the
+cost function is linear in output, <span class="math inline">c(r, y) =
+y\cdot c(r, 1)</span>, with marginal cost identically equal to average
+cost and independent of output. In that case the price-taking firm’s
+profit is unbounded when <span class="math inline">p</span> is above
+marginal cost, zero when below (shut down and produce nothing), and
+exactly zero for any output when equal, so the scale of a single firm
+cannot be pinned down and the number and size of firms in the market are
+indeterminate. If returns are decreasing, cost is convex in output,
+marginal cost is increasing, the supply curve slopes up, and firm scale
+has an interior solution. If returns are increasing (increasing returns,
+common in digital products with large fixed costs and near-zero marginal
+cost), average cost falls with output, competitive equilibrium usually
+fails to exist, and the market naturally tips toward a few large firms,
+which is exactly the technological root of why platform and network
+industries later discussed are naturally concentrated. Returns to scale,
+you can see, are not a detail of the production function but the hinge
+connecting firm technology to market form. Producer theory has no new
+mathematics, only new names for old mathematics, yet this naming runs
+all the way to market structure, which is itself proof of the power of
+duality.</p>
+<h3 id="choice-under-uncertainty">4.3 Choice Under Uncertainty</h3>
+<p>So far all choices have been made in a deterministic environment, but
+most decisions on a platform are not: whether a seller should switch to
+a new pricing scheme with uncertain payoffs, whether a user should
+prepay an annual fee for a feature they might not use, both carry
+randomness with them. The standard tool for characterizing such choices
+is expected utility. von Neumann and Morgenstern proved that as long as
+preferences over lotteries (probability distributions over outcomes)
+satisfy the four axioms of completeness, transitivity, continuity, and
+independence (the independence axiom), there exists a Bernoulli utility
+function <span class="math inline">u(\cdot)</span> such that preferences
+over any lotteries can be ranked by its expected utility <span
+class="math inline">\mathbb{E}[u(\cdot)]</span>. The point is that the
+expectation is taken over <span class="math inline">u</span>, not over
+money, and the shape of <span class="math inline">u</span> therefore
+encodes the attitude toward risk.</p>
+<p>The concavity or convexity of <span class="math inline">u</span> is
+exactly the risk attitude. If <span class="math inline">u</span> is
+concave, then by Jensen’s inequality <span
+class="math inline">\mathbb{E}[u(w)] \leq u(\mathbb{E}[w])</span>, and
+the expected utility of a lottery is below the utility of its expected
+value, so this person would rather have the certain expected value than
+the lottery, that is, risk averse. How to quantify the degree of
+concavity? Applying an affine transformation to <span
+class="math inline">u</span> (multiply by a positive number, add a
+constant) does not change preferences, so one cannot use <span
+class="math inline">u&#39;&#39;</span> directly, and must use a quantity
+immune to affine transformations, which is the Arrow-Pratt coefficient
+of absolute risk aversion</p>
+<p><span class="math display">A(w) =
+-\frac{u&#39;&#39;(w)}{u&#39;(w)}</span></p>
+<p>The <span class="math inline">u&#39;</span> in the denominator
+exactly cancels the scaling from the affine transformation, so that
+<span class="math inline">A(w)</span> reflects only curvature and not
+the meaningless scale. Two quantities that bring risk attitude down to
+money are the certainty equivalent <span
+class="math inline">\mathrm{CE}</span>, that is, “how much certain money
+she is willing to trade for the lottery,” defined by <span
+class="math inline">u(\mathrm{CE}) = \mathbb{E}[u(w)]</span>, and the
+risk premium <span class="math inline">\pi = \mathbb{E}[w] -
+\mathrm{CE}</span>, that is, the expected return she is willing to give
+up to avoid the risk. For a small zero-mean risk <span
+class="math inline">\widetilde\varepsilon</span> added to wealth <span
+class="math inline">w</span>, the risk premium and <span
+class="math inline">A(w)</span> have a lovely approximation <span
+class="math inline">\pi \approx
+\tfrac{1}{2}A(w)\,\mathrm{Var}(\widetilde\varepsilon)</span>: the risk
+premium is roughly half the coefficient of absolute risk aversion times
+the variance of the risk, and the more afraid of risk (<span
+class="math inline">A</span> large) and the larger the risk (large
+variance), the more compensation is wanted. Section 6 uses a seller’s
+example to compute CE, <span class="math inline">\pi</span>, and this
+approximation and reconcile them.</p>
+<p>Arrow-Pratt compares one person’s attitude toward different risks,
+and there is a complementary question: can we, without specifying a
+particular <span class="math inline">u</span>, conclude that everyone of
+a certain class will prefer one lottery to another? This is what
+stochastic dominance answers, giving ranking criteria that require no
+knowledge of the specific utility, layered by the shape of <span
+class="math inline">u</span>. Let the payoff distribution functions of
+two lotteries be <span class="math inline">F</span> and <span
+class="math inline">G</span>. The first layer is first-order stochastic
+dominance (FOSD): if <span class="math inline">F(t) \leq G(t)</span> for
+all <span class="math inline">t</span>, then <span
+class="math inline">F</span> first-order dominates <span
+class="math inline">G</span>, meaning <span class="math inline">F</span>
+presses more probability onto the high-payoff side. It can be shown that
+<span class="math inline">F</span> first-order dominates <span
+class="math inline">G</span> if and only if every expected-utility
+maximizer with more-is-better preferences (<span
+class="math inline">u</span> increasing) weakly prefers <span
+class="math inline">F</span>. The second layer relaxes the condition for
+risk-averters: when the two lotteries have the same mean, if <span
+class="math inline">\int_{-\infty}^{t}\!F(s)\,ds \leq
+\int_{-\infty}^{t}\!G(s)\,ds</span> for all <span
+class="math inline">t</span>, then <span class="math inline">F</span>
+second-order dominates <span class="math inline">G</span> (second-order
+stochastic dominance, SOSD), meaning <span class="math inline">G</span>
+is a mean-preserving spread of <span class="math inline">F</span>
+(probability spread out toward the two ends, more “dispersed”).
+Rothschild and Stiglitz proved that <span class="math inline">F</span>
+second-order dominates <span class="math inline">G</span> if and only if
+every expected-utility maximizer with concave <span
+class="math inline">u</span> (risk averse) weakly prefers <span
+class="math inline">F</span>. The two layers of dominance give welfare
+comparison a handy tool: as long as a dominance relation can be
+verified, one can rank risky prospects without tangling with the
+specific utility form. Section 6.6 uses a pair of equal-mean lotteries
+to match up the SOSD criterion with the ordering of expected
+utility.</p>
+<p>Finally, point out two extensions of the expected utility framework
+that matter in settings like insurance, health, and platform risk
+control. The first is state-dependent utility. Standard vNM assumes that
+what an outcome is worth is independent of which state produces it, but
+reality may be otherwise: a dollar in health and a dollar in illness
+need not have the same utility, and in that case utility should be
+written as varying with the state, <span class="math inline">\sum_s
+\pi_s\, u_s(x_s)</span>, with the same wealth measured by a different
+<span class="math inline">u_s</span> in different states, which is key
+to understanding why people buy “seemingly unprofitable” insurance. The
+second is subjective expected utility. Earlier we treated the
+probability <span class="math inline">\pi_s</span> as an exogenously
+given objective number, but many business judgments have no ready
+probability at all, only personal belief. Savage proved that when
+preferences are defined over “acts” (maps from states to outcomes) and
+satisfy a set of axioms, one can simultaneously derive a set of
+subjective probabilities and a utility function from the preferences, so
+that choice behaves as expected utility taken over subjective
+probabilities. This extends choice under uncertainty from “probability
+known” to “probability also revealed by behavior,” and is the
+theoretical starting point for later discussions of belief, learning,
+and the value of information.</p>
+<p>To summarize: this section had the duality machine do three jobs in a
+row. Consumer welfare was written as areas under compensated demand
+curves, with CV, EV, and consumer surplus ordered by the size of the
+income effect and collapsing into one under quasi-linearity. Producer
+theory was recognized as a word-for-word translation of consumer theory,
+with cost-production duality isomorphic to utility-expenditure duality,
+and the convexity of the profit function, Hotelling’s lemma, and returns
+to scale connecting firm technology all the way to market form. Choice
+under uncertainty was characterized by expected utility, with risk
+attitude measured by the curvature of the Bernoulli utility, that is,
+the Arrow-Pratt coefficient, stochastic dominance giving rankings that
+require no specification of utility, and state-dependence and subjective
+expected utility extending the framework to cases closer to reality. The
+common backdrop of all three jobs is “optimize under a constraint, then
+read the wanted quantity off the derivative of the value function,”
+which is exactly the main thread of the whole chapter.</p>
+<h3 id="how-comparative-statics-become-empirical-predictions">4.4 How
+Comparative Statics Become Empirical Predictions</h3>
+<p>The previous sections built the machine and put it to use, and this
+section explains how it finally lands on data. Theory is useful for
+empirical work not because it tells a story for some single coefficient,
+but because it simultaneously constrains the relationships among several
+observable quantities, and it is this joint restriction that data can
+bring to bear as a test. Take the Slutsky equation first. The
+Marshallian demand response to a price increase is, by construction, the
+sum of a substitution effect and an income effect:</p>
+<p><span class="math display">\frac{\partial x_j}{\partial
+p_k}=\frac{\partial h_j}{\partial p_k}-x_k\frac{\partial x_j}{\partial
+w}.</span></p>
+<p>For a normal good, the own income effect is positive, so when the
+price rises, its Marshallian own-price response is more negative than
+the compensated response. This comparison, derived purely from signs,
+gives a prediction you can take to data: for the same price increase,
+the uncompensated demand response should be larger among those for whom
+the good takes up a higher budget share and the income effect is
+stronger. Beware, though: even if you really do see this
+cross-population heterogeneity in the data, it is only consistent with
+the income-effect mechanism, and does not automatically rule out that
+liquidity constraints, attention, or measurement error differing across
+groups could produce the same pattern. A matching sign is a necessary
+condition, not proof of the mechanism.</p>
+<p>The duality on the producer side likewise presses out a set of joint
+restrictions. By Shephard’s lemma, the conditional factor demand when a
+factor price <span class="math inline">r_k</span> rises is <span
+class="math inline">\partial c/\partial r_k</span>, and the cost
+function is concave in factor prices, so the Jacobian of compensated
+factor demand must be symmetric and negative semidefinite, both of which
+you can check against an estimated cross-substitution matrix. If the
+estimated matrix badly violates symmetry, that is most likely not
+something a phrase like “firms have frictions” can wave away, and what
+should be suspected instead is aggregation at the technology level,
+adjustment costs, endogenous procurement prices, or a misspecified
+functional form, each to be ruled out in turn.</p>
+<p>Under uncertainty, the Arrow-Pratt absolute risk aversion <span
+class="math inline">A(w)=-u&#39;&#39;(w)/u&#39;(w)</span> gives the risk
+premium approximation for a small risk:</p>
+<p><span class="math display">\pi(w)\approx
+\frac{1}{2}A(w)\operatorname{Var}(\widetilde\varepsilon).</span></p>
+<p>This approximation also spits out testable comparative statics: the
+larger the variance of the risk, the higher the risk premium, and if
+absolute risk aversion falls with wealth (decreasing absolute risk
+aversion), then rising wealth lowers the premium demanded for the same
+absolute risk. These predictions can themselves be falsified by data,
+but when you actually test them with insurance purchases or conservative
+choices, you must separate risk preferences, beliefs, and constraints,
+otherwise a behavior that “looks more risk averse” may just be the
+result of different beliefs or borrowing limits.</p>
+<div class="table-scroll">
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr>
+<th>Theoretical change</th>
+<th>Comparative static</th>
+<th>Observable implication</th>
+<th>Alternative explanations not identified by sign alone</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Own price rises</td>
+<td>Hicksian demand has only substitution; Marshallian also has an
+income effect</td>
+<td>Groups with a higher budget share or a stronger income response
+react more</td>
+<td>liquidity, search, salience</td>
+</tr>
+<tr>
+<td>Input price rises</td>
+<td>Conditional input demand moves along the cost gradient</td>
+<td>Conditional demand for substitutable inputs adjusts in the opposite
+direction</td>
+<td>technical change, quantity discounts, endogenous procurement
+price</td>
+</tr>
+<tr>
+<td>Risk variance rises</td>
+<td>Risk premium increases with <span
+class="math inline">A(w)</span></td>
+<td>Risk-averters demand higher compensation</td>
+<td>beliefs, ambiguity, borrowing constraints</td>
+</tr>
+<tr>
+<td>Digital good’s price falls to zero</td>
+<td>The gap among CV, EV, and <span class="math inline">\Delta
+\mathrm{CS}</span> depends on income effects</td>
+<td>High users’ welfare gains are larger, but usage time alone cannot
+value it</td>
+<td>selection into use, zero-price privacy cost</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>To gather this section into one sentence: empirical research should
+treat the predictions above as a set of joint restrictions, and make
+clear what exogenous variation is driving prices, income, risk, or
+factor costs. Merely seeing the sign go the right way in a cross section
+is at best evidence consistent with a mechanism, and to really identify
+the mechanism you need price experiments, cost shifters, randomized
+information interventions, or other variation that can separate the
+competing alternative explanations.</p>
+<h2 id="anchoring-papers">5 Anchoring Papers</h2>
+<p>Theory only stands up once it lands in real measurement. This section
+picks two studies that put this chapter’s welfare machine to actual use,
+one the methodological origin of valuing new goods, and one that carries
+the same logic over to digital products, each laid out along five
+elements (paper, method, data, results, limitations), with a focus on
+how the welfare measure is computed out of demand estimation.</p>
+<h3 id="hausman-1996">5.1 Hausman (1996)</h3>
+<div class="case">
+<p>Paper and methodological position: “Valuation of New Goods under
+Perfect and Imperfect Competition,” in The Economics of New Goods,
+edited by Bresnahan and Gordon (NBER/University of Chicago Press). It
+turns the CV computation of Section 4.1 of this chapter into the
+standard way to value the social worth of a new product, and points out
+the problem that official price indices systematically overstate
+inflation by ignoring new goods.</p>
+<p>Method: a new good coming into existence from nothing is equivalent
+to its price falling from a “reservation price so high nobody buys” to
+the actual market price. The consumer welfare brought by the new good is
+the area under the demand curve over this price interval, that is, this
+chapter’s CV. To compute that area, you must first estimate the entire
+demand curve (not just a single point at the current price), and Hausman
+estimates the demand for breakfast cereal with an almost ideal demand
+system, using prices in other cities as instruments to handle the
+endogeneity of price when identifying price elasticities.</p>
+<p>Data: Nielsen supermarket scanner data, focused on a newly introduced
+cereal (Apple-Cinnamon Cheerios).</p>
+<p>Results: the consumer surplus brought by this one new cereal is
+sizable, amounting to a few percent of category spending; more
+generally, ignoring new goods overstates the relevant subcomponent of
+the CPI by about a quarter. The methodological contribution is to pin
+the vague question “what is a new good worth” down to a CV area under a
+demand curve, making it estimable and comparable.</p>
+<p>Limitations: the whole set of numbers hinges on the demand functional
+form and on the extrapolation to that reservation price, and the data
+are sparsest at the high-price end, exactly where the extrapolation is
+least grounded. The validity of the instruments also depends on the
+judgment that price shocks across cities are uncorrelated. These are
+exactly the ready-made illustration for Section 7’s point that welfare
+measures are sensitive to functional form.</p>
+</div>
+<h3 id="brynjolfsson-collis-and-eggers-2019">5.2 Brynjolfsson, Collis
+and Eggers (2019)</h3>
+<div class="case">
+<p>Paper: “Using massive online choice experiments to measure changes in
+well-being,” PNAS. The question is direct: digital products with a zero
+price like search, social, and maps leave almost no trace in GDP, yet
+they clearly bring enormous welfare, so how should this welfare be
+measured.</p>
+<p>Method: precisely this chapter’s equivalent variation. The
+researchers run incentive-compatible choice experiments on a large
+sample of users, asking “how much money would you need to go without a
+product for the next month,” and the minimum compensation someone will
+accept is the money that leaves the user indifferent between “having the
+product with no compensation” and “not having the product with
+compensation,” which by definition is the EV of losing the product.
+Summing the individual compensations gives the total consumer welfare of
+the product.</p>
+<p>Data: multiple rounds of online choice experiments covering thousands
+of users, involving digital products like Facebook, search engines,
+email, and maps, with some experiments cashing out choices with real
+payments to guarantee incentive compatibility.</p>
+<p>Results: users value these zero-price products highly, with the
+median compensation demanded for search engines the highest, around
+seventeen thousand dollars a year, email and maps each on the order of a
+few thousand dollars a year, and Facebook’s median around tens of
+dollars a month. The core message: measured by EV, the consumer welfare
+of free digital products is vast, and this welfare completely escapes a
+spending-based GDP.</p>
+<p>Limitations: reported compensation demands carry hypothetical bias
+and the endowment effect, individual valuations are highly dispersed,
+and extrapolating the median to the population calls for care; these
+numbers measure private welfare, which need not equal social welfare
+once externalities and attention costs are counted in.</p>
+</div>
+<p>Together the two papers show the empirical value of this chapter’s
+machine: CV and EV are not symbols on a blackboard but the only rigorous
+way to answer the real question “what is a new product or a free service
+actually worth.” They also foreshadow the theme of the subsequent demand
+estimation chapters, namely, estimate demand first, then use duality to
+translate demand into welfare.</p>
+<h2 id="running-case-settling-lumens-accounts">6 Running Case: Settling
+Lumen’s Accounts</h2>
+<p>Now drive the machine of Sections 3 and 4 onto Lumen’s numbers, and
+the losses that could not be pinned down in Section 1 become clear one
+by one. Every number can be done by hand with elementary algebra, and
+the R code below only transcribes the hand computation faithfully and
+checks it, with every number cited in the text coming from its actual
+output.</p>
+<h3 id="ump-demand-and-indirect-utility">6.1 UMP: Demand and Indirect
+Utility</h3>
+<p>The first-order conditions of Cobb-Douglas <span
+class="math inline">u = x_1^{2/5} x_2^{3/5}</span> give the famous
+constant-expenditure-share result: the fraction of the budget spent on
+each good is identically equal to its exponent. So Walrasian demand
+is</p>
+<p><span class="math display">x_1(p, w) = \frac{2}{5}\frac{w}{p_1},
+\qquad x_2(p, w) = \frac{3}{5}\frac{w}{p_2}</span></p>
+<p>Plugging in the initial prices <span class="math inline">p^0 = (2,
+1)</span> and <span class="math inline">w = 100</span>: <span
+class="math inline">x_1 = \tfrac{2}{5}\cdot\tfrac{100}{2} = 20</span>,
+<span class="math inline">x_2 = \tfrac{3}{5}\cdot 100 = 60</span>.
+Indirect utility <span class="math inline">v(p, w) =
+w\,(2/5\,/\,p_1)^{2/5}(3/5\,/\,p_2)^{3/5}</span>, which comes out to
+<span class="math inline">u^0 = 20^{2/5}\,60^{3/5} = 20\cdot 3^{3/5}
+\approx 38.664</span>. After the increase, <span class="math inline">p^1
+= (4, 1)</span>: <span class="math inline">x_1 = 10</span>, <span
+class="math inline">x_2 = 60</span>, <span class="math inline">u^1
+\approx 29.302</span>. Note that <span class="math inline">x_1</span>
+drops from 20 to 10, but <span class="math inline">p_1 x_1</span> does
+not budge from 40 to 40. The unmoving 40 is exactly what the first
+analyst in Section 1 saw. The constant-share property of Cobb-Douglas
+makes spending completely unresponsive to price, and makes the illusion
+that “unchanged spending means no loss” especially stubborn.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>a  <span class="ot">&lt;-</span> <span class="dv">2</span><span class="sc">/</span><span class="dv">5</span>; w <span class="ot">&lt;-</span> <span class="dv">100</span>; p2 <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>p1_0 <span class="ot">&lt;-</span> <span class="dv">2</span>; p1_1 <span class="ot">&lt;-</span> <span class="dv">4</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>x1 <span class="ot">&lt;-</span> <span class="cf">function</span>(p1) a <span class="sc">*</span> w <span class="sc">/</span> p1</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>u  <span class="ot">&lt;-</span> <span class="cf">function</span>(p1) <span class="fu">x1</span>(p1)<span class="sc">^</span>a <span class="sc">*</span> ((<span class="dv">1</span> <span class="sc">-</span> a) <span class="sc">*</span> w <span class="sc">/</span> p2)<span class="sc">^</span>(<span class="dv">1</span> <span class="sc">-</span> a)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">x1_0 =</span> <span class="fu">x1</span>(p1_0), <span class="at">x1_1 =</span> <span class="fu">x1</span>(p1_1), <span class="at">u0 =</span> <span class="fu">u</span>(p1_0), <span class="at">u1 =</span> <span class="fu">u</span>(p1_1))</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     x1_0     x1_1       u0       u1</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  20.0000  10.0000  38.6636  29.3016</span></span></code></pre></div>
+<h3 id="emp-the-expenditure-function-and-hicksian-demand">6.2 EMP: The
+Expenditure Function and Hicksian Demand</h3>
+<p>The expenditure function of Cobb-Douglas is <span
+class="math inline">e(p, u) = u\,(p_1/a)^{a}(p_2/(1-a))^{1-a} =
+u\,(5p_1/2)^{2/5}(5p_2/3)^{3/5}</span>. Run one self-check: <span
+class="math inline">e(p^0, u^0)</span> should equal exactly <span
+class="math inline">w = 100</span> (spend 100 to hold the utility <span
+class="math inline">u^0</span> she could already reach), and plugging in
+does give 100; likewise <span class="math inline">e(p^1, u^1) =
+100</span>. These two self-checks are the numerical confirmation of the
+duality identity <span class="math inline">e(p, v(p,w)) = w</span>.
+Shephard’s lemma gives Hicksian demand <span class="math inline">h_1 =
+\partial e/\partial p_1</span>, which at the reference point <span
+class="math inline">(p^0, u^0)</span> computes to <span
+class="math inline">h_1 = 20</span>, equal to the Walrasian <span
+class="math inline">x_1 = 20</span> at that point, and this is the
+numerical confirmation of the duality identity <span
+class="math inline">h_\ell(p, u^0) = x_\ell(p, e(p, u^0))</span>.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>e <span class="ot">&lt;-</span> <span class="cf">function</span>(p1, u) u <span class="sc">*</span> (p1 <span class="sc">/</span> a)<span class="sc">^</span>a <span class="sc">*</span> (p2 <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">-</span> a))<span class="sc">^</span>(<span class="dv">1</span> <span class="sc">-</span> a)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">check_e0 =</span> <span class="fu">e</span>(p1_0, <span class="fu">u</span>(p1_0)), <span class="at">check_e1 =</span> <span class="fu">e</span>(p1_1, <span class="fu">u</span>(p1_1)))</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; check_e0 check_e1</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;      100      100</span></span></code></pre></div>
+<h3 id="the-slutsky-decomposition">6.3 The Slutsky Decomposition</h3>
+<p>Do the own-price Slutsky decomposition at the initial point. The
+total effect <span class="math inline">\partial x_1/\partial p_1 =
+-\tfrac{2}{5}\,w/p_1^2 = -(2/5)(100)/4 = -10</span>. The income effect
+<span class="math inline">-x_1\,\partial x_1/\partial w =
+-20\cdot(a/p_1) = -20\cdot(1/5) = -4</span>. The substitution effect by
+subtraction is <span class="math inline">-10 - (-4) = -6</span>, which
+can also be checked by differentiating <span
+class="math inline">\partial h_1/\partial p_1</span> directly, with the
+same result.</p>
+<p><span class="math display">\underbrace{-10}_{\text{total}} =
+\underbrace{-6}_{\text{substitution}} +
+\underbrace{(-4)}_{\text{income}}</span></p>
+<p>Both halves are negative, consistent with good 1 being a normal good:
+the increase both pushes her toward the outside good (substitution) and
+makes her really poorer and cut back across the board (income), two
+effects in the same direction, so demand slopes down for sure. The
+decomposition also tells us that six tenths of this price response is
+pure substitution and four tenths is shrinking purchasing power, and
+this ratio reappears when we measure welfare in the next section.</p>
+<h3 id="the-three-welfare-numbers">6.4 The Three Welfare Numbers</h3>
+<p>Now compute the loss left hanging in Section 1. The three areas are
+obtained by integrating the functions of 6.1 and 6.2 directly, or by
+taking expenditure differences:</p>
+<p><span class="math display">\Delta\mathrm{CS} = \int_2^4
+\frac{40}{p_1}\, dp_1 = 40\ln 2 \approx 27.726</span></p>
+<p><span class="math display">\mathrm{EV} = e(p^0, u^0) - e(p^0, u^1) =
+100 - e(p^0, u^1) \approx 24.214</span></p>
+<p><span class="math display">\mathrm{CV} = e(p^1, u^0) - e(p^1, u^1) =
+e(p^1, u^0) - 100 \approx 31.951</span></p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>dCS <span class="ot">&lt;-</span> <span class="dv">40</span> <span class="sc">*</span> <span class="fu">log</span>(<span class="dv">2</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>EV  <span class="ot">&lt;-</span> w <span class="sc">-</span> <span class="fu">e</span>(p1_0, <span class="fu">u</span>(p1_1))</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>CV  <span class="ot">&lt;-</span> <span class="fu">e</span>(p1_1, <span class="fu">u</span>(p1_0)) <span class="sc">-</span> w</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">EV =</span> EV, <span class="at">dCS =</span> dCS, <span class="at">CV =</span> CV)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;       EV      dCS       CV</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  24.2142  27.7259  31.9508</span></span></code></pre></div>
+<p>The ranking <span class="math inline">\mathrm{EV} &lt;
+\Delta\mathrm{CS} &lt; \mathrm{CV}</span> fits the general result of
+Section 4.1 exactly. The three numbers each answer a different but
+equally legitimate question. CV says: the increase is a done deal, and
+to bring Lumen back to as satisfied as before, we must compensate her
+31.95 at the new prices. EV says: if the increase had not happened,
+taking 24.21 from her would push her down to as badly off as after the
+increase. The consumer surplus of 27.73 is an approximation obtainable
+by integrating observable demand alone, with no knowledge of utility,
+and it honestly falls between the two exact answers. The disagreement
+between the two analysts in Section 1 is now resolved: the first’s “zero
+loss” confused spending with welfare; the second’s 27.73 is a good
+approximation, but neither CV nor EV, and which one to actually report
+depends on whether the operations team means “compensate to no loss” or
+“buy out in advance.” The near-a-third disagreement is not anyone
+getting the arithmetic wrong, it is that the three questions were
+different all along.</p>
+<h3 id="two-companion-sub-accounts-producer-and-uncertainty">6.5 Two
+Companion Sub-Accounts: Producer and Uncertainty</h3>
+<p>Quick computations of the same logic in two other places, to
+corroborate Sections 4.2 and 4.3. On the producer side, suppose the
+platform’s content delivery uses two inputs to produce output via <span
+class="math inline">y = z_1^{1/2} z_2^{1/2}</span>, with factor prices
+<span class="math inline">r = (4, 1)</span>, and it must deliver <span
+class="math inline">y = 10</span> units. The cost function <span
+class="math inline">c(r, y) = 2y\sqrt{r_1 r_2} = 2\cdot 10\cdot\sqrt{4}
+= 40</span>, Shephard’s lemma gives conditional factor demand <span
+class="math inline">z_1 = \partial c/\partial r_1 = y\sqrt{r_2/r_1} =
+5</span>, <span class="math inline">z_2 = y\sqrt{r_1/r_2} = 20</span>,
+and substituting back to check, <span class="math inline">r_1 z_1 + r_2
+z_2 = 4\cdot 5 + 1\cdot 20 = 40</span>, agrees with the value of the
+cost function.</p>
+<p>On the uncertainty side, suppose a seller has Bernoulli utility <span
+class="math inline">u(x) = \sqrt{x}</span>, where <span
+class="math inline">x</span> is the final wealth in hand. She considers
+switching to a new pricing scheme, whose outcome is a 50-50 lottery: 144
+in the good state, 64 in the bad. Expected wealth <span
+class="math inline">\mathbb{E}[x] = 104</span>, expected utility <span
+class="math inline">\mathbb{E}[u] = \tfrac{1}{2}\sqrt{64} +
+\tfrac{1}{2}\sqrt{144} = \tfrac{1}{2}\cdot 8 + \tfrac{1}{2}\cdot 12 =
+10</span>, certainty equivalent <span class="math inline">\mathrm{CE} =
+10^2 = 100</span>, risk premium <span class="math inline">\pi =
+\mathbb{E}[x] - \mathrm{CE} = 104 - 100 = 4</span>. That is, this
+lottery with an expected value of 104 is, in her eyes, only as good as a
+certain wealth of 100, and she would rather give up 4 units of expected
+wealth to dodge this volatility. Check with the Arrow-Pratt
+approximation: <span class="math inline">A(x) = 1/(2x)</span>, at <span
+class="math inline">\mathbb{E}[x] = 104</span> giving <span
+class="math inline">A \approx 0.0048</span>, the lottery variance <span
+class="math inline">\mathrm{Var}(x) = 1600</span>, and the approximate
+risk premium <span class="math inline">\tfrac{1}{2}A\,\mathrm{Var}
+\approx \tfrac{1}{2}\cdot 0.0048\cdot 1600 \approx 3.846</span>, close
+to the exact 4, with the gap coming from the fact that this risk is not
+exactly “small,” and the approximation formula was built for small
+risks.</p>
+<h3
+id="three-reverse-self-checks-recovery-aggregation-and-stochastic-dominance">6.6
+Three Reverse Self-Checks: Recovery, Aggregation, and Stochastic
+Dominance</h3>
+<p>Three more small accounts, bringing the new objects of Sections 3.6,
+3.7, and 4.3 down to numbers.</p>
+<p>The first is integrability. Since Lumen’s Cobb-Douglas demand comes
+from a rational preference, its Slutsky matrix must be symmetric and
+negative semidefinite, which is exactly the integrability condition of
+Section 3.6. Compute and check the whole <span
+class="math inline">2\times 2</span> Slutsky matrix at the initial point
+<span class="math inline">(p^0, w) = ((2,1), 100)</span>:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>a <span class="ot">&lt;-</span> <span class="dv">2</span><span class="sc">/</span><span class="dv">5</span>; w <span class="ot">&lt;-</span> <span class="dv">100</span>; p1 <span class="ot">&lt;-</span> <span class="dv">2</span>; p2 <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>x1 <span class="ot">&lt;-</span> a<span class="sc">*</span>w<span class="sc">/</span>p1; x2 <span class="ot">&lt;-</span> (<span class="dv">1</span><span class="sc">-</span>a)<span class="sc">*</span>w<span class="sc">/</span>p2</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>S <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="sc">-</span>a<span class="sc">*</span>w<span class="sc">/</span>p1<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> x1<span class="sc">*</span>(a<span class="sc">/</span>p1),   <span class="dv">0</span> <span class="sc">+</span> x2<span class="sc">*</span>(a<span class="sc">/</span>p1),</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>              <span class="dv">0</span> <span class="sc">+</span> x1<span class="sc">*</span>((<span class="dv">1</span><span class="sc">-</span>a)<span class="sc">/</span>p2),      <span class="sc">-</span>(<span class="dv">1</span><span class="sc">-</span>a)<span class="sc">*</span>w<span class="sc">/</span>p2<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> x2<span class="sc">*</span>((<span class="dv">1</span><span class="sc">-</span>a)<span class="sc">/</span>p2)),</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>            <span class="at">nrow =</span> <span class="dv">2</span>, <span class="at">byrow =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>S</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;      [,1] [,2]</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1,]   -6   12</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [2,]   12  -24</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">sym =</span> S[<span class="dv">1</span>,<span class="dv">2</span>] <span class="sc">-</span> S[<span class="dv">2</span>,<span class="dv">1</span>], <span class="at">Sp =</span> (S <span class="sc">%*%</span> <span class="fu">c</span>(p1, p2))[<span class="dv">1</span>])   <span class="co"># symmetry &amp; S p = 0</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; sym  Sp</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   0   0</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="fu">eigen</span>(S)<span class="sc">$</span>values</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1]   0 -30</span></span></code></pre></div>
+<p>The diagonal element <span class="math inline">s_{11} = -6</span> is
+exactly the substitution effect computed by hand in Section 6.3, the
+off-diagonal elements <span class="math inline">s_{12} = s_{21} =
+12</span> being equal means symmetry holds, the two eigenvalues <span
+class="math inline">0</span> and <span class="math inline">-30</span>
+both being nonpositive means negative semidefiniteness, and <span
+class="math inline">S p = 0</span> reflects that the Slutsky matrix
+always has the price vector as a zero direction (a corollary of
+compensated demand’s homogeneity of degree zero). All three pass,
+showing this set of demands is indeed integrable and can have its
+expenditure function recovered, and Section 6.2 assembling <span
+class="math inline">e</span> from it was no accident.</p>
+<p>The second is Gorman aggregation. Build two consumers, both with a
+linear expenditure system, with different subsistence demands (one
+prefers basic features <span class="math inline">\gamma^A = (5,
+10)</span>, one is a heavy user <span class="math inline">\gamma^B =
+(15, 0)</span>), but the same marginal budget share for good 1, <span
+class="math inline">b_1 = 2/5</span>. With total income <span
+class="math inline">W = 300</span>, split first as <span
+class="math inline">(100, 200)</span>, then changed to an even <span
+class="math inline">(150, 150)</span>, and see whether total demand
+<span class="math inline">X_1</span> moves:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>b1 <span class="ot">&lt;-</span> <span class="dv">2</span><span class="sc">/</span><span class="dv">5</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>x1i <span class="ot">&lt;-</span> <span class="cf">function</span>(g1, g2, wi) g1 <span class="sc">+</span> b1<span class="sc">*</span>(wi <span class="sc">-</span> p1<span class="sc">*</span>g1 <span class="sc">-</span> p2<span class="sc">*</span>g2)<span class="sc">/</span>p1</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">X1 =</span> <span class="fu">x1i</span>(<span class="dv">5</span>,<span class="dv">10</span>,<span class="dv">100</span>) <span class="sc">+</span> <span class="fu">x1i</span>(<span class="dv">15</span>,<span class="dv">0</span>,<span class="dv">200</span>), <span class="at">X1_redis =</span> <span class="fu">x1i</span>(<span class="dv">5</span>,<span class="dv">10</span>,<span class="dv">150</span>) <span class="sc">+</span> <span class="fu">x1i</span>(<span class="dv">15</span>,<span class="dv">0</span>,<span class="dv">150</span>))</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;       X1 X1_redis</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;       70       70</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>x1i_b <span class="ot">&lt;-</span> <span class="cf">function</span>(g1, g2, wi, b) g1 <span class="sc">+</span> b<span class="sc">*</span>(wi <span class="sc">-</span> p1<span class="sc">*</span>g1 <span class="sc">-</span> p2<span class="sc">*</span>g2)<span class="sc">/</span>p1     <span class="co"># make B&#39;s slope 0.7</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">orig =</span> <span class="fu">x1i_b</span>(<span class="dv">5</span>,<span class="dv">10</span>,<span class="dv">100</span>,.<span class="dv">4</span>) <span class="sc">+</span> <span class="fu">x1i_b</span>(<span class="dv">15</span>,<span class="dv">0</span>,<span class="dv">200</span>,.<span class="dv">7</span>),</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">redis =</span> <span class="fu">x1i_b</span>(<span class="dv">5</span>,<span class="dv">10</span>,<span class="dv">150</span>,.<span class="dv">4</span>) <span class="sc">+</span> <span class="fu">x1i_b</span>(<span class="dv">15</span>,<span class="dv">0</span>,<span class="dv">150</span>,.<span class="dv">7</span>))</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  orig redis</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  95.5  88.0</span></span></code></pre></div>
+<p>With a shared slope, the two individual demands change from <span
+class="math inline">(21, 49)</span> to <span class="math inline">(31,
+39)</span>, one up and one down, yet total demand stays put at <span
+class="math inline">70</span>, because it recognizes only <span
+class="math inline">W</span> and is independent of how the money is
+distributed, and this is the numerical face of the representative
+consumer’s existence. But once B’s marginal budget share is nudged to
+<span class="math inline">0.7</span>, breaking the common slope,
+redistribution immediately pushes total demand from <span
+class="math inline">95.5</span> to <span
+class="math inline">88.0</span>, and the representative consumer fails
+accordingly. The warning of Section 3.7 is seen here in full
+clarity.</p>
+<p>The third is stochastic dominance. Using the seller <span
+class="math inline">u(x) = \sqrt{x}</span> of Section 4.3, compare two
+lotteries with the same mean of <span class="math inline">104</span>: a
+tighter <span class="math inline">A</span> (50-50 on <span
+class="math inline">\{100, 108\}</span>), and a mean-preserving spread
+<span class="math inline">B</span> that spreads it toward the two ends
+(50-50 on <span class="math inline">\{64, 144\}</span>). SOSD asserts
+that any risk-averter should prefer the tighter <span
+class="math inline">A</span>:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>u <span class="ot">&lt;-</span> sqrt</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">mean_A =</span> <span class="fl">0.5</span><span class="sc">*</span><span class="dv">100</span> <span class="sc">+</span> <span class="fl">0.5</span><span class="sc">*</span><span class="dv">108</span>, <span class="at">mean_B =</span> <span class="fl">0.5</span><span class="sc">*</span><span class="dv">64</span> <span class="sc">+</span> <span class="fl">0.5</span><span class="sc">*</span><span class="dv">144</span>,</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">EU_A =</span> <span class="fl">0.5</span><span class="sc">*</span><span class="fu">u</span>(<span class="dv">100</span>) <span class="sc">+</span> <span class="fl">0.5</span><span class="sc">*</span><span class="fu">u</span>(<span class="dv">108</span>), <span class="at">EU_B =</span> <span class="fl">0.5</span><span class="sc">*</span><span class="fu">u</span>(<span class="dv">64</span>) <span class="sc">+</span> <span class="fl">0.5</span><span class="sc">*</span><span class="fu">u</span>(<span class="dv">144</span>))</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   mean_A   mean_B     EU_A     EU_B</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 104.0000 104.0000  10.1962  10.0000</span></span></code></pre></div>
+<p>Both lotteries have a mean of <span class="math inline">104</span>,
+but the expected utility <span class="math inline">\mathrm{EU}_A =
+10.196 &gt; \mathrm{EU}_B = 10.000</span>, and the concave utility
+penalizes the more dispersed <span class="math inline">B</span>,
+matching the SOSD judgment to the digit. It is worth noting that <span
+class="math inline">B</span> is exactly the <span
+class="math inline">\{64, 144\}</span> lottery of Section 6.5, whose
+certainty equivalent <span class="math inline">100</span> and risk
+premium <span class="math inline">4</span> were already computed, and
+here we swap in a tighter lottery of the same mean to compare,
+highlighting not “whether to take the risk” but “which of two risks is
+better,” with the dominance criterion letting this comparison proceed
+without knowing the specific scale of <span
+class="math inline">u</span>.</p>
+<p>The accounts of this section are now all settled: one and the same
+Cobb-Douglas consumer, one and the same duality machine, with the UMP
+producing demand, the EMP producing expenditure, the envelope theorem
+producing Slutsky, Shephard, and Hotelling, and expenditure differences
+producing CV and EV, and the reverse self-checks verifying
+integrability, aggregation, and stochastic dominance in turn, every step
+doable by hand and self-checkable, while the two small producer and
+uncertainty accounts prove this logic can be reused unchanged. The
+confusion of Section 1 was not resolved by some cleverer formula, but by
+the discipline of “first ask clearly which welfare quantity you
+want.”</p>
+<h2 id="failure-modes-of-measurement-and-robustness">7 Failure Modes of
+Measurement and Robustness</h2>
+<p>The blackboard duality machine assumes regular preferences, demand
+from a single rational individual, and a known functional form, and in
+real welfare analysis these premises loosen at any moment. This section
+lays out the most common failures and the workable responses.</p>
+<p>The path dependence of consumer surplus is the first trap. When there
+are several simultaneous price changes (say the platform adjusts the
+prices of two features at once), writing consumer surplus as a line
+integral over prices generally makes the integral depend on the order in
+which you let prices change, and adjusting good 1 first or good 2 first
+gives different numbers. CV and EV do not have this affliction, because
+they are defined by the difference of two values of the expenditure
+function, independent of the path. Whether consumer surplus can escape
+path dependence depends on whether Slutsky symmetry <span
+class="math inline">\partial h_\ell/\partial p_k = \partial h_k/\partial
+p_\ell</span> holds, which is exactly the gift from duality of Section
+3.5. The practical lesson: welfare analysis with multiple price changes
+should compute CV or EV directly from the expenditure function, and
+should not integrate Walrasian demand for convenience.</p>
+<p>Sensitivity to functional form is the second, and also the soft spot
+of the paper in Section 5.1. Welfare measures want the entire demand
+curve, especially the high-price end far from the observed price
+(valuing a new good even requires extrapolating to the reservation
+price), while the data are often dense only near the current price.
+Different demand functional forms can fit equally well within the
+observed interval yet, extrapolated to where the data are sparse, give
+areas under curves that differ greatly, so the estimate of CV is rather
+fragile to the choice of functional form. The honest thing to do is to
+compute the main result under several reasonable functional forms,
+report a range rather than a point, and make clear which stretch of
+extrapolation the number is most sensitive to.</p>
+<p>Aggregation is the third. This chapter has been about a single
+consumer throughout, but policy evaluation usually wants total market
+welfare, and summing individuals is done either by directly adding
+individual CV and EV, or by pretending a “representative consumer”
+exists. The latter is legitimate only under very strong conditions:
+Gorman proved that if and only if all consumers’ expenditure functions
+have the Gorman polar form <span class="math inline">e_i(p, u_i) =
+a_i(p) + b(p)\,u_i</span> with a shared slope <span
+class="math inline">b(p)</span>, does aggregate demand look as if it
+came from a single rational individual, and only then can welfare be
+aggregated unambiguously. The substance of this condition is that
+everyone has the same spending pattern for a marginal dollar of income
+(marginal propensities to consume independent of the individual), which
+is hard to satisfy in reality. This explains why the demand estimation
+later in this series invests great effort in modeling consumer
+heterogeneity and cannot adopt a representative consumer for
+convenience, since the legitimacy of welfare aggregation hinges
+precisely on this.</p>
+<p>Quasi-linearity as a special case is worth singling out, because it
+is the common “exemption zone” for the preceding problems. When the good
+under study has no income effect, CV, EV, and consumer surplus collapse
+into one (Section 4.1), path dependence vanishes, and aggregation
+becomes clean too (quasi-linear preferences automatically satisfy the
+Gorman form). This is why a great many applied theory models simply
+assume quasi-linear utility: not because it is true, but because it
+makes welfare analysis unambiguous. Before using it, be clear-eyed that
+you are assuming the spending under study takes up only a small slice of
+the consumer’s budget and the income effect is negligible, a premise
+that fails when studying large expenditures (housing, health care).</p>
+<p>Last is the extra fragility that uncertainty brings. Expected utility
+relies on the independence axiom, and experiments like the Allais
+paradox repeatedly show that real individuals systematically violate it,
+and behavioral economics’ prospect theory and other alternative models
+rewrote choice under risk on that basis. This chapter uses expected
+utility because it is still the default starting point for structural
+modeling and can consistently connect to the earlier duality framework,
+but the reader should know it is an assumption that can be rejected by
+data, not a logical necessity.</p>
+<p>Threading these failures together, this chapter’s welfare machine is
+precise and useful, but every one of its numbers carries premises:
+regular preferences, the right functional form, additive individuals,
+rationality under risk. Robust welfare analysis is not about how well
+you have memorized the formulas, but about putting these premises on the
+table and making clear how your conclusion would move as the premises
+loosen. This is entirely of a piece with the attitude toward
+identification assumptions in every later chapter of the series: the
+credibility of a method lies not in the ingenuity of the technique but
+in the transparency of the assumptions.</p>
+<h2 id="further-reading">8 Further Reading</h2>
+<div class="readings">
+<p>Required reading, in suggested reading order:</p>
+<ul>
+<li>Nolan Miller, Notes on Microeconomic Theory, Chapters 3 to 6. The
+intuition for the consumer and uncertainty parts of this chapter is
+mainly modeled on these notes, which cover the UMP, EMP, duality, and
+Slutsky more patiently than most textbooks, and are well suited for a
+first read to build geometric intuition.</li>
+<li>Mas-Colell, Whinston and Green, Microeconomic Theory, Chapter 3. The
+authoritative reference for duality and demand theory, with Section 3.G
+on integrability (backing preferences out of demand) the complete source
+for the relevant claims in Sections 3.6 and 7 of this chapter, worth
+close study.</li>
+<li>Mas-Colell, Whinston and Green, Chapter 5. Producer theory, read
+against the duality of Chapter 3 to see exactly where the “word-for-word
+translation” of Section 4.2 does its translating.</li>
+<li>Mas-Colell, Whinston and Green, Chapter 6. Choice under uncertainty,
+with rigorous statements of the expected utility representation theorem
+and the Arrow-Pratt measures.</li>
+</ul>
+<p>Further reading:</p>
+<ul>
+<li>Hausman (1996). The methodological origin of valuing new goods, the
+classic application of the CV computation of Section 4.1 of this
+chapter, with attention to the handling and controversy of the
+reservation-price extrapolation step.</li>
+<li>Brynjolfsson, Collis and Eggers (2019). The representative work
+applying EV to zero-price digital products, especially to be read for
+the IS and digital economics direction.</li>
+<li>Deaton and Muellbauer (1980). The original text of the Almost Ideal
+Demand System, the source of the demand system used in Section 5.1, and
+an evergreen tool of empirical demand analysis.</li>
+<li>Diamond and McFadden (1974). The methodological foundation of using
+the expenditure function for welfare analysis, making clear why CV and
+EV are superior to consumer surplus.</li>
+<li>Samuelson (1938) and Houthakker (1950). The two founding works of
+revealed preference, the former proposing WARP and the latter completing
+the full rationalizability condition with SARP, and reading them
+together makes clear the lineage of the two axioms in Section 3.6.</li>
+<li>Afriat (1967) and Varian (1982). The classics that made revealed
+preference into an operational test, with Afriat giving a constructive
+criterion for the rationalizability of finite observations and Varian
+turning it into a nonparametric method for empirical demand analysis,
+the applied outlet for the integrability of Section 3.6.</li>
+<li>Gorman (1961). The original source of the existence condition for
+the representative consumer, from which the Gorman polar form of Section
+3.7 comes, extremely short in length yet weighty in every word.</li>
+<li>Rothschild and Stiglitz (1970). Defining “more risky” precisely with
+the mean-preserving spread, the methodological basis for the SOSD
+criterion of Section 4.3.</li>
+</ul>
+</div>
+<div class="apa-refs">
+<ul>
+<li>Afriat, S. N. (1967). The construction of utility functions from
+expenditure data. <em>International Economic Review, 8</em>(1), 67-77.
+<a href="https://doi.org/10.2307/2525382"
+class="uri">https://doi.org/10.2307/2525382</a></li>
+<li>Brynjolfsson, E., Collis, A., &amp; Eggers, F. (2019). Using massive
+online choice experiments to measure changes in well-being.
+<em>Proceedings of the National Academy of Sciences, 116</em>(15),
+7250-7255. <a href="https://doi.org/10.1073/pnas.1815663116"
+class="uri">https://doi.org/10.1073/pnas.1815663116</a></li>
+<li>Deaton, A., &amp; Muellbauer, J. (1980). An almost ideal demand
+system. <em>American Economic Review, 70</em>(3), 312-326.</li>
+<li>Diamond, P. A., &amp; McFadden, D. L. (1974). Some uses of the
+expenditure function in public finance. <em>Journal of Public Economics,
+3</em>(1), 3-21. <a href="https://doi.org/10.1016/0047-2727(74)90020-6"
+class="uri">https://doi.org/10.1016/0047-2727(74)90020-6</a></li>
+<li>Gorman, W. M. (1961). On a class of preference fields.
+<em>Metroeconomica, 13</em>(2), 53-56. <a
+href="https://doi.org/10.1111/j.1467-999X.1961.tb00819.x"
+class="uri">https://doi.org/10.1111/j.1467-999X.1961.tb00819.x</a></li>
+<li>Hausman, J. A. (1996). Valuation of new goods under perfect and
+imperfect competition. In T. F. Bresnahan &amp; R. J. Gordon (Eds.),
+<em>The economics of new goods</em> (NBER Studies in Income and Wealth,
+Vol. 58, pp. 207-248). University of Chicago Press.</li>
+<li>Houthakker, H. S. (1950). Revealed preference and the utility
+function. <em>Economica, 17</em>(66), 159-174. <a
+href="https://doi.org/10.2307/2549382"
+class="uri">https://doi.org/10.2307/2549382</a></li>
+<li>Mas-Colell, A., Whinston, M. D., &amp; Green, J. R. (1995).
+<em>Microeconomic theory</em>. Oxford University Press.</li>
+<li>Miller, N. H. (2006). <em>Notes on microeconomic theory</em>
+[Unpublished lecture notes]. Harvard Kennedy School.</li>
+<li>Rothschild, M., &amp; Stiglitz, J. E. (1970). Increasing risk: I. A
+definition. <em>Journal of Economic Theory, 2</em>(3), 225-243. <a
+href="https://doi.org/10.1016/0022-0531(70)90038-4"
+class="uri">https://doi.org/10.1016/0022-0531(70)90038-4</a></li>
+<li>Samuelson, P. A. (1938). A note on the pure theory of consumer’s
+behaviour. <em>Economica, 5</em>(17), 61-71. <a
+href="https://doi.org/10.2307/2548836"
+class="uri">https://doi.org/10.2307/2548836</a></li>
+<li>Varian, H. R. (1982). The nonparametric approach to demand analysis.
+<em>Econometrica, 50</em>(4), 945-973. <a
+href="https://doi.org/10.2307/1912771"
+class="uri">https://doi.org/10.2307/1912771</a></li>
+</ul>
+</div>
+    <footer class="page-footer">
+<span>Foundations of Information Systems Economics: Empirical Methods for Information Systems Economics</span>
+    </footer>
+  </main>
+</div>
+<script>
+(function(){var p=(location.pathname.split('/').pop()||'index.html');document.querySelectorAll('.file-nav a').forEach(function(a){if(a.getAttribute('href')===p)a.classList.add('current');});})();
+
+/* Preserve complete formulas without internal scrollbars. Only formulas whose
+   natural width exceeds their text column are reduced, and resize restores the
+   largest size that fits. */
+(function () {
+  function fitMath() {
+    document.querySelectorAll('span.math').forEach(function (host) {
+      var katex = host.querySelector('.katex');
+      if (!katex) return;
+      katex.style.fontSize = '';
+      var parent = host.classList.contains('display') ? host : host.parentElement;
+      var available = Math.max(1, parent.clientWidth);
+      /* KaTeX's box can be clipped to the host before measurement; scrollWidth
+         retains the full typeset width and is therefore the correct basis. */
+      var needed = Math.max(katex.scrollWidth, katex.getBoundingClientRect().width);
+      /* Keep a small safety margin for KaTeX glyph overhangs and browser
+         sub-pixel rounding, so the last radical/bar is never clipped. */
+      var target = available * 0.98;
+      if (needed > target) {
+        katex.style.fontSize = Math.max(0.34, target / needed) + 'em';
+      }
+    });
+  }
+  document.addEventListener('DOMContentLoaded', function () {
+    requestAnimationFrame(fitMath);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitMath);
+  });
+  window.addEventListener('resize', fitMath);
+}());
+</script>
+<script defer src="assets/notes.js"></script>
+</body>
+</html>

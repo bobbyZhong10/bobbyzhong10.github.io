@@ -1,0 +1,1647 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Quick Reference &amp; Tools | Foundations of Information Systems Economics</title>
+  <link rel="stylesheet" href="assets/style.css" />
+  <script defer="" src="assets/katex/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <link rel="stylesheet" href="assets/katex/katex.min.css" />
+</head>
+<body>
+<div class="page-wrapper">
+  <nav class="sidebar">
+    <div class="sidebar-title">Foundations of Information Systems Economics</div>
+    <div class="sidebar-subtitle">Theory · Methods · Applications</div>
+    <div class="toc-section-label">On this page</div>
+    <div class="toc">
+<ul>
+<li><a href="#introduction" id="toc-introduction">Introduction</a></li>
+<li><a href="#formula-cards" id="toc-formula-cards">1 Formula
+Cards</a></li>
+<li><a href="#a-method-decision-tree" id="toc-a-method-decision-tree">2
+A Method Decision Tree</a></li>
+<li><a href="#cross-software-command-map"
+id="toc-cross-software-command-map">3 Cross-Software Command
+Map</a></li>
+<li><a href="#common-pitfalls-checklist"
+id="toc-common-pitfalls-checklist">4 Common Pitfalls Checklist</a></li>
+</ul>
+    </div>
+    <div class="file-nav">
+      <div class="nav-label">This series</div>
+      <a href="index.html">Home · Overview</a>
+      <a href="introduction.html">Introduction · How to Use</a>
+      <a href="01_consumer_producer_welfare.html">01 Consumer, Producer &amp; Welfare</a>
+      <a href="02_game_theory.html">02 Game Theory</a>
+      <a href="03_information_mechanism_design.html">03 Information &amp; Mechanism Design</a>
+      <a href="04_pricing_imperfect_competition.html">04 Pricing &amp; Imperfect Competition</a>
+      <a href="05_estimation_mle_gmm.html">05 Estimation: MLE &amp; GMM</a>
+      <a href="06_inference.html">06 Inference: Bootstrap &amp; Clustering</a>
+      <a href="07_panel_dynamic_panel.html">07 Panel &amp; Dynamic Panel</a>
+      <a href="08_nonparametrics.html">08 Nonparametrics &amp; Semiparametrics</a>
+      <a href="09_potential_outcomes.html">09 Potential Outcomes &amp; Selection</a>
+      <a href="10_research_design_architecture.html">10 Research Design</a>
+      <a href="11_measurement_digital_traces.html">11 Measurement &amp; Digital Traces</a>
+      <a href="12_iv_late_mte.html">12 IV: LATE &amp; MTE</a>
+      <a href="13_did_event_studies.html">13 DiD &amp; Event Studies</a>
+      <a href="14_rdd_synthetic_control.html">14 RDD &amp; Synthetic Control</a>
+      <a href="15_sensitivity_partial_identification.html">15 Sensitivity &amp; Partial Identification</a>
+      <a href="16_causal_ml_dml.html">16 Causal ML &amp; DML</a>
+      <a href="17_digital_experimentation.html">17 Digital Experimentation</a>
+      <a href="18_interference_marketplace_experiments.html">18 Interference &amp; Marketplace Experiments</a>
+      <a href="19_discrete_choice.html">19 Discrete Choice &amp; Mixed Logit</a>
+      <a href="20_demand_blp.html">20 Demand Estimation &amp; BLP</a>
+      <a href="21_supply_markups_mergers.html">21 Supply, Markups &amp; Mergers</a>
+      <a href="22_entry_partial_id.html">22 Entry &amp; Partial Identification</a>
+      <a href="23_dynamic_structural.html">23 Dynamic Structural Models</a>
+      <a href="24_platforms_networks.html">24 Platforms &amp; Network Effects</a>
+      <a href="25_search_advertising.html">25 Search, Advertising &amp; Information Goods</a>
+      <a href="26_ai_algorithms_data.html">26 AI, Adoption &amp; Data Economics</a>
+      <a href="27_quick_reference.html">27 Quick Reference &amp; Tools</a>
+    </div>
+  </nav>
+  <main class="main-content" id="top">
+    <header class="page-header">
+      <h1>Quick Reference &amp; Tools</h1>
+      <div class="subtitle">Formula Cards, a Method Decision Tree, and a
+Cross-Software Command Map</div>
+      <div class="meta">Foundations of Information Systems Economics · Chapter 27</div>
+    </header>
+<h2 id="introduction">Introduction</h2>
+<p>The moment you actually need a reference sheet is usually not before
+an exam, but after the regression has already run. Should the standard
+errors cluster by user, by store, or by market? Can a staggered event
+study still be run as plain TWFE? When the instrument is weak, which
+interval is still trustworthy? The numbers on the screen tend to arrive
+faster than these questions, and they are all too willing to tempt you
+into writing up a conclusion on the spot. This chapter sits on your desk
+for one reason: to buy that moment one extra pause.</p>
+<p>We organize everything by research question first, not by software
+menu. The formula cards help you check the estimand and the notation;
+the decision tree starts from your goal, your data structure, and where
+the identifying variation comes from, and points you at the relevant
+chapter; the R, Python, and Stata command tables answer “how do I run
+this”; and the pitfalls checklist presses the harder question, “why
+might that implementation still be wrong”. See a marketplace experiment,
+for instance, and the path does not stop at a difference in means: it
+reminds you of interference, switchback designs, and the rollout
+estimand. See AI adoption, and it will not let you treat access, use,
+and workflow redesign as one and the same treatment.</p>
+<p>The danger of a reference sheet is exactly its convenience. A formula
+has no room for the full institutional background, a command will not
+check the exclusion restriction for you, and a decision tree cannot
+decide on your behalf whether parallel trends is credible. So what this
+chapter offers is an entrance and a set of signposts for the way back,
+not a verdict on which method to use: once you have a candidate, return
+to the corresponding chapter and check the economic model, the
+identifying assumptions, the estimation details, and the failure
+modes.</p>
+<p>Notation is uniform throughout: individuals are <span
+class="math inline">i</span>, products <span
+class="math inline">j</span>, markets or time <span
+class="math inline">t</span>, firms <span class="math inline">f</span>,
+cohorts <span class="math inline">g</span>; potential outcomes are
+written <span class="math inline">Y_i(d)</span>, treatment is <span
+class="math inline">D_i</span>, the instrument is <span
+class="math inline">Z_i</span>, covariates are <span
+class="math inline">X_i</span>, and the propensity score is <span
+class="math inline">e(x)</span>. If this chapter does its job, it will
+not help you pick a fashionable method faster, it will help you discover
+faster that the question in front of you has not yet been defined
+clearly.</p>
+<h2 id="formula-cards">1 Formula Cards</h2>
+<p>Each card gives one core method: the name, the key formula, and a
+one-line gloss. Formulas are in English and LaTeX throughout, and the
+cards are grouped by the book’s five Parts. To understand the conditions
+and limits under which a formula holds, return to the chapter noted in
+parentheses.</p>
+<h3 id="part-i-microeconomic-theory-foundations">Part I Microeconomic
+Theory Foundations</h3>
+<p>Part I is the pure-theory part: the main text demonstrates by hand in
+base R, with no dedicated estimation package. The cards below give the
+primitives that later identification and structural estimation borrow
+again and again.</p>
+<div class="theorem"
+data-label="Consumer duality (Roy / Shephard / the four duality identities) · Chapter 1">
+<p><span class="math display">x_\ell(p, w) = -\frac{\partial v(p,
+w)/\partial p_\ell}{\partial v(p, w)/\partial w}, \qquad \frac{\partial
+e(p, \bar u)}{\partial p_\ell} = h_\ell(p, \bar u)</span></p>
+<p><span class="math display">e(p, v(p, w)) = w, \qquad h_\ell(p, \bar
+u) = x_\ell(p, e(p, \bar u))</span></p>
+<p>In words: the indirect utility <span class="math inline">v</span> and
+the expenditure function <span class="math inline">e</span> are inverses
+of each other, differentiating with respect to price reads Walrasian
+demand <span class="math inline">x</span> and Hicksian demand <span
+class="math inline">h</span> straight off the value function, and the
+four objects are pinned to one another pairwise.</p>
+</div>
+<div class="theorem" data-label="Slutsky equation · Chapter 1">
+<p><span class="math display">\underbrace{\frac{\partial x_\ell(p,
+w)}{\partial p_k}}_{\text{total}} = \underbrace{\frac{\partial h_\ell(p,
+\bar u)}{\partial p_k}}_{\text{substitution}}\; \underbrace{-\; x_k(p,
+w)\,\frac{\partial x_\ell(p, w)}{\partial w}}_{\text{income}}</span></p>
+<p>In words: the observable price slope of demand splits into a
+compensated substitution effect and a purchasing-power income effect,
+and the substitution piece corresponds to a negative semidefinite
+Slutsky matrix.</p>
+</div>
+<div class="theorem" data-label="Welfare measures CV / EV · Chapter 1">
+<p><span class="math display">\mathrm{CV} = e(p^1, u^0) - e(p^1, u^1) =
+e(p^1, u^0) - w, \qquad \mathrm{EV} = e(p^0, u^0) - e(p^0, u^1) = w -
+e(p^0, u^1)</span></p>
+<p>In words: the money-metric welfare of a price change is the
+difference between two evaluations of the expenditure function, CV is
+priced at the new prices and EV at the old, and the usual ordering is
+<span class="math inline">\mathrm{EV} \leq \Delta\mathrm{CS} \leq
+\mathrm{CV}</span>.</p>
+</div>
+<div class="theorem" data-label="Arrow-Pratt risk aversion · Chapter 1">
+<p><span class="math display">A(w) = -\frac{u&#39;&#39;(w)}{u&#39;(w)},
+\qquad \pi \approx \tfrac{1}{2}A(w)\,\mathrm{Var}(w)</span></p>
+<p>In words: the curvature of the Bernoulli utility measures risk
+aversion, and for a small risk the risk premium is roughly half the
+coefficient of absolute risk aversion times the variance.</p>
+</div>
+<div class="theorem" data-label="Nash equilibrium · Chapter 2">
+<p><span class="math display">u_i(s_i^*, s_{-i}^*) \geq u_i(s_i,
+s_{-i}^*) \quad \text{for all } s_i,\ \text{all } i</span></p>
+<p>In words: every player’s strategy is a best response to the others’,
+so no one has an incentive to deviate unilaterally; in a finite game,
+once mixed strategies are allowed, existence is guaranteed.</p>
+</div>
+<div class="theorem"
+data-label="Repeated-game cooperation threshold (grim trigger) · Chapter 2">
+<p><span class="math display">\frac{R}{1-\delta} \geq T + \frac{\delta
+P}{1-\delta} \quad\Longleftrightarrow\quad \delta \geq \frac{T - R}{T -
+P}</span></p>
+<p>In words: the discounted value of cooperating forever is at least
+that of defecting once and then being punished forever, so the
+cooperation threshold is set by the ratio of the temptation to the
+severity of punishment; the folk theorem says that when <span
+class="math inline">\delta</span> is large enough almost any feasible,
+individually rational payoff can be supported.</p>
+</div>
+<div class="theorem" data-label="VCG mechanism · Chapter 3">
+<p><span class="math display">t_i = \max_{a}\sum_{j \neq i} \hat v_j(a)
+\;-\; \sum_{j \neq i} \hat v_j(a^*)</span></p>
+<p>In words: each agent pays the externality it imposes on everyone
+else, so private self-interest and total social welfare differ only by a
+constant that is independent of the agent’s own report, and
+truth-telling becomes a dominant strategy (the revelation principle
+guarantees that we need only study direct, truthful mechanisms of this
+kind).</p>
+</div>
+<div class="theorem"
+data-label="Revenue equivalence and the Myerson reserve · Chapter 3">
+<p><span class="math display">b(v) = \frac{n-1}{n}\, v, \qquad r^\ast:\
+r = \frac{1 - F(r)}{f(r)}</span></p>
+<p>In words: any auction with risk-neutral bidders, independent private
+values, that awards the object to the highest valuation and leaves the
+lowest type zero rent earns the same expected revenue; the optimal
+reserve is where the virtual value hits zero, which is <span
+class="math inline">r^\ast = 1/2</span> under the uniform
+distribution.</p>
+</div>
+<div class="theorem"
+data-label="Lerner index / monopoly markup · Chapter 4">
+<p><span class="math display">\underbrace{p(q) + q\,\frac{dp}{dq}}_{MR}
+= \underbrace{c&#39;(q)}_{MC}, \qquad \frac{p - c&#39;}{p} =
+\frac{1}{|\varepsilon|}</span></p>
+<p>In words: the monopolist sets marginal revenue equal to marginal
+cost, the markup equals the reciprocal of the price elasticity of
+demand, and the less elastic demand is the greater the market power;
+this inverse-elasticity relation is the starting point for recovering
+markups from demand in Chapter 21.</p>
+</div>
+<div class="theorem" data-label="Cournot and Bertrand · Chapter 4">
+<p><span class="math display">\text{Cournot}:\ p &gt; c \qquad\qquad
+\text{Bertrand}:\ p = c = mc</span></p>
+<p>In words: the dimension of competition determines market power.
+Cournot competition in quantities leaves a markup, while Bertrand
+competition in prices drives price down to marginal cost when products
+are homogeneous and costs identical (the Bertrand paradox); capacity
+constraints, product differentiation, or repeated play can push price
+back up.</p>
+</div>
+<h3 id="part-ii-econometric-core">Part II Econometric Core</h3>
+<p>Part II is the machinery of estimation and inference: every
+downstream reduced-form and structural method draws on the sandwich
+variance, clustering, GMM, and nonparametric smoothing collected
+here.</p>
+<div class="theorem"
+data-label="Extremum estimator (MLE / NLS / GMM unified framework) · Chapter 5">
+<p><span class="math display">\hat\theta = \arg\max_{\theta \in \Theta}
+Q_n(\theta), \qquad \hat\theta_{MLE} = \arg\max_\theta \frac{1}{n}
+\sum_{i=1}^n \ln f(z_i; \theta)</span></p>
+<p><span class="math display">\hat\theta_{GMM} = \arg\min_\theta\ \bar
+g_n(\theta)&#39;\, W\, \bar g_n(\theta), \qquad \bar g_n(\theta) =
+\frac{1}{n}\sum_{i=1}^n g(w_i, \theta)</span></p>
+<p>In words: MLE, NLS, and GMM are all special cases of extremizing one
+objective function, identification requires <span
+class="math inline">Q_0(\theta)</span> to have a unique peak at the
+truth, and how steep that peak is measures the strength of
+identification.</p>
+</div>
+<div class="theorem"
+data-label="Sandwich variance and the information equality · Chapter 5">
+<p><span class="math display">\sqrt{n}(\hat\theta - \theta_0)
+\xrightarrow{d} \mathcal{N}\big(0,\ A^{-1} B A^{-1}\big), \quad A =
+-\,\mathbb{E}[\nabla^2 q], \ B = \mathbb{E}[\nabla q\, \nabla
+q&#39;]</span></p>
+<p>In words: the variance of any extremum estimator is a sandwich, the
+bread is curvature and the filling is gradient noise; when the
+specification is exactly right <span class="math inline">A = B =
+I(\theta_0)</span> and it collapses to the Cramér-Rao bound <span
+class="math inline">I^{-1}</span>. Report the sandwich by default, not
+<span class="math inline">I^{-1}</span>.</p>
+</div>
+<div class="theorem"
+data-label="GMM efficient weighting and the Hansen J · Chapter 5">
+<p><span class="math display">\mathrm{Var}_{\text{eff}} =
+(D&#39;S^{-1}D)^{-1}, \qquad n\, \bar g_n(\hat\theta)&#39;\, \hat
+S^{-1}\, \bar g_n(\hat\theta) \xrightarrow{d} \chi^2_{q-k}</span></p>
+<p>In words: efficient GMM takes the weight <span class="math inline">W
+= S^{-1}</span> to reach minimum variance (<span
+class="math inline">D</span> is the Jacobian of the moment conditions,
+<span class="math inline">S</span> their covariance), and under
+overidentification the objective value gives the Hansen J test, whose
+degrees of freedom are the number of moments minus the number of
+parameters.</p>
+</div>
+<div class="theorem" data-label="Delta method · Chapter 6">
+<p><span class="math display">\sqrt{n}\big(g(\hat\theta) -
+g(\theta_0)\big) \xrightarrow{d} \mathcal{N}\big(0,\ \nabla
+g(\theta_0)&#39;\, \Sigma\, \nabla g(\theta_0)\big)</span></p>
+<p>In words: a first-order Taylor expansion of a nonlinear transform at
+the truth gives standard errors for derived quantities like ratios,
+elasticities, and WTP; when the denominator is near zero (the Fieller
+problem) the approximation breaks down, and you should switch to
+percentile-t or Fieller intervals.</p>
+</div>
+<div class="theorem"
+data-label="Cluster-robust variance and the Moulton factor · Chapter 6">
+<p><span class="math display">\hat V^{CR} = (X&#39;X)^{-1} \left(
+\sum_{g=1}^{G} X_g&#39;\, \hat u_g\, \hat u_g&#39;\, X_g \right)
+(X&#39;X)^{-1}, \qquad \sqrt{1 + (\bar n - 1)\,\rho}</span></p>
+<p>In words: adding the within-cluster cross-covariances back into the
+filling of the sandwich corrects the understatement caused by the iid
+assumption; the asymptotics run on the number of clusters <span
+class="math inline">G</span> rather than the number of observations, and
+the Moulton factor is the multiple by which within-cluster correlation
+inflates the standard error.</p>
+</div>
+<div class="theorem" data-label="HAC (Newey-West) · Chapter 6">
+<p><span class="math display">\hat\Omega^{HAC} = \sum_{t} \hat u_t^2\,
+x_t x_t&#39; + \sum_{\ell=1}^{L} w_\ell \sum_{t=\ell+1}^{T} \hat u_t
+\hat u_{t-\ell}\big(x_t x_{t-\ell}&#39; + x_{t-\ell} x_t&#39;\big),\quad
+w_\ell = 1 - \frac{\ell}{L+1}</span></p>
+<p>In words: the time-series version of clustering, using Bartlett
+triangular weights to add several lagged autocovariances into the
+variance estimate, handling serial correlation and
+heteroskedasticity.</p>
+</div>
+<div class="theorem"
+data-label="The testing trinity Wald / LR / LM · Chapter 6">
+<p><span class="math display">W = \frac{(\hat\theta -
+\theta_0)^2}{\widehat{\mathrm{Var}}(\hat\theta)}, \qquad LR = 2(\ell_u -
+\ell_r), \qquad LM = s(\hat\theta_r)&#39;\, I(\hat\theta_r)^{-1}\,
+s(\hat\theta_r)</span></p>
+<p>In words: the same restriction tested from three angles, distance,
+height, and slope, asymptotically equivalent but diverging in finite
+samples; Wald is not invariant to reparameterization, so when in doubt
+prefer LR.</p>
+</div>
+<div class="theorem"
+data-label="Within (FE) and Nickell bias · Chapter 7">
+<p><span class="math display">y_{it} - \bar y_i = (x_{it} - \bar
+x_i)&#39;\beta + (\varepsilon_{it} - \bar\varepsilon_i), \qquad
+\mathrm{plim}_{N \to \infty}\,(\hat\rho_{FE} - \rho) \approx -\,\frac{1
++ \rho}{T - 1}</span></p>
+<p>In words: within-demeaning differences out the individual fixed
+effect and identifies <span class="math inline">\beta</span> by
+comparing each unit with itself, which requires strict exogeneity; once
+the right-hand side contains a lagged dependent variable, demeaning
+mixes the error into the lagged term and produces the Nickell bias,
+which is downward, of order <span class="math inline">O(1/T)</span>, and
+does not vanish as <span class="math inline">N</span> grows.</p>
+</div>
+<div class="theorem"
+data-label="Dynamic panel GMM (Arellano-Bond / Blundell-Bond) · Chapter 7">
+<p><span class="math display">\text{difference GMM}:\
+\mathbb{E}[y_{is}\, \Delta\varepsilon_{it}] = 0,\ s \leq t-2 \qquad
+\text{system GMM}:\ \mathbb{E}[\Delta y_{i,t-1}\,(\alpha_i +
+\varepsilon_{it})] = 0</span></p>
+<p>In words: first-difference to remove <span
+class="math inline">\alpha_i</span>, then use deep lagged levels as
+instruments to estimate the persistence <span
+class="math inline">\rho</span>; when <span
+class="math inline">\rho</span> is close to 1 lagged levels are weak
+instruments, and Blundell-Bond restores efficiency by adding lagged
+differences as instruments for the levels equation, at the cost of a
+mean-stationarity assumption.</p>
+</div>
+<div class="theorem"
+data-label="Kernel regression (Nadaraya-Watson / local linear) · Chapter 8">
+<p><span class="math display">\hat m(x_0) = \frac{\sum_{i} y_i\,
+K\!\big(\frac{x_0 - x_i}{h}\big)}{\sum_{i} K\!\big(\frac{x_0 -
+x_i}{h}\big)}, \qquad \min_{a, b}\ \sum_{i} K\!\Big(\frac{x_0 -
+x_i}{h}\Big)\,\big(y_i - a - b\,(x_i - x_0)\big)^2</span></p>
+<p>In words: a distance-decaying weighted local average, or local
+weighted least squares, estimates the whole curve <span
+class="math inline">m(x) = \mathbb{E}[y \mid x]</span>, with the
+bandwidth <span class="math inline">h</span> as the smoothing knob;
+local linear corrects the boundary bias of Nadaraya-Watson.</p>
+</div>
+<div class="theorem"
+data-label="Bias-variance and the optimal bandwidth · Chapter 8">
+<p><span class="math display">\text{Bias} \approx \frac{h^2}{2}\,
+m&#39;&#39;(x_0)\!\int\! u^2 K(u)\, du, \quad \text{Var} \approx
+\frac{1}{nh}\, \frac{\sigma^2}{f(x_0)}\!\int\! K(u)^2 du, \quad h^\ast
+\propto n^{-1/5}</span></p>
+<p>In words: bias grows with <span class="math inline">h^2</span> and
+variance falls with <span class="math inline">1/(nh)</span>, the MSE is
+U-shaped, and the optimal one-dimensional rate <span
+class="math inline">n^{-4/5}</span> is slower than the parametric <span
+class="math inline">n^{-1}</span>; at the optimal bandwidth bias and
+standard deviation are of the same order, so you must undersmooth for
+the confidence interval to cover correctly.</p>
+</div>
+<div class="theorem"
+data-label="Robinson partially linear (double residual) · Chapter 8">
+<p><span class="math display">y_i - \mathbb{E}[y_i \mid x_i] =
+\beta\,\big(z_i - \mathbb{E}[z_i \mid x_i]\big) + \varepsilon_i, \qquad
+\sqrt{n}\,(\hat\beta - \beta) \xrightarrow{d} \mathcal{N}(0,
+V)</span></p>
+<p>In words: partial out the nuisance function <span
+class="math inline">g(x)</span> nonparametrically, then regress the two
+sets of residuals to estimate the <span class="math inline">\beta</span>
+you care about, so that the slow convergence of <span
+class="math inline">g</span> does not drag down the <span
+class="math inline">\sqrt{n}</span> rate for <span
+class="math inline">\beta</span>; this is precisely the forerunner of
+DML in Chapter 16.</p>
+</div>
+<h3 id="part-iii-causal-identification-toolbox">Part III Causal
+Identification Toolbox</h3>
+<p>Part III gives one family of estimands per module and is the
+workhorse of reduced-form causal research. The identifying assumptions
+are all about counterfactuals and mostly untestable, so the cards give
+only the conclusion in closed form.</p>
+<div class="theorem"
+data-label="Selection-bias decomposition · Chapter 9">
+<p><span class="math display">\underbrace{\mathbb{E}[Y_i(1) \mid D_i =
+1] - \mathbb{E}[Y_i(0) \mid D_i = 0]}_{\text{observed difference}} =
+\underbrace{\mathbb{E}[Y_i(1) \mid D_i = 1] - \mathbb{E}[Y_i(0) \mid D_i
+= 1]}_{\text{ATT}} + \underbrace{\mathbb{E}[Y_i(0) \mid D_i = 1] -
+\mathbb{E}[Y_i(0) \mid D_i = 0]}_{\text{selection bias}}</span></p>
+<p>In words: the naive difference in group means equals the ATT plus a
+selection-bias term, the latter being the difference the two groups
+would have shown in the untreated state anyway, which can be nonzero
+even under homogeneous treatment effects, and randomization exists
+precisely to zero it out.</p>
+</div>
+<div class="theorem"
+data-label="Strong ignorability (unconfoundedness + overlap) · Chapter 9">
+<p><span class="math display">\{Y_i(1), Y_i(0)\} \perp D_i \mid X_i,
+\qquad 0 &lt; e(X_i) &lt; 1, \quad e(X) \equiv \Pr(D = 1 \mid
+X)</span></p>
+<p>In words: after controlling for <span class="math inline">X</span>,
+treatment is independent of the potential outcomes (everything that
+affects both adoption and outcome is in <span
+class="math inline">X</span>), and every type of unit has positive
+probability of both treatment states; the former is untestable, the
+latter can be checked.</p>
+</div>
+<div class="theorem"
+data-label="IPW and AIPW (doubly robust) · Chapter 9">
+<p><span class="math display">\hat\tau_{HT} = \frac{1}{N} \sum_i
+\frac{D_i Y_i}{\hat e(X_i)} - \frac{1}{N} \sum_i \frac{(1 - D_i) Y_i}{1
+- \hat e(X_i)}</span></p>
+<p><span class="math display">\hat\tau_{AIPW} = \frac{1}{N} \sum_{i}
+\left\{ \hat\mu_1(X_i) - \hat\mu_0(X_i) + \frac{D_i\,(Y_i -
+\hat\mu_1(X_i))}{\hat e(X_i)} - \frac{(1 - D_i)\,(Y_i -
+\hat\mu_0(X_i))}{1 - \hat e(X_i)} \right\}</span></p>
+<p>In words: IPW reconstructs the two counterfactual means by weighting
+on the inverse of the probability of being observed; AIPW layers a
+further outcome model <span class="math inline">\hat\mu_d</span> on top,
+and is consistent as long as one of the propensity and outcome models is
+correctly specified (doubly robust).</p>
+</div>
+<div class="theorem"
+data-label="Research-design checklist · Chapter 10">
+<p><span class="math display">\mathcal
+D=\{\text{unit},\text{treatment},\text{version},\text{timing},\text{exposure},\text{outcome},\text{population},\text{assignment}\}</span></p>
+<p>In words: before running a regression, fix the eight design objects,
+and in particular distinguish assignment, actual adoption, and
+algorithmic exposure; when adding a control, recheck whether the
+estimand has changed and whether the variable is realized after
+treatment.</p>
+</div>
+<div class="theorem"
+data-label="Prediction-powered rectification · Chapter 11">
+<p><span
+class="math display">\widehat\beta_{PPI}=\widehat\beta_{pred,all}+\big(\widehat\beta_{gold,labeled}-\widehat\beta_{pred,labeled}\big)</span></p>
+<p>In words: a large volume of machine predictions supplies precision,
+and a random gold sample estimates the bias between prediction and truth
+in the target estimating equation; validity comes from the validation
+design, not from treating model accuracy as a guarantee of
+unbiasedness.</p>
+</div>
+<div class="theorem"
+data-label="IV assumptions and Wald / LATE · Chapter 12">
+<p><span class="math display">\beta_{IV} = \frac{\mathbb{E}[Y_i \mid Z_i
+= 1] - \mathbb{E}[Y_i \mid Z_i = 0]}{\mathbb{E}[D_i \mid Z_i = 1] -
+\mathbb{E}[D_i \mid Z_i = 0]} = \mathbb{E}\big[Y_i(1) - Y_i(0) \mid
+\text{complier}\big]</span></p>
+<p>In words: under the four conditions of relevance, random assignment,
+exclusion, and monotonicity, the Wald ratio (reduced form divided by
+first stage) identifies the LATE for the complier subpopulation, and
+only relevance is directly testable.</p>
+</div>
+<div class="theorem"
+data-label="MTE (marginal treatment effect) · Chapter 12">
+<p><span class="math display">D_i = \mathbf{1}\{U_{D,i} \leq P(Z_i)\},
+\qquad \Delta^{MTE}(u) = \mathbb{E}\big[Y_i(1) - Y_i(0) \mid U_{D,i} =
+u\big]</span></p>
+<p><span class="math display">\text{ATE} = \int_0^1 \Delta^{MTE}(u)\,
+du, \qquad \text{ATT} = \int_0^1 \Delta^{MTE}(u)\, \omega_{ATT}(u)\,
+du</span></p>
+<p>In words: the MTE is the effect for the marginal population whose
+“resistance” <span class="math inline">U_D = u</span> sits exactly at
+the threshold, ATE, ATT, LATE, and OLS are all integrals of it under
+different weights, and you need <span class="math inline">P(Z)</span> to
+have enough support to trace out the whole curve.</p>
+</div>
+<div class="theorem" data-label="2×2 DiD · Chapter 13">
+<p><span class="math display">\Delta_{DD} = \big(\mathbb{E}[Y_{i2} \mid
+D=1] - \mathbb{E}[Y_{i1} \mid D=1]\big) - \big(\mathbb{E}[Y_{i2} \mid
+D=0] - \mathbb{E}[Y_{i1} \mid D=0]\big) = ATT</span></p>
+<p>In words: the before-after change in the treated group minus the
+contemporaneous change in the control group identifies the ATT under
+parallel trends, no anticipation, and SUTVA, with each of the three
+assumptions blocking one route of bias.</p>
+</div>
+<div class="theorem"
+data-label="Goodman-Bacon decomposition · Chapter 13">
+<p><span class="math display">\mathrm{plim}\; \hat\beta_{TWFE} = VWATT +
+VWCT - \Delta ATT</span></p>
+<p>In words: in a staggered design the static TWFE is a
+variance-weighted average of all the 2×2 comparisons, the <span
+class="math inline">\Delta ATT</span> term comes from the forbidden
+comparison that uses already-treated units as controls, and when effects
+grow over time it systematically pulls the estimate down or even flips
+its sign.</p>
+</div>
+<div class="theorem"
+data-label="Modern staggered estimators (CS / SA / BJS) · Chapter 13">
+<p><span class="math display">ATT(g,t) = \mathbb{E}\big[Y_t - Y_{g-1}
+\mid G = g\big] - \mathbb{E}\big[Y_t - Y_{g-1} \mid C =
+1\big]</span></p>
+<p>In words: first break the effect down to the finest group-time <span
+class="math inline">ATT(g,t)</span>, using only clean controls in each
+cell (never-treated or not-yet-treated), then aggregate under
+transparent weights; Callaway-Sant’Anna estimates directly, Sun-Abraham
+uses a saturated interaction regression, and Borusyak-Jaravel-Spiess
+uses imputation to fill in the counterfactual.</p>
+</div>
+<div class="theorem" data-label="Sharp / fuzzy RDD · Chapter 14">
+<p><span class="math display">\tau_{\mathrm{RD}} = \lim_{x\downarrow
+c}\mathbb{E}[Y_i \mid X_i = x] - \lim_{x\uparrow c}\mathbb{E}[Y_i \mid
+X_i = x] = \mathbb{E}[\tau_i \mid X_i = c]</span></p>
+<p><span class="math display">\tau_{\mathrm{FRD}}(c) =
+\frac{\lim_{x\downarrow c}\mathbb{E}[Y_i \mid X_i = x] - \lim_{x\uparrow
+c}\mathbb{E}[Y_i \mid X_i = x]}{\lim_{x\downarrow c}\Pr(D_i = 1 \mid X_i
+= x) - \lim_{x\uparrow c}\Pr(D_i = 1 \mid X_i = x)}</span></p>
+<p>In words: at the cutoff of the running variable the conditional
+expectations of the potential outcomes are continuous, so the jump in
+the outcome is the local effect; in the sharp case treatment flips
+deterministically, in the fuzzy case only the probability jumps, and the
+effect equals the outcome jump divided by the treatment jump, which is
+the LATE for compliers at the cutoff. Estimate with local linear plus
+bias-corrected robust intervals.</p>
+</div>
+<div class="theorem"
+data-label="Synthetic control weights · Chapter 14">
+<p><span class="math display">\hat{\mathbf{w}} = \arg\min_{\mathbf{w}}\
+\Big(\mathbf{X}_1 - \textstyle\sum_j w_j \mathbf{X}_j\Big)&#39;
+\boldsymbol\Omega \Big(\mathbf{X}_1 - \textstyle\sum_j w_j
+\mathbf{X}_j\Big) \quad\text{s.t. } \sum_{j} w_j = 1,\ w_j \geq
+0</span></p>
+<p>In words: for a single treated unit, find a set of non-negative
+weights summing to one in the donor pool so that the synthetic unit’s
+pre-period path tracks the treated unit, and the post-period gap <span
+class="math inline">Y_{1t} - \sum_j \hat w_j Y_{jt}</span> is the
+effect; the simplex constraint ensures the convex combination does not
+extrapolate.</p>
+</div>
+<div class="theorem"
+data-label="OVB sensitivity and the robustness value · Chapter 15">
+<p><span class="math display">R^2_{D\sim U\mid X},\qquad R^2_{Y\sim
+U\mid D,X},\qquad \Theta(B)=[\widehat\tau-B,\widehat\tau+B]</span></p>
+<p>In words: two partial <span class="math inline">R^2</span>s express
+the strength of an unobserved confounder with the treatment and with the
+outcome; the robustness value gives the minimum equal-strength
+confounding needed to overturn the conclusion, and allowing a bias bound
+<span class="math inline">B</span> expands the point estimate into an
+identified region.</p>
+</div>
+<div class="theorem"
+data-label="DML: Neyman orthogonality and cross-fitting · Chapter 16">
+<p><span class="math display">\psi(W; \theta, \ell, m) = \big(Y -
+\ell(X) - \theta (D - m(X))\big)\big(D - m(X)\big), \qquad \hat\theta =
+\frac{\sum_i \tilde D_i\, \tilde Y_i}{\sum_i \tilde D_i^2}</span></p>
+<p>In words: residualize both <span class="math inline">Y</span> and
+<span class="math inline">D</span> on <span class="math inline">X</span>
+(<span class="math inline">\tilde Y, \tilde D</span>) and then regress,
+the orthogonal score is first-order insensitive to the nuisance, and
+paired with cross-fitting, as long as <span
+class="math inline">\|\hat\ell - \ell_0\| \cdot \|\hat m - m_0\| =
+o_p(n^{-1/2})</span> you get <span class="math inline">\sqrt{n}</span>
+normality, so the nuisance can be estimated by any ML method.</p>
+</div>
+<div class="theorem" data-label="Causal forest / CATE · Chapter 16">
+<p><span class="math display">\hat\tau(x) = \frac{\sum_i \alpha_i(x)\,
+(D_i - \bar D_x)(Y_i - \bar Y_x)}{\sum_i \alpha_i(x)\, (D_i - \bar
+D_x)^2}</span></p>
+<p>In words: the random forest splits on treatment-effect heterogeneity,
+the forest weights <span class="math inline">\alpha_i(x)</span> are a
+data-adaptive similarity, and a local residual-on-residual regression
+over them yields <span class="math inline">\tau(x)</span>; honesty
+(separating the splitting sample from the estimation sample) buys
+pointwise asymptotic normality and confidence intervals.</p>
+</div>
+<div class="theorem"
+data-label="Power / MDE / sample size · Chapter 17">
+<p><span class="math display">\text{power} \approx
+\Phi\!\left(\frac{\tau}{\text{SE}} - z_{1-\alpha/2}\right), \quad
+\text{MDE} = (z_{1-\alpha/2} + z_{1-\beta})\, \sigma\sqrt{\tfrac{2}{n}},
+\quad n = \frac{2\sigma^2 (z_{1-\alpha/2} +
+z_{1-\beta})^2}{\tau^2}</span></p>
+<p>In words: whether an experiment can detect an effect is jointly
+determined by sample size, variance, and the true effect, the MDE is the
+smallest effect reliably detectable at a given power, and sample size
+grows in inverse proportion to the square of the target effect; ex-post
+observed power is a monotone transform of the p-value and carries no
+information.</p>
+</div>
+<div class="theorem"
+data-label="CUPED (variance reduction) · Chapter 17">
+<p><span class="math display">Y_i^{cv} = Y_i - \theta (X_i - \bar X),
+\quad \theta = \frac{\text{Cov}(Y, X)}{\text{Var}(X)}, \quad
+\text{Var}(Y^{cv}) = \text{Var}(Y)\,(1 - \rho^2)</span></p>
+<p>In words: residualizing the outcome on a pre-experiment covariate
+reduces variance by a factor <span class="math inline">1 - \rho^2</span>
+(equivalent to ANCOVA), and the stronger the correlation the more the
+effective sample size multiplies; the covariate must come from before
+the experiment, otherwise it is a bad control.</p>
+</div>
+<div class="theorem"
+data-label="Direct and overall effects under interference · Chapter 18">
+<p><span class="math display">\tau_D(g)=\mathbb
+E[Y_i(1,g)-Y_i(0,g)],\qquad \tau_O=\mathbb
+E[Y_i(1,g_1)-Y_i(0,g_0)]</span></p>
+<p>In words: individual randomization typically identifies the direct
+contrast at a fixed saturation <span class="math inline">g</span>; a
+platform-wide rollout changes both a unit’s own treatment and its
+exposure environment at once, and identifying the corresponding overall
+effect requires cluster, two-stage saturation, or switchback
+variation.</p>
+</div>
+<h3 id="part-iv-structural-methods">Part IV Structural Methods</h3>
+<p>Part IV consumes the theory of Part I and the identification of Part
+III, structuring a model to study substitution, counterfactuals, and
+welfare. Here “identification” often rests on demand instruments,
+conduct assumptions, or equilibrium selection, things that cannot be
+tested from the first-order conditions themselves.</p>
+<div class="theorem"
+data-label="Logit choice probability and IIA · Chapter 19">
+<p><span class="math display">s_{ij} = \frac{e^{V_{ij}}}{1 +
+\sum_{k=1}^{J} e^{V_{ik}}}, \qquad \frac{s_{ij}}{s_{ik}} = e^{V_{ij} -
+V_{ik}}</span></p>
+<p>In words: a Type-I extreme value shock gives closed-form shares, and
+the choice probability is the normalization of the utility exponentials;
+the price is IIA, the ratio of any two probabilities is independent of a
+third, which forces proportional substitution (red-bus/blue-bus).
+Coefficients are identified only up to a scale normalization, and what
+is comparable are ratios such as WTP.</p>
+</div>
+<div class="theorem" data-label="Nested logit (GEV) · Chapter 19">
+<p><span class="math display">s_{ij} =
+\frac{e^{V_{ij}/\lambda_g}\Big(\sum_{k \in g}
+e^{V_{ik}/\lambda_g}\Big)^{\lambda_g - 1}}{\sum_{h}\Big(\sum_{k \in h}
+e^{V_{ik}/\lambda_h}\Big)^{\lambda_h}}</span></p>
+<p>In words: it allows the shocks of products in the same nest to be
+correlated, with the nest parameter <span class="math inline">\lambda_g
+\in (0,1]</span>, <span class="math inline">\lambda_g = 1</span>
+collapsing back to logit and <span class="math inline">\lambda_g \to
+0</span> making within-nest products nearly perfect substitutes; the
+nesting structure must be specified in advance, and getting the nests
+wrong ruins everything.</p>
+</div>
+<div class="theorem"
+data-label="Mixed / random-coefficients logit · Chapter 19">
+<p><span class="math display">s_{ij}(\theta) = \int \frac{e^{\,\beta\,
+x_{ij}}}{\sum_k e^{\,\beta\, x_{ik}}}\, dF(\beta \mid \theta)</span></p>
+<p>In words: letting the coefficients <span
+class="math inline">\beta_i</span> vary across the population by a
+distribution <span class="math inline">F</span> and integrating over the
+taste distribution can approximate any RUM and break IIA; the
+random-coefficient distribution is identified by rich choice-set and
+characteristic variation, and the repeated choices of a panel can
+sharpen identification substantially through cross-situation
+correlation, though this is not in principle necessary.</p>
+</div>
+<div class="theorem" data-label="Berry (1994) inversion · Chapter 20">
+<p><span class="math display">\ln s_{jt} - \ln s_{0t} = \delta_{jt} =
+x_{jt}\beta - \alpha p_{jt} + \xi_{jt}</span></p>
+<p>In words: invert the observed market shares into the mean utility
+<span class="math inline">\delta_{jt}</span>, which under logit is just
+the difference in log shares, turning the problem into a linear IV
+problem with an endogenous price, and wherever shares appear an
+instrument is needed.</p>
+</div>
+<div class="theorem" data-label="BLP contraction and GMM · Chapter 20">
+<p><span class="math display">\delta_t^{(h+1)} = \delta_t^{(h)} + \ln
+S_t^{\text{obs}} - \ln s_t\big(\delta_t^{(h)}, \theta_2\big), \qquad
+\hat\theta_2 = \arg\min_{\theta_2}\ \big(Z&#39; \xi(\theta_2)\big)&#39;
+W \big(Z&#39; \xi(\theta_2)\big)</span></p>
+<p>In words: under random coefficients the shares have no analytic
+inversion, so for a fixed <span class="math inline">\theta_2</span> a
+contraction mapping is iterated to solve for <span
+class="math inline">\delta_t</span> (modulus below 1, converging from
+any starting value), and GMM is then run on the orthogonality of
+instruments with <span class="math inline">\xi</span>; the inner
+tolerance must be set very tight (say <span
+class="math inline">10^{-13}</span>) to keep it from seeping into the
+outer loop.</p>
+</div>
+<div class="theorem"
+data-label="Multiproduct Bertrand FOC and markup (ℋ∘Δ)⁻¹ · Chapter 21">
+<p><span class="math display">mc = \mathbf{p} - \big(\mathcal{H} \odot
+\Delta(\mathbf{p})\big)^{-1} s(\mathbf{p})</span></p>
+<p>In words: given demand, the multiproduct Bertrand first-order
+condition backs marginal cost out exactly, where <span
+class="math inline">\mathcal{H}</span> is the ownership matrix, <span
+class="math inline">\Delta</span> the negative matrix of demand price
+derivatives, and <span class="math inline">\odot</span> the Hadamard
+product; cost is inverted rather than estimated, which is both
+convenient and dangerous, since a misspecified demand or conduct
+propagates through the FOC and is amplified systematically.</p>
+</div>
+<div class="theorem"
+data-label="Diversion ratio and GUPPI / UPP · Chapter 21">
+<p><span class="math display">D_{j \to k} = \frac{\partial s_k /
+\partial p_j}{-\,\partial s_j / \partial p_j}, \qquad GUPPI_j =
+\frac{(p_k - mc_k)\, D_{j \to k}}{p_j}</span></p>
+<p>In words: the diversion ratio is how much of the volume <span
+class="math inline">j</span> loses to a price increase goes to <span
+class="math inline">k</span> (equal to the second-choice share), and is
+the core demand output for merger analysis; GUPPI combines it with the
+markup into a dimensionless first-pass merger screen, and UPP then
+subtracts an efficiency offset.</p>
+</div>
+<div class="theorem"
+data-label="Merger simulation and log-sum welfare · Chapter 21">
+<p><span class="math display">\Delta CS = \int
+\frac{1}{\alpha_i}\Big[\log\big(1 + \textstyle\sum_j
+e^{V_{ij}^{\text{post}}}\big) - \log\big(1 + \textstyle\sum_j
+e^{V_{ij}^{\text{pre}}}\big)\Big]\, dF_i</span></p>
+<p>In words: a merger flips the corresponding cross-terms of the
+ownership matrix from 0 to 1, and re-solving the FOC with <span
+class="math inline">mc</span> and demand held fixed gives the
+post-merger prices; the change in consumer surplus is the difference in
+the log-sum expected maximum utility before and after, divided by the
+marginal utility of price <span class="math inline">\alpha_i</span>.</p>
+</div>
+<div class="theorem"
+data-label="Entry games and Bresnahan-Reiss · Chapter 22">
+<p><span class="math display">\Pi_{fm} = X_m \beta + Z_{fm} \alpha -
+\delta\, N_{-f,m} + \xi_m + \varepsilon_{fm}, \qquad a_{fm} =
+\mathbf{1}\{\Pi_{fm} \geq 0\}</span></p>
+<p>In words: a firm enters when its expected profit is non-negative,
+with <span class="math inline">\delta &gt; 0</span> the intensity of
+competition; Bresnahan-Reiss sidesteps the multiplicity of the game’s
+equilibria by running an ordered probit on the number of entrants only,
+and uses the ratio of adjacent per-capita entry thresholds <span
+class="math inline">s_{N+1}/s_N</span> to gauge how competition
+intensifies with the number of incumbents.</p>
+</div>
+<div class="theorem"
+data-label="Partial identification (Ciliberto-Tamer) · Chapter 22">
+<p><span class="math display">H_1(\theta, X) \leq P(y \mid X) \leq
+H_2(\theta, X), \qquad Q(\theta) = \sum_y \Big[ \big(P(y) - H_1\big)_-^2
++ \big(P(y) - H_2\big)_+^2 \Big]</span></p>
+<p>In words: when the entry game has multiple equilibria the model gives
+only an interval for the outcome probability (<span
+class="math inline">H_1</span> the lower bound from the
+unique-equilibrium probability, <span class="math inline">H_2</span> the
+upper bound from some equilibrium), the parameters where the criterion
+function is zero form the identified set, and no assumption need be
+imposed on the unknown equilibrium-selection mechanism.</p>
+</div>
+<div class="theorem"
+data-label="Bellman and the Rust contraction · Chapter 23">
+<p><span class="math display">V(x) = \mathbb{E}_\varepsilon
+\max_{i}\Big\{ u(x, i) + \varepsilon_i + \beta\,
+\mathbb{E}\big[V(x&#39;) \mid x, i\big] \Big\}</span></p>
+<p><span class="math display">(T_\theta V)(x) = \gamma + \log\Big[
+\exp\big(u(x,0) + \beta\, \mathbb{E}[V(x&#39;) \mid x, 0]\big) +
+\exp\big(u(x,1) + \beta\, \mathbb{E}[V(x&#39;) \mid x, 1]\big)
+\Big]</span></p>
+<p>In words: the value function is its own fixed point, and under
+conditional independence plus Type-I EV the Bellman equation is written
+as the log-sum operator <span class="math inline">T_\theta</span> (the
+leading term <span class="math inline">\gamma</span> is the
+Euler-Mascheroni constant, arising from the expected maximum <span
+class="math inline">\mathbb{E}_\varepsilon\max</span> and not affecting
+the choice probability), which is a contraction with modulus <span
+class="math inline">\beta &lt; 1</span> and iterates to a unique
+solution; NFXP maximizes the likelihood in the outer loop and solves the
+fixed point in the inner loop.</p>
+</div>
+<div class="theorem"
+data-label="Hotz-Miller CCP inversion · Chapter 23">
+<p><span class="math display">v(x, 1) - v(x, 0) = \log P(1 \mid x) -
+\log P(0 \mid x)</span></p>
+<p>In words: under Type-I EV the value difference between two actions
+maps one-to-one to the ratio of choice probabilities, so the dynamic
+value difference can be recovered from observed conditional choice
+probabilities without solving the fixed point, which is the key to
+two-step estimation; the discount factor <span
+class="math inline">\beta</span> is generally not identified and must be
+fixed or pinned down by a separate exclusion restriction.</p>
+</div>
+<h3 id="part-v-topics-in-digital-economics">Part V Topics in Digital
+Economics</h3>
+<p>Part V brings the earlier three legs together onto the phenomena of
+the digital economy: two-sided platforms, consumer search, algorithms,
+and data. The methods are mostly combinations and applications of the
+earlier chapters.</p>
+<div class="theorem"
+data-label="Two-sided pricing (Armstrong / Rochet-Tirole) · Chapter 24">
+<p><span class="math display">p_i = f_i - \alpha_j\, n_j +
+\frac{n_i}{\partial n_i / \partial u_i}</span></p>
+<p>In words: the platform’s optimal price for one group of members
+equals its own connection cost, minus the cross-side external benefit
+<span class="math inline">\alpha_j n_j</span> this group brings to the
+other, plus the usual monopoly markup; the middle term can price one
+side below cost or even subsidize it, and what matters is the price
+structure (how the total price is split across the two sides), not the
+price level.</p>
+</div>
+<div class="theorem"
+data-label="Network effects (Katz-Shapiro) and tipping · Chapter 24">
+<p><span class="math display">P(q) = r(q) + v(q), \qquad P&#39;(q^\ast)
+= r&#39;(q^\ast) + v&#39;(q^\ast) &lt; 0</span></p>
+<p>In words: the marginal user’s willingness to pay equals a decreasing
+stand-alone value plus an increasing network value, the
+fulfilled-expectations demand can be non-monotone, and where it crosses
+the price line at several points there are multiple equilibria; a stable
+equilibrium requires the demand curve to cross the price line from
+above, otherwise you get tipping and a critical mass.</p>
+</div>
+<div class="theorem"
+data-label="Switching costs / state dependence · Chapter 24">
+<p><span class="math display">u_{ijt} = x_{jt}&#39;\beta + \xi_{ij} +
+\delta\, \mathbf{1}\{y_{i,t-1} = j\} + \varepsilon_{ijt}</span></p>
+<p>In words: <span class="math inline">\delta</span> is genuine
+structural state dependence (a switching cost, monetized as <span
+class="math inline">\delta / |\alpha|</span> with <span
+class="math inline">\alpha</span> the price coefficient), which must be
+separated from the spurious state dependence created by persistent
+preferences <span class="math inline">\xi_{ij}</span>; failing to
+control for heterogeneity systematically overstates <span
+class="math inline">\delta</span>, and the initial-conditions problem
+must also be handled.</p>
+</div>
+<div class="theorem"
+data-label="Sequential search (Weitzman reservation value) · Chapter 25">
+<p><span class="math display">c_j = \mathbb{E}\big[\max(u_j - z_j,
+0)\big]</span></p>
+<p>In words: each option is assigned a reservation value <span
+class="math inline">z_j</span> by its own search-cost equation, the
+optimal rule reduces to a set of static indices, inspect in decreasing
+order of <span class="math inline">z_j</span> and stop once the realized
+utility exceeds every unopened index; the higher the search cost the
+lower the <span class="math inline">z</span> and the shallower the
+search.</p>
+</div>
+<div class="theorem"
+data-label="Limited consideration sets and identifying search costs · Chapter 25">
+<p><span class="math display">\Pr(\text{buy } j \mid \text{choice set} =
+\text{inspected set}_i)</span></p>
+<p>In words: a full-information logit mistakes a “cheap item never
+inspected” for one “seen and rejected”, attenuating the price
+coefficient toward zero; replacing the choice set with the
+actually-inspected set is directionally right but overstates because
+stopping is endogenous, and the correct fix is to model the search
+process explicitly, using randomized ordering (position affects purchase
+only through “whether it was inspected”) to pin down search costs and
+preferences separately.</p>
+</div>
+<div class="theorem"
+data-label="Algorithmic pricing and Q-learning (collusion) · Chapter 26">
+<p><span class="math display">Q(s_t, a_t) \leftarrow (1 - \alpha)\,
+Q(s_t, a_t) + \alpha\Big[ r_t + \delta\, \max_{a&#39;} Q(s_{t+1},
+a&#39;) \Big], \qquad \Delta = \frac{\bar{p} - p^N}{p^M -
+p^N}</span></p>
+<p>In words: with the rival’s previous-period price as the state and the
+current profit as the reward, Q-learning bootstraps its updates of the
+action value; the collusion index <span
+class="math inline">\Delta</span> normalizes the average price between
+the competitive price <span class="math inline">p^N</span> and the
+monopoly price <span class="math inline">p^M</span>, and in simulation
+the algorithm can spontaneously learn supra-competitive pricing, but
+“simulations collude” is not the same as “reality colludes”.</p>
+</div>
+<div class="theorem"
+data-label="AI adoption and organizational complementarity · Chapter 26">
+<p><span class="math display">Y=F(K,L,A,O),\qquad F_{AO}&gt;0,\qquad
+\tau_{AO}=(\bar Y_{11}-\bar Y_{01})-(\bar Y_{10}-\bar Y_{00})</span></p>
+<p>In words: the cross-marginal product of AI capital <span
+class="math inline">A</span> with organizational capital <span
+class="math inline">O</span> (workflow, skills, data readiness, and the
+like) is positive; the cleanest empirical design is a factorial
+experiment that randomizes AI access and the organizational intervention
+separately, and the interaction contrast <span
+class="math inline">\tau_{AO}</span> identifies the policy-relevant
+complementarity.</p>
+</div>
+<div class="theorem"
+data-label="Generated regressors: attenuation and correction / PPI · Chapter 26">
+<p><span class="math display">\mathrm{plim}\; \hat\beta_{\text{OLS}} =
+\beta \cdot \frac{\sigma_{x^\ast}^2}{\sigma_{x^\ast}^2 + \sigma_u^2} =
+\beta \cdot \lambda, \qquad \hat\beta_{\text{corrected}} =
+\frac{\hat\beta_{\text{OLS}}}{\hat\lambda}</span></p>
+<p>In words: putting a machine-predicted variable into the right-hand
+side as if it were the truth, classical measurement error attenuates the
+coefficient toward zero by the factor <span
+class="math inline">\lambda</span> (reliability), and this does not
+vanish as the sample grows; a small randomly drawn set of gold labels
+makes <span class="math inline">\lambda</span> or the systematic bias
+estimable and thus correctable (PPI uses a rectifier to subtract the
+bias), and the standard errors must fold in the uncertainty of the
+generation step.</p>
+</div>
+<h2 id="a-method-decision-tree">2 A Method Decision Tree</h2>
+<p>The first step in choosing a method is not to ask “which model is the
+most advanced” but “what do I want to answer, what does the data look
+like, and where does the variation come from”. The tree below starts
+from the research goal, follows the data structure to the family of
+methods you should use, and labels each exit with the corresponding
+chapter. It is only an entry-level guide: the real choice always turns
+on a substantive judgment about the treatment-assignment mechanism and
+the data-generating process, and on the same data a different credible
+assumption can send you to a different family of methods.</p>
+<p>First tell apart whether the goal is description and prediction, a
+causal effect, or counterfactuals and welfare:</p>
+<ul>
+<li><strong>You only want to describe, predict, or characterize a
+relationship curve</strong> (no causal claim)
+<ul>
+<li>Want the data to decide the functional shape and avoid specification
+error → kernel estimation / local linear / splines / partially linear
+(Chapter 8)</li>
+<li>The goal is itself a prediction-policy problem where “predicting
+well improves the decision” → supervised ML and its inference (Chapter
+16), and guard against attenuation when a machine-generated variable
+enters a regression (Chapter 26)</li>
+</ul></li>
+<li><strong>You want the causal effect of some treatment</strong>
+(treatment effect). First look at how treatment is assigned:
+<ul>
+<li>First use Chapter 10 to fix the unit, treatment, version, timing,
+exposure, outcome, population, and assignment; when a variable comes
+from platform logs or machine labels, first run the measurement audit of
+Chapter 11</li>
+<li>Treatment is randomly assigned (RCT / online A/B test) → difference
+in means and randomization inference in the potential-outcomes framework
+(Chapter 9); experimental power, MDE, CUPED, sequential testing (Chapter
+17); when treatment spills over to other units or the goal is a
+market-wide rollout, see interference and marketplace experiments
+(Chapter 18)</li>
+<li>Observational data with non-random treatment, then look for the
+identifying handle:
+<ul>
+<li>You believe the confounders are all observed (selection on
+observables) → matching / IPW / AIPW (Chapter 9); high-dimensional
+covariates or complex nuisance → DML (Chapter 16)</li>
+<li>Treatment is endogenous but there is an instrument that is relevant,
+exogenous, and satisfies exclusion and monotonicity → IV / LATE; want
+the marginal population and extrapolation weights → MTE and control
+functions (Chapter 12)</li>
+<li>A continuous running variable that triggers treatment only past a
+cutoff → sharp RDD; a threshold that only changes the probability of
+treatment → fuzzy RDD (Chapter 14)</li>
+<li>Panel data where units are treated at different times, with pre- and
+post-periods and a control group → DiD / event study; staggered with
+time-heterogeneous effects → Callaway-Sant’Anna / Sun-Abraham / BJS
+(Chapter 13)</li>
+<li>Only one (or very few) treated aggregates, plus a set of untreated
+donors and a long enough pre-period → synthetic control or synthetic DiD
+(Chapter 14)</li>
+</ul></li>
+<li>You care about heterogeneous effects (who benefits most) or the
+optimal assignment policy (whom to treat) → causal forest / GATES /
+policy tree (Chapter 16)</li>
+<li>The core identifying assumption holds only approximately and you
+want to quantify how large a departure would overturn the conclusion →
+sensitivity, negative controls, bounds, and the breakdown frontier
+(Chapter 15)</li>
+<li>One party’s treatment changes the outcomes of other units, or the
+goal is a market-wide rollout → cluster / two-stage / switchback
+marketplace experiments (Chapter 18)</li>
+</ul></li>
+<li><strong>You want counterfactuals, substitution patterns, market
+power, or welfare</strong> (structural modeling). First look at what
+data you have:
+<ul>
+<li>Individual-level choice data (who chose what among several options)
+→ discrete choice, moving from logit to nested logit to mixed logit as
+the substitution pattern grows richer (Chapter 19)</li>
+<li>Only market-level shares and prices, with endogenous prices → BLP
+demand: Berry inversion plus contraction plus demand instruments
+(Chapter 20)</li>
+<li>Demand already estimated, and you want to recover markups, marginal
+costs, simulate a merger, or test conduct → supply-side first-order
+conditions and merger simulation (Chapter 21)</li>
+<li>You want to explain how many firms are in a market and the
+entry-exit decision → the Bresnahan-Reiss threshold model; with multiple
+equilibria, switch to partial identification (Ciliberto-Tamer) (Chapter
+22)</li>
+<li>The decision is dynamic, where today’s choice changes tomorrow’s
+state (replacing equipment, adopting technology, optimal stopping) →
+single-agent Rust NFXP or Hotz-Miller CCP (Chapter 23)</li>
+</ul></li>
+<li><strong>Landing on a specific phenomenon of the digital
+economy</strong> (combining the tools above)
+<ul>
+<li>Two-sided platform pricing, network effects and tipping, switching
+costs and lock-in → Chapter 24</li>
+<li>Consumer search frictions, limited consideration sets, advertising
+and information goods → Chapter 25</li>
+<li>Algorithmic pricing, AI adoption, organizational complements,
+inference with machine-generated variables and the economics of data →
+Chapter 26</li>
+</ul></li>
+</ul>
+<p>Whichever path you take, the underlying machinery of estimation and
+inference lives in Part II: the unified framework of extremum estimation
+and GMM (Chapter 5), the choice of standard errors, that is, the cluster
+/ HAC / bootstrap / few-clusters first-aid kit (Chapter 6), and panel
+fixed effects together with the Nickell bias of dynamic panels (Chapter
+7). The language of counterfactuals and welfare comes from Part I:
+consumer surplus, CV/EV, and market power (Chapters 1 and 4).</p>
+<p>For a quick lookup by data shape, use the table below:</p>
+<div class="table-scroll">
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th>Data / situation</th>
+<th>First-choice method</th>
+<th>Chapter</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Randomized experiment, online A/B test</td>
+<td>difference in means + randomization inference; power, CUPED,
+sequential</td>
+<td>Chapters 9, 17</td>
+</tr>
+<tr>
+<td>Platform logs / machine labels</td>
+<td>measurement audit, random validation, PPI</td>
+<td>Chapter 11</td>
+</tr>
+<tr>
+<td>Observational data, confounders observed</td>
+<td>matching / IPW / AIPW; DML in high dimensions</td>
+<td>Chapters 9, 16</td>
+</tr>
+<tr>
+<td>Endogenous treatment + valid instrument</td>
+<td>IV / LATE / MTE / control function</td>
+<td>Chapter 12</td>
+</tr>
+<tr>
+<td>running variable + cutoff</td>
+<td>sharp / fuzzy RDD</td>
+<td>Chapter 14</td>
+</tr>
+<tr>
+<td>Panel + staggered treatment timing</td>
+<td>DiD / event study; CS / SA / BJS when staggered</td>
+<td>Chapter 13</td>
+</tr>
+<tr>
+<td>Single treated aggregate + donor pool</td>
+<td>synthetic control / synthetic DiD</td>
+<td>Chapter 14</td>
+</tr>
+<tr>
+<td>Assumptions hold only approximately / hidden bias</td>
+<td>sensitivity, negative controls, partial ID</td>
+<td>Chapter 15</td>
+</tr>
+<tr>
+<td>Want heterogeneous effects / policy</td>
+<td>causal forest / policy learning</td>
+<td>Chapter 16</td>
+</tr>
+<tr>
+<td>Spillover / marketplace rollout</td>
+<td>cluster, two-stage, switchback</td>
+<td>Chapter 18</td>
+</tr>
+<tr>
+<td>Individual choice data, want substitution elasticities</td>
+<td>logit / nested / mixed logit</td>
+<td>Chapter 19</td>
+</tr>
+<tr>
+<td>Market shares + endogenous prices</td>
+<td>BLP demand</td>
+<td>Chapter 20</td>
+</tr>
+<tr>
+<td>Demand in hand, want markups / mergers</td>
+<td>supply-side FOC / merger simulation</td>
+<td>Chapter 21</td>
+</tr>
+<tr>
+<td>Entry / market structure</td>
+<td>Bresnahan-Reiss / partial identification</td>
+<td>Chapter 22</td>
+</tr>
+<tr>
+<td>Dynamic single-agent decisions</td>
+<td>Rust NFXP / Hotz-Miller CCP</td>
+<td>Chapter 23</td>
+</tr>
+</tbody>
+</table>
+</div>
+<h2 id="cross-software-command-map">3 Cross-Software Command Map</h2>
+<p>Each row of the table below is one method, giving the main commands
+in R, Python, and Stata, with R as the primary. All commands are real
+packages and functions. A blank cell means there is no widely used
+standard package, and the corresponding chapter mostly implements the
+formula by hand (base R’s <code>optim</code>, <code>glm</code>, and
+matrix algebra suffice), so we leave it blank rather than invent an API.
+Package and function names may change across versions, so check the
+respective documentation before use.</p>
+<div class="table-scroll">
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr>
+<th>Method (chapter)</th>
+<th>R</th>
+<th>Python</th>
+<th>Stata</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>OLS / high-dimensional fixed effects</td>
+<td><code>fixest::feols</code>, <code>lfe::felm</code>,
+<code>plm::plm</code></td>
+<td><code>linearmodels</code> PanelOLS, <code>pyfixest</code>,
+<code>statsmodels</code> OLS</td>
+<td><code>reg</code>, <code>reghdfe</code>, <code>areg</code>,
+<code>xtreg</code></td>
+</tr>
+<tr>
+<td>MLE / GLM (logit, probit, Poisson) (5)</td>
+<td><code>glm</code>, <code>stats4::mle</code>,
+<code>bbmle::mle2</code></td>
+<td><code>statsmodels</code> Logit/GLM, <code>scipy.optimize</code></td>
+<td><code>logit</code>, <code>probit</code>, <code>glm</code>,
+<code>ml</code></td>
+</tr>
+<tr>
+<td>GMM (5)</td>
+<td><code>gmm::gmm</code>, <code>momentfit</code></td>
+<td><code>linearmodels</code> IVGMM, <code>statsmodels</code> GMM</td>
+<td><code>gmm</code></td>
+</tr>
+<tr>
+<td>Robust / cluster standard errors (6)</td>
+<td><code>sandwich::vcovHC</code>, <code>sandwich::vcovCL</code></td>
+<td><code>statsmodels</code> cov_type=‘cluster’,
+<code>linearmodels</code></td>
+<td><code>vce(robust)</code>, <code>vce(cluster)</code></td>
+</tr>
+<tr>
+<td>HAC standard errors (6)</td>
+<td><code>sandwich::NeweyWest</code></td>
+<td><code>statsmodels</code> cov_type=‘HAC’</td>
+<td><code>newey</code></td>
+</tr>
+<tr>
+<td>Bootstrap (6)</td>
+<td><code>boot::boot</code></td>
+<td><code>scipy.stats.bootstrap</code>, <code>arch</code></td>
+<td><code>bootstrap</code></td>
+</tr>
+<tr>
+<td>Delta method (6)</td>
+<td><code>car::deltaMethod</code>, <code>msm::deltamethod</code></td>
+<td></td>
+<td><code>nlcom</code></td>
+</tr>
+<tr>
+<td>Panel fixed effects / RE (7)</td>
+<td><code>plm::plm</code>, <code>fixest::feols</code>,
+<code>plm::phtest</code></td>
+<td><code>linearmodels</code> PanelOLS/RandomEffects</td>
+<td><code>xtreg</code>, <code>xtreg, re</code></td>
+</tr>
+<tr>
+<td>Dynamic panel GMM (7)</td>
+<td><code>plm::pgmm</code></td>
+<td><code>pydynpd</code></td>
+<td><code>xtabond2</code>, <code>xtdpdgmm</code>,
+<code>xtabond</code></td>
+</tr>
+<tr>
+<td>Nonparametric / kernel regression (8)</td>
+<td><code>np::npreg</code>, <code>KernSmooth::locpoly</code>,
+<code>smooth.spline</code>, <code>mgcv::gam</code></td>
+<td><code>statsmodels</code> KernelReg/lowess</td>
+<td><code>npregress</code>, <code>lpoly</code></td>
+</tr>
+<tr>
+<td>Matching (9)</td>
+<td><code>MatchIt::matchit</code>, <code>Matching::Match</code></td>
+<td></td>
+<td><code>teffects psmatch</code>, <code>psmatch2</code>,
+<code>kmatch</code></td>
+</tr>
+<tr>
+<td>IPW / AIPW (9)</td>
+<td><code>WeightIt::weightit</code>, <code>AIPW</code>,
+<code>drtmle</code></td>
+<td><code>DoubleML</code> IRM, <code>econml</code></td>
+<td><code>teffects ipw</code>, <code>teffects aipw</code>,
+<code>teffects ipwra</code></td>
+</tr>
+<tr>
+<td>Validation / PPI (11)</td>
+<td>base estimating equations, <code>ppi</code> implementations</td>
+<td><code>ppi_py</code></td>
+<td></td>
+</tr>
+<tr>
+<td>IV / 2SLS / LATE (12)</td>
+<td><code>fixest::feols</code>, <code>AER::ivreg</code>,
+<code>estimatr::iv_robust</code></td>
+<td><code>linearmodels</code> IV2SLS</td>
+<td><code>ivregress 2sls</code>, <code>ivreg2</code></td>
+</tr>
+<tr>
+<td>MTE (12)</td>
+<td><code>ivmte</code>, <code>localIV</code></td>
+<td></td>
+<td><code>mtefe</code></td>
+</tr>
+<tr>
+<td>DiD / event study (13)</td>
+<td><code>fixest::feols</code>, <code>fixest::sunab</code>,
+<code>did::att_gt</code></td>
+<td><code>differences</code>, <code>pyfixest</code></td>
+<td><code>csdid</code>, <code>eventstudyinteract</code>,
+<code>reghdfe</code></td>
+</tr>
+<tr>
+<td>Goodman-Bacon decomposition (13)</td>
+<td><code>bacondecomp::bacon</code></td>
+<td></td>
+<td><code>bacondecomp</code></td>
+</tr>
+<tr>
+<td>Staggered imputation (13)</td>
+<td><code>didimputation::did_imputation</code>,
+<code>did2s::did2s</code></td>
+<td></td>
+<td><code>did_imputation</code>, <code>did2s</code></td>
+</tr>
+<tr>
+<td>RDD (14)</td>
+<td><code>rdrobust::rdrobust</code>,
+<code>rddensity::rddensity</code></td>
+<td><code>rdrobust</code>, <code>rddensity</code></td>
+<td><code>rdrobust</code>, <code>rddensity</code></td>
+</tr>
+<tr>
+<td>Synthetic control / SDID (14)</td>
+<td><code>Synth::synth</code>, <code>tidysynth</code>,
+<code>augsynth</code>, <code>synthdid</code></td>
+<td><code>pysyncon</code>, <code>SparseSC</code></td>
+<td><code>synth</code>, <code>synth_runner</code>,
+<code>sdid</code></td>
+</tr>
+<tr>
+<td>OVB sensitivity / honest DiD (15)</td>
+<td><code>sensemakr</code>, <code>HonestDiD</code></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>DML (16)</td>
+<td><code>DoubleML</code>, <code>grf</code></td>
+<td><code>DoubleML</code>, <code>econml</code></td>
+<td><code>ddml</code>, <code>pdslasso</code></td>
+</tr>
+<tr>
+<td>Causal forest (16)</td>
+<td><code>grf::causal_forest</code></td>
+<td><code>econml</code> CausalForestDML</td>
+<td></td>
+</tr>
+<tr>
+<td>Policy learning (16)</td>
+<td><code>policytree::policy_tree</code></td>
+<td><code>econml</code> policy</td>
+<td></td>
+</tr>
+<tr>
+<td>Power / MDE (17)</td>
+<td><code>pwr::pwr.t.test</code>, <code>DeclareDesign</code></td>
+<td><code>statsmodels.stats.power</code></td>
+<td><code>power twomeans</code></td>
+</tr>
+<tr>
+<td>Sequential test boundaries (17)</td>
+<td><code>gsDesign</code></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Marketplace / switchback (18)</td>
+<td><code>DeclareDesign</code> or hand-coded by assignment</td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Logit / conditional logit (19)</td>
+<td><code>mlogit::mlogit</code>, <code>survival::clogit</code>,
+<code>apollo</code></td>
+<td><code>xlogit</code>, <code>pylogit</code>, <code>biogeme</code></td>
+<td><code>clogit</code>, <code>asclogit</code>, <code>mlogit</code></td>
+</tr>
+<tr>
+<td>Nested logit (19)</td>
+<td><code>mlogit::mlogit</code>, <code>apollo</code>,
+<code>gmnl::gmnl</code></td>
+<td><code>biogeme</code>, <code>pylogit</code></td>
+<td><code>nlogit</code></td>
+</tr>
+<tr>
+<td>Mixed / RC logit (19)</td>
+<td><code>mlogit::mlogit</code>, <code>mixl</code>,
+<code>gmnl::gmnl</code>, <code>apollo</code></td>
+<td><code>xlogit</code>, <code>biogeme</code></td>
+<td><code>mixlogit</code>, <code>cmxtmixlogit</code></td>
+</tr>
+<tr>
+<td>BLP demand (20)</td>
+<td><code>BLPestimatoR</code></td>
+<td><code>pyblp</code></td>
+<td></td>
+</tr>
+<tr>
+<td>Markups / merger simulation (21)</td>
+<td><code>antitrust</code></td>
+<td><code>pyblp</code></td>
+<td><code>mergersim</code></td>
+</tr>
+<tr>
+<td>Entry / structural partial identification (22)</td>
+<td></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Dynamic structural Rust / CCP (23)</td>
+<td></td>
+<td><code>ruspy</code></td>
+<td></td>
+</tr>
+<tr>
+<td>RE / dynamic logit (24)</td>
+<td><code>lme4::glmer</code></td>
+<td></td>
+<td><code>xtlogit, re</code></td>
+</tr>
+<tr>
+<td>Consumer search (25)</td>
+<td><code>survival::clogit</code></td>
+<td></td>
+<td></td>
+</tr>
+<tr>
+<td>Measurement error / generated regressors (26)</td>
+<td><code>simex</code></td>
+<td><code>ppi_py</code></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</div>
+<h2 id="common-pitfalls-checklist">4 Common Pitfalls Checklist</h2>
+<p>Below we gather the most common errors from each chapter’s “failure
+modes” section, grouped by method, for a line-by-line self-check before
+and after you get your hands dirty. Each item names only the problem and
+the direction of the fix; the full argument is in the corresponding
+chapter.</p>
+<h3 id="part-ii-econometric-core-1">Part II Econometric Core</h3>
+<ul>
+<li>Specification error (Chapter 5): distinguish “mean right,
+distribution wrong” (QMLE is still consistent, fix the standard errors
+with the sandwich) from “mean wrong” (even consistency is gone, and
+robust standard errors are meaningless); report sandwich standard errors
+by default rather than Fisher information (the latter requires the
+information-matrix equality to hold); complete separation in logit makes
+the MLE diverge, and the software may not warn you.</li>
+<li>Weak identification (Chapter 5): when the Jacobian or the curvature
+is near zero the variance explodes, a large sample cannot save you, and
+the judgment must come from “where the identifying variation comes from”
+rather than from significance stars.</li>
+<li>The level of the standard errors (Chapter 6):
+heteroskedasticity-robust standard errors do nothing about
+within-cluster correlation, so cluster at the level of treatment
+assignment; the asymptotics run on the number of clusters <span
+class="math inline">G</span>, and a small <span
+class="math inline">G</span> (empirically below 30 to 40, and worse when
+few clusters are treated) over-rejects, so upgrade to <span
+class="math inline">t_{G-1}</span>, CR2, or the wild cluster
+bootstrap.</li>
+<li>Delta method (Chapter 6): when the denominator is near zero (the
+Fieller problem) the symmetric normal approximation fails, so switch to
+percentile-t or Fieller intervals; it does not apply where the function
+is non-differentiable or the gradient is zero.</li>
+<li>Bootstrap (Chapter 6): on correlated data a naive bootstrap amounts
+to assuming iid, so use the block or wild cluster bootstrap; boundary
+and extreme-value statistics are not asymptotically normal, so use
+subsampling.</li>
+<li>Generated regressors (Chapter 6): two-step estimation understates
+the standard errors, so use the Murphy-Topel variance or bootstrap the
+whole pipeline.</li>
+<li>Panel Nickell bias (Chapter 7): in a short panel, a lagged dependent
+variable together with fixed effects produces a downward bias of order
+<span class="math inline">O(1/T)</span> that does not vanish as <span
+class="math inline">N</span> grows, and the regression runs without
+complaint; switch to dynamic panel GMM.</li>
+<li>Too many instruments in dynamic panels (Chapter 7): the number of
+instruments grows with the square of <span class="math inline">T</span>,
+dragging GMM back toward FE and destroying the power of the Sargan test
+(almost never rejecting is a warning sign, not a reassurance), so limit
+the lag depth or collapse the instruments, and report the instrument
+count.</li>
+<li>Nonparametric smoothing and inference (Chapter 8): too large a
+bandwidth smooths away real bends and too small chases noise; the
+boundary and sparse regions are the least trustworthy (kernel regression
+has boundary bias, so use local linear); at the optimal bandwidth bias
+and standard deviation are of the same order, so you must undersmooth
+for the confidence interval to cover; beyond three or four continuous
+regressors the curse of dimensionality bites, so move to
+semiparametrics.</li>
+</ul>
+<h3 id="part-iii-causal-identification-toolbox-1">Part III Causal
+Identification Toolbox</h3>
+<ul>
+<li>Selection on observables / matching (Chapter 9): the CIA is
+untestable, and balance and placebo checks are only indirect
+circumstantial support; when overlap is poor the IPW weights explode,
+and trimming changes the estimand; the bootstrap is invalid for
+fixed-number NN matching, so use the Abadie-Imbens variance; do not
+control for downstream variables that respond to treatment (bad
+controls).</li>
+<li>Research design (Chapter 10): first fix the unit, treatment,
+version, timing, exposure, outcome, population, and assignment;
+post-treatment controls can both change the estimand and open a collider
+path; the arrows in a DAG come from institutional assumptions, not facts
+that a correlation matrix verifies automatically.</li>
+<li>Measurement (Chapter 11): high predictive accuracy does not
+guarantee downstream inference; the gold sample must represent the
+target population and carry reliable labels; the bias of a machine
+variable differs on the left-hand side and the right-hand side; PPI
+fixes measurement, not treatment endogeneity.</li>
+<li>IV / LATE (Chapter 12): of the four assumptions only relevance is
+testable, and exclusion is the one most in need of argument and the most
+hidden; weak instruments are the number-one threat, so report the
+first-stage F (the effective F under heteroskedasticity or clustering)
+and base the main inference on Anderson-Rubin; feeding the fitted values
+of a nonlinear first stage straight into the second stage is a forbidden
+regression; the LATE is only the effect for compliers, so do not
+extrapolate it as the ATE.</li>
+<li>DiD (Chapter 13): under staggered timing the weights of static TWFE
+are contaminated by forbidden comparisons, biasing downward or even
+flipping sign when effects grow, which cannot be “patched a little”, so
+run a Goodman-Bacon decomposition or switch to a modern estimator; flat
+pre-trends are supportive evidence of low power rather than proof;
+throwing in a lagged dependent variable to “absorb the trend” brings the
+Nickell bias; cluster at the level of treatment assignment, and few
+treated clusters are the most dangerous.</li>
+<li>RDD (Chapter 14): do not use high-order global polynomials (they
+give extreme weight to distant observations, are sensitive to the order,
+cover poorly, and suffer the Runge phenomenon), use local linear with a
+bandwidth; test manipulation and sorting with the McCrary density test
+plus covariate continuity, and use a donut for integer heaping; the
+effect is a local quantity at the cutoff; hanging several programs on
+the same threshold treats their combined force as one effect.</li>
+<li>Synthetic control (Chapter 14): if the pre-period fit is poor, do
+not use it (switch to augmented SC); the treated unit must lie inside
+the convex hull of the donors, otherwise extrapolation and interpolation
+bias; keep the donor pool clean and remove donors contaminated by
+spillover; with a single treated unit only permutation inference is
+available, and its resolution is capped by the number of units; the
+weights are not unique, so do not read them as “the true control
+group”.</li>
+<li>Sensitivity / partial ID (Chapter 15): coefficient stability puts no
+constraint on unobserved confounding; the robustness value has no
+universal size threshold and must be compared against observed
+benchmarks; a negative-control failure cannot be buried in the appendix;
+the identified region and the confidence interval express assumption
+uncertainty and sampling uncertainty respectively.</li>
+<li>DML / causal forest (Chapter 16): DML is not a master key, all its
+guarantees rest on the product-rate condition, and when the sample is
+too small or the nuisance too complex the point estimate is biased and
+the interval undercovers; when unconfoundedness and overlap fail, ML
+cannot save you either; ML will fit heterogeneity that does not exist,
+so validate through calibration, GATES, and RATE; the regret guarantee
+of policy learning is only relative to a restricted policy class.</li>
+<li>Digital experiments (Chapter 17): peeking (continuous monitoring and
+stopping the moment it is significant) poisons everything downstream, so
+use always-valid or group-sequential boundaries; interference is subtle
+(it does not violate randomization and the p-value looks fine, yet it
+precisely estimates a quantity you did not want), and the fix is to
+change the design (cluster, switchback) rather than to test; use an SRM
+chi-square as the first guardrail; handle multiple comparisons with
+Bonferroni or FDR and pre-register; ex-post observed power carries no
+information.</li>
+<li>Interference / marketplace experiments (Chapter 18): an individual
+A/B test may correctly estimate the direct effect yet cannot answer the
+rollout effect; cluster leakage, carryover, and the wrong level of
+inference are the three big threats; the short-run experimental effect
+does not automatically equal the long-run equilibrium effect.</li>
+</ul>
+<h3 id="part-iv-structural-methods-1">Part IV Structural Methods</h3>
+<ul>
+<li>Discrete choice (Chapter 19): logit coefficients are identified only
+up to a scale normalization and cannot be compared in magnitude across
+models or samples, what is comparable are ratios and elasticities;
+misspecified IIA does not trigger an automatic error, and under
+separation a finite MLE may not even exist; getting the nests wrong in
+nested logit or forgetting to instrument the within-nest share pushes
+<span class="math inline">\lambda</span> toward 1; the variance terms of
+mixed logit are identified by rich choice-set variation, which a panel
+can strengthen substantially but is not necessary; the second-step
+standard errors of a control function must account for the first step;
+ordinary SML retains simulation bias at a fixed number of draws <span
+class="math inline">R</span>.</li>
+<li>BLP demand (Chapter 20): the validity of the price instrument is the
+foundation (a cost shifter must enter only cost, and BLP instruments
+degenerate into weak instruments in large markets); random coefficients
+collapsing toward zero quietly pulls the model back to IIA, so report
+the standard errors of <span class="math inline">\sigma</span> and the
+instrument strength; too loose a contraction tolerance seeps into the
+outer GMM (MPEC sidesteps this problem); zero shares leave the log share
+undefined, and discarding them casually introduces selection bias.</li>
+<li>Supply side / mergers (Chapter 21): conduct cannot be identified
+from the first-order conditions themselves, two conduct assumptions that
+both yield positive costs cannot be told apart from cost alone, so
+report cost plausibility plus a Rivers-Vuong test and do not default to
+Bertrand; a misspecified demand (logit IIA understating near-neighbor
+diversion) propagates through the FOC and is amplified systematically
+into markups and merger price increases; an efficiency defense passes
+through to price only if marginal cost falls; merger simulation is
+static and short-run, and its extrapolation is limited by the Lucas
+critique.</li>
+<li>Entry / partial identification (Chapter 22): multiple equilibria
+break point identification, and forcing in an equilibrium-selection
+mechanism makes the estimate drift with the assumption, so be honest
+about the dependence or switch to partial identification; the
+information structure (complete versus incomplete information) must be
+argued from institutional detail and is not a technical option to switch
+at will; the identified set can be so wide as to carry no information,
+yet the width itself is also information.</li>
+<li>Dynamic structural (Chapter 23): the discount factor <span
+class="math inline">\beta</span> is generally not identified, and
+treating fixing it as harmless is a common overconfidence, so report how
+the conclusion changes at several values of <span
+class="math inline">\beta</span> or identify it formally with an
+exclusion restriction; conditional independence rules out persistent
+unobserved heterogeneity, and a violation biases the estimate, so model
+types explicitly (finite mixtures); counterfactual validity is the Lucas
+critique; the CCP first step is noisy on rarely visited states, so
+smooth or gather more data.</li>
+</ul>
+<h3 id="part-v-topics-in-digital-economics-1">Part V Topics in Digital
+Economics</h3>
+<ul>
+<li>Platforms / switching costs (Chapter 24): the bias in switching
+costs is determinedly upward, almost never understating as long as
+persistent heterogeneity is left uncontrolled, so when you see a large
+switching cost first ask “how much preference has been mistaken for
+lock-in”; the initial-conditions problem is especially severe in a short
+panel, so when the panel is not long default to Wooldridge CRE; peer and
+network effects have the reflection problem, which must be broken with
+network structure.</li>
+<li>Search / advertising (Chapter 25): a full-information model
+attenuates systematically toward zero in a search market and a large
+sample cannot save it, so when the search logs show shallow search it is
+time to change the model; getting the sequential versus fixed-sample
+protocol wrong makes the likelihood wrong, so estimate both and test
+with the prevalence of return visits; the exogeneity of the ranking
+cannot be taken for granted, and needs a ranking experiment or the
+quasi-random perturbation of an algorithm change; advertising effects
+are the easiest to be exaggerated by selection, and the
+observational-correlation ROI should be discounted heavily.</li>
+<li>AI / technology adoption / algorithms / data (Chapter 26):
+machine-prediction error is often non-classical, and the gold subsample
+must represent the target population; AI access, actual use, and
+workflow redesign are different treatment margins; an observed-use
+interaction usually suffers post-treatment selection, and organizational
+complementarity is best studied with factorial assignment; short-run
+productivity does not equal the long-run skill and J-curve payoff; the
+appearance of algorithmic collusion in simulation is not collusion in
+reality, and needs field evidence to pin down.</li>
+</ul>
+<p>Strung together, these pitfalls point to a single lesson that runs
+through the whole book: the credibility of a method lies not in the
+sophistication of the regression specification or the algorithm, but in
+whether the identifying assumptions are laid on the table and in how the
+conclusion moves when those assumptions are loosened. A reference sheet
+can help you recall the formulas, the commands, and the common traps,
+but stating the assumptions clearly and reporting sensitivity honestly
+always sends you back to the main text and to your own judgment about
+the institutional background.</p>
+    <footer class="page-footer">
+<span>Foundations of Information Systems Economics: Empirical Methods for Information Systems Economics</span>
+    </footer>
+  </main>
+</div>
+<script>
+(function(){var p=(location.pathname.split('/').pop()||'index.html');document.querySelectorAll('.file-nav a').forEach(function(a){if(a.getAttribute('href')===p)a.classList.add('current');});})();
+
+/* Preserve complete formulas without internal scrollbars. Only formulas whose
+   natural width exceeds their text column are reduced, and resize restores the
+   largest size that fits. */
+(function () {
+  function fitMath() {
+    document.querySelectorAll('span.math').forEach(function (host) {
+      var katex = host.querySelector('.katex');
+      if (!katex) return;
+      katex.style.fontSize = '';
+      var parent = host.classList.contains('display') ? host : host.parentElement;
+      var available = Math.max(1, parent.clientWidth);
+      /* KaTeX's box can be clipped to the host before measurement; scrollWidth
+         retains the full typeset width and is therefore the correct basis. */
+      var needed = Math.max(katex.scrollWidth, katex.getBoundingClientRect().width);
+      /* Keep a small safety margin for KaTeX glyph overhangs and browser
+         sub-pixel rounding, so the last radical/bar is never clipped. */
+      var target = available * 0.98;
+      if (needed > target) {
+        katex.style.fontSize = Math.max(0.34, target / needed) + 'em';
+      }
+    });
+  }
+  document.addEventListener('DOMContentLoaded', function () {
+    requestAnimationFrame(fitMath);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitMath);
+  });
+  window.addEventListener('resize', fitMath);
+}());
+</script>
+<script defer src="assets/notes.js"></script>
+</body>
+</html>

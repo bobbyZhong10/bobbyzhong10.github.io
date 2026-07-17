@@ -1,0 +1,687 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script>(function(){try{var t=localStorage.getItem('theme');if(t==='dark'||t==='light')document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <title>09 Workflow, Validation, and Reference | From Choices to Counterfactuals</title>
+  <link rel="stylesheet" href="assets/katex/katex.min.css">
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="page-wrapper">
+
+  <!-- ==================== SIDEBAR ==================== -->
+  <nav class="sidebar">
+    <div class="sidebar-title">From Choices to Counterfactuals: Structural Estimation for Digital Platform Research</div>
+    <div class="sidebar-subtitle">Chapter 09 · Workflow, Validation, and Reference</div>
+
+    <div class="toc-section-label">Contents</div>
+    <div class="toc">
+      <a href="#seven-steps">9.1 Seven Steps from Research Question to Model</a>
+      <a href="#step-identification" class="level-3">The identification argument and a fill-in template</a>
+      <a href="#step-robustness" class="level-3">Estimation, diagnostics, and robustness</a>
+      <a href="#validation-playbook">9.2 A Model-Validation Playbook</a>
+      <a href="#recover-worked" class="level-3">Parameter-recovery Monte Carlo</a>
+      <a href="#formula-reference">9.3 Formula Quick Reference</a>
+      <a href="#software-reference">9.4 Software Reference</a>
+      <a href="#notation">9.5 Notation</a>
+      <a href="#troubleshooting">9.6 Troubleshooting Guide</a>
+      <a href="#misconceptions">9.7 Common Pitfalls</a>
+      <a href="#summary">9.8 Chapter Summary</a>
+      <a href="#readings">Further Reading</a>
+    </div>
+
+    <div class="file-nav">
+      <div class="nav-label">Chapters</div>
+      <a href="01_overview_roadmap.html">01 Overview & Decision Framework</a>
+      <a href="02_why_structural.html">02 Why Structural Models</a>
+      <a href="03_rum_logit.html">03 RUM and Logit</a>
+      <a href="04_gev_mixed_logit.html">04 Nested and Mixed Logit</a>
+      <a href="05_simulation_estimation.html">05 Simulation and Numerical Estimation</a>
+      <a href="06_endogeneity_blp.html">06 Endogeneity and BLP</a>
+      <a href="07_dynamic_choice.html">07 Dynamic Discrete Choice</a>
+      <a href="08_applications.html">08 Platform Research Applications</a>
+      <a href="09_workflow_reference.html" class="current">09 Workflow, Validation, and Reference</a>
+    </div>
+  </nav>
+
+  <!-- ==================== MAIN ==================== -->
+  <main class="main-content">
+
+    <header class="page-header">
+      <h1>Workflow, Validation, and Reference</h1>
+      <div class="subtitle">Workflow, Validation, and Quick Reference</div>
+      <div class="meta">From Choices to Counterfactuals: Structural Estimation for Digital Platform Research · Chapter 09</div>
+    </header>
+
+    <div class="global-legend">
+      <span class="legend-label">Variable colors</span>
+      <span><span class="dot dot-observed"></span>Observed in data</span>
+      <span><span class="dot dot-estimated"></span>Parameters to estimate</span>
+      <span><span class="dot dot-researcher"></span>Set by the researcher</span>
+    </div>
+
+    <p>By this chapter, every model in the book has been laid out. But when you actually sit down to write a structural paper, what trips you up is usually not any single step of algebra; it is how to organize the whole enterprise, and which links you cannot afford to cut corners on. This chapter reduces everything that came before into a workflow you can follow and a set of tools you can reach for. The earlier chapters walked from logit to BLP and dynamic choice along <span class="var-estimated">$(F,G)$</span>, saying which kind of question each class of model is best at answering; this chapter adds no new model and does just two closing things. The first half (9.1 and 9.2) strings these models into a working pipeline that runs from the research question to a finished paper: modeling, identification, estimation, validation, all the way through to the writing. The second half (9.3 through 9.7) organizes the core formulas, software, notation, and common failures from every chapter into quick-reference tables. When it is worth reaching for structure and how to walk the decision tree: the guiding rules were settled in Chapter 02 and the decision tree was given in Chapter 01, so this chapter does not repeat those arguments and simply carries the judgment through to concrete operations.</p>
+
+    <p>The illustrative example that runs through the chapter is still the book's standard video-subscription setup: a user chooses among general-interest platform A, general-interest platform B, niche documentary platform C, and not subscribing (the outside option, with utility normalized to 0). The parameters are $\beta_{\text{price}}=-0.1$, $\beta_{\text{ad}}=-0.05$, $\beta_{\text{content}}=0.8$, $\text{ASC}_C=0.3$, which give $V_A=-0.90$, $V_B=-1.11$, $V_C=-2.44$, and baseline choice probabilities of about $P_A=22.30\%$, $P_B=18.07\%$, $P_C=4.78\%$, $P_{\text{out}}=54.85\%$. <span class="demo-badge">illustrative data</span></p>
+
+    <!-- ============================================================ -->
+    <h2 id="seven-steps">9.1 Seven Steps from Research Question to Model</h2>
+
+    <p>The most common way a structural paper fails is not an error in some step of the algebra; it is running the whole pipeline in the wrong order: first falling for an elegant model, then casting about for a question it can answer. That route almost never works, because a model is meant to serve the question, not the other way around. The right order is exactly the reverse, and we walk it here in seven steps. The first five are design and estimation; the sixth, validation, gets its own treatment in section 9.2; the seventh lands on the counterfactual and its presentation. Each step first says what to do, then flags where you are most likely to trip. Step 4, identification, is the most abstract and the easiest to get tangled in, so it comes with a template you can fill in and one worked-out example.</p>
+    <div class="pipeline-bar">
+      <span class="pipe-step">Write the counterfactual</span>
+      <span class="pipe-arrow">→</span>
+      <span class="pipe-step">Agent and choice set</span>
+      <span class="pipe-arrow">→</span>
+      <span class="pipe-step">Utility and heterogeneity</span>
+      <span class="pipe-arrow">→</span>
+      <span class="pipe-step">Identification argument</span>
+      <span class="pipe-arrow">→</span>
+      <span class="pipe-step">Estimation and diagnostics</span>
+      <span class="pipe-arrow">→</span>
+      <span class="pipe-step">Validation</span>
+      <span class="pipe-arrow">→</span>
+      <span class="pipe-step">Counterfactual and reporting</span>
+    </div>
+
+    <h3>Step 1: Write down the counterfactual</h3>
+    <p>Before you touch anything, write down in a sentence or two the counterfactual you want to evaluate, then ask yourself one question: does this really require a structural model? The rule was given in Chapter 02: if the counterfactual sits inside the range of variation the data have already seen (price did move within this interval, and you care only about the average effect within it), then design-based methods are usually more robust and less work. Only when the counterfactual steps outside the support of the data (a brand-new price point, a mechanism that never appeared, a market structure that has changed shape), or when the study itself calls for decomposing mechanisms or computing welfare numbers, does the extra cost of a full structural model pay for itself.</p>
+    <div class="warn-box">
+      <div class="box-title">Pitfall: justifying it with &ldquo;more sophisticated&rdquo; or &ldquo;I have an interesting counterfactual&rdquo;</div>
+      <p style="margin-bottom:0">A structural method is never an end in itself. Before you use one, answer a question honestly: where exactly does the reduced form fall short, and what identification or policy payoff does the added structural complexity buy back? If you cannot answer that, do not rush to reach for structure. And many counterfactuals are only thought experiments on paper; the question worth pressing is who it matters to, and whether some decision-maker would actually act on it.</p>
+    </div>
+
+    <h3>Step 2: Define the agent, the choice set, and the time granularity</h3>
+    <p>To translate a still-fuzzy question into a model you can estimate, pin down three things: who is choosing (a consumer, a seller, or both sides), within which set the choice is made (does it include the outside option, is the consideration set smaller than the full set), and what the time unit of the decision is (each session, a monthly subscription cycle, or each purchase). The 12 modeling decisions in Chapter 02 are the complete list; here we give only a short checklist to get you started.</p>
+    <div class="info-box">
+      <div class="box-title">Short checklist (full version in Chapter 02, section 2.5)</div>
+      <p style="margin-bottom:0">Who is the decision-maker? Where is the boundary of the choice set drawn, and does it include the outside option? Do the time granularity and the data frequency line up? Is it a one-shot choice (static) or is there a switching cost or learning (dynamic, Chapter 07)? At which level does heterogeneity enter (none, observed interactions, random coefficients)? The distributional assumption <span class="var-estimated">$G$</span> determines the substitution pattern, so think it through before picking a model.</p>
+    </div>
+    <div class="warn-box">
+      <div class="box-title">Pitfall: forcing estimation when the choice set is unobserved, or treating an endogenous state as an exogenous control</div>
+      <p style="margin-bottom:0">If there is no way to know which options the user actually saw (the exposure set of a recommendation algorithm is unobserved), a discrete choice model loses its footing; you should settle choice-set identification before talking about estimation (Chapter 08). Another hazard is treating &ldquo;the result of past choices&rdquo; as an exogenous control: cumulative usage and the current subscription tier are both products of earlier decisions, correlated with unobserved preferences, so you must either model the state's evolution explicitly (Chapter 07) or handle the initial-conditions problem.</p>
+    </div>
+
+    <h3>Step 3: Specify utility and heterogeneity</h3>
+    <p>Utility specifications line up on a ladder from simple to complex (Chapter 04): at the bottom is standard logit (no unobserved heterogeneity, bound by IIA), and above it, in order, nested logit (within-nest correlation), mixed logit (random coefficients), and latent class (discrete types). Every rung you climb needs its own justification: either an IIA test is rejected, or the substitution pattern is plainly implausible, or the research question itself calls for characterizing the distribution of preferences. Complexity is not free: it eats identifying power and compute, and it crowds out the time you could have spent on sensitivity analysis.</p>
+    <div class="warn-box">
+      <div class="box-title">Pitfall: starting with the most complex model</div>
+      <p style="margin-bottom:0">The safe approach is to estimate a baseline logit first, get the coefficients and the fit, then add heterogeneity one rung at a time, comparing as you go. If the variance of a mixed logit's random coefficient comes back near 0, the data are telling you that the heterogeneity you assumed is not actually there. Falling back to a fixed coefficient is then both more honest and better identified.</p>
+    </div>
+
+    <h3 id="step-identification">Step 4: The identification argument</h3>
+    <p>A word of reassurance first: identification is the most abstract stretch in the book, and finding it convoluted on a first pass is entirely normal, so we take it one step at a time. Estimating a set of coefficients is not the same as identifying them. Suppose an estimation returns a price coefficient of <span class="var-estimated">$\beta_{\text{price}}=-0.1$</span> with a large $t$ statistic, and you are ready to write &ldquo;the price coefficient is significantly negative, identification done.&rdquo; But a large $t$ value only says the number was estimated precisely; it does not answer a prior question: does this $-0.1$ measure the effect of price itself on choice, or has something else slipped in wearing price's clothing? Identification and precision are two different things, and identification comes first. Identification asks whether, even with infinite data, the variation in the data is enough to pick each parameter out from every competing explanation (Chapter 02, section 2.6).</p>
+
+    <div class="intuition-box">
+      <div class="box-title">Intuition: you cannot separate two things that always move together</div>
+      Weigh two objects tied together on one scale and the scale reports only their combined weight; as long as the two are never separated, no number of weighings will split them apart. Identifying a price coefficient is often exactly this predicament. If plans with a higher monthly fee also tend to have better content, and part of that content (exclusive rights, reputation) lies outside the data, then &ldquo;raising the price&rdquo; always shows up alongside &ldquo;higher quality&rdquo; in the data. The regression will still compute a price coefficient, but it is the combined weight of price and quality, not price's own share. To split the two, you need variation that pushes price without disturbing quality.
+    </div>
+
+    <p>To avoid missing hazards like this, break the identification argument into three interlocking questions and put each one, in turn, to every parameter you want to estimate:</p>
+    <ul>
+      <li><strong>① What exactly are you trying to estimate?</strong> State in one sentence the quantity this parameter represents in the model and which elasticity or counterfactual it ultimately supports.</li>
+      <li><strong>② Which variation in the data identifies it?</strong> Point to the specific dimension of movement that identifies it: price levels differing across markets, repeated choices by the same individual, shares rising and falling with attributes.</li>
+      <li><strong>③ When does identification fail, and what then?</strong> Write down the threats that would contaminate this dimension of variation, say which direction the estimate would be biased if a threat materialized, and give a remedy.</li>
+    </ul>
+    <p>An identification map in an applied paper is, at bottom, one row of answers to these three questions for each key parameter, assembled into a table. Let us fill in the price-coefficient row in full first.</p>
+
+    <div class="worked-example">
+      <div class="worked-title">A completed row: the price coefficient <span class="var-estimated">$\beta_{\text{price}}$</span> <span class="demo-badge">illustrative data</span></div>
+
+      <div class="worked-step">① What we are estimating</div>
+      <p>$\beta_{\text{price}}$ measures how much an option's utility falls for every one-yuan rise in the monthly fee. It directly supports the own-price elasticity: in the illustrative setup $\eta_{AA}=-2.33$, that is, a 1% increase in platform A's monthly fee lowers its share by about 2.33%. Every price-increase counterfactual that follows rests on this elasticity.</p>
+
+      <div class="worked-step">② Which variation identifies it</div>
+      <p>Different platforms in different periods charge different monthly fees while ads and ratings are broadly comparable; it is precisely this spread in price levels that identifies $\beta_{\text{price}}$. Picture the opposite extreme: if every platform charged exactly the same monthly fee, this column could not be filled in, the price coefficient would be beyond reach, and no sample size, however large, would help. This is exactly what it means to say identification has nothing to do with sample size.</p>
+
+      <div class="worked-step">③ When it fails, and how to fix it</div>
+      <p>The threat is that platforms with a higher monthly fee tend also to have higher unobserved quality <span class="var-researcher">$\xi_j$</span> (exclusive series that are not in the data). The price gap then has a quality gap mixed into it, the two are bundled together, $\beta_{\text{price}}$ is pushed toward zero, demand looks less sensitive than it truly is, and the naive approach of running logit directly on observed prices fails here. The remedy is to find an instrument that moves price without moving $\xi_j$ (a cost shifter or competitors' prices) and peel off the exogenous part of price; the ideal is a pricing experiment the platform ran itself (Chapters 06 and 08).</p>
+    </div>
+
+    <details>
+      <summary>Going deeper: why contamination pushes the price coefficient toward zero</summary>
+      <div class="detail-content">
+        <p>With price as the only regressor, it carries two opposing forces at once. A price increase lowers utility on its own, and that force is negative; but a price increase also comes with higher unobserved quality, which raises utility, and that force is positive. The two forces offset in estimation, the absolute value of the price coefficient is compressed and shrinks toward zero, and in severe cases even turns positive. The direction is definite: as long as $\text{Cov}(p_j,\xi_j)&gt;0$, untreated endogeneity always makes demand look less sensitive than it truly is. This is the same mechanism by which the price coefficient is pushed toward zero in the OLS share regression of Chapter 06.</p>
+      </div>
+    </details>
+
+    <p>Apply this row's recipe to every key parameter and you get the ready-to-use template below. Its four columns line up exactly with the three questions just asked: the parameter is ①, &ldquo;the variation it relies on&rdquo; is ②, and &ldquo;potential threat&rdquo; plus &ldquo;remedy&rdquo; together are ③. Beyond the price coefficient from the illustrative setup, we fill one row each for a few parameters from the BLP setting.</p>
+    <div class="table-scroll">
+    <table>
+      <thead>
+        <tr><th>Key parameter</th><th>Variation it relies on</th><th>Potential threat</th><th>Remedy</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="var-estimated">$\beta_{\text{price}}$</span> price sensitivity</td>
+          <td>Exogenous variation in price across markets/time</td>
+          <td>Price correlated with unobserved quality <span class="var-researcher">$\xi_j$</span></td>
+          <td>Cost-shifter or competitor IV; better still, the platform's own pricing experiment (Chapters 06 and 08)</td>
+        </tr>
+        <tr>
+          <td><span class="var-estimated">$\lambda_k$</span> nesting parameter</td>
+          <td>Strength of within-nest substitution relative to across-nest substitution</td>
+          <td>A misspecified nesting structure that places dissimilar options in one nest</td>
+          <td>Report robustness under alternative nesting structures; constrain $\lambda_k\in(0,1]$ (Chapter 04)</td>
+        </tr>
+        <tr>
+          <td><span class="var-estimated">$\sigma$</span> random-coefficient standard deviation</td>
+          <td>Repeated choices by the same individual, or shares covarying with attributes</td>
+          <td>Too short a panel or too few markets leaves $\sigma$ nearly unidentified</td>
+          <td>Add draws and markets; use Halton sequences; run a parameter-recovery self-check first (Chapter 05)</td>
+        </tr>
+        <tr>
+          <td><span class="var-estimated">$\text{ASC}$</span> / <span class="var-researcher">$\xi_j$</span></td>
+          <td>An option's fixed share level</td>
+          <td>Collinear with attributes, so the level cannot be separated from the slope</td>
+          <td>Normalize the outside option's utility to 0; initialize with the Berry inversion (Chapters 02 and 06)</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="warn-box">
+      <div class="box-title">Pitfall: hiding identification inside the functional form</div>
+      <p style="margin-bottom:0">The most insidious failure is when column ② should come up empty but the model quietly supplies the answer through its own functional form. If a parameter is &ldquo;identified&rdquo; purely by a distributional assumption or a nonlinearity, with no corresponding variation in the data behind it, then it was assumed into existence, not identified by the data. The exclusion restrictions in a structural model should face the same scrutiny as the instruments in an IV study, and should not be buried in a footnote (Chapter 02, section 2.6).</p>
+    </div>
+    <p><strong>In one sentence</strong>: the job of the identification section is to answer these three questions in turn for every parameter you want to estimate; the row where column ② (which variation identifies it) cannot be filled in is the first place the whole paper will be breached.</p>
+
+    <h3 id="step-robustness">Step 5: Estimation, diagnostics, and robustness</h3>
+    <p>The estimation stage has two disciplines, one about convergence and one about robustness, and neither can be skipped.</p>
+    <ul>
+      <li><strong>Discipline one, numerical convergence.</strong> Diagnostics must match the estimator and the optimizer: gradient-based smooth maximum likelihood should check the first-order conditions, the objective value, and the curvature; methods with a line search usually require the accepted step to improve the objective, but not every optimizer's internal iterations are monotone. GMM should check the moment conditions, the objective value, and the gradient, rather than mechanically demanding a negative-definite Hessian. Multiple starting values converging to the same solution can only strengthen confidence in a global solution, not prove global optimality; BLP additionally requires checking the tolerances of the inner and outer loops separately.</li>
+      <li><strong>Discipline two, robustness.</strong> A conclusion cannot rest on a single specification. Lay out the perturbations in a matrix, change only one dimension per row, and watch whether the core parameters and the policy conclusion move with it.</li>
+    </ul>
+    <p>The template for a robustness matrix follows; each row is a &ldquo;change only one dimension&rdquo; perturbation.</p>
+    <div class="table-scroll">
+    <table>
+      <thead>
+        <tr><th>Perturbation dimension</th><th>Baseline specification</th><th>Alternative specification</th><th>What to watch</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Distributional assumption <span class="var-estimated">$G$</span></td><td>logit</td><td>nested, probit, mixed</td><td>Stability of substitution patterns and welfare numbers</td></tr>
+        <tr><td>Nesting structure</td><td>Group by category</td><td>Group by price tier, by brand</td><td>$\lambda_k$ and the sign of cross-elasticities</td></tr>
+        <tr><td>Number of simulation draws $R$</td><td>$R=200$</td><td>$R=500$, $R=1000$</td><td>Whether simulation noise has been absorbed and estimates are stable</td></tr>
+        <tr><td>Instrument set</td><td>Competitor prices</td><td>Cost-shifter IV, subset IV</td><td>Coefficient drift, first-stage strength, Hansen J</td></tr>
+        <tr><td>Subsample</td><td>Full sample</td><td>Split by market size, period, category</td><td>Coefficient heterogeneity, whether the conclusion is driven by one slice</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <div class="warn-box">
+      <div class="box-title">Pitfall: reporting robustness without using it as a diagnostic</div>
+      <p style="margin-bottom:0">A robustness table is not an optional routine listing; its value is as a diagnostic. If switching the distributional assumption changes elasticities several-fold, that says the conclusion actually rests on <span class="var-estimated">$G$</span>; you should then chase the reason and judge which specification is more credible, rather than declaring the job done once two columns of numbers sit side by side.</p>
+    </div>
+
+    <h3>Step 6: Validation</h3>
+    <p>Even after estimation has converged and the robustness matrix is filled in, the model can still be wrong. Convergence only guarantees you found an extremum of the objective function, and robustness only says the conclusion does not capsize under small changes to the specification; neither answers a more fundamental question: can the model predict data it never saw during estimation? The step that answers precisely this question is validation. It is the core of a structural paper's credibility, and section 9.2 spells out how to do it.</p>
+
+    <h3>Step 7: Counterfactual and reporting</h3>
+    <p>Only at the final step do you actually produce the counterfactual and report the results clearly. Three judgments must be spelled out here: <strong>whether to re-solve the equilibrium</strong> (once a counterfactual changes firms' optimal prices or products, the supply side must re-equilibrate, Chapter 06); <strong>how to report uncertainty</strong> (a point estimate cannot be given bare; attach a confidence interval or standard error); and <strong>on what basis to compute welfare</strong> (the simple closed-form logsum comes from additive Type I extreme-value errors; under mixed logit you integrate the individual- or draw-conditional logsum a second time. Monetizing utility with a constant marginal utility of price also requires ignoring income effects or explicitly adopting the corresponding approximation. Report the $\Delta CS$ before and after the policy, not an absolute level that depends on the normalization of the utility origin).</p>
+    <div class="warn-box">
+      <div class="box-title">Pitfall: a counterfactual that does not re-solve equilibrium, and welfare reported as an absolute level</div>
+      <p style="margin-bottom:0">Assuming that firms do not change prices, enter, or exit in the counterfactual is often more misleading than the reduced form. An equally common error is to report the absolute value of $CS$: it depends on the normalization of the outside option and has no economic meaning in itself; only the before-and-after difference $\Delta CS$ can be interpreted.</p>
+    </div>
+
+    <div class="info-box">
+      <div class="box-title">Writing it up: the four-part skeleton of the main text</div>
+      <p style="margin-bottom:0">Once the seven steps are done and the study is written up, the main text usually converges into four escalating parts: model, identification, estimation, counterfactual. The model part sets out the utility specification, the agent, the choice set, and the distributional assumption, that is, the five slots of $M(Y,X,\varepsilon;F,G)=0$; the identification part gives the identification map, explaining one by one the variation each key parameter relies on, the threats it faces, and the remedies; the estimation part reports the estimator, the convergence diagnostics, and the robustness matrix, after which validation carries enough weight that it usually becomes its own section covering all three layers (section 9.2); the counterfactual part presents the policy experiment, whether the equilibrium is re-solved, and the welfare basis and uncertainty intervals. These four parts roughly correspond to the seven steps above, except that validation is usually broken out of estimation into its own section. Write them all thoroughly and most methodological objections will be dissolved before the reader ever raises them.</p>
+    </div>
+
+    <p>To close 9.1, the table below gathers the methodological points most often pressed across the book's chapters into an index: each entry lists a one-sentence handling and the chapter where it lives, and it can serve as a pre-submission self-check, item by item, of whether the manuscript has already addressed each one.</p>
+    <div class="table-scroll">
+    <table>
+      <thead>
+        <tr><th style="width:34%">Methodological point</th><th>Handling (one-sentence skeleton)</th><th>See</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>The necessity of a structural method</td><td>Write down a counterfactual that exceeds the variation in the data, falling under one of the three legitimate reasons: ex-ante evaluation, mechanism decomposition, welfare computation; then validate with a slice of experimental variation.</td><td>Chapter 02</td></tr>
+        <tr><td>Does identification come from the data or the functional form</td><td>Give an identification map, flag which conclusions are sensitive to the functional form, and report Monte Carlo recovery and robustness under alternative distributions.</td><td>2.6, 9.1, 9.2</td></tr>
+        <tr><td>Handling IIA</td><td>First judge whether IIA is really a problem in the specific application; if so, switch to nested or mixed, and report the Hausman-McFadden test and the substitution-pattern matrix.</td><td>Chapters 02, 03, 04</td></tr>
+        <tr><td>Handling price endogeneity</td><td>Use BLP's $\delta$ decomposition together with cost-shifter/competitor IV; report the first-stage F, the Hansen J, and IV-versus-non-IV coefficient comparisons.</td><td>Chapter 06</td></tr>
+        <tr><td>Conditions for consumer surplus to hold</td><td>The logsum requires Type I extreme value and no income effects; report only $\Delta CS$, not the absolute level; under mixed logit it must be computed by simulation.</td><td>Chapters 02, 08</td></tr>
+        <tr><td>Endogenous choice sets (personalized recommendation)</td><td>Model the consideration set, or use platform randomization to fix the display set; acknowledge the scope of inference and run sensitivity to the choice-set definition.</td><td>Chapter 08</td></tr>
+        <tr><td>Identifying network effects in two-sided markets</td><td>Find an exogenous shifter that affects only one side as an IV; note that platform fixed effects absorb the network-effect signal and drive a zero estimate.</td><td>Chapter 08</td></tr>
+        <tr><td>The necessity of a dynamic model</td><td>Adopt one only when the research question involves forward-looking motives or switching costs and the static and dynamic models give different answers; it requires a long enough panel.</td><td>Chapter 07</td></tr>
+        <tr><td>The credibility of a counterfactual</td><td>Confirm that parameters are not extrapolated, that the supply side re-solves equilibrium, and report confidence intervals; ideally validate ex post with a held-out experimental arm.</td><td>07, 9.2</td></tr>
+        <tr><td>Computing standard errors</td><td>Use the sandwich estimator for likelihood-based estimators and the GMM formula for GMM (BLP); cluster when there is within-market correlation.</td><td>3.7, 6.6, 9.6</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <div class="takeaway-box">
+      <div class="box-title">Bottom Line</div>
+      The order of the seven steps is itself a discipline: start by writing down the counterfactual, then pass through agent and choice set, utility and heterogeneity, the identification argument, estimation and diagnostics, and validation, and land at last on presenting the counterfactual. Skip any step, especially the identification argument or validation, and a referee will supply it for the author.
+    </div>
+
+    <!-- ============================================================ -->
+    <h2 id="validation-playbook">9.2 A Model-Validation Playbook</h2>
+
+    <p>A model that fits well is not the same as a model you can trust. However pretty the in-sample fit, it only says the model has enough degrees of freedom to hug the data in hand; it says nothing about how the model holds up on new data (see Chapter 02, section 2.8, for the related discussion). This section breaks validation into three escalating layers of operation, then discusses one approach unique to platform data, and finally gives a &ldquo;what to do when validation fails&rdquo; diagnostic tree.</p>
+
+    <h3>Three layers of validation</h3>
+    <p><strong>Layer one, in-sample grouped fit.</strong> Do not fixate on the overall goodness of fit; line up predicted shares against observed shares cell by cell across subgroups. Walk through it with the video-subscription setup: simulate 6000 choice scenarios from the true parameters (monthly fee, ad minutes, and content rating all carry variation), estimate a correctly specified logit by MLE, and compare each option's average predicted share against its observed share. <span class="demo-badge">illustrative data</span></p>
+    <div class="table-scroll">
+    <table>
+      <thead>
+        <tr><th>Subgroup</th><th>Observed share</th><th>Model-predicted share</th><th>Difference (predicted − observed)</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Platform A</td><td>23.02%</td><td>23.10%</td><td>+0.08 pp</td></tr>
+        <tr><td>Platform B</td><td>19.72%</td><td>19.58%</td><td>−0.14 pp</td></tr>
+        <tr><td>Platform C</td><td>5.50%</td><td>5.50%</td><td>0.00 pp</td></tr>
+        <tr><td>Not subscribing (outside)</td><td>51.77%</td><td>51.82%</td><td>+0.05 pp</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p>A correctly specified model hugs every subgroup to within 0.14 percentage points. The converse does not hold: <strong>a good fit does not let you conclude the model is right</strong>, especially when you are only watching the totals. The counterexample below makes the point in full.</p>
+    <p>Hand the same data to a misspecified model that leaves out content rating. It shows no crack at all in the totals: platform C's overall share still lands near 5.5%, matching the observed value almost exactly. But slice the scenarios by content rating and the problem appears at once. In the scenarios where C's rating is higher, the actual share choosing C is 6.58% while the model gives only 5.52%, underpredicting by 1.06 percentage points; in the scenarios where C's rating is lower, the actual share is only 4.40% while the model reports 5.48%, overpredicting by 1.08 percentage points. <span class="demo-badge">illustrative data</span> The root cause is that the misspecified model never wrote content rating into utility, so it cannot tell high-rating scenarios from low-rating ones and can only give the same prediction for all of them. The two directional biases, one positive and one negative, cancel exactly in the total, dressing up a long-misspecified model as a perfect fit.</p>
+    <div class="intuition-box">
+      <div class="box-title">Intuition: an aggregate fit provides cover for a wrong model</div>
+      Picture a class where half the students score too high and half score too low, yet the average lands &ldquo;right on target.&rdquo; Look only at the average and you will never discover that both ends went wrong. The aggregate share is that average: it adds the overpredicted scenarios and the underpredicted ones together, positives and negatives cancel, and so even a wildly misspecified model can produce a total curve that matches the observed one exactly. What grouped fit does is nothing more than sort the students into score bands and look again, letting the systematic biases the average had covered up reveal themselves. So in validating a model, what carries information is never &ldquo;are the totals right&rdquo; but &ldquo;which kind of scenario starts to miss.&rdquo;
+    </div>
+
+    <p><strong>Layer two, out-of-sample holdout.</strong> Hold back part of the data during estimation, then have the model predict it afterward. How exactly you split depends on which kind of extrapolation you want to test:</p>
+    <ul>
+      <li><strong>Split by time</strong>: estimate on the earlier periods, predict the later ones, and test whether parameters drift over time.</li>
+      <li><strong>Split by market</strong>: hold out several cities from estimation, predict their shares, and test cross-market extrapolation.</li>
+      <li><strong>Split by experimental arm</strong>: in a multi-arm experiment, one arm goes into estimation and another is kept for validation. Randomization guarantees that the holdout population and the estimation population share the same distribution, so of the three splits this one adds the fewest extra assumptions about extrapolation.</li>
+    </ul>
+
+    <p><strong>Layer three, parameter-recovery Monte Carlo.</strong> Let the model simulate a batch of data from itself, then see whether the estimation routine can recover the true parameters intact. It cannot prove identification in real data, and it will not necessarily distinguish weak identification from a coding error; what it can test is whether, under the researcher's chosen DGP, sample design, and numerical tolerances, the whole estimation routine shows systematic bias, wrong standard errors, or an obvious numerical failure. The core logic fits in six lines, and it is really a single self-addressed question: I know the true answer, so does my routine compute its way back to it?</p>
+    <pre><code>for b in 1..B:
+    theta_true = fixed true parameters
+    data_b     = simulate(model, theta_true, seed=b)   # generate data from the DGP
+    theta_hat  = estimate(model, data_b)               # run the estimation routine
+    record(theta_hat, se_hat)
+# check: mean(theta_hat) ≈ theta_true (unbiased), and 95% interval coverage ≈ 95%</code></pre>
+
+    <div class="worked-example" id="recover-worked">
+      <div class="worked-title">Worked example: parameter recovery for the video-subscription logit <span class="demo-badge">illustrative data</span></div>
+
+      <div class="worked-step">Setup</div>
+      <p>The true parameters are $\beta_{\text{price}}=-0.10$, $\beta_{\text{ad}}=-0.05$, $\beta_{\text{content}}=0.80$, $\text{ASC}_C=0.30$. Generate $N=6000$ choice scenarios; in each scenario the three platforms' monthly fee, ad minutes, and content rating carry a normal perturbation on top of their baseline values (to produce the variation needed to identify the slopes), and the outside option's utility is fixed at 0. Each individual adds an i.i.d. Type I extreme-value shock to every option and then chooses the option with the highest utility.</p>
+
+      <div class="worked-step">A single estimation</div>
+      <p>Run MLE on the simulated data, with standard errors from the inverse of the numerical Hessian. All four parameters land within one standard error of their true values:</p>
+      <div class="table-scroll">
+      <table>
+        <thead><tr><th>Parameter</th><th>True value</th><th>Estimate</th><th>Standard error</th></tr></thead>
+        <tbody>
+          <tr><td>$\beta_{\text{price}}$</td><td>−0.100</td><td>−0.0969</td><td>0.0036</td></tr>
+          <tr><td>$\beta_{\text{ad}}$</td><td>−0.050</td><td>−0.0491</td><td>0.0031</td></tr>
+          <tr><td>$\beta_{\text{content}}$</td><td>0.800</td><td>0.7703</td><td>0.0311</td></tr>
+          <tr><td>$\text{ASC}_C$</td><td>0.300</td><td>0.2767</td><td>0.0778</td></tr>
+        </tbody>
+      </table>
+      </div>
+
+      <div class="worked-step">200 repetitions</div>
+      <p>The bias in a single estimation may be nothing but sampling fluctuation. Repeat the whole procedure 200 times and examine whether the mean of the estimates equals the true value and whether the 95% confidence interval's coverage is near 95%:</p>
+      <div class="table-scroll">
+      <table>
+        <thead><tr><th>Parameter</th><th>True value</th><th>Mean over 200</th><th>Bias</th><th>95% coverage</th></tr></thead>
+        <tbody>
+          <tr><td>$\beta_{\text{price}}$</td><td>−0.100</td><td>−0.0998</td><td>+0.0002</td><td>96.0%</td></tr>
+          <tr><td>$\beta_{\text{ad}}$</td><td>−0.050</td><td>−0.0501</td><td>−0.0001</td><td>95.0%</td></tr>
+          <tr><td>$\beta_{\text{content}}$</td><td>0.800</td><td>0.7990</td><td>−0.0010</td><td>94.5%</td></tr>
+          <tr><td>$\text{ASC}_C$</td><td>0.300</td><td>0.2957</td><td>−0.0043</td><td>94.0%</td></tr>
+        </tbody>
+      </table>
+      </div>
+
+      <div class="worked-step">Reading it off</div>
+      <p>The Monte Carlo bias of all four parameters stays within 0.005, and coverage falls between 94% and 96%: under this one DGP, sample size, and number of repetitions, no obvious finite-sample bias or interval-coverage error shows up. This is not a proof of strict unbiasedness. If coverage systematically departs from 95%, check the standard-error formula, the optimization tolerance, the boundary parameters, and the model specification together; if the mean systematically departs from the true value, distinguish among finite-sample bias, weak identification, simulation error, and a coding error rather than pinning the cause on any one of them directly.</p>
+    </div>
+
+    <h3>Platform data: using historical A/B tests as a holdout</h3>
+    <p>The historical A/B tests a platform researcher has on hand are a rare, high-quality resource for validating a structural model. Randomization guarantees that the treatment and control groups share the same distribution, so you can use it this way: <strong>estimate the model on historical observational data (or the experiment's control group) alone, seal off an entire treatment arm, then predict the key metrics on that arm and compare against the experiment's measured values.</strong> Four points in particular:</p>
+    <ul>
+      <li><strong>Which data to estimate on</strong>: the control group, plus historical variation not involving the intervention under validation. The model must never see any information from the treatment arm.</li>
+      <li><strong>Which data to seal off</strong>: hold out at least one full treatment arm. Multi-arm experiments are especially suited to this, with one arm for estimation and one for validation.</li>
+      <li><strong>Which metric to predict</strong>: predict quantities on the treatment arm that can be compared directly against the experiment, such as shares, conversion rates, or renewal rates, rather than the model's internal utilities.</li>
+      <li><strong>How to report the discrepancy</strong>: report the predicted value, the measured value, and the direction and magnitude of their difference. A large gap does not necessarily mean the model is wrong; it may be that the validation population differs, or that an aggregate shock outside the model occurred in the interim, so write out the possible sources together.</li>
+    </ul>
+
+    <div class="info-box">
+      <div class="box-title">A diagnostic tree after validation fails: locate the model component by the subgroup where the bias sits</div>
+      <p style="margin-bottom:6px">When validation fails, do not rush to swap models. First locate which subgroup the bias falls in, then trace it back to which model component went wrong:</p>
+      <ul style="margin-bottom:0">
+        <li>If the bias concentrates in <strong>a particular attribute dimension</strong> (say, options with high content ratings systematically deviate), check how that attribute enters utility: the functional form (linear or log), whether there is an interaction term, and whether the attribute was omitted (compare the content-rating misspecification example above).</li>
+        <li>If the bias concentrates in <strong>substitution among certain classes of options</strong> (shares flow in a counterintuitive way after one option is removed), IIA is most likely at work, and you need to upgrade to nested or mixed logit (Chapter 04).</li>
+        <li>If the bias concentrates in <strong>a particular price range</strong> or in high-priced options, usually price endogeneity was not fully treated, or a random price coefficient is needed (Chapters 04 and 06).</li>
+        <li>If the bias concentrates in <strong>a stretch of time</strong> (predictions worsen the later it gets), parameters are drifting, and you may need a dynamic model or to allow time heterogeneity (Chapter 07).</li>
+        <li>If the bias is <strong>uniform across the board</strong> and in one direction, it is often a definitional problem with the outside-option share or the market size, and you should return to the data-preparation stage.</li>
+      </ul>
+    </div>
+
+    <div class="takeaway-box">
+      <div class="box-title">Bottom Line</div>
+      None of the three layers of validation can be skipped: grouped fit guards against &ldquo;the totals match while the subgroups miss,&rdquo; out-of-sample holdout tests the license to extrapolate, and parameter-recovery Monte Carlo exposes non-identification and coding errors. The A/B tests a platform runs almost constantly are a ready-made, high-quality holdout, and should be folded into the validation workflow.
+    </div>
+
+    <!-- ============================================================ -->
+    <h2 id="formula-reference">9.3 Formula Quick Reference</h2>
+
+    <p>The formulas are organized by model, one small table per block. They match the main text of each chapter. See section 9.5 for an index of the notation.</p>
+
+    <div class="figure">
+    <svg viewBox="0 0 720 356" role="img" aria-label="The book's method ladder: from MNL, relaxing assumptions rung by rung to Nested/Mixed, BLP, and dynamic discrete choice, with expressiveness and cost rising together">
+      <defs><marker id="lad" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" style="fill:var(--fig-axis)"></path></marker></defs>
+      <line class="ax" x1="20" y1="332" x2="700" y2="332"></line>
+      <line class="ax" x1="20" y1="40" x2="20" y2="332"></line>
+      <text x="14" y="186" text-anchor="middle" transform="rotate(-90 14 186)" class="mut lbl-s">Expressiveness / flexibility ↑</text>
+      <text x="360" y="350" text-anchor="middle" class="mut lbl-s">Relax assumptions rung by rung · compute and identification cost ↑ →</text>
+
+      <line x1="184" y1="262" x2="204" y2="222" style="stroke:var(--fig-axis);stroke-width:1.4" marker-end="url(#lad)"></line>
+      <line x1="354" y1="202" x2="374" y2="162" style="stroke:var(--fig-axis);stroke-width:1.4" marker-end="url(#lad)"></line>
+      <line x1="524" y1="142" x2="544" y2="102" style="stroke:var(--fig-axis);stroke-width:1.4" marker-end="url(#lad)"></line>
+
+      <rect x="34" y="256" width="150" height="66" rx="8" class="bx"></rect>
+      <text x="109" y="278" text-anchor="middle" class="ink lbl" style="font-weight:700">MNL</text>
+      <text x="109" y="296" text-anchor="middle" class="mut lbl-s" style="font-size:10px">Baseline · IIA · homog. · static</text>
+      <text x="109" y="314" text-anchor="middle" class="lbl-s" style="fill:var(--fig-1);font-weight:700">Chapter 03</text>
+
+      <rect x="204" y="196" width="150" height="66" rx="8" class="bx"></rect>
+      <text x="279" y="218" text-anchor="middle" class="ink lbl" style="font-weight:700">Nested / Mixed</text>
+      <text x="279" y="236" text-anchor="middle" class="mut lbl-s" style="font-size:10px">Relax IIA · heterogeneity</text>
+      <text x="279" y="254" text-anchor="middle" class="lbl-s" style="fill:var(--fig-1);font-weight:700">Chapter 04</text>
+
+      <rect x="374" y="136" width="150" height="66" rx="8" class="bx"></rect>
+      <text x="449" y="158" text-anchor="middle" class="ink lbl" style="font-weight:700">BLP</text>
+      <text x="449" y="176" text-anchor="middle" class="mut lbl-s" style="font-size:10px">Relax price exog. · shares</text>
+      <text x="449" y="194" text-anchor="middle" class="lbl-s" style="fill:var(--fig-1);font-weight:700">Chapter 06</text>
+
+      <rect x="544" y="76" width="156" height="66" rx="8" style="fill:var(--fig-1-soft);stroke:var(--fig-1);stroke-width:1.8"></rect>
+      <text x="622" y="98" text-anchor="middle" class="ink lbl" style="font-weight:700;font-size:11px">Dynamic discrete choice</text>
+      <text x="622" y="116" text-anchor="middle" class="mut lbl-s" style="font-size:10px">Relax static · forward-looking</text>
+      <text x="622" y="134" text-anchor="middle" class="lbl-s" style="fill:var(--fig-1);font-weight:700">Chapter 07</text>
+    </svg>
+    <div class="figcaption"><span class="fig-label">Figure 9.1</span>The book's method ladder. Starting from the simplest model, MNL, each rung up relaxes one assumption: Nested and Mixed break IIA and accommodate preference heterogeneity (Chapter 04); BLP goes further and relaxes price exogeneity, treating the case where only aggregate shares are observed (Chapter 06); dynamic discrete choice relaxes the static assumption and adds forward-looking behavior back in (Chapter 07). Expressiveness grows with each rung up, and the identification and computation costs rise along with it. The simulation methods of Chapter 05 are the engine of this ladder, making mixed logit and BLP, which have no closed-form solution, computable.</div>
+    </div>
+
+    <div class="info-box">
+      <div class="box-title">Notation conventions (two coexist, take care not to mix them)</div>
+      <p style="margin-bottom:0">The Logit/Nested/Mixed blocks follow the convention of the main text in Chapters 02 through 05: $V_{nj}=\beta'x_{nj}$, the price coefficient <span class="var-estimated">$\beta_{\text{price}}&lt;0$</span> enters utility directly, and the marginal utility of income is written $\alpha\equiv-\beta_{\text{price}}&gt;0$. The BLP block follows the convention of Chapter 06: $\delta=x_j'\bar\beta-\bar\alpha p_j+\xi_j$, where <span class="var-estimated">$\bar\alpha&gt;0$</span> denotes the magnitude of the price disutility. Under both conventions, the own-price elasticity is negative and the cross-price elasticity is positive.</p>
+    </div>
+
+    <h3>Logit <span class="demo-badge">illustrative data</span></h3>
+    <div class="table-scroll">
+    <table>
+      <thead><tr><th style="width:26%">Quantity</th><th>Formula</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td>Choice probability</td><td>$P_{nj}=\dfrac{e^{V_{nj}}}{\sum_{k}e^{V_{nk}}}$</td><td>with the outside option's $V_{n0}=0$, the denominator contains a term $e^{0}=1$</td></tr>
+        <tr><td>Own-price elasticity</td><td>$\eta_{jj}=\beta_{\text{price}}\,p_j\,(1-P_j)$</td><td>$&lt;0$; in the illustration $\eta_{AA}=-2.33$</td></tr>
+        <tr><td>Cross-price elasticity</td><td>$\eta_{jk}=-\beta_{\text{price}}\,p_k\,P_k$</td><td>$&gt;0$, and independent of $j$ (a fingerprint of IIA); in the illustration $\eta_{B,p_A}=0.669$</td></tr>
+        <tr><td>logsum consumer surplus</td><td>$E[CS_n]=\dfrac{1}{\alpha}\ln\!\big(\sum_{k}e^{V_{nk}}\big)+C$</td><td>$\alpha=-\beta_{\text{price}}$; the quantity after taking the expectation over $\varepsilon$; this holds only under Type I extreme value and no income effects ($\alpha$ treated as constant), and with income effects use the compensating variation instead (Chapter 08); only $\Delta CS$ is interpretable (Williams 1977; Small &amp; Rosen 1981)</td></tr>
+        <tr><td>Log-likelihood</td><td>$LL=\sum_n\sum_j y_{nj}\ln P_{nj}$</td><td>$y_{nj}=1$ when $n$ chooses $j$</td></tr>
+        <tr><td>IIA property</td><td>$\dfrac{P_{ni}}{P_{nj}}=\dfrac{e^{V_{ni}}}{e^{V_{nj}}}$</td><td>the ratio is independent of any third option, the hallmark of logit and also its limitation</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <h3>Nested Logit</h3>
+    <div class="table-scroll">
+    <table>
+      <thead><tr><th style="width:26%">Quantity</th><th>Formula</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td>Within-nest conditional probability</td><td>$P_{n j\mid B_k}=\dfrac{e^{V_{nj}/\lambda_k}}{\sum_{i\in B_k}e^{V_{ni}/\lambda_k}}$</td><td>$j\in B_k$</td></tr>
+        <tr><td>inclusive value</td><td>$I_{nk}=\ln\sum_{i\in B_k}e^{V_{ni}/\lambda_k}$</td><td>the &ldquo;bundled utility&rdquo; of nest $k$</td></tr>
+        <tr><td>Marginal probability of choosing a nest</td><td>$P_{n B_k}=\dfrac{e^{\lambda_k I_{nk}}}{\sum_{l}e^{\lambda_l I_{nl}}}$</td><td></td></tr>
+        <tr><td>Joint probability</td><td>$P_{nj}=P_{n j\mid B_k}\cdot P_{n B_k}$</td><td>choose the nest first, then within the nest</td></tr>
+        <tr><td>$\lambda$ constraint</td><td>$\lambda_k\in(0,1]$</td><td>within-nest correlation strengthens as $\lambda_k$ decreases ($1-\lambda_k$ is often used as a directional gauge); $\lambda_k=1$ collapses to logit</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <h3>Mixed Logit</h3>
+    <div class="table-scroll">
+    <table>
+      <thead><tr><th style="width:26%">Quantity</th><th>Formula</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td>Mixed probability (integral definition)</td><td>$P_{nj}=\displaystyle\int \frac{e^{V_{nj}(\beta)}}{\sum_k e^{V_{nk}(\beta)}}\,f(\beta\mid\theta)\,d\beta$</td><td>integrated over the distribution of the random coefficient $\beta$, generally without a closed form</td></tr>
+        <tr><td>Simulated probability</td><td>$\hat P_{nj}=\dfrac{1}{R}\sum_{r=1}^{R} L_{nj}(\beta^{(r)})$</td><td>$\beta^{(r)}$ drawn from $f(\cdot\mid\theta)$; start with $R$ from 500 to 1000, use Halton, and report doubling robustness</td></tr>
+        <tr><td>Panel joint probability</td><td>$\hat P_{n}=\dfrac{1}{R}\sum_{r=1}^{R}\prod_{t}L_{n y_{nt}}(\beta^{(r)})$</td><td>the same individual's $\beta^r$ is shared across periods, jointly identifying heterogeneity</td></tr>
+        <tr><td>Simulated log-likelihood</td><td>$SLL=\sum_n\ln\hat P_{n,y_n}$</td><td>the objective function after replacing the integral with the simulated probability</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <h3>BLP</h3>
+    <div class="table-scroll">
+    <table>
+      <thead><tr><th style="width:26%">Quantity</th><th>Formula</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td>Utility decomposition</td><td>$\delta_{jm}=x_{jm}'\bar\beta-\bar\alpha p_{jm}+\xi_{jm}$</td><td>$\delta$ is the mean utility, $\xi$ is unobserved quality</td></tr>
+        <tr><td>Contraction mapping (inner loop)</td><td>$\delta^{t+1}=\delta^{t}+\ln S_{jm}-\ln\hat S_{jm}(\delta^{t})$</td><td>$S$ is the observed share, $\hat S$ the predicted share; initialize from the Berry inversion</td></tr>
+        <tr><td>Berry inversion (logit case)</td><td>$\ln S_{jm}-\ln S_{0m}=\delta_{jm}$</td><td>under homogeneous logit, shares are linear in $\delta$, the first step of estimation</td></tr>
+        <tr><td>Moment condition</td><td>$\mathbb{E}[\xi_{jm}\,Z_{jm}]=0$</td><td>the instruments are orthogonal to unobserved quality</td></tr>
+        <tr><td>GMM objective</td><td>$\hat\theta=\arg\min_\theta\ \xi(\theta)'ZWZ'\xi(\theta)$</td><td>$W$ is the weighting matrix; when overidentified, use the two-step optimal weight</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <h3>Dynamic discrete choice (Type I extreme-value case)</h3>
+    <div class="table-scroll">
+    <table>
+      <thead><tr><th style="width:26%">Quantity</th><th>Formula</th><th>Notes</th></tr></thead>
+      <tbody>
+        <tr><td>Bellman equation</td><td>$V(x,\varepsilon)=\displaystyle\max_d\big\{u(x,d)+\varepsilon_d+\beta\,\mathbb{E}[V(x',\varepsilon')\mid x,d]\big\}$</td><td>here $\beta$ is the discount factor (the Chapter 07 convention), and the utility parameters are written $\theta$, not the preference vector used elsewhere in this table</td></tr>
+        <tr><td>Choice-specific value</td><td>$v_d(x)=u(x,d)+\beta\,\mathbb{E}[\bar V(x')\mid x,d]$</td><td>the part that excludes the current shock $\varepsilon_d$</td></tr>
+        <tr><td>Expected value (logsum form)</td><td>$\bar V(x)=\ln\sum_d e^{v_d(x)}+\gamma$</td><td>$\gamma$ is Euler's constant; $\bar V$ is the integrated value function (the ex-ante value), equal to the logsum plus $\gamma$</td></tr>
+        <tr><td>Choice probability</td><td>$P(d\mid x)=\dfrac{e^{v_d(x)}}{\sum_{d'}e^{v_{d'}(x)}}$</td><td>the same structure as static logit, only with utility replaced by value</td></tr>
+        <tr><td>CCP inversion (Hotz-Miller)</td><td>$\bar V(x)-v_d(x)=\gamma-\ln P(d\mid x)$</td><td>recover the value difference directly from observed CCPs, avoiding repeated Bellman solves; equivalent to the differenced form of Chapter 07, $v_d-v_0=\ln P(d\mid x)-\ln P(0\mid x)$</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <!-- ============================================================ -->
+    <h2 id="software-reference">9.4 Software Reference</h2>
+
+    <p>The table below is organized by task rather than by software. The first principle in choosing a package is <strong>ecosystem consistency over single-point functionality</strong>: keeping estimation, counterfactuals, and plotting in one language is safer and less error-prone than shuttling data across three languages for one particular feature.</p>
+    <div class="table-scroll">
+    <table>
+      <thead>
+        <tr><th>Task</th><th>Python</th><th>R</th><th>Stata</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Conditional/multinomial logit</td><td>xlogit, pylogit</td><td>mlogit</td><td>clogit, asclogit, cmclogit</td></tr>
+        <tr><td>Nested logit</td><td>pylogit</td><td>mlogit, apollo</td><td>nlogit</td></tr>
+        <tr><td>Mixed logit</td><td>xlogit, pylogit</td><td>mlogit, apollo, gmnl, mixl</td><td>mixlogit, cmmixlogit</td></tr>
+        <tr><td>BLP</td><td>pyblp</td><td>BLPestimatoR</td><td>No mature package; usually hand-coded</td></tr>
+        <tr><td>Dynamic discrete choice</td><td>Usually hand-coded</td><td>Usually hand-coded</td><td>Usually hand-coded</td></tr>
+        <tr><td>Welfare/consumer surplus</td><td>Hand-coded (or pyblp built-in)</td><td>Hand-coded</td><td>Hand-coded</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p>The division of labor among the three Python packages needs to be kept straight: xlogit focuses on multinomial and mixed logit, uses GPU acceleration, and is far faster than traditional implementations on large samples, but it does not implement nested logit; when you need nested, switch to pylogit within Python. pyblp is the de facto standard for differentiated-products demand estimation, with built-in methods for both counterfactuals and elasticities. Dynamic models still have few off-the-shelf packages, and the state space and value-function iteration usually have to be implemented yourself.</p>
+
+    <h3>PyBLP: the most common calls</h3>
+    <pre><code>import pyblp, numpy as np
+problem = pyblp.Problem(
+    product_formulations=(
+        pyblp.Formulation('0 + prices + x1 + x2', absorb='C(product_ids)'),  # linear part (absorb product fixed effects, drop the intercept to avoid collinearity)
+        pyblp.Formulation('0 + prices + x1')),                                # random-coefficient part
+    product_data=product_data,          # must contain market_ids, shares, prices, and instrument columns
+    integration=pyblp.Integration('product', size=5))  # random coefficients require an integration config (or pass agent_data instead)
+results = problem.solve(
+    sigma=np.eye(2) * 0.5,              # initial values for the random coefficients
+    optimization=pyblp.Optimization('l-bfgs-b', {'gtol': 1e-5}),
+    iteration=pyblp.Iteration('squarem', {'atol': 1e-14}))   # inner-loop contraction
+elast = results.compute_elasticities() # elasticity matrix
+cs    = results.compute_consumer_surpluses()                 # consumer surplus</code></pre>
+
+    <h3>xlogit: the most common calls (mixed logit)</h3>
+    <pre><code>from xlogit import MixedLogit
+model = MixedLogit()
+model.fit(
+    X=df[['price', 'ad', 'content']],   # long-format design matrix
+    y=df['choice'],
+    varnames=['price', 'ad', 'content'],
+    alts=df['alt'], ids=df['chid'],     # option and choice-situation indices
+    randvars={'price': 'n', 'content': 'n'},  # monthly fee and content rating as normal random coefficients
+    n_draws=500, halton=True)           # Halton draws
+model.summary()</code></pre>
+
+    <!-- ============================================================ -->
+    <h2 id="notation">9.5 Notation</h2>
+    <p>Notation used throughout the book. Local special usages are noted in place in each chapter.</p>
+    <div class="table-scroll">
+    <table>
+      <thead><tr><th style="width:16%">Symbol</th><th>Meaning</th><th>Type</th></tr></thead>
+      <tbody>
+        <tr><td>$n$</td><td>Index of the decision-maker (consumer)</td><td>Index</td></tr>
+        <tr><td>$j,\ i$</td><td>Index of options/alternatives</td><td>Index</td></tr>
+        <tr><td>$m,\ t$</td><td>Market/time index</td><td>Index</td></tr>
+        <tr><td>$U_{nj}$</td><td>Total utility $=V_{nj}+\varepsilon_{nj}$</td><td>Utility</td></tr>
+        <tr><td>$V_{nj}$</td><td>Deterministic (systematic) utility</td><td>Observed part</td></tr>
+        <tr><td><span class="var-researcher">$\varepsilon_{nj}$</span></td><td>Random utility shock (Type I extreme value for logit)</td><td>Unobserved random</td></tr>
+        <tr><td><span class="var-estimated">$\beta$</span></td><td>Vector of preference parameters</td><td>To estimate</td></tr>
+        <tr><td><span class="var-researcher">$\beta$</span></td><td>Discount factor (a local usage in the Chapter 07 dynamic model, usually fixed rather than estimated)</td><td>Set by the researcher</td></tr>
+        <tr><td><span class="var-estimated">$\alpha$</span></td><td>Price-related coefficient: under the BLP convention $\bar\alpha&gt;0$ is the magnitude of the price disutility; under the logit convention $\alpha=-\beta_{\text{price}}$ is the marginal utility of income</td><td>To estimate</td></tr>
+        <tr><td><span class="var-observed">$p_j$</span></td><td>Price of option $j$</td><td>Observed</td></tr>
+        <tr><td><span class="var-observed">$x_j$</span></td><td>Vector of observed attributes of option $j$</td><td>Observed</td></tr>
+        <tr><td><span class="var-researcher">$\xi_j$</span></td><td>Unobserved product quality (BLP)</td><td>Unobserved</td></tr>
+        <tr><td><span class="var-estimated">$\delta_{jm}$</span></td><td>Mean utility (BLP)</td><td>To estimate</td></tr>
+        <tr><td>$\mu_{ijm}$</td><td>Individual deviation from the mean utility, generated by $\theta_2$ and random draws (a constructed quantity, not a free parameter)</td><td>Constructed quantity</td></tr>
+        <tr><td><span class="var-estimated">$\lambda_k$</span></td><td>Nest dissimilarity parameter (the smaller $\lambda_k$, the more similar within the nest), $\in(0,1]$</td><td>To estimate</td></tr>
+        <tr><td><span class="var-estimated">$\theta_1,\ \theta_2$</span></td><td>Linear parameters $\theta_1=(\bar\beta,\bar\alpha)$ / nonlinear parameters $\theta_2=(\Pi,\Sigma)$</td><td>To estimate</td></tr>
+        <tr><td><span class="var-estimated">$\Sigma$</span></td><td>Covariance (standard deviations) of the random coefficients, taste heterogeneity beyond demographics (BLP)</td><td>To estimate</td></tr>
+        <tr><td><span class="var-estimated">$\Pi$</span></td><td>How tastes vary with observed demographics (BLP)</td><td>To estimate</td></tr>
+        <tr><td><span class="var-estimated">$\sigma_k$</span></td><td>Standard deviation of the $k$-th random coefficient (the scale of heterogeneity)</td><td>To estimate</td></tr>
+        <tr><td><span class="var-observed">$D_i$</span></td><td>Consumer demographics (income, age, and so on), the observed input to BLP simulation</td><td>Observed</td></tr>
+        <tr><td><span class="var-researcher">$\nu_i$</span></td><td>Standard-normal random taste draws, drawn independently for each consumer in simulation</td><td>Set by the researcher</td></tr>
+        <tr><td>$P_{nj}$</td><td>Probability that individual $n$ chooses $j$</td><td>Choice probability</td></tr>
+        <tr><td><span class="var-observed">$S_{jm}$</span>$,\ \hat S_{jm}$</td><td>Observed and predicted shares of option $j$ in market $m$ (BLP)</td><td>Share (aggregate)</td></tr>
+        <tr><td><span class="var-observed">$Z$</span></td><td>Matrix of instruments</td><td>Observed</td></tr>
+        <tr><td><span class="var-researcher">$W$</span></td><td>GMM weighting matrix (set by the researcher in the first step, with the optimal weight estimated from residuals in the second)</td><td>Set by the researcher / estimated from data</td></tr>
+        <tr><td>$\gamma$</td><td>Euler's constant $\approx 0.5772$, the location correction of the logsum (derived from Type I extreme value)</td><td>Constant</td></tr>
+        <tr><td><span class="var-researcher">$R$</span></td><td>Number of simulation draws</td><td>Set by the researcher</td></tr>
+        <tr><td>$CS$</td><td>Consumer surplus</td><td>Welfare</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <!-- ============================================================ -->
+    <h2 id="troubleshooting">9.6 Troubleshooting Guide</h2>
+    <p>Below are the four most common symptoms, each laid out in three parts: possible causes, checks, and fixes. This material comes from estimation practice and pairs with the diagnostic discipline of Step 5 in section 9.1.</p>
+
+    <h3>Symptom 1: the optimizer does not converge</h3>
+    <ul>
+      <li><strong>Possible causes</strong>: poor starting values; wildly different variable scales; a flat or multimodal likelihood surface; the BLP inner loop not converging.</li>
+      <li><strong>Checks</strong>: whether the log-likelihood improves monotonically (a decrease points to a wrong step size or gradient); whether the variables' scales are comparable; whether the gradient norm heads toward zero.</li>
+      <li><strong>Fixes</strong>: use coefficients from a simple logit or a coarse grid search as starting values; standardize all variables to mean 0 and standard deviation 1; switch optimizers (BFGS/L-BFGS/Powell); for BLP, use SQUAREM to accelerate the inner loop, initialize $\delta$ from the Berry inversion, and tighten the inner-loop contraction tolerance to the order of $10^{-14}$: a loose setting like $10^{-6}$ leaves the inner residuals unsolved, and they seep along $\delta$ into the outer GMM objective, pulling the outer optimization off course and even producing spurious local optima; to be safe, recompute once each at $10^{-12}$ and $10^{-16}$ and confirm the estimates do not drift with the tolerance (Dubé, Fox &amp; Su 2012).</li>
+    </ul>
+
+    <h3>Symptom 2: standard errors blow up</h3>
+    <ul>
+      <li><strong>Possible causes</strong>: multicollinearity that makes the information matrix nearly singular; too small a sample or insufficient identification; weak instruments; overparameterization.</li>
+      <li><strong>Checks</strong>: compute the variable correlation matrix and the condition number of the Jacobian/information matrix appropriate to the estimator; report a weak-instrument diagnostic matched to the endogenous variables and error structure, not just an unqualified first-stage F; check whether any parameter sits at a boundary.</li>
+      <li><strong>Fixes</strong>: drop genuinely redundant variables or reparameterize collinear attributes; guided by the economic mechanism, look for more relevant instruments with credible exclusion restrictions, and control the too-many-instruments problem with dimension reduction or optimal-instrument methods rather than curing weak identification by blindly adding IVs; trim random coefficients that lack identification. Changing the market definition alters both the economic object and the outside share at once, so adopt it only with a substantive reason and a robustness comparison.</li>
+    </ul>
+
+    <h3>Symptom 3: elasticity signs or magnitudes look wrong</h3>
+    <ul>
+      <li><strong>Possible causes</strong>: a positive price coefficient (endogeneity untreated or a scale error); inconsistent price units (yuan mixed with thousands of yuan); miscoded shares.</li>
+      <li><strong>Checks</strong>: the price coefficient's sign must be negative; verify the price units; confirm that shares lie between 0 and 1 and are of a reasonable magnitude; hand-compute one case with the formula $\eta_{jj}=\beta_{\text{price}}p_j(1-P_j)$ as a cross-check.</li>
+      <li><strong>Fixes</strong>: treat price endogeneity with credible exogenous price variation or IV/BLP, and re-estimate after unifying the price units. A reasonable elasticity magnitude depends on the market definition, the time unit, product durability, the outside option, and the object of study; there is no universal acceptable band of −1 to −5, and it should be checked jointly against evidence from comparable markets, the implications of profit maximization, and supply-side markups. In the illustration, $\eta_{AA}=-2.33$ and $\eta_{CC}=-4.28$ serve only to recheck this book's worked examples. <span class="demo-badge">illustrative data</span></li>
+    </ul>
+
+    <h3>Symptom 4: predicted shares differ widely from actual</h3>
+    <ul>
+      <li><strong>Possible causes</strong>: an omitted key attribute or interaction term; a market definition that is too coarse or too fine; IIA constraining the substitution pattern; price endogeneity.</li>
+      <li><strong>Checks</strong>: align predicted and observed shares by subgroup (the grouped fit of section 9.2) to locate which dimension the bias falls in; compare against the diagnostic tree of 9.2.</li>
+      <li><strong>Fixes</strong>: add the omitted attribute or change the functional form; upgrade to nested/mixed when the substitution pattern is counterintuitive; adjust the market granularity; ensure the outside-option share is greater than 0 to avoid $\ln 0$.</li>
+    </ul>
+
+    <!-- ============================================================ -->
+    <h2 id="misconceptions">9.7 Common Pitfalls</h2>
+    <p>This section collects pitfalls at the workflow level; the technical pitfalls internal to each chapter appear in that chapter's three-part set. This table plays a distinct role from the two components before it: 9.1 flags the trap at each step in place and its closing index table serves as an item-by-item pre-submission self-check, while this table starts from consequences, spelling out what each kind of pitfall costs once you commit it.</p>
+    <div class="table-scroll">
+    <table>
+      <thead>
+        <tr><th>Pitfall</th><th>Why it's wrong</th><th>What to do instead</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Estimate the model first, think about the research question later</td>
+          <td>The model exists to serve the counterfactual; reversing the order yields an elegant estimate whose answer no one needs</td>
+          <td>Write the counterfactual first, judge whether structure is worth it, then pick the model (Step 1 of 9.1)</td>
+        </tr>
+        <tr>
+          <td>Report robustness without using it as a diagnostic</td>
+          <td>Listing columns side by side without interpretation is as good as no robustness at all; the conclusion may hang on an unexamined assumption and flip under a different specification</td>
+          <td>Read out of the robustness matrix &ldquo;which conclusion rests on which assumption&rdquo; (Step 5 of 9.1)</td>
+        </tr>
+        <tr>
+          <td>Treat in-sample fit as validation</td>
+          <td>Enough degrees of freedom will hug the data; and an aggregate fit hides systematic bias in the subgroups</td>
+          <td>Do all three layers: grouped fit, out-of-sample holdout, and parameter recovery (section 9.2)</td>
+        </tr>
+        <tr>
+          <td>A counterfactual that does not re-solve equilibrium</td>
+          <td>Prices or products change with the policy; a counterfactual that fixes them can be more misleading than the reduced form</td>
+          <td>Any counterfactual that changes firms' optimal behavior must re-equilibrate the supply side (Step 7 of 9.1)</td>
+        </tr>
+        <tr>
+          <td>Cite numbers from real papers without checking the source</td>
+          <td>Numbers are easily distorted in paraphrase, and one wrong number can shake the credibility of a whole argument</td>
+          <td>For numbers you are unsure of, write only a qualitative conclusion; to state a specific number, go back to the source and check</td>
+        </tr>
+        <tr>
+          <td>Run code without setting a random seed</td>
+          <td>Simulation-based estimates (MSL, bootstrap, Monte Carlo) become irreproducible, and others cannot recheck them</td>
+          <td>Fix the seed at every random step; parameter recovery and counterfactuals should both recompute with one click (section 9.2)</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+
+    <!-- ============================================================ -->
+    <h2 id="summary">9.8 Chapter Summary</h2>
+    <p>This chapter reduces the book from a box of tools into a single workflow. From choices to counterfactuals, the full chain runs like this: first write down the counterfactual that exceeds the variation in the data and weigh whether it is worth reaching for a structural model (Chapter 02); translate it into an agent, a choice set, and a utility specification, and derive choice probabilities along RUM plus a distributional assumption (Chapter 03); relax IIA as the substitution pattern requires (Chapter 04); handle the integrals with no closed form by simulation (Chapter 05); correct price endogeneity with instruments and BLP (Chapter 06); extend to a dynamic model when forward-looking motives arise (Chapter 07); and put these tools back into the platform setting (Chapter 08); then write the identification map, run convergence and robustness diagnostics, complete all three layers of validation, and finally re-solve the equilibrium, compute welfare with intervals attached, and report it faithfully. The order of these seven steps is itself the operationalization of this chain.</p>
+    <p>Finally, we should honestly mark the boundary. What a structural model can do for you is this: in an environment never observed, make grounded, checkable predictions, pull mechanisms apart, work out welfare, and lay out plainly the assumptions the extrapolation rests on, for others to argue with. What it cannot do for you is guarantee that the distributional assumption is true, make endogeneity vanish into thin air, or hold up when extrapolated to another population or another era. Two sentences are worth committing to memory: passing parameter recovery only says the code estimates correctly under the given DGP, not that the model specification is true; a good fit only shows that the degrees of freedom are sufficient, not that the conclusion is credible. The value of structural estimation has never rested on the label of the method, but on whether you can spell out the identification of every primitive and leave others a handle by which to falsify it. Do this solidly and the road from choices to counterfactuals truly goes through.</p>
+
+    <!-- ============================================================ -->
+    <h2 id="readings">Further Reading</h2>
+
+    <h4>Structural modeling practice and methodology</h4>
+    <ul>
+      <li>Reiss, P. C., &amp; Wolak, F. A. (2007). Structural econometric modeling: Rationales and examples from industrial organization. In J. J. Heckman &amp; E. E. Leamer (Eds.), <em>Handbook of econometrics</em> (Vol. 6A, pp. 4277–4415). Elsevier. <a href="https://doi.org/10.1016/S1573-4412(07)06064-3">https://doi.org/10.1016/S1573-4412(07)06064-3</a> (the practical rationale and examples for structural modeling in industrial organization)</li>
+      <li>Galiani, S., &amp; Pantano, J. (2021). <em>Structural models: Inception and frontier</em> (Working Paper No. 28698). National Bureau of Economic Research. <a href="https://doi.org/10.3386/w28698">https://doi.org/10.3386/w28698</a></li>
+      <li>Keane, M. P. (2010). Structural vs. atheoretic approaches to econometrics. <em>Journal of Econometrics</em>, <em>156</em>(1), 3–20. <a href="https://doi.org/10.1016/j.jeconom.2009.09.003">https://doi.org/10.1016/j.jeconom.2009.09.003</a></li>
+      <li>Low, H., &amp; Meghir, C. (2017). The use of structural models in econometrics. <em>Journal of Economic Perspectives</em>, <em>31</em>(2), 33–58. <a href="https://doi.org/10.1257/jep.31.2.33">https://doi.org/10.1257/jep.31.2.33</a></li>
+    </ul>
+
+    <h4>Demand estimation and BLP practice</h4>
+    <ul>
+      <li>Berry, S., Levinsohn, J., &amp; Pakes, A. (1995). Automobile prices in market equilibrium. <em>Econometrica</em>, <em>63</em>(4), 841–890. <a href="https://doi.org/10.2307/2171802">https://doi.org/10.2307/2171802</a></li>
+      <li>Nevo, A. (2001). Measuring market power in the ready-to-eat cereal industry. <em>Econometrica</em>, <em>69</em>(2), 307–342. <a href="https://doi.org/10.1111/1468-0262.00194">https://doi.org/10.1111/1468-0262.00194</a></li>
+      <li>Dubé, J.-P., Fox, J. T., &amp; Su, C.-L. (2012). Improving the numerical performance of static and dynamic aggregate discrete choice random coefficients demand estimation. <em>Econometrica</em>, <em>80</em>(5), 2231–2267. <a href="https://doi.org/10.3982/ECTA8585">https://doi.org/10.3982/ECTA8585</a> (how the inner-loop contraction tolerance affects the outer GMM, and the numerical robustness of tight tolerances and MPEC)</li>
+      <li>Conlon, C., &amp; Gortmaker, J. (2020). Best practices for differentiated products demand estimation with PyBLP. <em>The RAND Journal of Economics</em>, <em>51</em>(4), 1108–1161. <a href="https://doi.org/10.1111/1756-2171.12352">https://doi.org/10.1111/1756-2171.12352</a> (the PyBLP implementation and robustness recommendations)</li>
+    </ul>
+
+    <h4>Welfare, dynamics, and validation</h4>
+    <ul>
+      <li>Small, K. A., &amp; Rosen, H. S. (1981). Applied welfare economics with discrete choice models. <em>Econometrica</em>, <em>49</em>(1), 105–130. <a href="https://doi.org/10.2307/1911129">https://doi.org/10.2307/1911129</a> (the theoretical basis for logsum consumer surplus)</li>
+      <li>Rust, J. (1987). Optimal replacement of GMC bus engines: An empirical model of Harold Zurcher. <em>Econometrica</em>, <em>55</em>(5), 999–1033. <a href="https://doi.org/10.2307/1911259">https://doi.org/10.2307/1911259</a></li>
+      <li>Hotz, V. J., &amp; Miller, R. A. (1993). Conditional choice probabilities and the estimation of dynamic models. <em>The Review of Economic Studies</em>, <em>60</em>(3), 497–529. <a href="https://doi.org/10.2307/2298122">https://doi.org/10.2307/2298122</a></li>
+    </ul>
+
+    <h4>Textbooks</h4>
+    <ul>
+      <li>Train, K. E. (2009). <em>Discrete choice methods with simulation</em> (2nd ed.). Cambridge University Press. (systematic coverage of the simulation estimation of logit, GEV, and mixed logit)</li>
+    </ul>
+
+    <footer class="page-footer">
+      From Choices to Counterfactuals: Structural Estimation for Digital Platform Research · 09 Workflow, Validation, and Reference
+    </footer>
+
+  </main>
+</div>
+
+<script defer src="assets/katex/katex.min.js"></script>
+<script defer src="assets/katex/auto-render.min.js"></script>
+<script defer src="assets/notes.js"></script>
+</body>
+</html>

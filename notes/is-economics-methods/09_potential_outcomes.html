@@ -1,0 +1,2015 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Potential Outcomes, Experiments &amp;
+Selection-on-Observables | Foundations of Information Systems Economics</title>
+  <link rel="stylesheet" href="assets/style.css" />
+  <script defer="" src="assets/katex/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <link rel="stylesheet" href="assets/katex/katex.min.css" />
+</head>
+<body>
+<div class="page-wrapper">
+  <nav class="sidebar">
+    <div class="sidebar-title">Foundations of Information Systems Economics</div>
+    <div class="sidebar-subtitle">Theory · Methods · Applications</div>
+    <div class="toc-section-label">On this page</div>
+    <div class="toc">
+<ul>
+<li><a href="#introduction" id="toc-introduction">Introduction</a></li>
+<li><a href="#a-suspiciously-large-number"
+id="toc-a-suspiciously-large-number">1 A Suspiciously Large
+Number</a></li>
+<li><a href="#the-economic-model-and-the-estimand"
+id="toc-the-economic-model-and-the-estimand">2 The Economic Model and
+the Estimand</a></li>
+<li><a
+href="#identification-from-randomization-to-selection-on-observables"
+id="toc-identification-from-randomization-to-selection-on-observables">3
+Identification: From Randomization to Selection-on-Observables</a></li>
+<li><a href="#estimation" id="toc-estimation">4 Estimation</a></li>
+<li><a href="#anchoring-papers" id="toc-anchoring-papers">5 Anchoring
+Papers</a></li>
+<li><a href="#a-full-walkthrough-on-the-northwind-data"
+id="toc-a-full-walkthrough-on-the-northwind-data">6 A Full Walkthrough
+on the Northwind Data</a></li>
+<li><a href="#failure-modes-and-robustness"
+id="toc-failure-modes-and-robustness">7 Failure Modes and
+Robustness</a></li>
+<li><a href="#further-reading" id="toc-further-reading">8 Further
+Reading</a></li>
+</ul>
+    </div>
+    <div class="file-nav">
+      <div class="nav-label">This series</div>
+      <a href="index.html">Home · Overview</a>
+      <a href="introduction.html">Introduction · How to Use</a>
+      <a href="01_consumer_producer_welfare.html">01 Consumer, Producer &amp; Welfare</a>
+      <a href="02_game_theory.html">02 Game Theory</a>
+      <a href="03_information_mechanism_design.html">03 Information &amp; Mechanism Design</a>
+      <a href="04_pricing_imperfect_competition.html">04 Pricing &amp; Imperfect Competition</a>
+      <a href="05_estimation_mle_gmm.html">05 Estimation: MLE &amp; GMM</a>
+      <a href="06_inference.html">06 Inference: Bootstrap &amp; Clustering</a>
+      <a href="07_panel_dynamic_panel.html">07 Panel &amp; Dynamic Panel</a>
+      <a href="08_nonparametrics.html">08 Nonparametrics &amp; Semiparametrics</a>
+      <a href="09_potential_outcomes.html">09 Potential Outcomes &amp; Selection</a>
+      <a href="10_research_design_architecture.html">10 Research Design</a>
+      <a href="11_measurement_digital_traces.html">11 Measurement &amp; Digital Traces</a>
+      <a href="12_iv_late_mte.html">12 IV: LATE &amp; MTE</a>
+      <a href="13_did_event_studies.html">13 DiD &amp; Event Studies</a>
+      <a href="14_rdd_synthetic_control.html">14 RDD &amp; Synthetic Control</a>
+      <a href="15_sensitivity_partial_identification.html">15 Sensitivity &amp; Partial Identification</a>
+      <a href="16_causal_ml_dml.html">16 Causal ML &amp; DML</a>
+      <a href="17_digital_experimentation.html">17 Digital Experimentation</a>
+      <a href="18_interference_marketplace_experiments.html">18 Interference &amp; Marketplace Experiments</a>
+      <a href="19_discrete_choice.html">19 Discrete Choice &amp; Mixed Logit</a>
+      <a href="20_demand_blp.html">20 Demand Estimation &amp; BLP</a>
+      <a href="21_supply_markups_mergers.html">21 Supply, Markups &amp; Mergers</a>
+      <a href="22_entry_partial_id.html">22 Entry &amp; Partial Identification</a>
+      <a href="23_dynamic_structural.html">23 Dynamic Structural Models</a>
+      <a href="24_platforms_networks.html">24 Platforms &amp; Network Effects</a>
+      <a href="25_search_advertising.html">25 Search, Advertising &amp; Information Goods</a>
+      <a href="26_ai_algorithms_data.html">26 AI, Adoption &amp; Data Economics</a>
+      <a href="27_quick_reference.html">27 Quick Reference &amp; Tools</a>
+    </div>
+  </nav>
+  <main class="main-content" id="top">
+    <header class="page-header">
+      <h1>Potential Outcomes, Experiments &amp;
+Selection-on-Observables</h1>
+      <div class="subtitle">From Randomized Experiments to Selection on
+Observables</div>
+      <div class="meta">Foundations of Information Systems Economics · Chapter 9</div>
+    </header>
+<h2 id="introduction">Introduction</h2>
+<p>Northwind’s client firms can adopt an AI customer-service assistant
+on their own. Adopters run 0.575 log points more efficiently than
+non-adopters, about 78 percent; a randomized pilot of the very same
+product estimates only 0.206, about 23 percent. Write the first number
+into a marketing deck and it is spectacular; write it into a causal
+study and the first thing a referee will ask is whether the firms that
+were already more advanced are simply the ones more willing to
+adopt.</p>
+<p>A causal effect asks us to compare the same firm’s outcome when it
+adopts and when it does not, yet the data let us observe only one of the
+two. The potential-outcomes framework writes down that missing
+counterfactual explicitly, and it forces the researcher to distinguish
+up front among the population average effect, the average effect on
+adopters, and the average effect on non-adopters. Randomization makes
+the control group a credible counterfactual through the assignment
+mechanism itself; in observational data, matching, the propensity score,
+inverse probability weighting, and doubly robust estimation all try to
+rebuild that comparability once we condition on covariates. They differ
+in their arithmetic, but they lean on the same two substantive
+assumptions: that selection is no longer driven by unobserved factors,
+and that every kind of firm has positive probability of appearing on
+both the treated and the control side.</p>
+<p>This chapter puts the randomized pilot and the self-selected sample
+face to face inside the Northwind data. With the right adjustment we can
+pull 0.575 back to something near the true effect on adopters, 0.254;
+yet the moment unobserved selection enters the adoption decision, the
+same polished machinery reports 0.613. That failure matters more than
+the success: the propensity score can balance the variables you have
+already observed, but it will not go looking for the variables you left
+out. Later causal chapters swap in different data structures and
+different identifying assumptions, but none of them escapes the
+principle we establish here: an estimator can compute a counterfactual,
+but only the identifying assumption decides whether that counterfactual
+is credible.</p>
+<h2 id="a-suspiciously-large-number">1 A Suspiciously Large Number</h2>
+<div class="case">
+<p>Northwind is a fictional B2B SaaS vendor that markets an AI
+customer-service assistant to a large base of client firms. We tell the
+case with simulated data, and the payoff of doing so is that the
+data-generating process is fully known: every estimator can be
+reconciled against the truth, a teaching condition that real data can
+never give us. The outcome is a client firm’s monthly ticket-resolution
+efficiency, measured as log(tickets resolved per agent). Each firm
+carries a set of observable characteristics fixed before treatment: size
+<code>size</code>, a pre-existing digitization level <code>dig</code>,
+industry <code>ind</code> (four categories, A through D), and baseline
+efficiency <code>eff</code>.</p>
+<p>The vendor does two things. The first is a randomized pilot (Study
+A): draw 2000 firms and flip a coin to decide who gets the assistant,
+which gives a clean benchmark for the effect. The second is a larger
+observational sample (Study B): 6000 firms decide for themselves whether
+to adopt, adoption is correlated with the characteristics above, and
+firms that expect a larger payoff are more willing to adopt.</p>
+<p>Start with the most natural computation in Study B: take the mean
+efficiency of firms that adopted the assistant and subtract the mean
+efficiency of firms that did not. That difference is 0.575. A log-point
+gap of 0.575 means adopters resolve about 78 percent more tickets per
+agent, a number good enough to print in marketing copy. But the
+randomized pilot, Study A, gives a difference in means of only 0.206,
+about a 23 percent lift. Same product, same population of clients, one
+says 78 percent and the other says 23 percent, off by more than a factor
+of three.</p>
+</div>
+<figure>
+<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' viewBox='0 0 518.40 244.80' role="img" aria-label="Two answers for one product: the naive difference in Study B gives 0.575, while the randomized pilot in Study A gives only 0.206. The dashed line marks the true ATT of 0.254, which the naive difference overstates by a wide margin." style="max-width:100%;height:auto;display:block;margin:0 auto">
+<g class='svglite'>
+<defs>
+  <style type='text/css'><![CDATA[
+    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {
+      fill: none;
+      stroke: #000000;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-miterlimit: 10.00;
+    }
+    .svglite text {
+      white-space: pre;
+    }
+    .svglite g.glyphgroup path {
+      fill: inherit;
+      stroke: none;
+    }
+  ]]></style>
+</defs>
+<rect width='100%' height='100%' style='stroke: none; fill: #FAFAF9;'/>
+<defs>
+  <clipPath id='g1_cpMC4wMHw1MTguNDB8MC4wMHwyNDQuODA='>
+    <rect x='0.00' y='0.00' width='518.40' height='244.80' />
+  </clipPath>
+</defs>
+<g clip-path='url(#g1_cpMC4wMHw1MTguNDB8MC4wMHwyNDQuODA=)'>
+<rect x='0.00' y='0.00' width='518.40' height='244.80' style='stroke-width: 1.26; stroke: none; fill: #FAFAF9;' />
+</g>
+<defs>
+  <clipPath id='g1_cpMTI5LjYzfDUxMS45MnwyNy40MHwyMDcuNTk='>
+    <rect x='129.63' y='27.40' width='382.29' height='180.18' />
+  </clipPath>
+</defs>
+<g clip-path='url(#g1_cpMTI5LjYzfDUxMS45MnwyNy40MHwyMDcuNTk=)'>
+<rect x='129.63' y='27.40' width='382.29' height='180.18' style='stroke-width: 1.26; stroke: none; fill: #FAFAF9;' />
+<polyline points='129.63,166.01 511.92,166.01 ' style='stroke-width: 1.26; stroke: #E6E3DF; stroke-linecap: butt;' />
+<polyline points='129.63,96.70 511.92,96.70 ' style='stroke-width: 1.26; stroke: #E6E3DF; stroke-linecap: butt;' />
+<polyline points='129.63,207.59 129.63,27.40 ' style='stroke-width: 1.26; stroke: #E6E3DF; stroke-linecap: butt;' />
+<polyline points='245.48,207.59 245.48,27.40 ' style='stroke-width: 1.26; stroke: #E6E3DF; stroke-linecap: butt;' />
+<polyline points='361.32,207.59 361.32,27.40 ' style='stroke-width: 1.26; stroke: #E6E3DF; stroke-linecap: butt;' />
+<polyline points='477.17,207.59 477.17,27.40 ' style='stroke-width: 1.26; stroke: #E6E3DF; stroke-linecap: butt;' />
+<rect x='129.63' y='79.38' width='333.29' height='34.65' style='stroke-width: 1.26; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #2B6CB0;' />
+<rect x='129.63' y='148.68' width='119.50' height='34.65' style='stroke-width: 1.26; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #B7791F;' />
+<line x1='276.66' y1='207.59' x2='276.66' y2='27.40' style='stroke-width: 1.49; stroke: #1A365D; stroke-dasharray: 7.97,7.97; stroke-linecap: butt;' />
+<text x='280.43' y='57.40' style='font-size: 10.24px;fill: #1A365D; font-family: "Arial";' textLength='75.55px' lengthAdjust='spacingAndGlyphs'>true ATT = 0.254</text>
+<text x='470.39' y='100.98' style='font-size: 11.95px;fill: #2D3748; font-family: "Arial";' textLength='29.88px' lengthAdjust='spacingAndGlyphs'>0.575</text>
+<text x='256.60' y='170.28' style='font-size: 11.95px;fill: #2D3748; font-family: "Arial";' textLength='29.88px' lengthAdjust='spacingAndGlyphs'>0.206</text>
+</g>
+<g clip-path='url(#g1_cpMC4wMHw1MTguNDB8MC4wMHwyNDQuODA=)'>
+<text x='123.80' y='169.72' text-anchor='end' style='font-size: 10.40px;fill: #2D3748; font-family: "Arial";' textLength='117.33px' lengthAdjust='spacingAndGlyphs'>Study A  randomized pilot</text>
+<text x='123.80' y='100.42' text-anchor='end' style='font-size: 10.40px;fill: #2D3748; font-family: "Arial";' textLength='115.42px' lengthAdjust='spacingAndGlyphs'>Study B  naive difference</text>
+<text x='129.63' y='220.85' text-anchor='middle' style='font-size: 10.40px;fill: #2D3748; font-family: "Arial";' textLength='14.45px' lengthAdjust='spacingAndGlyphs'>0.0</text>
+<text x='245.48' y='220.85' text-anchor='middle' style='font-size: 10.40px;fill: #2D3748; font-family: "Arial";' textLength='14.45px' lengthAdjust='spacingAndGlyphs'>0.2</text>
+<text x='361.32' y='220.85' text-anchor='middle' style='font-size: 10.40px;fill: #2D3748; font-family: "Arial";' textLength='14.45px' lengthAdjust='spacingAndGlyphs'>0.4</text>
+<text x='477.17' y='220.85' text-anchor='middle' style='font-size: 10.40px;fill: #2D3748; font-family: "Arial";' textLength='14.45px' lengthAdjust='spacingAndGlyphs'>0.6</text>
+<text x='320.78' y='235.59' text-anchor='middle' style='font-size: 13.00px;fill: #2D3748; font-family: "Arial";' textLength='283.81px' lengthAdjust='spacingAndGlyphs'>Estimated effect on log tickets resolved per agent</text>
+<text x='129.63' y='17.64' style='font-size: 15.60px; font-weight: bold;fill: #1A365D; font-family: "Arial";' textLength='362.17px' lengthAdjust='spacingAndGlyphs'>One product, two answers: naive vs. randomized</text>
+</g>
+</g>
+</svg>
+<figcaption aria-hidden="true">Two answers for one product: the naive
+difference in Study B gives 0.575, while the randomized pilot in Study A
+gives only 0.206. The dashed line marks the true ATT of 0.254, which the
+naive difference overstates by a wide margin.</figcaption>
+</figure>
+<p>At least one of the two numbers is lying. The 0.206 from the
+randomized pilot is credible: the coin splits firms into two groups with
+no systematic difference before the assistant is switched on, so any
+efficiency gap afterward can only be attributed to the assistant itself.
+One caveat to note up front is that 0.206 measures the average effect of
+pushing the assistant onto every firm (the ATE), whereas what Study B
+really cares about is the effect on the firms that chose to adopt (the
+ATT), and the two need not be equal in the first place; Section 2 makes
+that distinction precise. But whichever one you aim at, neither reaches
+anywhere near 0.575. The truly suspicious number is the 0.575 from Study
+B. It is inflated because, in the observational sample, the firms that
+adopt the assistant and the firms that do not were never the same kind
+of firm to begin with. The firms willing to be early adopters of an AI
+tool tend to be larger, better digitized, and simply better run, and
+firms like that would post higher ticket efficiency even without
+switching the assistant on. That pre-existing gap is folded into the
+0.575 and counted, in its entirety, as the assistant’s doing.</p>
+<p>What this chapter sets out to do is take that 0.575 apart, see how
+much of it is a real effect and how much is an artifact of selection;
+spell out the conditions under which we can strip the artifact away and
+keep only the real effect; and give a full set of estimators that put it
+back. By Section 6 we will see that, under the right assumptions,
+covariate adjustment on Study B pulls the estimate from 0.575 back to
+somewhere between 0.22 and 0.25, hovering around the true ATT of 0.254.
+But we will also see that this repair rests on one very tightly
+stretched premise, and once that premise snaps, the same method returns
+a 0.613 that looks careful but is just as badly wrong as before.</p>
+<h2 id="the-economic-model-and-the-estimand">2 The Economic Model and
+the Estimand</h2>
+<p>Before doing any estimation, we have to be clear about two things:
+which causal quantity we actually want, and what language we use to
+write it down precisely. The latter is the potential-outcomes notation
+this section will set up, and the former is the estimand (the target
+quantity) that rides on top of that notation.</p>
+<h3 id="potential-outcomes-and-the-fundamental-problem">2.1 Potential
+Outcomes and the Fundamental Problem</h3>
+<p>Consider a binary treatment <span class="math inline">D_i \in \{0,
+1\}</span>; in Northwind, <span class="math inline">D_i = 1</span> means
+firm <span class="math inline">i</span> adopted the AI assistant. Each
+unit carries two <strong>potential outcomes</strong>: <span
+class="math inline">Y_i(1)</span> is the efficiency it would realize if
+it adopted, and <span class="math inline">Y_i(0)</span> is the
+efficiency it would realize if it did not. Both quantities exist
+conceptually at the same time, whether or not the firm actually adopts.
+The individual treatment effect is their difference:</p>
+<p><span class="math display">\tau_i \equiv Y_i(1) - Y_i(0).</span></p>
+<p>The crucial point is that <span class="math inline">\tau_i</span>
+varies across units. Some firms take off once the assistant is switched
+on; others already run a smooth process and gain little on the margin; a
+few are even thrown off rhythm by the new tool. Treatment effects are
+heterogeneous, and ideally we want to describe the whole distribution
+<span class="math inline">f(\tau_i)</span>, not just a single
+average.</p>
+<p>The <strong>fundamental problem of causal inference</strong> is this:
+for any single unit, we can observe only one of <span
+class="math inline">Y_i(1)</span> and <span
+class="math inline">Y_i(0)</span>; the other is the parallel-world path
+we never travel, called the <strong>counterfactual</strong>. For a firm
+that adopted the assistant, we see its post-adoption efficiency <span
+class="math inline">Y_i(1)</span> but not the <span
+class="math inline">Y_i(0)</span> it would have had without adopting;
+for a firm that did not adopt, it is exactly the reverse. A table makes
+this most vivid:</p>
+<div class="table-scroll">
+<table>
+<thead>
+<tr>
+<th>Firm type</th>
+<th><span class="math inline">Y_i(1)</span></th>
+<th><span class="math inline">Y_i(0)</span></th>
+<th><span class="math inline">D_i</span></th>
+<th>observed <span class="math inline">Y_i</span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Adopter</td>
+<td>observed</td>
+<td>?</td>
+<td>1</td>
+<td><span class="math inline">Y_i(1)</span></td>
+</tr>
+<tr>
+<td>Non-adopter</td>
+<td>?</td>
+<td>observed</td>
+<td>0</td>
+<td><span class="math inline">Y_i(0)</span></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Every row is missing a cell, and the missing cell is exactly the
+counterfactual. The individual effect <span class="math inline">\tau_i =
+Y_i(1) - Y_i(0)</span> needs both cells in the same row, and we only
+ever hold one. Causal inference was never a missing-data problem that a
+simple imputation could patch; it is a problem in which every row is
+guaranteed to be missing half.</p>
+<p>Observed outcomes and potential outcomes are tied together by the
+<strong>switching equation</strong>:</p>
+<p><span class="math display">Y_i = D_i\, Y_i(1) + (1 - D_i)\,
+Y_i(0).</span></p>
+<p>The treatment switch <span class="math inline">D_i</span> decides
+which potential outcome gets flipped onto the table as the observed
+value. The equation looks bland, but it is the hinge of everything: it
+is the only bridge between the data (the left side) and the causal
+object we actually care about (the right side).</p>
+<h3 id="three-estimands-and-how-they-differ">2.2 Three Estimands and How
+They Differ</h3>
+<p>Since the individual effect <span class="math inline">\tau_i</span>
+is unavailable one by one, empirical work settles for identifying some
+moment of <span class="math inline">f(\tau_i)</span>, that is, some kind
+of average effect. Three are common. The <strong>average treatment
+effect</strong> (ATE) averages over all units:</p>
+<p><span class="math display">\text{ATE} = \mathbb{E}[\tau_i] =
+\mathbb{E}[Y_i(1) - Y_i(0)].</span></p>
+<p>The <strong>average treatment effect on the treated</strong> (ATT)
+averages only over the units actually treated:</p>
+<p><span class="math display">\text{ATT} = \mathbb{E}[\tau_i \mid D_i =
+1].</span></p>
+<p>The <strong>average treatment effect on the untreated</strong> (ATU)
+covers the other half: <span class="math inline">\text{ATU} =
+\mathbb{E}[\tau_i \mid D_i = 0]</span>. Writing the adoption rate as
+<span class="math inline">\pi \equiv \Pr(D_i = 1)</span>, the three are
+strung together by a mixing identity:</p>
+<p><span class="math display">\text{ATE} = \pi \cdot \text{ATT} + (1 -
+\pi) \cdot \text{ATU}.</span></p>
+<p>These three quantities answer different policy questions, and mixing
+them up leads to error. The ATT asks, “for the firms that already
+adopted the assistant, how much lift did it deliver?”, and it evaluates
+an accomplished fact. The ATE asks, “if we made a randomly drawn firm
+adopt the assistant, how much lift would it deliver on average?”, and it
+speaks to the hypothetical policy of rolling treatment out to everyone.
+The ATU asks, “for the firms that have not adopted so far, how much lift
+would they get if we persuaded them to?”, and it is the most fitting
+target for the question of whether to promote adoption. In Northwind
+these three numbers are not equal: the true ATT in Study B is 0.254
+while the true ATE is 0.200, so the ATT sits clearly above the ATE. The
+reason is spelled out in the next section, but in short, the firms that
+adopt are precisely the ones that gain the most from the assistant, so
+the average payoff among the treated is naturally higher than the
+population average. This gap is not a flaw in the estimation but
+information carried by the setting itself: a cancer drug is trialed
+specifically on cancer patients, and we should never expect its effect
+to extrapolate to a healthy population.</p>
+<div class="intuition">
+<p>Think of choosing the estimand as deciding “for whom you are writing
+the prescription.” The ATT looks back at how the patients who already
+took the drug recovered; the ATE imagines the average effect of dosing
+the whole population; the ATU weighs whether to prescribe to those who
+have not taken it yet. When treatment effects are heterogeneous, the
+answers to the three questions can differ widely. Decide which one you
+want first, then pick the estimator, and never reverse the order; many
+empirical disputes look like “the method was wrong” on the surface, when
+underneath two people simply wanted different estimands.</p>
+</div>
+<h3 id="the-economic-structure-of-the-adoption-decision">2.3 The
+Economic Structure of the Adoption Decision</h3>
+<p>In Northwind’s observational sample, firms are not randomly assigned
+to treatment; they run the numbers and decide for themselves whether to
+adopt. A firm switches the assistant on roughly when it expects the net
+payoff of doing so to be positive. Written in potential outcomes, the
+adoption decision is approximately</p>
+<p><span class="math display">D_i = \mathbf{1}\{\, Y_i(1) - Y_i(0) &gt;
+c_i \,\},</span></p>
+<p>where <span class="math inline">c_i</span> is the cost of, or
+threshold for, adoption. This is Roy-type self-selection: whether a unit
+enters treatment depends on its own payoff <span
+class="math inline">\tau_i = Y_i(1) - Y_i(0)</span>. This structure has
+an immediate consequence, namely that adopters are a group of units with
+systematically higher payoffs, so that <span
+class="math inline">\text{ATT} = \mathbb{E}[\tau_i \mid \tau_i &gt;
+c_i]</span> generally exceeds <span class="math inline">\text{ATE} =
+\mathbb{E}[\tau_i]</span> strictly. It is at the same time the economic
+engine of selection bias, and the decomposition in Section 3 will
+translate this intuition into precise algebra.</p>
+<p>Finally, one premise runs through the whole chapter:
+<strong>SUTVA</strong> (the stable unit treatment value assumption). It
+has two layers. The first is no interference: each unit’s outcome
+depends only on whether that unit itself is treated, not on whether
+others are treated. The second is that treatment comes in a single,
+well-defined version. Applied to Northwind, the first layer requires
+that whether one firm switches the assistant on does not, through any
+channel, change another firm’s ticket efficiency. The concrete ways it
+could fail are specific: if Northwind’s compute is shared, a wave of
+simultaneous adoptions would slow each firm’s responses; if the
+assistant’s effectiveness comes from knowledge accumulated across firms,
+early adopters would spill over and help late adopters. All the analysis
+in this chapter is built on SUTVA holding, and once it breaks, even the
+starting point that “there are only two potential outcomes” has to be
+rewritten.</p>
+<p>To summarize: the potential-outcomes framework writes a causal effect
+as the difference between two parallel-world outcomes, and the
+fundamental problem is that each unit reveals only one; the switching
+equation connects observed outcomes to potential outcomes; the estimand
+comes in three forms, ATE, ATT, and ATU, which are unequal under
+heterogeneous effects, so we must decide which one we want first; and
+Northwind’s adoption decision is Roy-type self-selection, which
+foreshadows both that the ATT exceeds the ATE and where selection bias
+comes from.</p>
+<h2 id="identification-from-randomization-to-selection-on-observables">3
+Identification: From Randomization to Selection-on-Observables</h2>
+<p>Identification logically precedes estimation. Identification asks
+whether, under a set of assumptions about the counterfactual world, the
+causal quantity we want can be written as a function of the observable
+data distribution; the answer depends only on the design and the
+institutional background, not on which estimator or how large a sample
+we use afterward. This is the most detailed analytical section of the
+chapter, and it works down layer by layer: first we drive the skeleton
+of identification all the way through in a randomized experiment, then
+we relax to observational data and see what extra assumptions it costs
+to re-identify the causal effect. The through-line of the whole section
+is one decomposition, and it will run like a red thread through
+everything that follows.</p>
+<h3 id="what-the-naive-comparison-is-actually-estimating">3.1 What the
+Naive Comparison Is Actually Estimating</h3>
+<p>Return to the 0.575 from Section 1. It is the observed mean of
+adopters minus the observed mean of non-adopters, <span
+class="math inline">\mathbb{E}[Y_i \mid D_i = 1] - \mathbb{E}[Y_i \mid
+D_i = 0]</span>. This quantity looks like an effect, but it is not. To
+see what it is really estimating, all we need is the small trick of
+adding and subtracting the same term.</p>
+<p>Warm up with a purely illustrative numerical example. Suppose that if
+adopters had not adopted, their average efficiency would have been 3.2;
+after adopting it is 3.5; and non-adopters average 3.0. Then the naive
+comparison gives <span class="math inline">3.5 - 3.0 = 0.5</span>. But
+of that 0.5, only the adopters’ own before-and-after difference, <span
+class="math inline">3.5 - 3.2 = 0.3</span>, is genuinely due to
+treatment; the remaining <span class="math inline">3.2 - 3.0 =
+0.2</span> is the amount by which adopters would have exceeded
+non-adopters even without adopting, purely because the two groups start
+from different places. The naive comparison counts that 0.2 as effect
+too.</p>
+<p>Write the intuition as general algebra. Start from the observed
+difference, use the switching equation to turn observed means into
+potential-outcome means, then add and subtract the treated group’s
+untreated mean <span class="math inline">\mathbb{E}[Y_i(0) \mid D_i =
+1]</span>:</p>
+<p><span class="math display">
+\underbrace{\mathbb{E}[Y_i(1) \mid D_i = 1] - \mathbb{E}[Y_i(0) \mid D_i
+= 0]}_{\text{observed difference}}
+= \underbrace{\mathbb{E}[Y_i(1) \mid D_i = 1] - \mathbb{E}[Y_i(0) \mid
+D_i = 1]}_{\text{ATT}}
++ \underbrace{\mathbb{E}[Y_i(0) \mid D_i = 1] - \mathbb{E}[Y_i(0) \mid
+D_i = 0]}_{\text{selection bias}}.
+</span></p>
+<p>This is the skeleton decomposition of the whole chapter: the naive
+comparison equals the ATT plus a <strong>selection bias</strong> term.
+The definition of selection bias is worth studying again and again: it
+is the difference in means between adopters and non-adopters in the same
+untreated state <span class="math inline">Y(0)</span>, that is, “how
+much the two groups of firms would have differed had neither adopted the
+assistant.” In the numerical example above it is exactly <span
+class="math inline">3.2 - 3.0 = 0.2</span>. Put into Northwind’s real
+numbers, the naive comparison 0.575 minus the true ATT 0.254 leaves
+about 0.32, and that entire residual is selection bias. In that
+suspiciously large number from Section 1, more than half (0.322 out of
+0.575) is held up by selection bias.</p>
+<p>Selection bias has a counterintuitive but extremely important
+property: it can be nonzero even when treatment effects are perfectly
+homogeneous. Suppose every firm’s effect is exactly the same constant
+<span class="math inline">\tau_i = \tau</span>, and substitute <span
+class="math inline">Y_i(0) = \alpha + \varepsilon_i</span>; then
+selection bias is <span class="math inline">\mathbb{E}[\varepsilon_i
+\mid D_i = 1] - \mathbb{E}[\varepsilon_i \mid D_i = 0]</span>. As long
+as the baseline disturbance <span
+class="math inline">\varepsilon_i</span> is correlated with the adoption
+decision <span class="math inline">D_i</span>, it is nonzero. This is
+precisely an <strong>endogeneity</strong> problem: adopters’ baselines
+differ from non-adopters’ to begin with. Private-school children score
+better not entirely because of the school, since the families that
+choose private schooling can often also afford tutors and have more
+education themselves, so the baseline is higher to begin with. That
+slice of baseline difference is something no naive “compare adopters
+with non-adopters” procedure can strip away.</p>
+<h3 id="the-second-bias-from-heterogeneous-effects">3.2 The Second Bias
+from Heterogeneous Effects</h3>
+<p>The decomposition above split the naive comparison into ATT plus
+selection bias. If what we truly want is the ATT, the problem is clean:
+we only need to kill the selection bias. But if what we want is the ATE,
+there is one more account to settle, because the ATT itself need not
+equal the ATE. Using the mixing identity, we can swap the ATT for the
+ATE plus a difference term, <span class="math inline">\text{ATT} =
+\text{ATE} + (1 - \pi)(\text{ATT} - \text{ATU})</span>, and substituting
+back gives the full decomposition aimed at the ATE:</p>
+<p><span class="math display">
+\mathbb{E}[Y_i \mid D_i = 1] - \mathbb{E}[Y_i \mid D_i = 0]
+= \text{ATE}
++ \underbrace{(1 - \pi)\big(\text{ATT} -
+\text{ATU}\big)}_{\text{heterogeneity bias}}
++ \underbrace{\big(\mathbb{E}[Y_i(0) \mid D_i = 1] - \mathbb{E}[Y_i(0)
+\mid D_i = 0]\big)}_{\text{selection bias}}.
+</span></p>
+<p>Now there are two biases. Selection bias is as before, coming from
+the between-group difference in baseline levels. The newly appearing
+<strong>heterogeneity bias</strong> comes from the difference in average
+payoffs between the treated and untreated groups: <span
+class="math inline">\text{ATT} - \text{ATU}</span> measures exactly “how
+much more adopters gain from the assistant than non-adopters would.”
+When effects are homogeneous, or when the two groups happen to have
+equal average payoffs, this term vanishes and the ATT equals the ATE;
+but once there is Roy-type payoff self-selection, so that adopters are
+precisely the highest-payoff group and <span
+class="math inline">\text{ATT} &gt; \text{ATU}</span>, this term is
+strictly positive. This is the mechanism behind the ATT exceeding the
+ATE noted in Section 2. In Northwind, the true ATT of 0.254 exceeds the
+true ATE of 0.200, and the excess is exactly this payoff self-selection.
+The Roy model in Section 3.8 will tell it as a complete economic
+story.</p>
+<h3 id="how-randomization-erases-selection-bias">3.3 How Randomization
+Erases Selection Bias</h3>
+<p>Now introduce the chapter’s first identification route:
+randomization. If <span class="math inline">D_i</span> is randomly
+assigned, independent of the potential outcomes,</p>
+<p><span class="math display">D_i \perp \big(Y_i(0),
+Y_i(1)\big),</span></p>
+<p>then whether a firm adopts has nothing to do with any of its
+potential outcomes. This one independence condition cuts straight
+through the decomposition in Section 3.1. Because <span
+class="math inline">Y_i(0)</span> is independent of <span
+class="math inline">D_i</span>, the untreated means of the adopter and
+non-adopter groups must be equal, <span
+class="math inline">\mathbb{E}[Y_i(0) \mid D_i = 1] = \mathbb{E}[Y_i(0)
+\mid D_i = 0] = \mathbb{E}[Y_i(0)]</span>, and selection bias drops to
+zero on the spot. What is more, both potential outcomes are independent
+of <span class="math inline">D_i</span>, which means the effect
+estimated on the treated group can be generalized to everyone:</p>
+<p><span class="math display">\mathbb{E}[Y_i(1) \mid D_i = 1] -
+\mathbb{E}[Y_i(0) \mid D_i = 1] = \mathbb{E}[Y_i(1)] -
+\mathbb{E}[Y_i(0)] = \text{ATE},</span></p>
+<p>so heterogeneity bias vanishes too, and the ATT merges with the ATE.
+The power of randomization can be summarized in two sentences: first,
+randomization eliminates selection bias; second, randomization makes the
+ATT equal the ATE. This is the entire reason the 0.206 from the
+randomized pilot, Study A, is credible. It needs no model of firm
+characteristics whatsoever, since the act of flipping a coin by itself
+guarantees the two groups are comparable.</p>
+<div class="intuition">
+<p>The magic of randomization is that it takes selection out of the
+firms’ hands and gives it to a coin. If firms can self-select, adopters
+come pre-loaded with characteristics correlated with the outcome, and
+the comparison is crooked from the start; a coin looks at none of the
+firms’ characteristics, so the two groups it produces are, in
+expectation, two copies of the same firms, and any difference between
+the copies afterward can only come from treatment. This also explains
+why randomized experiments are held up as the gold standard: not because
+the sample is larger or the measurement more precise, but because at the
+design level they force the hardest bias, selection bias, to equal zero
+identically. Everything an observational study does is, in essence, an
+attempt to reconstruct by hand, without a coin, the property that
+randomization hands us for free.</p>
+</div>
+<p>Clean as it is, randomization also has limits it cannot reach. Real
+experiments meet imperfect execution: attrition, subjects manipulating
+their group assignment, insufficient compliance. There is also a subtler
+class of problem, that treatment itself may directly change the
+disturbance term; for instance, merely “knowing you have been given a
+new feature” may make a firm operate more diligently, and this
+placebo-style behavioral response mixes into the effect, which is
+exactly what double-blind designs guard against. On top of this, the
+experimental sample need not represent the population, and external
+validity is always an open question. All of this reminds us that
+randomization solves the single problem of selection bias, not every
+problem.</p>
+<h3
+id="relaxing-to-observational-data-the-conditional-independence-assumption">3.4
+Relaxing to Observational Data: The Conditional Independence
+Assumption</h3>
+<p>In reality a great many studies cannot obtain randomization. A
+platform does not flip a coin to decide which firms get the assistant,
+and firms do not submit to a lottery. Here the only hope is this:
+although adoption is not unconditionally random, once we control for
+enough observable characteristics, adoption is approximately random.
+This is the chapter’s second identification route,
+selection-on-observables. Its core is the following assumption.</p>
+<div class="assumption">
+<p><strong>CIA (conditional independence assumption; also called
+unconfoundedness or ignorability):</strong> conditional on observable
+covariates <span class="math inline">X_i</span>, the potential outcomes
+are independent of treatment:</p>
+<p><span class="math display">\{Y_i(1), Y_i(0)\} \perp D_i \mid
+X_i.</span></p>
+</div>
+<p>The CIA says that once <span class="math inline">X_i</span> is held
+fixed, adoption is “as good as random.” It does not require adopters and
+non-adopters to be comparable overall; it only requires that within
+every small cell where <span class="math inline">X</span> takes the same
+value, the potential-outcome distributions of the adopter and
+non-adopter groups are identical. Put differently, the only systematic
+difference the two groups are allowed is a different covariate
+composition <span class="math inline">f(X_i \mid D_i)</span>: adopters
+may be larger on average and better digitized, but as long as within the
+cell of “same size, same digitization, same industry, same baseline
+efficiency” who adopts and who does not is unrelated to their potential
+efficiencies, the CIA holds. It is equivalent to saying that every
+factor that jointly influences adoption and outcome has already been
+packed into <span class="math inline">X_i</span>.</p>
+<p>To judge whether the CIA is credible, you must interrogate, one by
+one, whether any confounder has been omitted. In Northwind, if firms
+adopt mainly on the basis of size, digitization, industry, and baseline
+efficiency, and all four are in <span class="math inline">X</span>, then
+the CIA has a chance of holding. But if there remains even one factor
+that drives both adoption and efficiency yet goes unobserved, say “the
+management team’s operational drive,” the CIA breaks: a driven
+management team is both more willing to try adopting the assistant and
+better at running the ticket process itself, and with that drive lying
+outside <span class="math inline">X</span>, the adopter group’s <span
+class="math inline">Y(0)</span> still systematically exceeds the
+non-adopter group’s.</p>
+<div class="warning">
+<p>The CIA is untestable. It constrains the counterfactual arm we can
+never observe: how adopters would have fared had they not adopted. That
+information simply is not in the data, and no statistical test can touch
+it. This point cannot be stressed too much: if your identification rests
+on the propensity score, you owe a full paragraph arguing why the CIA is
+credible in your setting, spelling out which confounders you observed
+and why nothing important is omitted, rather than tossing out a balance
+table and calling it done. Balance tests, placebo tests, and
+pre-treatment outcome tests are only indirect circumstantial evidence;
+they check the observable shadow, not the object that casts it.</p>
+</div>
+<h3 id="overlap-the-other-half-of-the-assumption">3.5 Overlap: The Other
+Half of the Assumption</h3>
+<p>The CIA guarantees “if the two groups are comparable within the same
+<span class="math inline">X</span> cell,” but we still need to guarantee
+“that both groups actually have members in each cell,” or there is
+nothing to compare. That is the second assumption.</p>
+<div class="assumption">
+<p><strong>Overlap (also called common support or positivity):</strong>
+for every possible covariate value <span class="math inline">X_i</span>,
+both treated and untreated occur with positive probability:</p>
+<p><span class="math display">0 &lt; e(X_i) &lt; 1, \qquad e(X) \equiv
+\Pr(D = 1 \mid X).</span></p>
+</div>
+<p>Here <span class="math inline">e(X)</span> is the propensity score,
+which takes the stage formally in the next section. The meaning of
+overlap is plain: we can only learn something in the regions of <span
+class="math inline">X</span> that contain both adopters and
+non-adopters. If some class of firms (say the especially large and
+highly digitized ones) all adopted the assistant, so that <span
+class="math inline">e(X) = 1</span>, then that cell has no non-adopting
+control at all, their counterfactual <span
+class="math inline">Y(0)</span> has nothing to draw on, and we are left
+to extrapolate from the model, and extrapolation is a guess with no data
+behind it. Conversely, if some class of firms never adopts, so that
+<span class="math inline">e(X) = 0</span>, their <span
+class="math inline">Y(1)</span> is equally out of reach.</p>
+<p>The CIA and overlap together are called <strong>strong
+ignorability</strong> (Rosenbaum and Rubin’s term). The testability of
+these two assumptions is starkly different, and this is a practical
+distinction. The CIA is untestable, as the previous section stressed
+repeatedly. Overlap, by contrast, can be checked: plot the estimated
+propensity score as two distributions by adoption status and see whether
+their supports overlap and whether mass piles up near 0 or 1. Section 6
+will draw this figure for Northwind, where the propensity estimates fall
+in <span class="math inline">[0.018, 0.977]</span> with no pile-up at
+either end, a sample with benign overlap. Section 7 then discusses what
+to do when overlap is inadequate, and what trouble “overcorrecting
+trimming” itself brings.</p>
+<h3 id="identification-under-the-cia">3.6 Identification Under the
+CIA</h3>
+<p>With these two assumptions in hand, we can write the causal quantity
+as a function of the observable data. Take the ATT, and write <span
+class="math inline">F^1(x)</span> for the covariate distribution of the
+adopter group. The ATT can be written as the difference of two
+conditional means over the adopter group, integrated against <span
+class="math inline">F^1</span>:</p>
+<p><span class="math display">\text{ATT} =
+\mathbb{E}_{F^1(x)}\big[\mathbb{E}(Y(1) \mid D = 1, X)\big] -
+\mathbb{E}_{F^1(x)}\big[\mathbb{E}(Y(0) \mid D = 1, X)\big].</span></p>
+<p>The first term is the adopter group’s own observed mean, directly
+visible. The second term is the counterfactual mean of adopters had they
+not adopted, and it is invisible. The CIA is exactly what does the work
+here: within each <span class="math inline">X</span> cell, the adopter
+group’s <span class="math inline">Y(0)</span> distribution equals the
+non-adopter group’s <span class="math inline">Y(0)</span> distribution,
+so that invisible counterfactual mean can be replaced by the non-adopter
+group’s observed mean at the same <span
+class="math inline">X</span>:</p>
+<p><span class="math display">\mathbb{E}_{F^1(x)}\big[\mathbb{E}(Y(0)
+\mid D = 1, X)\big] = \mathbb{E}_{F^1(x)}\big[\mathbb{E}(Y(0) \mid D =
+0, X)\big].</span></p>
+<p>This substitution is the entire essence of selection-on-observables
+methods. It says that to build the adopters’ counterfactual, go into the
+non-adopter group and find firms with the same <span
+class="math inline">X</span>, use their outcomes as the estimate of what
+adopters would have had “if they had not adopted,” then take a weighted
+average according to the adopter group’s covariate distribution.
+Matching finds the most similar neighbor one at a time, the propensity
+score first squeezes <span class="math inline">X</span> into one
+dimension before matching, and IPW reweights the non-adopters to the
+adopter group’s <span class="math inline">X</span> distribution:
+different roads to the same place, all of them different implementations
+of this one substitution. Overlap is necessary here: if some <span
+class="math inline">X</span> cell has no non-adopters, the conditional
+mean on the right simply does not exist.</p>
+<div class="warning">
+<p>The CIA holding on <span class="math inline">X</span> does not imply
+it still holds on <span class="math inline">(X, Z)</span> after adding
+one more variable <span class="math inline">Z</span>, and vice versa.
+Worse still, one can construct situations in which within every <span
+class="math inline">(X, Z)</span> cell treatment is correlated with the
+outcome, yet once we average over <span class="math inline">Z</span> the
+correlation disappears from the aggregate. Piling covariates blindly
+into the matching variables can wreck an otherwise clean identification.
+This is the entry point to the bad-controls problem that Section 7
+develops: control variables must be measured pre-treatment and must
+never be downstream variables that respond to treatment, or else
+controlling for one is like blocking a channel through which the effect
+travels, and can even introduce collider bias.</p>
+</div>
+<h3 id="the-propensity-score-theorem">3.7 The Propensity Score
+Theorem</h3>
+<p>Matching cell by cell on <span class="math inline">X</span> has a
+practical obstacle. Once <span class="math inline">X</span> is
+multidimensional, the number of cells swells exponentially with
+dimension, each cell holds fewer and fewer observations, and finding a
+control with exactly the same <span class="math inline">X</span> becomes
+all but impossible: this is the curse of dimensionality. Rosenbaum and
+Rubin’s (1983) theorem offers a way out: we need not match on all of
+<span class="math inline">X</span>; matching on a single scalar is
+enough.</p>
+<p>First a definition. The <strong>propensity score</strong> is the
+conditional probability of being treated given the covariates, <span
+class="math inline">e(X_i) \equiv \Pr(D_i = 1 \mid X_i)</span>. A
+function <span class="math inline">b(X)</span> satisfying <span
+class="math inline">D \perp X \mid b(X)</span> is called a
+<strong>balancing score</strong>: conditioning on it balances the
+distribution of the covariates across the two groups. The propensity
+score is the coarsest balancing score, and any balancing score is finer
+than it.</p>
+<div class="theorem">
+<p><strong>(Rosenbaum-Rubin 1983)</strong> If treatment is strongly
+ignorable given <span class="math inline">X</span> (the CIA holds), then
+it is strongly ignorable given any balancing score, and in particular
+given the propensity score:</p>
+<p><span class="math display">\{Y(1), Y(0)\} \perp D \mid X
+\;\Longrightarrow\; \{Y(1), Y(0)\} \perp D \mid e(X),</span></p>
+<p>provided <span class="math inline">0 &lt; e(X) &lt; 1</span>.</p>
+</div>
+<p>The proof takes only two steps. First, show that conditional on <span
+class="math inline">e(X)</span> the treatment probability is <span
+class="math inline">e(X)</span> itself:</p>
+<p><span class="math display">\Pr\big(D = 1 \mid Y(1), Y(0), e(X)\big) =
+\mathbb{E}\big[\Pr(D = 1 \mid Y(1), Y(0), X) \mid e(X)\big] =
+\mathbb{E}\big[\Pr(D = 1 \mid X) \mid e(X)\big] = e(X),</span></p>
+<p>where the middle step uses the CIA (given <span
+class="math inline">X</span>, <span class="math inline">D</span> is
+unrelated to the potential outcomes, so the potential outcomes in the
+conditioning set can be dropped) and the last step uses the definition
+of the propensity score. Since this conditional probability does not
+depend on the potential outcomes, <span class="math inline">D</span> is
+independent of the potential outcomes given <span
+class="math inline">e(X)</span>. The value of the theorem is that it
+compresses matching from <span class="math inline">K</span> dimensions
+to one: as long as we compare units with equal <span
+class="math inline">e(X)</span>, it is equivalent to having balanced the
+covariates on all of <span class="math inline">X</span>. Identifying the
+counterfactual mean for the ATT can then be written as matching on the
+one-dimensional <span class="math inline">e(X)</span>:</p>
+<p><span class="math display">\mathbb{E}_{F^1(x)}\big[\mathbb{E}(Y(0)
+\mid D = 1, X)\big] = \mathbb{E}_{F^1(x)}\big[\mathbb{E}(Y(0) \mid D =
+0, e(X))\big].</span></p>
+<p>The price is that <span class="math inline">e(X)</span> itself must
+be estimated. The theorem assumes <span class="math inline">e(X)</span>
+is known; in practice it is unknown and is usually fit with a logit or
+probit. This optimism, “assume we have a can opener,” deserves an honest
+label: the credibility of propensity-score methods rests both on the
+untestable CIA and on the propensity model being correctly specified.
+The doubly robust estimator of Section 4 exists precisely to ease the
+second fragility.</p>
+<h3 id="the-roy-selection-model-why-the-att-is-not-the-ate">3.8 The Roy
+Selection Model: Why the ATT Is Not the ATE</h3>
+<p>The economic root of the heterogeneity bias in Section 3.2 is
+Roy-type payoff self-selection. Here we write it as a complete model.
+Let each potential outcome carry an idiosyncratic shock, <span
+class="math inline">Y_i(1) = \mu_1 + U_{1i}</span> and <span
+class="math inline">Y_i(0) = \mu_0 + U_{0i}</span>, and let a unit
+choose treatment only when the net payoff exceeds a cost <span
+class="math inline">c</span>:</p>
+<p><span class="math display">D_i = \mathbf{1}\{\, Y_i(1) - Y_i(0) &gt;
+c \,\}.</span></p>
+<p>This is <strong>selection on gains</strong>: whether a unit enters
+treatment depends on its own payoff <span
+class="math inline">\tau_i</span>. The adopter group is therefore the
+right tail of the payoff distribution cut out, <span
+class="math inline">\text{ATT} = \mathbb{E}[\tau_i \mid \tau_i &gt;
+c]</span>, strictly above the population average <span
+class="math inline">\text{ATE} = \mathbb{E}[\tau_i]</span>, and so the
+heterogeneity bias term <span class="math inline">(1 - \pi)(\text{ATT} -
+\text{ATU})</span> from Section 3.2 is positive. Who goes to college are
+the people whose expected return is higher than most; who undergoes
+high-risk surgery are the ones sickest and most likely to benefit from
+it. The firms that adopt an AI assistant are, likewise, precisely those
+that predict they will gain the most from it.</p>
+<p>There is a fine but important dividing line here. Selection on gains
+does not necessarily destroy the CIA. If the payoff <span
+class="math inline">\tau_i</span> can be predicted from observable <span
+class="math inline">X_i</span>, then although selection falls on the
+gains, in essence it still falls on <span class="math inline">X</span>;
+conditioning on <span class="math inline">X</span> leaves the CIA
+intact, and matching-type methods can still recover the ATT. What is
+truly fatal is selection falling on unobservable gains or unobservable
+levels: only when adoption also depends on some factor that both
+influences <span class="math inline">Y(0)</span> and lies outside <span
+class="math inline">X</span> does the CIA genuinely break. Northwind’s
+simulation distinguishes these two cases precisely, and Sections 6 and 7
+will show that when selection is on observable gains, adjustment can
+rescue the ATT, but once selection attaches to an unobservable factor,
+the same adjustment leaves a residual bias that cannot be wiped away.
+This crack is exactly the exit toward instrumental variables in Chapter
+12.</p>
+<div class="intuition">
+<p>The ATT not equaling the ATE is not a bug that needs fixing; it is
+the setting speaking. “The higher a firm’s payoff, the more it will
+adopt” already means that “the average payoff among adopters” exceeds
+“the average payoff of a random firm.” If someone reports an ATT and
+treats it as an ATE when discussing rollout policy, it is like using top
+students’ tutoring gains to predict the average lift from tutoring the
+whole class, and is bound to overstate. Heterogeneity is not a nuisance;
+it is valuable information about “who should most be treated,” provided
+you do not confuse two different averages.</p>
+</div>
+<h3 id="the-cia-and-parallel-trends-are-two-different-routes">3.9 The
+CIA and Parallel Trends Are Two Different Routes</h3>
+<p>Selection-on-observables is not the only route to rebuilding
+comparability. There is another common line of thinking, worth planting
+a marker for here and taking up in detail later in this series: rather
+than assuming the two groups’ untreated levels are comparable after
+controlling for covariates, assume the two groups’ untreated outcomes
+trend in the same way, which is parallel trends. The two borrow the
+counterfactual in different ways. The CIA works in the level dimension:
+it assumes that after controlling for observable characteristics, the
+untreated outcome levels <span class="math inline">Y(0)</span> of
+adopters and non-adopters are comparable, that is, it forbids any
+omitted, treatment-correlated difference in levels. Parallel trends
+works in the trend dimension: it allows the two groups to have
+arbitrary, even strongly treatment-correlated, fixed differences in the
+level of <span class="math inline">Y(0)</span>, and requires only that
+the two groups’ <span class="math inline">Y(0)</span> trend in the same
+way.</p>
+<p>So the two are mirror images. Matching imposes almost no restriction
+on functional form, at the cost of requiring selection on observables,
+and any unobservable selection kills it; the trend-controlling route
+makes a strong additive-separability assumption, buying tolerance of
+arbitrary unobservable heterogeneity in levels, at the cost of a
+knife-edge requirement on the trend. Which is more credible depends on
+the setting: when you worry that adopters were a different kind of firm
+all along, that the difference shows up in levels, and you have panel
+data to line up before and after, controlling trends often fits better;
+when the between-group difference looks more like it is driven by
+observable characteristics and you have only a cross section, the
+matching line of thinking is more natural. The full mechanics of this
+route, and how its conditional version carries the matching-style
+conditional-independence idea over to the growth of the outcome, are
+left for the Difference-in-Differences discussion later in this
+series.</p>
+<p>The key points of this section, summarized: the naive comparison
+equals the ATT plus selection bias, and for the ATE you must further
+subtract a heterogeneity bias; randomization erases both biases at once
+and is the gold standard; in observational data we rebuild comparability
+with the CIA plus overlap, where the CIA is untestable while overlap can
+be checked; the propensity score drops matching to one dimension;
+Roy-type payoff self-selection explains why the ATT exceeds the ATE and
+draws the boundary between where the CIA holds and where it fails; and
+the CIA and parallel trends are two different routes, controlling levels
+versus controlling trends.</p>
+<h2 id="estimation">4 Estimation</h2>
+<p>This section advances in the order of “where the previous method
+falls short, and so gives rise to the next.” Every estimator serves the
+same substitution from Section 3: fill in the adopters’ counterfactual
+with comparable control units.</p>
+<h3 id="difference-in-means-and-randomization-inference">4.1 Difference
+in Means and Randomization Inference</h3>
+<p>In a randomized experiment estimation is simplest, and the difference
+in means is the answer:</p>
+<p><span class="math display">\hat\tau = \bar Y_{D=1} - \bar
+Y_{D=0}.</span></p>
+<p>Section 3.3 already proved it consistently estimates the ATE (which
+also equals the ATT) under randomization. Its standard error can use
+Neyman’s conservative formula <span
+class="math inline">\sqrt{\operatorname{var}(Y_1)/n_1 +
+\operatorname{var}(Y_0)/n_0}</span>, paired with large-sample normal
+critical values for inference. This inference relies on asymptotic
+normality and need not be reliable when the sample is small.</p>
+<p>An alternative that leans on no distributional assumption is
+<strong>randomization inference</strong> (also called permutation
+inference). It is built on Fisher’s sharp null: <span
+class="math inline">H_0: Y_i(1) = Y_i(0)</span> for every unit, that is,
+treatment has no effect on anyone. This null is special: once it is
+true, both potential outcomes of every unit are known (both equal the
+observed value), so the distribution of any test statistic across all
+possible treatment assignments can be computed exactly. The procedure is
+to repeatedly permute the treatment vector <span
+class="math inline">\mathbf{D}</span> in the ways the design allows,
+recompute the statistic each time to obtain its exact distribution under
+the null, and read off how extreme the observed statistic is as an exact
+p-value:</p>
+<p><span class="math display">p = \frac{1}{|\mathcal{D}|}
+\sum_{\mathbf{d} \in \mathcal{D}} \mathbf{1}\big\{ |T(\mathbf{d},
+\mathbf{Y})| \ge |T(\mathbf{d}^{obs}, \mathbf{Y})| \big\}.</span></p>
+<p>It is finite-sample exact, makes minimal assumptions, and does not
+lean on asymptotic normality. Section 6 will run 5000 permutations on
+Study A and obtain a p-value below 0.001.</p>
+<p>Designing an experiment also requires answering “how large a sample
+do we need.” Take the difference of two proportions: the Wald statistic
+is asymptotically standard normal, and given two-sided significance
+<span class="math inline">\alpha</span> and power <span
+class="math inline">1 - \beta</span>, the sample size required per arm
+is</p>
+<p><span class="math display">n = \frac{(z_{1-\alpha/2} + z_{1-\beta})^2
+\big(p_1(1 - p_1) + p_0(1 - p_0)\big)}{(p_1 - p_0)^2}.</span></p>
+<p>This formula holds a sobering number. If the baseline conversion rate
+is <span class="math inline">p_0 = 2\%</span>, detecting a 10 percent
+relative lift (an absolute difference of only 0.2 percentage points)
+requires about 80,681 units per arm; if the relative lift is 50 percent,
+only about 3,823 per arm are needed. Power is extremely sensitive to the
+absolute difference, and at low baseline rates even a large relative
+lift can require an enormous sample because the absolute difference is
+so small. This is a bucket of cold water on “randomized experiments
+solve everything”: before asking whether you can run an experiment, work
+out whether the sample size is feasible.</p>
+<h3 id="regression-adjustment-and-its-pitfalls">4.2 Regression
+Adjustment and Its Pitfalls</h3>
+<p>In observational data the first idea is usually regression. Run <span
+class="math inline">Y = \alpha + \beta D + \gamma&#39; X + v</span> and
+use the coefficient <span class="math inline">\hat\beta</span> as the
+effect. Under conditional mean independence <span
+class="math inline">\mathbb{E}(v \mid D, X) = \mathbb{E}(v \mid
+X)</span>, this <span class="math inline">\hat\beta</span> consistently
+estimates the effect, and OLS can be seen as a special case of matching
+(approximating the conditional mean with a linear model).</p>
+<p>The pitfall is heterogeneous effects. The additive specification
+above implicitly makes the treatment effect a constant. When the effect
+really varies with <span class="math inline">X</span>, the OLS <span
+class="math inline">\hat\beta</span> is no longer a clean ATE or ATT but
+a weighted average whose weights are the variances of the treatment
+probabilities, weights that pile onto units with propensity near 1/2,
+with no policy interpretation. In Northwind, the <span
+class="math inline">D</span> coefficient of this additive OLS is 0.184,
+which actually lands near the ATE or even lower; it is not the ATT.</p>
+<p>To truly aim at the ATT, you have to let the effect vary with
+covariates, that is, run a regression fully interacting <span
+class="math inline">D</span> with <span class="math inline">X</span>,
+then center all covariates (including the industry dummies) at their
+adopter-group means, so that the <span class="math inline">D</span>
+coefficient reads as the average effect on adopters. The “all” here
+brooks no discount: if you leave even one covariate uncentered (say
+leaving the industry dummies untouched), the <span
+class="math inline">D</span> coefficient reads only a conditional effect
+in the reference industry, at the means of the remaining covariates, not
+the ATT. In Northwind this fully centered interacted specification gives
+0.239, higher than the additive OLS’s 0.184, correctly landing back near
+the ATT of 0.254. The additive coefficient 0.184 and the interacted ATT
+0.239 are two different quantities, and conflating them is a common
+mistake.</p>
+<h3 id="nearest-neighbor-matching-and-its-variance-trap">4.3
+Nearest-Neighbor Matching and Its Variance Trap</h3>
+<p>Regression fills the counterfactual by model extrapolation; matching
+takes a different tack and directly finds, for each unit, the most
+similar neighbor from the opposite group. For each unit <span
+class="math inline">i</span>, take its <span
+class="math inline">M</span> nearest neighbors <span
+class="math inline">\mathcal{J}_M(i)</span> in the other group and use
+the average of the neighbors’ outcomes to fill in the missing potential
+outcome: an adopter’s <span class="math inline">\widehat{Y}_i(0)</span>
+is the mean of its <span class="math inline">M</span> non-adopting
+neighbors, a non-adopter’s <span
+class="math inline">\widehat{Y}_i(1)</span> is the mean of its <span
+class="math inline">M</span> adopting neighbors, and the other arm uses
+the observed value itself. With both arms in hand, one can compute
+various average effects. The “nearest” metric commonly uses the
+Mahalanobis distance <span class="math inline">d(\mathbf{x}, \mathbf{y})
+= (\mathbf{x} - \mathbf{y}) S^{-1} (\mathbf{x} -
+\mathbf{y})&#39;</span>, which standardizes each dimension by the
+covariance and is a generalization of Euclidean distance.</p>
+<p>Matching has two traps to call out. First, it suffers the curse of
+dimensionality just the same: as the dimension grows, the “nearest”
+neighbor is in fact far away, and matching degenerates into
+extrapolation, which is why one either uses the propensity score to drop
+the dimension to one, or applies a regression-style bias correction to
+the matches (correcting for the covariate difference between neighbor
+and unit using within-group regression fitted values). Second, and this
+is the most classic trap, matching standard errors cannot be computed as
+if they were ordinary regression standard errors. Under matching with
+replacement, the same control unit may be reused as the neighbor of many
+adopters, and this reuse makes the matching estimator a non-smooth
+weighted sum of the observed values.</p>
+<div class="warning">
+<p>Abadie and Imbens (2006) derived the large-sample distribution of
+nearest-neighbor matching with replacement and a consistent analytic
+variance estimator, which requires an additional within-group
+nearest-neighbor variance estimate; the ordinary regression
+standard-error formula is wrong here. Worse, Abadie and Imbens (2008)
+proved that the bootstrap is invalid for nearest-neighbor matching with
+a fixed number of matches: the matching functional is not smooth, the
+number of times a given unit is used as a neighbor does not converge to
+a smooth limit, and the bootstrap standard error is therefore
+inconsistent. The correct practice is to use the Abadie-Imbens analytic
+variance (directly available in <code>Matching</code> and
+<code>MatchIt</code>) and not to wrap a matching estimator in
+<code>boot</code>. Section 6 will show that in Northwind the
+Abadie-Imbens SE is 0.021 while running OLS directly on the matched
+sample gives an SE of 0.025; this time the two happen to be numerically
+close, but whether they are close is luck, and what matters is which one
+stands up methodologically, not how much they differ.</p>
+</div>
+<h3 id="propensity-score-matching-and-ipw">4.4 Propensity Score Matching
+and IPW</h3>
+<p>With the propensity score, there is no need to match on
+multidimensional <span class="math inline">X</span>; matching directly
+on the one-dimensional <span class="math inline">e(X)</span> suffices,
+which is propensity-score matching. It can be done as kernel matching,
+using non-adopters with nearby propensity to form a weighted-average
+counterfactual for each adopter:</p>
+<p><span class="math display">\widehat{\text{ATT}} = \frac{1}{N_1}
+\sum_{i: D_i = 1} \left[ Y_i - \frac{\sum_{j: D_j = 0} Y_j\,
+K\big(e(X_i) - e(X_j)\big)}{\sum_{s: D_s = 0} K\big(e(X_i) -
+e(X_s)\big)} \right].</span></p>
+<p>The bandwidth <span class="math inline">h</span> controls the
+bias-variance tradeoff, and common support is still the premise.</p>
+<p>Another route that uses the propensity score is <strong>inverse
+probability weighting</strong> (IPW). It does not match; instead it
+weights each unit by the inverse of the probability of being observed,
+reweighting a biased sample into a balanced one. The most basic
+Horvitz-Thompson form targets the ATE:</p>
+<p><span class="math display">\hat\tau_{HT} = \frac{1}{N} \sum_i
+\frac{D_i Y_i}{\hat e(X_i)} - \frac{1}{N} \sum_i \frac{(1 - D_i) Y_i}{1
+- \hat e(X_i)}.</span></p>
+<p>The reason it is unbiased is that <span
+class="math inline">\mathbb{E}[D Y / e(X)] = \mathbb{E}[Y(1)]</span> and
+<span class="math inline">\mathbb{E}[(1-D)Y/(1-e(X))] =
+\mathbb{E}[Y(0)]</span> (under the CIA plus overlap): give the rare
+adopters magnified weight to restore the share of the class of firms
+they represent. The trouble with Horvitz-Thompson is that the weights
+can run out of control; when some class of units has propensity very
+close to 0 or 1, the inverse blows up to astronomical size, and one or
+two extreme weights dominate the whole estimate, giving enormous
+variance. The remedy is the <strong>Hajek</strong> (self-normalized)
+form, dividing by the sum of the realized weights rather than by <span
+class="math inline">N</span>:</p>
+<p><span class="math display">\hat\tau_{\text{Hajek}} = \frac{\sum_i D_i
+Y_i / \hat e(X_i)}{\sum_i D_i / \hat e(X_i)} - \frac{\sum_i (1 - D_i)
+Y_i / (1 - \hat e(X_i))}{\sum_i (1 - D_i) / (1 - \hat
+e(X_i))}.</span></p>
+<p>Hajek is invariant to an overall shift of the outcome, usually has
+smaller variance, and is the default choice in practice; but both blow
+up as the propensity approaches 0 or 1, and the overlap problem returns
+in the form of extreme weights. When targeting the ATT, the weights are
+adjusted accordingly: adopters get weight 1, non-adopters are weighted
+by <span class="math inline">e/(1-e)</span>, reweighting the control
+group to the adopter group’s covariate distribution. In Northwind,
+Horvitz-Thompson gives 0.217 and Hajek gives 0.230, the latter being
+steadier, and both land near the ATT.</p>
+<h3 id="aipw-and-double-robustness">4.5 AIPW and Double Robustness</h3>
+<p>Regression adjustment, matching, and IPW each bet on one model.
+Regression adjustment and matching bet that the outcome model <span
+class="math inline">\mu_d(X) = \mathbb{E}[Y \mid D = d, X]</span> is
+right; IPW bets that the propensity model <span
+class="math inline">e(X)</span> is right. Either model may be
+misspecified. <strong>AIPW</strong> (augmented IPW, that is, the doubly
+robust estimator) combines the two and buys insurance:</p>
+<p><span class="math display">\hat\tau_{AIPW} = \frac{1}{N} \sum_{i=1}^N
+\left\{ \hat\mu_1(X_i) - \hat\mu_0(X_i) + \frac{D_i\,(Y_i -
+\hat\mu_1(X_i))}{\hat e(X_i)} - \frac{(1 - D_i)\,(Y_i -
+\hat\mu_0(X_i))}{1 - \hat e(X_i)} \right\}.</span></p>
+<p>Read it as: first form a regression-adjustment estimate <span
+class="math inline">\hat\mu_1 - \hat\mu_0</span> from the outcome model,
+then use IPW to make one bias correction on the residuals <span
+class="math inline">Y - \hat\mu_d</span>. Its key property is
+<strong>double robustness</strong>: as long as one of the outcome model
+and the propensity model is correctly specified, AIPW is consistent;
+both need not be right. If both are right, it also attains the
+semiparametric efficiency bound, and it is the cornerstone of modern
+double machine learning (paired with cross-fitting). It still needs
+overlap, and extreme propensities can still make it unstable.</p>
+<p>The expression above is written for the ATE and uses both <span
+class="math inline">\hat\mu_1</span> and <span
+class="math inline">\hat\mu_0</span>. As with IPW, the weights are
+adjusted when targeting the ATT: one only needs to build an outcome
+model <span class="math inline">\hat\mu_0(X)</span> for the control
+group, adopters enter with weight 1, and the non-adopters’ augmentation
+term is weighted by <span class="math inline">\hat e/(1 - \hat
+e)</span>,</p>
+<p><span class="math display">\hat\tau_{AIPW}^{\text{ATT}} =
+\frac{1}{N_1} \sum_{i} \left\{ D_i\big(Y_i - \hat\mu_0(X_i)\big) - (1 -
+D_i)\,\frac{\hat e(X_i)}{1 - \hat e(X_i)}\big(Y_i - \hat\mu_0(X_i)\big)
+\right\},</span></p>
+<p>where <span class="math inline">N_1 = \sum_i D_i</span> is the number
+of adopters. The 0.235 reported in Section 6 is exactly this ATT form:
+fit only <span class="math inline">\hat\mu_0</span>, weight the controls
+by <span class="math inline">\hat e/(1 - \hat e)</span>, then divide by
+the number of adopters.</p>
+<p>Lining up this section’s estimators along a few dimensions makes
+clear what each stands on and where each is soft:</p>
+<div class="table-scroll">
+<table style="width:100%;">
+<colgroup>
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+<col style="width: 16%" />
+</colgroup>
+<thead>
+<tr>
+<th>Estimator</th>
+<th>Identifying assumption</th>
+<th>Model needed</th>
+<th>Robustness to misspecification</th>
+<th>Sensitivity to weak overlap</th>
+<th>Valid standard error</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Difference in means</td>
+<td>Randomization</td>
+<td>None</td>
+<td>Not applicable</td>
+<td>Not applicable</td>
+<td>Neyman / permutation</td>
+</tr>
+<tr>
+<td>Regression adjustment</td>
+<td>CIA</td>
+<td>Outcome model</td>
+<td>Low (biased if wrong)</td>
+<td>Low</td>
+<td>Conventional / robust</td>
+</tr>
+<tr>
+<td>NN matching (incl. NN-on-PS)</td>
+<td>CIA + overlap</td>
+<td>Distance metric or propensity</td>
+<td>Medium</td>
+<td>Medium</td>
+<td>Abadie-Imbens (no bootstrap)</td>
+</tr>
+<tr>
+<td>Kernel matching</td>
+<td>CIA + overlap</td>
+<td>Propensity</td>
+<td>Medium</td>
+<td>High</td>
+<td>Bootstrap usable</td>
+</tr>
+<tr>
+<td>IPW Horvitz-Thompson</td>
+<td>CIA + overlap</td>
+<td>Propensity</td>
+<td>Low</td>
+<td>Very high</td>
+<td>Bootstrap</td>
+</tr>
+<tr>
+<td>IPW Hajek</td>
+<td>CIA + overlap</td>
+<td>Propensity</td>
+<td>Low</td>
+<td>High</td>
+<td>Bootstrap</td>
+</tr>
+<tr>
+<td>AIPW</td>
+<td>CIA + overlap</td>
+<td>Outcome or propensity (either suffices)</td>
+<td>High (doubly robust)</td>
+<td>High</td>
+<td>Bootstrap / influence function</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The route of this section can be summarized as follows: under
+randomization, the difference in means plus permutation inference is
+enough; in observational data, regression adjustment is the least effort
+but is sensitive to heterogeneous effects and model specification;
+matching buys weak functional-form assumptions at the cost of the curse
+of dimensionality and a tricky variance; the propensity score drops the
+dimension to one; IPW replaces matching with weighting but is hostage to
+extreme weights, and Hajek is steadier than Horvitz-Thompson; AIPW uses
+double robustness to buy the insurance of “getting one of two models
+right is enough,” and is the current default first choice. All of these
+methods share one vital weakness: they are all built on the untestable
+CIA.</p>
+<h2 id="anchoring-papers">5 Anchoring Papers</h2>
+<p>A method only stands firm once it lands in real research. Two
+anchoring papers, one a landmark methodological case on “whether
+observational methods can reproduce an experiment,” the other a
+representative platform-domain work that treats experiments as a
+touchstone for observational methods, are each laid out along five
+elements (paper, method, data, results, limitations), with the focus on
+how the identifying assumption is defended.</p>
+<h3 id="lalonde-1986-and-dehejia-wahba-1999-2002">5.1 LaLonde (1986) and
+Dehejia-Wahba (1999, 2002)</h3>
+<div class="case">
+<p>Paper and its place in methodological history: LaLonde’s “Evaluating
+the Econometric Evaluations of Training Programs with Experimental Data”
+(American Economic Review, 1986) is a touchstone for
+selection-on-observables methods. Its clever move is to take a setting
+that genuinely has an experimental benchmark and test whether
+non-experimental econometric methods can reproduce the experimental
+answer.</p>
+<p>Method: LaLonde uses the National Supported Work (NSW) randomized
+training program, whose experiment itself provides a credible benchmark
+for the treatment effect. He then replaces the experimental control
+group with non-experimental comparison groups drawn from the CPS and
+PSID, estimates the same effect with the era’s standard regression and
+selection-correction methods, and checks whether the experimental
+benchmark can be recovered. Dehejia and Wahba (Journal of the American
+Statistical Association 1999; Review of Economics and Statistics 2002)
+switch, on the same data, to propensity-score methods: first estimate
+the propensity to adopt, then match within the region of common
+support.</p>
+<p>Data: the NSW experimental sample, plus large non-experimental
+comparison groups drawn from the CPS and PSID, with the outcome being
+trainees’ subsequent annual earnings.</p>
+<p>Results: LaLonde’s finding was discouraging: standard
+non-experimental estimators generally failed to reproduce the
+experimental benchmark, with sign and magnitude drifting as the
+comparison group and specification changed. This was a heavy blow to the
+notion that “controlling for a few variables identifies the causal
+effect.” Dehejia-Wahba brought a ray of hope: they argued that after
+filtering to a subsample with good common support, propensity-score
+matching could pull the estimate back near the experimental benchmark
+(the NSW experimental effect on earnings is around 1,800 dollars).</p>
+<p>Limitations and aftermath: Smith and Todd (Journal of Econometrics
+2005) pointed out that Dehejia-Wahba’s success is quite sensitive to
+sample selection and specification, and swapping to a different
+subsample or propensity model may leave the reproduction not holding.
+This back-and-forth is exactly the theme of this chapter: whether
+selection on observables can rescue the truth depends on whether the CIA
+is credible and whether overlap is adequate, and in real data neither
+can often be guaranteed.</p>
+</div>
+<p>The lesson of this case runs both ways: the propensity score is not a
+magic that turns observational data into gold, and its success or
+failure hangs on the untestable CIA and on whether the data truly
+contain comparable common support. LaLonde taught the whole field to put
+observational methods on trial using experiments, and this spirit of
+self-scrutiny is more worth inheriting than any single estimator.</p>
+<h3 id="blake-nosko-and-tadelis-2015">5.2 Blake, Nosko and Tadelis
+(2015)</h3>
+<div class="case">
+<p>Paper: “Consumer Heterogeneity and Paid Search Effectiveness: A
+Large-Scale Field Experiment” (Econometrica, 2015) is a representative
+work in platform empirics that uses an experiment to puncture an
+observational estimate.</p>
+<p>Method: the authors, in cooperation with search engines at eBay, ran
+a large-scale field experiment, turning off paid search ads in some
+geographic markets while leaving the rest unchanged, using market-level
+randomization to measure the true incremental effect of advertising.
+This experimental benchmark is precisely the yardstick used to put on
+trial the practice of “estimating advertising ROI from observational
+data,” in a line of thinking descended from LaLonde.</p>
+<p>Data: eBay’s paid-search placements across multiple US geographic
+markets and the resulting transaction data, with ads split into brand
+and non-brand keywords.</p>
+<p>Results: on the observational reading, paid search looks richly
+profitable, because most of the people clicking the ad would have come
+anyway. The experiment peeled back this illusion: the incremental effect
+of brand-keyword ads was near zero, because those users would have found
+eBay through organic search even without the ad; the short-run return on
+non-brand keywords was also far below what the observational estimate
+implied. The gulf between the observational and experimental benchmarks
+is, in essence, the selection bias of Section 3 of this chapter, only
+here the selection is over “who will click the ad.”</p>
+<p>Limitations: the external validity of a field experiment is
+constrained by platform, category, and time period, and the conclusion
+of one experiment need not generalize to all advertisers. But precisely
+because the observational estimate is so systematically and so greatly
+wrong here, it powerfully demonstrates that in the selection-riddled
+platform environment, the default practice of treating correlation as
+causation can be far from the truth, and credible incremental
+measurement often demands an experiment.</p>
+</div>
+<p>Put the two together and the point of anchoring is clear: LaLonde and
+Dehejia-Wahba show that observational methods can, in the best case,
+approach an experiment, and are unreliable in the general case;
+Blake-Nosko-Tadelis show that in platform settings selection bias can
+drag an observational estimate entirely off course, and that experiments
+are irreplaceable as a benchmark. This also loops back to Northwind’s
+setup: the reason Study A’s randomized pilot is the fixed reference
+point of the whole chapter is precisely that it is immune to the kind of
+selection both papers warn about.</p>
+<h2 id="a-full-walkthrough-on-the-northwind-data">6 A Full Walkthrough
+on the Northwind Data</h2>
+<p>Now run the tools of Section 4 on Northwind from start to finish. The
+code below uses R 4.5.3 with the random seed fixed at 20260711, and
+every number quoted in the text comes from the actual run output of this
+code.</p>
+<h3 id="the-data-generating-process">6.1 The Data-Generating
+Process</h3>
+<p>The design is as follows. The two data lines share the same
+structural effects. The untreated outcome <span
+class="math inline">Y_i(0)</span> is composed of a covariate mean
+function <span class="math inline">\mu(X)</span>, an unobserved
+firm-quality factor <span class="math inline">U_i</span> (loading <span
+class="math inline">\phi = 0.30</span>), and noise; the individual
+effect <span class="math inline">\tau_i</span> is composed of a baseline
+payoff, an observable payoff <span
+class="math inline">g_{obs}(X)</span>, and <span
+class="math inline">U_i</span> (loading <span class="math inline">\delta
+= 0.15</span>); and <span class="math inline">Y_i(1) = Y_i(0) +
+\tau_i</span>. The baseline <span class="math inline">\tau_{base} =
+0.20</span> sets the true ATE at about 0.20.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">20260711</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>a0 <span class="ot">&lt;-</span> <span class="fl">1.50</span>; b_size <span class="ot">&lt;-</span> <span class="fl">0.30</span>; b_dig <span class="ot">&lt;-</span> <span class="fl">0.25</span>; b_eff <span class="ot">&lt;-</span> <span class="fl">0.20</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>ind_shift <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="at">A =</span> <span class="fl">0.00</span>, <span class="at">B =</span> <span class="fl">0.10</span>, <span class="at">C =</span> <span class="fl">0.20</span>, <span class="at">D =</span> <span class="fl">0.30</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>sd_eps <span class="ot">&lt;-</span> <span class="fl">0.40</span>; phi <span class="ot">&lt;-</span> <span class="fl">0.30</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>tau_base <span class="ot">&lt;-</span> <span class="fl">0.20</span>; gg_dig <span class="ot">&lt;-</span> <span class="fl">0.12</span>; gg_size <span class="ot">&lt;-</span> <span class="fl">0.10</span>; gg_eff <span class="ot">&lt;-</span> <span class="sc">-</span><span class="fl">0.05</span>; delta <span class="ot">&lt;-</span> <span class="fl">0.15</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>draw_firms <span class="ot">&lt;-</span> <span class="cf">function</span>(n) {</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  size <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n); dig <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n); eff <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  ind  <span class="ot">&lt;-</span> <span class="fu">factor</span>(<span class="fu">sample</span>(<span class="fu">c</span>(<span class="st">&quot;A&quot;</span>,<span class="st">&quot;B&quot;</span>,<span class="st">&quot;C&quot;</span>,<span class="st">&quot;D&quot;</span>), n, <span class="cn">TRUE</span>), <span class="at">levels =</span> <span class="fu">c</span>(<span class="st">&quot;A&quot;</span>,<span class="st">&quot;B&quot;</span>,<span class="st">&quot;C&quot;</span>,<span class="st">&quot;D&quot;</span>))</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  U    <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n); eps <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n, <span class="dv">0</span>, sd_eps)</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  mu    <span class="ot">&lt;-</span> a0 <span class="sc">+</span> b_size<span class="sc">*</span>size <span class="sc">+</span> b_dig<span class="sc">*</span>dig <span class="sc">+</span> b_eff<span class="sc">*</span>eff <span class="sc">+</span> ind_shift[<span class="fu">as.character</span>(ind)]</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  g_obs <span class="ot">&lt;-</span> gg_dig<span class="sc">*</span>dig <span class="sc">+</span> gg_size<span class="sc">*</span>size <span class="sc">+</span> gg_eff<span class="sc">*</span>eff</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  tau   <span class="ot">&lt;-</span> tau_base <span class="sc">+</span> g_obs <span class="sc">+</span> delta<span class="sc">*</span>U</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>  Y0 <span class="ot">&lt;-</span> <span class="fu">as.numeric</span>(mu <span class="sc">+</span> phi<span class="sc">*</span>U <span class="sc">+</span> eps); Y1 <span class="ot">&lt;-</span> Y0 <span class="sc">+</span> tau</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.frame</span>(size, dig, eff, ind, U, g_obs, tau, Y0, Y1)</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>observed_Y <span class="ot">&lt;-</span> <span class="cf">function</span>(df, D) df<span class="sc">$</span>Y0 <span class="sc">+</span> D <span class="sc">*</span> (df<span class="sc">$</span>Y1 <span class="sc">-</span> df<span class="sc">$</span>Y0)</span></code></pre></div>
+<p>The two data lines differ in how they assign. Study A flips a coin,
+while Study B selects on an index containing <span
+class="math inline">X</span> and the observable payoff, and it produces
+two adoption vectors: one that lets selection fall only on <span
+class="math inline">X</span> and <span
+class="math inline">g_{obs}</span> (<span class="math inline">U</span>
+does not enter selection, so the CIA holds), and one that lets selection
+additionally attach to the unobserved <span class="math inline">U</span>
+(so the CIA fails).</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>rct <span class="ot">&lt;-</span> <span class="fu">draw_firms</span>(<span class="dv">2000</span>); rct<span class="sc">$</span>D <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(<span class="dv">2000</span>, <span class="dv">1</span>, <span class="fl">0.5</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>rct<span class="sc">$</span>Y <span class="ot">&lt;-</span> <span class="fu">observed_Y</span>(rct, rct<span class="sc">$</span>D)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>obs <span class="ot">&lt;-</span> <span class="fu">draw_firms</span>(<span class="dv">6000</span>)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>lin <span class="ot">&lt;-</span> <span class="fu">with</span>(obs, <span class="sc">-</span><span class="fl">0.20</span> <span class="sc">+</span> <span class="fl">0.40</span><span class="sc">*</span>size <span class="sc">+</span> <span class="fl">0.50</span><span class="sc">*</span>dig <span class="sc">+</span> <span class="fl">0.40</span><span class="sc">*</span>eff <span class="sc">+</span> <span class="fl">1.50</span><span class="sc">*</span>g_obs)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>obs<span class="sc">$</span>D_cia  <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(<span class="dv">6000</span>, <span class="dv">1</span>, <span class="fu">plogis</span>(lin))              <span class="co"># CIA holds</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>obs<span class="sc">$</span>D_fail <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(<span class="dv">6000</span>, <span class="dv">1</span>, <span class="fu">plogis</span>(lin <span class="sc">+</span> <span class="fl">1.60</span><span class="sc">*</span>obs<span class="sc">$</span>U)) <span class="co"># CIA fails</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>obs<span class="sc">$</span>Y_cia  <span class="ot">&lt;-</span> <span class="fu">observed_Y</span>(obs, obs<span class="sc">$</span>D_cia)</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>obs<span class="sc">$</span>Y_fail <span class="ot">&lt;-</span> <span class="fu">observed_Y</span>(obs, obs<span class="sc">$</span>D_fail)</span></code></pre></div>
+<p>The truth computed from the individual effects: Study B’s population
+ATE is 0.200, the RCT sample’s ATE is 0.205; the true ATT of the CIA arm
+is 0.254, and the true ATT of the CIA-failure arm is 0.311; the two
+arms’ adoption rates are 0.467 and 0.478 respectively. The CIA arm’s ATT
+exceeding its ATE is exactly the work of selection on gains; these
+truths are the targets against which every estimator below is
+reconciled. One deliberate design choice bears noting: the selection
+coefficients are tuned so that the propensity estimates stay in the
+benign range <span class="math inline">[0.018, 0.977]</span> with no
+mass piling up at either end, so that matching and IPW have clean common
+support to use and are not dragged off by extreme weights.</p>
+<h3 id="study-a-difference-in-means-and-permutation-inference">6.2 Study
+A: Difference in Means and Permutation Inference</h3>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>y1 <span class="ot">&lt;-</span> rct<span class="sc">$</span>Y[rct<span class="sc">$</span>D <span class="sc">==</span> <span class="dv">1</span>]; y0 <span class="ot">&lt;-</span> rct<span class="sc">$</span>Y[rct<span class="sc">$</span>D <span class="sc">==</span> <span class="dv">0</span>]</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>dim_est   <span class="ot">&lt;-</span> <span class="fu">mean</span>(y1) <span class="sc">-</span> <span class="fu">mean</span>(y0)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>se_neyman <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(<span class="fu">var</span>(y1)<span class="sc">/</span><span class="fu">length</span>(y1) <span class="sc">+</span> <span class="fu">var</span>(y0)<span class="sc">/</span><span class="fu">length</span>(y0))</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>ci <span class="ot">&lt;-</span> dim_est <span class="sc">+</span> <span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="dv">1</span>) <span class="sc">*</span> <span class="fu">qnorm</span>(<span class="fl">0.975</span>) <span class="sc">*</span> se_neyman</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">101</span>)</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>perm <span class="ot">&lt;-</span> <span class="fu">replicate</span>(<span class="dv">5000</span>, {</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  Dp <span class="ot">&lt;-</span> <span class="fu">sample</span>(rct<span class="sc">$</span>D)</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mean</span>(rct<span class="sc">$</span>Y[Dp <span class="sc">==</span> <span class="dv">1</span>]) <span class="sc">-</span> <span class="fu">mean</span>(rct<span class="sc">$</span>Y[Dp <span class="sc">==</span> <span class="dv">0</span>])</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>p_perm <span class="ot">&lt;-</span> <span class="fu">mean</span>(<span class="fu">abs</span>(perm) <span class="sc">&gt;=</span> <span class="fu">abs</span>(dim_est))</span></code></pre></div>
+<p>The adopter group has 1019 firms and the control group 981. The
+difference in means gives 0.206, the Neyman SE is 0.034, and the 95
+percent confidence interval [0.139, 0.274] covers the RCT sample’s true
+value of 0.205 comfortably. Across 5000 permutations, not once was the
+statistic more extreme than the observed value, so the permutation
+p-value is below 0.001. This is the credible benchmark from Section 1,
+which used none of the firms’ characteristics and rests entirely on the
+random assignment itself.</p>
+<h3 id="study-b-naive-comparison-and-regression-adjustment">6.3 Study B:
+Naive Comparison and Regression Adjustment</h3>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>obs<span class="sc">$</span>D <span class="ot">&lt;-</span> obs<span class="sc">$</span>D_cia; obs<span class="sc">$</span>Y <span class="ot">&lt;-</span> obs<span class="sc">$</span>Y_cia</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>naive <span class="ot">&lt;-</span> <span class="fu">mean</span>(obs<span class="sc">$</span>Y[obs<span class="sc">$</span>D<span class="sc">==</span><span class="dv">1</span>]) <span class="sc">-</span> <span class="fu">mean</span>(obs<span class="sc">$</span>Y[obs<span class="sc">$</span>D<span class="sc">==</span><span class="dv">0</span>])</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>m_add <span class="ot">&lt;-</span> <span class="fu">lm</span>(Y <span class="sc">~</span> D <span class="sc">+</span> size <span class="sc">+</span> dig <span class="sc">+</span> eff <span class="sc">+</span> ind, <span class="at">data =</span> obs)     <span class="co"># additive, D coefficient is not the ATT</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co"># center all covariates (including industry dummies) at treated-group means so the D coefficient reads as the ATT</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>Xv <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;size&quot;</span>,<span class="st">&quot;dig&quot;</span>,<span class="st">&quot;eff&quot;</span>); tm <span class="ot">&lt;-</span> <span class="fu">colMeans</span>(obs[obs<span class="sc">$</span>D<span class="sc">==</span><span class="dv">1</span>, Xv])</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>oc <span class="ot">&lt;-</span> obs; <span class="cf">for</span> (v <span class="cf">in</span> Xv) oc[[<span class="fu">paste0</span>(v,<span class="st">&quot;_c&quot;</span>)]] <span class="ot">&lt;-</span> oc[[v]] <span class="sc">-</span> tm[v]</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>ind_d <span class="ot">&lt;-</span> <span class="fu">model.matrix</span>(<span class="sc">~</span> ind, obs)[, <span class="sc">-</span><span class="dv">1</span>]                     <span class="co"># indB, indC, indD</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>ind_c <span class="ot">&lt;-</span> <span class="fu">sweep</span>(ind_d, <span class="dv">2</span>, <span class="fu">colMeans</span>(ind_d[obs<span class="sc">$</span>D<span class="sc">==</span><span class="dv">1</span>, ]), <span class="st">&quot;-&quot;</span>)  <span class="co"># center the industry dummies too</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="fu">colnames</span>(ind_c) <span class="ot">&lt;-</span> <span class="fu">paste0</span>(<span class="fu">colnames</span>(ind_d), <span class="st">&quot;_c&quot;</span>)</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>oc <span class="ot">&lt;-</span> <span class="fu">cbind</span>(oc, ind_c)</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>m_int <span class="ot">&lt;-</span> <span class="fu">lm</span>(Y <span class="sc">~</span> D <span class="sc">*</span> (size_c <span class="sc">+</span> dig_c <span class="sc">+</span> eff_c <span class="sc">+</span> indB_c <span class="sc">+</span> indC_c <span class="sc">+</span> indD_c),</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>            <span class="at">data =</span> oc)                                       <span class="co"># interaction + full centering -&gt; ATT</span></span></code></pre></div>
+<p>The naive difference in means is 0.575 (SE 0.019), and subtracting
+the true ATT of 0.254 leaves a selection bias as large as 0.322,
+confirming the suspicious number from Section 1. The additive OLS <span
+class="math inline">D</span> coefficient is 0.184, a variance-weighted
+average of the heterogeneous effects that lands near the ATE, not the
+ATT. Once all covariates (including the industry dummies) are centered
+at their adopter-group means and <span class="math inline">D</span> is
+fully interacted with them, the <span class="math inline">D</span>
+coefficient reads an ATT of 0.239 (SE 0.016), correctly returning near
+the true ATT. The 0.184 and the 0.239 are two different quantities, and
+this is the confusion most easily tripped over in regression
+adjustment.</p>
+<h3 id="the-propensity-score-and-overlap">6.4 The Propensity Score and
+Overlap</h3>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>ps_fit <span class="ot">&lt;-</span> <span class="fu">glm</span>(D <span class="sc">~</span> size <span class="sc">+</span> dig <span class="sc">+</span> eff <span class="sc">+</span> ind, <span class="at">data =</span> obs, <span class="at">family =</span> binomial)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>obs<span class="sc">$</span>e  <span class="ot">&lt;-</span> <span class="fu">predict</span>(ps_fit, <span class="at">type =</span> <span class="st">&quot;response&quot;</span>)</span></code></pre></div>
+<p>The estimated propensity falls in <span class="math inline">[0.018,
+0.977]</span>. The figure below plots it as two densities by adoption
+status. The two distributions are clearly shifted apart, with adopters
+skewed to the right overall (higher adoption propensity), which is
+exactly selection at work; but the two supports overlap completely, with
+no mass piling up at 0 or 1, so overlap is benign and both matching and
+weighting have clean comparison objects. This overlap figure is a
+diagnostic you can and should draw, whereas the CIA it stands opposite
+to cannot draw any figure to vindicate itself, and this contrast is
+itself worth remembering.</p>
+<figure>
+<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' viewBox='0 0 518.40 316.80' role="img" aria-label="Propensity-score densities by adoption status, clearly shifted apart but with completely overlapping support." style="max-width:100%;height:auto;display:block;margin:0 auto">
+<g class='svglite'>
+<defs>
+  <style type='text/css'><![CDATA[
+    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {
+      fill: none;
+      stroke: #000000;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-miterlimit: 10.00;
+    }
+    .svglite text {
+      white-space: pre;
+    }
+    .svglite g.glyphgroup path {
+      fill: inherit;
+      stroke: none;
+    }
+  ]]></style>
+</defs>
+<rect width='100%' height='100%' style='stroke: none; fill: #FAFAF9;'/>
+<defs>
+  <clipPath id='g2_cpMC4wMHw1MTguNDB8MC4wMHwzMTYuODA='>
+    <rect x='0.00' y='0.00' width='518.40' height='316.80' />
+  </clipPath>
+</defs>
+<g clip-path='url(#g2_cpMC4wMHw1MTguNDB8MC4wMHwzMTYuODA=)'>
+<rect x='0.00' y='-0.000000000000057' width='518.40' height='316.80' style='stroke-width: 1.26; stroke: none; fill: #FAFAF9;' />
+</g>
+<defs>
+  <clipPath id='g2_cpNDIuMDR8NTExLjkyfDcwLjU4fDI3OS41OQ=='>
+    <rect x='42.04' y='70.58' width='469.88' height='209.00' />
+  </clipPath>
+</defs>
+<g clip-path='url(#g2_cpNDIuMDR8NTExLjkyfDcwLjU4fDI3OS41OQ==)'>
+<rect x='42.04' y='70.58' width='469.88' height='209.00' style='stroke-width: 1.26; stroke: none; fill: #FAFAF9;' />
+<polyline points='42.04,270.09 511.92,270.09 ' style='stroke-width: 1.26; stroke: #E6E3DF; stroke-linecap: butt;' />
+<polyline points='42.04,221.07 511.92,221.07 ' style='stroke-width: 1.26; stroke: #E6E3DF; stroke-linecap: butt;' />
+<polyline points='42.04,172.04 511.92,172.04 ' style='stroke-width: 1.26; stroke: #E6E3DF; stroke-linecap: butt;' />
+<polyline points='42.04,123.02 511.92,123.02 ' style='stroke-width: 1.26; stroke: #E6E3DF; stroke-linecap: butt;' />
+<polyline points='42.04,74.00 511.92,74.00 ' style='stroke-width: 1.26; stroke: #E6E3DF; stroke-linecap: butt;' />
+<polyline points='42.04,279.59 42.04,70.58 ' style='stroke-width: 1.26; stroke: #E6E3DF; stroke-linecap: butt;' />
+<polyline points='159.51,279.59 159.51,70.58 ' style='stroke-width: 1.26; stroke: #E6E3DF; stroke-linecap: butt;' />
+<polyline points='276.98,279.59 276.98,70.58 ' style='stroke-width: 1.26; stroke: #E6E3DF; stroke-linecap: butt;' />
+<polyline points='394.45,279.59 394.45,70.58 ' style='stroke-width: 1.26; stroke: #E6E3DF; stroke-linecap: butt;' />
+<polyline points='511.92,279.59 511.92,70.58 ' style='stroke-width: 1.26; stroke: #E6E3DF; stroke-linecap: butt;' />
+<polygon points='42.04,269.70 42.96,269.66 43.88,269.61 44.80,269.55 45.72,269.49 46.64,269.43 47.56,269.36 48.48,269.28 49.40,269.20 50.32,269.11 51.24,269.02 52.16,268.92 53.07,268.81 53.99,268.69 54.91,268.57 55.83,268.44 56.75,268.30 57.67,268.15 58.59,267.99 59.51,267.83 60.43,267.66 61.35,267.48 62.27,267.29 63.19,267.09 64.11,266.89 65.03,266.67 65.95,266.45 66.87,266.22 67.79,265.98 68.71,265.73 69.63,265.48 70.55,265.21 71.47,264.94 72.39,264.66 73.30,264.37 74.22,264.07 75.14,263.76 76.06,263.45 76.98,263.13 77.90,262.80 78.82,262.46 79.74,262.11 80.66,261.75 81.58,261.39 82.50,261.01 83.42,260.63 84.34,260.24 85.26,259.84 86.18,259.43 87.10,259.01 88.02,258.58 88.94,258.14 89.86,257.69 90.78,257.23 91.70,256.76 92.62,256.28 93.53,255.79 94.45,255.28 95.37,254.77 96.29,254.24 97.21,253.71 98.13,253.16 99.05,252.60 99.97,252.03 100.89,251.44 101.81,250.85 102.73,250.24 103.65,249.63 104.57,249.00 105.49,248.36 106.41,247.71 107.33,247.05 108.25,246.38 109.17,245.70 110.09,245.01 111.01,244.31 111.93,243.60 112.84,242.88 113.76,242.15 114.68,241.42 115.60,240.67 116.52,239.92 117.44,239.16 118.36,238.39 119.28,237.61 120.20,236.82 121.12,236.03 122.04,235.23 122.96,234.42 123.88,233.60 124.80,232.78 125.72,231.95 126.64,231.11 127.56,230.26 128.48,229.41 129.40,228.55 130.32,227.68 131.24,226.80 132.16,225.92 133.07,225.03 133.99,224.12 134.91,223.22 135.83,222.30 136.75,221.37 137.67,220.44 138.59,219.50 139.51,218.55 140.43,217.59 141.35,216.63 142.27,215.65 143.19,214.68 144.11,213.69 145.03,212.70 145.95,211.70 146.87,210.70 147.79,209.69 148.71,208.68 149.63,207.66 150.55,206.65 151.47,205.63 152.38,204.61 153.30,203.59 154.22,202.58 155.14,201.57 156.06,200.55 156.98,199.55 157.90,198.55 158.82,197.56 159.74,196.57 160.66,195.59 161.58,194.62 162.50,193.66 163.42,192.71 164.34,191.77 165.26,190.84 166.18,189.93 167.10,189.03 168.02,188.14 168.94,187.26 169.86,186.39 170.78,185.54 171.70,184.69 172.61,183.86 173.53,183.04 174.45,182.23 175.37,181.44 176.29,180.64 177.21,179.86 178.13,179.09 179.05,178.32 179.97,177.56 180.89,176.80 181.81,176.05 182.73,175.30 183.65,174.55 184.57,173.80 185.49,173.05 186.41,172.31 187.33,171.56 188.25,170.81 189.17,170.05 190.09,169.30 191.01,168.54 191.93,167.78 192.84,167.02 193.76,166.25 194.68,165.48 195.60,164.71 196.52,163.93 197.44,163.16 198.36,162.38 199.28,161.60 200.20,160.82 201.12,160.04 202.04,159.26 202.96,158.49 203.88,157.72 204.80,156.95 205.72,156.18 206.64,155.43 207.56,154.67 208.48,153.93 209.40,153.18 210.32,152.45 211.24,151.73 212.15,151.01 213.07,150.29 213.99,149.59 214.91,148.89 215.83,148.20 216.75,147.51 217.67,146.82 218.59,146.14 219.51,145.47 220.43,144.79 221.35,144.11 222.27,143.43 223.19,142.75 224.11,142.06 225.03,141.37 225.95,140.67 226.87,139.96 227.79,139.24 228.71,138.52 229.63,137.77 230.55,137.02 231.47,136.25 232.38,135.46 233.30,134.66 234.22,133.85 235.14,133.02 236.06,132.17 236.98,131.31 237.90,130.43 238.82,129.54 239.74,128.64 240.66,127.73 241.58,126.80 242.50,125.87 243.42,124.93 244.34,123.98 245.26,123.03 246.18,122.07 247.10,121.12 248.02,120.17 248.94,119.22 249.86,118.27 250.78,117.33 251.70,116.40 252.61,115.48 253.53,114.57 254.45,113.67 255.37,112.79 256.29,111.91 257.21,111.06 258.13,110.22 259.05,109.39 259.97,108.58 260.89,107.79 261.81,107.01 262.73,106.25 263.65,105.50 264.57,104.77 265.49,104.05 266.41,103.34 267.33,102.65 268.25,101.97 269.17,101.30 270.09,100.64 271.01,99.99 271.92,99.34 272.84,98.71 273.76,98.08 274.68,97.46 275.60,96.85 276.52,96.24 277.44,95.63 278.36,95.03 279.28,94.44 280.20,93.84 281.12,93.26 282.04,92.68 282.96,92.10 283.88,91.53 284.80,90.97 285.72,90.41 286.64,89.87 287.56,89.33 288.48,88.80 289.40,88.28 290.32,87.78 291.24,87.28 292.15,86.80 293.07,86.34 293.99,85.90 294.91,85.47 295.83,85.06 296.75,84.67 297.67,84.30 298.59,83.95 299.51,83.63 300.43,83.33 301.35,83.05 302.27,82.80 303.19,82.57 304.11,82.36 305.03,82.18 305.95,82.03 306.87,81.89 307.79,81.78 308.71,81.69 309.63,81.63 310.55,81.59 311.47,81.56 312.38,81.55 313.30,81.56 314.22,81.59 315.14,81.63 316.06,81.69 316.98,81.75 317.90,81.84 318.82,81.93 319.74,82.02 320.66,82.13 321.58,82.25 322.50,82.37 323.42,82.50 324.34,82.63 325.26,82.77 326.18,82.92 327.10,83.07 328.02,83.23 328.94,83.40 329.86,83.57 330.78,83.76 331.69,83.95 332.61,84.15 333.53,84.36 334.45,84.58 335.37,84.81 336.29,85.06 337.21,85.31 338.13,85.59 339.05,85.87 339.97,86.17 340.89,86.48 341.81,86.82 342.73,87.16 343.65,87.52 344.57,87.89 345.49,88.27 346.41,88.67 347.33,89.08 348.25,89.50 349.17,89.93 350.09,90.36 351.01,90.81 351.92,91.26 352.84,91.71 353.76,92.17 354.68,92.63 355.60,93.09 356.52,93.54 357.44,94.00 358.36,94.46 359.28,94.91 360.20,95.36 361.12,95.81 362.04,96.25 362.96,96.69 363.88,97.13 364.80,97.56 365.72,97.99 366.64,98.42 367.56,98.84 368.48,99.27 369.40,99.70 370.32,100.13 371.23,100.57 372.15,101.01 373.07,101.46 373.99,101.93 374.91,102.40 375.83,102.89 376.75,103.39 377.67,103.91 378.59,104.45 379.51,105.00 380.43,105.58 381.35,106.18 382.27,106.82 383.19,107.47 384.11,108.15 385.03,108.86 385.95,109.61 386.87,110.38 387.79,111.19 388.71,112.02 389.63,112.89 390.55,113.80 391.46,114.74 392.38,115.71 393.30,116.71 394.22,117.75 395.14,118.83 396.06,119.93 396.98,121.07 397.90,122.25 398.82,123.45 399.74,124.69 400.66,125.95 401.58,127.25 402.50,128.58 403.42,129.93 404.34,131.31 405.26,132.72 406.18,134.16 407.10,135.62 408.02,137.10 408.94,138.60 409.86,140.12 410.78,141.67 411.69,143.23 412.61,144.80 413.53,146.39 414.45,148.00 415.37,149.62 416.29,151.25 417.21,152.88 418.13,154.53 419.05,156.19 419.97,157.85 420.89,159.51 421.81,161.18 422.73,162.85 423.65,164.52 424.57,166.19 425.49,167.86 426.41,169.53 427.33,171.19 428.25,172.85 429.17,174.51 430.09,176.15 431.00,177.80 431.92,179.43 432.84,181.06 433.76,182.67 434.68,184.28 435.60,185.87 436.52,187.46 437.44,189.03 438.36,190.59 439.28,192.14 440.20,193.68 441.12,195.20 442.04,196.71 442.96,198.21 443.88,199.70 444.80,201.17 445.72,202.62 446.64,204.06 447.56,205.49 448.48,206.90 449.40,208.30 450.32,209.69 451.23,211.06 452.15,212.42 453.07,213.76 453.99,215.09 454.91,216.41 455.83,217.71 456.75,219.00 457.67,220.28 458.59,221.54 459.51,222.80 460.43,224.04 461.35,225.26 462.27,226.48 463.19,227.68 464.11,228.87 465.03,230.05 465.95,231.22 466.87,232.37 467.79,233.51 468.71,234.64 469.63,235.76 470.55,236.86 471.46,237.95 472.38,239.03 473.30,240.10 474.22,241.14 475.14,242.18 476.06,243.20 476.98,244.21 477.90,245.20 478.82,246.17 479.74,247.13 480.66,248.07 481.58,248.99 482.50,249.89 483.42,250.77 484.34,251.64 485.26,252.48 486.18,253.31 487.10,254.11 488.02,254.89 488.94,255.66 489.86,256.39 490.77,257.11 491.69,257.80 492.61,258.48 493.53,259.12 494.45,259.75 495.37,260.35 496.29,260.94 497.21,261.49 498.13,262.02 499.05,262.53 499.97,263.03 500.89,263.49 501.81,263.94 502.73,264.36 503.65,264.76 504.57,265.15 505.49,265.50 506.41,265.84 507.33,266.17 508.25,266.47 509.17,266.75 510.09,267.02 511.00,267.27 511.92,267.51 511.92,270.09 511.00,270.09 510.09,270.09 509.17,270.09 508.25,270.09 507.33,270.09 506.41,270.09 505.49,270.09 504.57,270.09 503.65,270.09 502.73,270.09 501.81,270.09 500.89,270.09 499.97,270.09 499.05,270.09 498.13,270.09 497.21,270.09 496.29,270.09 495.37,270.09 494.45,270.09 493.53,270.09 492.61,270.09 491.69,270.09 490.77,270.09 489.86,270.09 488.94,270.09 488.02,270.09 487.10,270.09 486.18,270.09 485.26,270.09 484.34,270.09 483.42,270.09 482.50,270.09 481.58,270.09 480.66,270.09 479.74,270.09 478.82,270.09 477.90,270.09 476.98,270.09 476.06,270.09 475.14,270.09 474.22,270.09 473.30,270.09 472.38,270.09 471.46,270.09 470.55,270.09 469.63,270.09 468.71,270.09 467.79,270.09 466.87,270.09 465.95,270.09 465.03,270.09 464.11,270.09 463.19,270.09 462.27,270.09 461.35,270.09 460.43,270.09 459.51,270.09 458.59,270.09 457.67,270.09 456.75,270.09 455.83,270.09 454.91,270.09 453.99,270.09 453.07,270.09 452.15,270.09 451.23,270.09 450.32,270.09 449.40,270.09 448.48,270.09 447.56,270.09 446.64,270.09 445.72,270.09 444.80,270.09 443.88,270.09 442.96,270.09 442.04,270.09 441.12,270.09 440.20,270.09 439.28,270.09 438.36,270.09 437.44,270.09 436.52,270.09 435.60,270.09 434.68,270.09 433.76,270.09 432.84,270.09 431.92,270.09 431.00,270.09 430.09,270.09 429.17,270.09 428.25,270.09 427.33,270.09 426.41,270.09 425.49,270.09 424.57,270.09 423.65,270.09 422.73,270.09 421.81,270.09 420.89,270.09 419.97,270.09 419.05,270.09 418.13,270.09 417.21,270.09 416.29,270.09 415.37,270.09 414.45,270.09 413.53,270.09 412.61,270.09 411.69,270.09 410.78,270.09 409.86,270.09 408.94,270.09 408.02,270.09 407.10,270.09 406.18,270.09 405.26,270.09 404.34,270.09 403.42,270.09 402.50,270.09 401.58,270.09 400.66,270.09 399.74,270.09 398.82,270.09 397.90,270.09 396.98,270.09 396.06,270.09 395.14,270.09 394.22,270.09 393.30,270.09 392.38,270.09 391.46,270.09 390.55,270.09 389.63,270.09 388.71,270.09 387.79,270.09 386.87,270.09 385.95,270.09 385.03,270.09 384.11,270.09 383.19,270.09 382.27,270.09 381.35,270.09 380.43,270.09 379.51,270.09 378.59,270.09 377.67,270.09 376.75,270.09 375.83,270.09 374.91,270.09 373.99,270.09 373.07,270.09 372.15,270.09 371.23,270.09 370.32,270.09 369.40,270.09 368.48,270.09 367.56,270.09 366.64,270.09 365.72,270.09 364.80,270.09 363.88,270.09 362.96,270.09 362.04,270.09 361.12,270.09 360.20,270.09 359.28,270.09 358.36,270.09 357.44,270.09 356.52,270.09 355.60,270.09 354.68,270.09 353.76,270.09 352.84,270.09 351.92,270.09 351.01,270.09 350.09,270.09 349.17,270.09 348.25,270.09 347.33,270.09 346.41,270.09 345.49,270.09 344.57,270.09 343.65,270.09 342.73,270.09 341.81,270.09 340.89,270.09 339.97,270.09 339.05,270.09 338.13,270.09 337.21,270.09 336.29,270.09 335.37,270.09 334.45,270.09 333.53,270.09 332.61,270.09 331.69,270.09 330.78,270.09 329.86,270.09 328.94,270.09 328.02,270.09 327.10,270.09 326.18,270.09 325.26,270.09 324.34,270.09 323.42,270.09 322.50,270.09 321.58,270.09 320.66,270.09 319.74,270.09 318.82,270.09 317.90,270.09 316.98,270.09 316.06,270.09 315.14,270.09 314.22,270.09 313.30,270.09 312.38,270.09 311.47,270.09 310.55,270.09 309.63,270.09 308.71,270.09 307.79,270.09 306.87,270.09 305.95,270.09 305.03,270.09 304.11,270.09 303.19,270.09 302.27,270.09 301.35,270.09 300.43,270.09 299.51,270.09 298.59,270.09 297.67,270.09 296.75,270.09 295.83,270.09 294.91,270.09 293.99,270.09 293.07,270.09 292.15,270.09 291.24,270.09 290.32,270.09 289.40,270.09 288.48,270.09 287.56,270.09 286.64,270.09 285.72,270.09 284.80,270.09 283.88,270.09 282.96,270.09 282.04,270.09 281.12,270.09 280.20,270.09 279.28,270.09 278.36,270.09 277.44,270.09 276.52,270.09 275.60,270.09 274.68,270.09 273.76,270.09 272.84,270.09 271.92,270.09 271.01,270.09 270.09,270.09 269.17,270.09 268.25,270.09 267.33,270.09 266.41,270.09 265.49,270.09 264.57,270.09 263.65,270.09 262.73,270.09 261.81,270.09 260.89,270.09 259.97,270.09 259.05,270.09 258.13,270.09 257.21,270.09 256.29,270.09 255.37,270.09 254.45,270.09 253.53,270.09 252.61,270.09 251.70,270.09 250.78,270.09 249.86,270.09 248.94,270.09 248.02,270.09 247.10,270.09 246.18,270.09 245.26,270.09 244.34,270.09 243.42,270.09 242.50,270.09 241.58,270.09 240.66,270.09 239.74,270.09 238.82,270.09 237.90,270.09 236.98,270.09 236.06,270.09 235.14,270.09 234.22,270.09 233.30,270.09 232.38,270.09 231.47,270.09 230.55,270.09 229.63,270.09 228.71,270.09 227.79,270.09 226.87,270.09 225.95,270.09 225.03,270.09 224.11,270.09 223.19,270.09 222.27,270.09 221.35,270.09 220.43,270.09 219.51,270.09 218.59,270.09 217.67,270.09 216.75,270.09 215.83,270.09 214.91,270.09 213.99,270.09 213.07,270.09 212.15,270.09 211.24,270.09 210.32,270.09 209.40,270.09 208.48,270.09 207.56,270.09 206.64,270.09 205.72,270.09 204.80,270.09 203.88,270.09 202.96,270.09 202.04,270.09 201.12,270.09 200.20,270.09 199.28,270.09 198.36,270.09 197.44,270.09 196.52,270.09 195.60,270.09 194.68,270.09 193.76,270.09 192.84,270.09 191.93,270.09 191.01,270.09 190.09,270.09 189.17,270.09 188.25,270.09 187.33,270.09 186.41,270.09 185.49,270.09 184.57,270.09 183.65,270.09 182.73,270.09 181.81,270.09 180.89,270.09 179.97,270.09 179.05,270.09 178.13,270.09 177.21,270.09 176.29,270.09 175.37,270.09 174.45,270.09 173.53,270.09 172.61,270.09 171.70,270.09 170.78,270.09 169.86,270.09 168.94,270.09 168.02,270.09 167.10,270.09 166.18,270.09 165.26,270.09 164.34,270.09 163.42,270.09 162.50,270.09 161.58,270.09 160.66,270.09 159.74,270.09 158.82,270.09 157.90,270.09 156.98,270.09 156.06,270.09 155.14,270.09 154.22,270.09 153.30,270.09 152.38,270.09 151.47,270.09 150.55,270.09 149.63,270.09 148.71,270.09 147.79,270.09 146.87,270.09 145.95,270.09 145.03,270.09 144.11,270.09 143.19,270.09 142.27,270.09 141.35,270.09 140.43,270.09 139.51,270.09 138.59,270.09 137.67,270.09 136.75,270.09 135.83,270.09 134.91,270.09 133.99,270.09 133.07,270.09 132.16,270.09 131.24,270.09 130.32,270.09 129.40,270.09 128.48,270.09 127.56,270.09 126.64,270.09 125.72,270.09 124.80,270.09 123.88,270.09 122.96,270.09 122.04,270.09 121.12,270.09 120.20,270.09 119.28,270.09 118.36,270.09 117.44,270.09 116.52,270.09 115.60,270.09 114.68,270.09 113.76,270.09 112.84,270.09 111.93,270.09 111.01,270.09 110.09,270.09 109.17,270.09 108.25,270.09 107.33,270.09 106.41,270.09 105.49,270.09 104.57,270.09 103.65,270.09 102.73,270.09 101.81,270.09 100.89,270.09 99.97,270.09 99.05,270.09 98.13,270.09 97.21,270.09 96.29,270.09 95.37,270.09 94.45,270.09 93.53,270.09 92.62,270.09 91.70,270.09 90.78,270.09 89.86,270.09 88.94,270.09 88.02,270.09 87.10,270.09 86.18,270.09 85.26,270.09 84.34,270.09 83.42,270.09 82.50,270.09 81.58,270.09 80.66,270.09 79.74,270.09 78.82,270.09 77.90,270.09 76.98,270.09 76.06,270.09 75.14,270.09 74.22,270.09 73.30,270.09 72.39,270.09 71.47,270.09 70.55,270.09 69.63,270.09 68.71,270.09 67.79,270.09 66.87,270.09 65.95,270.09 65.03,270.09 64.11,270.09 63.19,270.09 62.27,270.09 61.35,270.09 60.43,270.09 59.51,270.09 58.59,270.09 57.67,270.09 56.75,270.09 55.83,270.09 54.91,270.09 53.99,270.09 53.07,270.09 52.16,270.09 51.24,270.09 50.32,270.09 49.40,270.09 48.48,270.09 47.56,270.09 46.64,270.09 45.72,270.09 44.80,270.09 43.88,270.09 42.96,270.09 42.04,270.09 ' style='stroke-width: 0.00; stroke: none; stroke-linecap: butt; fill: #2B6CB0; fill-opacity: 0.35;' />
+<polyline points='42.04,269.70 42.96,269.66 43.88,269.61 44.80,269.55 45.72,269.49 46.64,269.43 47.56,269.36 48.48,269.28 49.40,269.20 50.32,269.11 51.24,269.02 52.16,268.92 53.07,268.81 53.99,268.69 54.91,268.57 55.83,268.44 56.75,268.30 57.67,268.15 58.59,267.99 59.51,267.83 60.43,267.66 61.35,267.48 62.27,267.29 63.19,267.09 64.11,266.89 65.03,266.67 65.95,266.45 66.87,266.22 67.79,265.98 68.71,265.73 69.63,265.48 70.55,265.21 71.47,264.94 72.39,264.66 73.30,264.37 74.22,264.07 75.14,263.76 76.06,263.45 76.98,263.13 77.90,262.80 78.82,262.46 79.74,262.11 80.66,261.75 81.58,261.39 82.50,261.01 83.42,260.63 84.34,260.24 85.26,259.84 86.18,259.43 87.10,259.01 88.02,258.58 88.94,258.14 89.86,257.69 90.78,257.23 91.70,256.76 92.62,256.28 93.53,255.79 94.45,255.28 95.37,254.77 96.29,254.24 97.21,253.71 98.13,253.16 99.05,252.60 99.97,252.03 100.89,251.44 101.81,250.85 102.73,250.24 103.65,249.63 104.57,249.00 105.49,248.36 106.41,247.71 107.33,247.05 108.25,246.38 109.17,245.70 110.09,245.01 111.01,244.31 111.93,243.60 112.84,242.88 113.76,242.15 114.68,241.42 115.60,240.67 116.52,239.92 117.44,239.16 118.36,238.39 119.28,237.61 120.20,236.82 121.12,236.03 122.04,235.23 122.96,234.42 123.88,233.60 124.80,232.78 125.72,231.95 126.64,231.11 127.56,230.26 128.48,229.41 129.40,228.55 130.32,227.68 131.24,226.80 132.16,225.92 133.07,225.03 133.99,224.12 134.91,223.22 135.83,222.30 136.75,221.37 137.67,220.44 138.59,219.50 139.51,218.55 140.43,217.59 141.35,216.63 142.27,215.65 143.19,214.68 144.11,213.69 145.03,212.70 145.95,211.70 146.87,210.70 147.79,209.69 148.71,208.68 149.63,207.66 150.55,206.65 151.47,205.63 152.38,204.61 153.30,203.59 154.22,202.58 155.14,201.57 156.06,200.55 156.98,199.55 157.90,198.55 158.82,197.56 159.74,196.57 160.66,195.59 161.58,194.62 162.50,193.66 163.42,192.71 164.34,191.77 165.26,190.84 166.18,189.93 167.10,189.03 168.02,188.14 168.94,187.26 169.86,186.39 170.78,185.54 171.70,184.69 172.61,183.86 173.53,183.04 174.45,182.23 175.37,181.44 176.29,180.64 177.21,179.86 178.13,179.09 179.05,178.32 179.97,177.56 180.89,176.80 181.81,176.05 182.73,175.30 183.65,174.55 184.57,173.80 185.49,173.05 186.41,172.31 187.33,171.56 188.25,170.81 189.17,170.05 190.09,169.30 191.01,168.54 191.93,167.78 192.84,167.02 193.76,166.25 194.68,165.48 195.60,164.71 196.52,163.93 197.44,163.16 198.36,162.38 199.28,161.60 200.20,160.82 201.12,160.04 202.04,159.26 202.96,158.49 203.88,157.72 204.80,156.95 205.72,156.18 206.64,155.43 207.56,154.67 208.48,153.93 209.40,153.18 210.32,152.45 211.24,151.73 212.15,151.01 213.07,150.29 213.99,149.59 214.91,148.89 215.83,148.20 216.75,147.51 217.67,146.82 218.59,146.14 219.51,145.47 220.43,144.79 221.35,144.11 222.27,143.43 223.19,142.75 224.11,142.06 225.03,141.37 225.95,140.67 226.87,139.96 227.79,139.24 228.71,138.52 229.63,137.77 230.55,137.02 231.47,136.25 232.38,135.46 233.30,134.66 234.22,133.85 235.14,133.02 236.06,132.17 236.98,131.31 237.90,130.43 238.82,129.54 239.74,128.64 240.66,127.73 241.58,126.80 242.50,125.87 243.42,124.93 244.34,123.98 245.26,123.03 246.18,122.07 247.10,121.12 248.02,120.17 248.94,119.22 249.86,118.27 250.78,117.33 251.70,116.40 252.61,115.48 253.53,114.57 254.45,113.67 255.37,112.79 256.29,111.91 257.21,111.06 258.13,110.22 259.05,109.39 259.97,108.58 260.89,107.79 261.81,107.01 262.73,106.25 263.65,105.50 264.57,104.77 265.49,104.05 266.41,103.34 267.33,102.65 268.25,101.97 269.17,101.30 270.09,100.64 271.01,99.99 271.92,99.34 272.84,98.71 273.76,98.08 274.68,97.46 275.60,96.85 276.52,96.24 277.44,95.63 278.36,95.03 279.28,94.44 280.20,93.84 281.12,93.26 282.04,92.68 282.96,92.10 283.88,91.53 284.80,90.97 285.72,90.41 286.64,89.87 287.56,89.33 288.48,88.80 289.40,88.28 290.32,87.78 291.24,87.28 292.15,86.80 293.07,86.34 293.99,85.90 294.91,85.47 295.83,85.06 296.75,84.67 297.67,84.30 298.59,83.95 299.51,83.63 300.43,83.33 301.35,83.05 302.27,82.80 303.19,82.57 304.11,82.36 305.03,82.18 305.95,82.03 306.87,81.89 307.79,81.78 308.71,81.69 309.63,81.63 310.55,81.59 311.47,81.56 312.38,81.55 313.30,81.56 314.22,81.59 315.14,81.63 316.06,81.69 316.98,81.75 317.90,81.84 318.82,81.93 319.74,82.02 320.66,82.13 321.58,82.25 322.50,82.37 323.42,82.50 324.34,82.63 325.26,82.77 326.18,82.92 327.10,83.07 328.02,83.23 328.94,83.40 329.86,83.57 330.78,83.76 331.69,83.95 332.61,84.15 333.53,84.36 334.45,84.58 335.37,84.81 336.29,85.06 337.21,85.31 338.13,85.59 339.05,85.87 339.97,86.17 340.89,86.48 341.81,86.82 342.73,87.16 343.65,87.52 344.57,87.89 345.49,88.27 346.41,88.67 347.33,89.08 348.25,89.50 349.17,89.93 350.09,90.36 351.01,90.81 351.92,91.26 352.84,91.71 353.76,92.17 354.68,92.63 355.60,93.09 356.52,93.54 357.44,94.00 358.36,94.46 359.28,94.91 360.20,95.36 361.12,95.81 362.04,96.25 362.96,96.69 363.88,97.13 364.80,97.56 365.72,97.99 366.64,98.42 367.56,98.84 368.48,99.27 369.40,99.70 370.32,100.13 371.23,100.57 372.15,101.01 373.07,101.46 373.99,101.93 374.91,102.40 375.83,102.89 376.75,103.39 377.67,103.91 378.59,104.45 379.51,105.00 380.43,105.58 381.35,106.18 382.27,106.82 383.19,107.47 384.11,108.15 385.03,108.86 385.95,109.61 386.87,110.38 387.79,111.19 388.71,112.02 389.63,112.89 390.55,113.80 391.46,114.74 392.38,115.71 393.30,116.71 394.22,117.75 395.14,118.83 396.06,119.93 396.98,121.07 397.90,122.25 398.82,123.45 399.74,124.69 400.66,125.95 401.58,127.25 402.50,128.58 403.42,129.93 404.34,131.31 405.26,132.72 406.18,134.16 407.10,135.62 408.02,137.10 408.94,138.60 409.86,140.12 410.78,141.67 411.69,143.23 412.61,144.80 413.53,146.39 414.45,148.00 415.37,149.62 416.29,151.25 417.21,152.88 418.13,154.53 419.05,156.19 419.97,157.85 420.89,159.51 421.81,161.18 422.73,162.85 423.65,164.52 424.57,166.19 425.49,167.86 426.41,169.53 427.33,171.19 428.25,172.85 429.17,174.51 430.09,176.15 431.00,177.80 431.92,179.43 432.84,181.06 433.76,182.67 434.68,184.28 435.60,185.87 436.52,187.46 437.44,189.03 438.36,190.59 439.28,192.14 440.20,193.68 441.12,195.20 442.04,196.71 442.96,198.21 443.88,199.70 444.80,201.17 445.72,202.62 446.64,204.06 447.56,205.49 448.48,206.90 449.40,208.30 450.32,209.69 451.23,211.06 452.15,212.42 453.07,213.76 453.99,215.09 454.91,216.41 455.83,217.71 456.75,219.00 457.67,220.28 458.59,221.54 459.51,222.80 460.43,224.04 461.35,225.26 462.27,226.48 463.19,227.68 464.11,228.87 465.03,230.05 465.95,231.22 466.87,232.37 467.79,233.51 468.71,234.64 469.63,235.76 470.55,236.86 471.46,237.95 472.38,239.03 473.30,240.10 474.22,241.14 475.14,242.18 476.06,243.20 476.98,244.21 477.90,245.20 478.82,246.17 479.74,247.13 480.66,248.07 481.58,248.99 482.50,249.89 483.42,250.77 484.34,251.64 485.26,252.48 486.18,253.31 487.10,254.11 488.02,254.89 488.94,255.66 489.86,256.39 490.77,257.11 491.69,257.80 492.61,258.48 493.53,259.12 494.45,259.75 495.37,260.35 496.29,260.94 497.21,261.49 498.13,262.02 499.05,262.53 499.97,263.03 500.89,263.49 501.81,263.94 502.73,264.36 503.65,264.76 504.57,265.15 505.49,265.50 506.41,265.84 507.33,266.17 508.25,266.47 509.17,266.75 510.09,267.02 511.00,267.27 511.92,267.51 ' style='stroke-width: 1.26; stroke: #2B6CB0; stroke-linecap: butt;' />
+<polygon points='42.04,263.84 42.96,263.30 43.88,262.74 44.80,262.13 45.72,261.49 46.64,260.81 47.56,260.09 48.48,259.33 49.40,258.52 50.32,257.68 51.24,256.79 52.16,255.86 53.07,254.88 53.99,253.85 54.91,252.78 55.83,251.67 56.75,250.51 57.67,249.29 58.59,248.02 59.51,246.71 60.43,245.36 61.35,243.95 62.27,242.49 63.19,240.99 64.11,239.45 65.03,237.86 65.95,236.21 66.87,234.53 67.79,232.81 68.71,231.05 69.63,229.24 70.55,227.40 71.47,225.53 72.39,223.62 73.30,221.69 74.22,219.72 75.14,217.72 76.06,215.71 76.98,213.67 77.90,211.62 78.82,209.55 79.74,207.46 80.66,205.37 81.58,203.27 82.50,201.17 83.42,199.06 84.34,196.95 85.26,194.85 86.18,192.75 87.10,190.66 88.02,188.58 88.94,186.50 89.86,184.44 90.78,182.40 91.70,180.37 92.62,178.35 93.53,176.35 94.45,174.38 95.37,172.42 96.29,170.47 97.21,168.55 98.13,166.64 99.05,164.76 99.97,162.89 100.89,161.04 101.81,159.21 102.73,157.40 103.65,155.60 104.57,153.83 105.49,152.06 106.41,150.32 107.33,148.59 108.25,146.87 109.17,145.17 110.09,143.49 111.01,141.82 111.93,140.16 112.84,138.52 113.76,136.89 114.68,135.28 115.60,133.68 116.52,132.10 117.44,130.53 118.36,128.98 119.28,127.44 120.20,125.93 121.12,124.43 122.04,122.95 122.96,121.49 123.88,120.05 124.80,118.63 125.72,117.23 126.64,115.86 127.56,114.52 128.48,113.19 129.40,111.89 130.32,110.61 131.24,109.37 132.16,108.15 133.07,106.96 133.99,105.79 134.91,104.66 135.83,103.56 136.75,102.48 137.67,101.43 138.59,100.42 139.51,99.44 140.43,98.48 141.35,97.55 142.27,96.66 143.19,95.79 144.11,94.96 145.03,94.15 145.95,93.37 146.87,92.62 147.79,91.90 148.71,91.21 149.63,90.54 150.55,89.90 151.47,89.29 152.38,88.70 153.30,88.13 154.22,87.58 155.14,87.06 156.06,86.56 156.98,86.08 157.90,85.62 158.82,85.18 159.74,84.77 160.66,84.37 161.58,83.98 162.50,83.62 163.42,83.27 164.34,82.94 165.26,82.63 166.18,82.33 167.10,82.05 168.02,81.79 168.94,81.54 169.86,81.31 170.78,81.10 171.70,80.91 172.61,80.74 173.53,80.58 174.45,80.45 175.37,80.33 176.29,80.24 177.21,80.17 178.13,80.12 179.05,80.09 179.97,80.08 180.89,80.10 181.81,80.15 182.73,80.21 183.65,80.30 184.57,80.42 185.49,80.56 186.41,80.72 187.33,80.90 188.25,81.11 189.17,81.34 190.09,81.59 191.01,81.86 191.93,82.15 192.84,82.46 193.76,82.78 194.68,83.12 195.60,83.47 196.52,83.83 197.44,84.20 198.36,84.58 199.28,84.96 200.20,85.35 201.12,85.74 202.04,86.12 202.96,86.51 203.88,86.89 204.80,87.26 205.72,87.62 206.64,87.97 207.56,88.32 208.48,88.65 209.40,88.96 210.32,89.27 211.24,89.56 212.15,89.83 213.07,90.08 213.99,90.32 214.91,90.55 215.83,90.76 216.75,90.95 217.67,91.13 218.59,91.30 219.51,91.45 220.43,91.60 221.35,91.73 222.27,91.85 223.19,91.97 224.11,92.08 225.03,92.19 225.95,92.29 226.87,92.39 227.79,92.50 228.71,92.60 229.63,92.71 230.55,92.83 231.47,92.95 232.38,93.08 233.30,93.22 234.22,93.38 235.14,93.54 236.06,93.72 236.98,93.91 237.90,94.12 238.82,94.34 239.74,94.58 240.66,94.84 241.58,95.12 242.50,95.42 243.42,95.73 244.34,96.07 245.26,96.42 246.18,96.80 247.10,97.19 248.02,97.61 248.94,98.04 249.86,98.50 250.78,98.97 251.70,99.46 252.61,99.97 253.53,100.50 254.45,101.04 255.37,101.60 256.29,102.18 257.21,102.77 258.13,103.38 259.05,104.01 259.97,104.65 260.89,105.30 261.81,105.97 262.73,106.65 263.65,107.34 264.57,108.04 265.49,108.76 266.41,109.49 267.33,110.24 268.25,110.99 269.17,111.75 270.09,112.53 271.01,113.32 271.92,114.12 272.84,114.93 273.76,115.76 274.68,116.59 275.60,117.44 276.52,118.30 277.44,119.17 278.36,120.05 279.28,120.94 280.20,121.85 281.12,122.76 282.04,123.69 282.96,124.62 283.88,125.56 284.80,126.51 285.72,127.47 286.64,128.44 287.56,129.41 288.48,130.38 289.40,131.36 290.32,132.34 291.24,133.31 292.15,134.29 293.07,135.26 293.99,136.23 294.91,137.19 295.83,138.14 296.75,139.08 297.67,140.01 298.59,140.93 299.51,141.84 300.43,142.73 301.35,143.61 302.27,144.46 303.19,145.31 304.11,146.13 305.03,146.94 305.95,147.74 306.87,148.51 307.79,149.27 308.71,150.02 309.63,150.75 310.55,151.46 311.47,152.16 312.38,152.85 313.30,153.52 314.22,154.19 315.14,154.85 316.06,155.50 316.98,156.15 317.90,156.79 318.82,157.43 319.74,158.06 320.66,158.70 321.58,159.34 322.50,159.98 323.42,160.63 324.34,161.27 325.26,161.93 326.18,162.59 327.10,163.26 328.02,163.94 328.94,164.62 329.86,165.32 330.78,166.02 331.69,166.74 332.61,167.47 333.53,168.21 334.45,168.96 335.37,169.72 336.29,170.50 337.21,171.28 338.13,172.08 339.05,172.90 339.97,173.72 340.89,174.56 341.81,175.41 342.73,176.28 343.65,177.15 344.57,178.04 345.49,178.94 346.41,179.86 347.33,180.79 348.25,181.72 349.17,182.67 350.09,183.63 351.01,184.60 351.92,185.58 352.84,186.57 353.76,187.56 354.68,188.57 355.60,189.57 356.52,190.59 357.44,191.60 358.36,192.62 359.28,193.64 360.20,194.66 361.12,195.67 362.04,196.68 362.96,197.69 363.88,198.69 364.80,199.69 365.72,200.68 366.64,201.65 367.56,202.62 368.48,203.57 369.40,204.51 370.32,205.44 371.23,206.35 372.15,207.24 373.07,208.12 373.99,208.99 374.91,209.84 375.83,210.67 376.75,211.49 377.67,212.29 378.59,213.08 379.51,213.86 380.43,214.62 381.35,215.37 382.27,216.11 383.19,216.84 384.11,217.55 385.03,218.26 385.95,218.97 386.87,219.66 387.79,220.35 388.71,221.04 389.63,221.72 390.55,222.40 391.46,223.08 392.38,223.76 393.30,224.44 394.22,225.12 395.14,225.79 396.06,226.47 396.98,227.15 397.90,227.83 398.82,228.51 399.74,229.19 400.66,229.87 401.58,230.55 402.50,231.23 403.42,231.91 404.34,232.58 405.26,233.26 406.18,233.93 407.10,234.60 408.02,235.26 408.94,235.92 409.86,236.57 410.78,237.22 411.69,237.87 412.61,238.50 413.53,239.14 414.45,239.76 415.37,240.38 416.29,241.00 417.21,241.60 418.13,242.20 419.05,242.80 419.97,243.39 420.89,243.97 421.81,244.55 422.73,245.12 423.65,245.68 424.57,246.24 425.49,246.80 426.41,247.35 427.33,247.89 428.25,248.44 429.17,248.97 430.09,249.50 431.00,250.03 431.92,250.55 432.84,251.07 433.76,251.58 434.68,252.09 435.60,252.59 436.52,253.09 437.44,253.58 438.36,254.07 439.28,254.55 440.20,255.02 441.12,255.49 442.04,255.95 442.96,256.40 443.88,256.85 444.80,257.28 445.72,257.71 446.64,258.13 447.56,258.54 448.48,258.95 449.40,259.34 450.32,259.72 451.23,260.10 452.15,260.47 453.07,260.82 453.99,261.17 454.91,261.51 455.83,261.84 456.75,262.16 457.67,262.47 458.59,262.77 459.51,263.06 460.43,263.34 461.35,263.62 462.27,263.88 463.19,264.14 464.11,264.39 465.03,264.63 465.95,264.86 466.87,265.09 467.79,265.31 468.71,265.52 469.63,265.72 470.55,265.91 471.46,266.10 472.38,266.29 473.30,266.46 474.22,266.63 475.14,266.79 476.06,266.95 476.98,267.11 477.90,267.25 478.82,267.39 479.74,267.53 480.66,267.66 481.58,267.79 482.50,267.91 483.42,268.02 484.34,268.14 485.26,268.24 486.18,268.35 487.10,268.45 488.02,268.54 488.94,268.63 489.86,268.72 490.77,268.81 491.69,268.89 492.61,268.96 493.53,269.04 494.45,269.11 495.37,269.17 496.29,269.24 497.21,269.30 498.13,269.36 499.05,269.41 499.97,269.46 500.89,269.51 501.81,269.56 502.73,269.60 503.65,269.64 504.57,269.68 505.49,269.71 506.41,269.75 507.33,269.78 508.25,269.81 509.17,269.83 510.09,269.86 511.00,269.88 511.92,269.90 511.92,270.09 511.00,270.09 510.09,270.09 509.17,270.09 508.25,270.09 507.33,270.09 506.41,270.09 505.49,270.09 504.57,270.09 503.65,270.09 502.73,270.09 501.81,270.09 500.89,270.09 499.97,270.09 499.05,270.09 498.13,270.09 497.21,270.09 496.29,270.09 495.37,270.09 494.45,270.09 493.53,270.09 492.61,270.09 491.69,270.09 490.77,270.09 489.86,270.09 488.94,270.09 488.02,270.09 487.10,270.09 486.18,270.09 485.26,270.09 484.34,270.09 483.42,270.09 482.50,270.09 481.58,270.09 480.66,270.09 479.74,270.09 478.82,270.09 477.90,270.09 476.98,270.09 476.06,270.09 475.14,270.09 474.22,270.09 473.30,270.09 472.38,270.09 471.46,270.09 470.55,270.09 469.63,270.09 468.71,270.09 467.79,270.09 466.87,270.09 465.95,270.09 465.03,270.09 464.11,270.09 463.19,270.09 462.27,270.09 461.35,270.09 460.43,270.09 459.51,270.09 458.59,270.09 457.67,270.09 456.75,270.09 455.83,270.09 454.91,270.09 453.99,270.09 453.07,270.09 452.15,270.09 451.23,270.09 450.32,270.09 449.40,270.09 448.48,270.09 447.56,270.09 446.64,270.09 445.72,270.09 444.80,270.09 443.88,270.09 442.96,270.09 442.04,270.09 441.12,270.09 440.20,270.09 439.28,270.09 438.36,270.09 437.44,270.09 436.52,270.09 435.60,270.09 434.68,270.09 433.76,270.09 432.84,270.09 431.92,270.09 431.00,270.09 430.09,270.09 429.17,270.09 428.25,270.09 427.33,270.09 426.41,270.09 425.49,270.09 424.57,270.09 423.65,270.09 422.73,270.09 421.81,270.09 420.89,270.09 419.97,270.09 419.05,270.09 418.13,270.09 417.21,270.09 416.29,270.09 415.37,270.09 414.45,270.09 413.53,270.09 412.61,270.09 411.69,270.09 410.78,270.09 409.86,270.09 408.94,270.09 408.02,270.09 407.10,270.09 406.18,270.09 405.26,270.09 404.34,270.09 403.42,270.09 402.50,270.09 401.58,270.09 400.66,270.09 399.74,270.09 398.82,270.09 397.90,270.09 396.98,270.09 396.06,270.09 395.14,270.09 394.22,270.09 393.30,270.09 392.38,270.09 391.46,270.09 390.55,270.09 389.63,270.09 388.71,270.09 387.79,270.09 386.87,270.09 385.95,270.09 385.03,270.09 384.11,270.09 383.19,270.09 382.27,270.09 381.35,270.09 380.43,270.09 379.51,270.09 378.59,270.09 377.67,270.09 376.75,270.09 375.83,270.09 374.91,270.09 373.99,270.09 373.07,270.09 372.15,270.09 371.23,270.09 370.32,270.09 369.40,270.09 368.48,270.09 367.56,270.09 366.64,270.09 365.72,270.09 364.80,270.09 363.88,270.09 362.96,270.09 362.04,270.09 361.12,270.09 360.20,270.09 359.28,270.09 358.36,270.09 357.44,270.09 356.52,270.09 355.60,270.09 354.68,270.09 353.76,270.09 352.84,270.09 351.92,270.09 351.01,270.09 350.09,270.09 349.17,270.09 348.25,270.09 347.33,270.09 346.41,270.09 345.49,270.09 344.57,270.09 343.65,270.09 342.73,270.09 341.81,270.09 340.89,270.09 339.97,270.09 339.05,270.09 338.13,270.09 337.21,270.09 336.29,270.09 335.37,270.09 334.45,270.09 333.53,270.09 332.61,270.09 331.69,270.09 330.78,270.09 329.86,270.09 328.94,270.09 328.02,270.09 327.10,270.09 326.18,270.09 325.26,270.09 324.34,270.09 323.42,270.09 322.50,270.09 321.58,270.09 320.66,270.09 319.74,270.09 318.82,270.09 317.90,270.09 316.98,270.09 316.06,270.09 315.14,270.09 314.22,270.09 313.30,270.09 312.38,270.09 311.47,270.09 310.55,270.09 309.63,270.09 308.71,270.09 307.79,270.09 306.87,270.09 305.95,270.09 305.03,270.09 304.11,270.09 303.19,270.09 302.27,270.09 301.35,270.09 300.43,270.09 299.51,270.09 298.59,270.09 297.67,270.09 296.75,270.09 295.83,270.09 294.91,270.09 293.99,270.09 293.07,270.09 292.15,270.09 291.24,270.09 290.32,270.09 289.40,270.09 288.48,270.09 287.56,270.09 286.64,270.09 285.72,270.09 284.80,270.09 283.88,270.09 282.96,270.09 282.04,270.09 281.12,270.09 280.20,270.09 279.28,270.09 278.36,270.09 277.44,270.09 276.52,270.09 275.60,270.09 274.68,270.09 273.76,270.09 272.84,270.09 271.92,270.09 271.01,270.09 270.09,270.09 269.17,270.09 268.25,270.09 267.33,270.09 266.41,270.09 265.49,270.09 264.57,270.09 263.65,270.09 262.73,270.09 261.81,270.09 260.89,270.09 259.97,270.09 259.05,270.09 258.13,270.09 257.21,270.09 256.29,270.09 255.37,270.09 254.45,270.09 253.53,270.09 252.61,270.09 251.70,270.09 250.78,270.09 249.86,270.09 248.94,270.09 248.02,270.09 247.10,270.09 246.18,270.09 245.26,270.09 244.34,270.09 243.42,270.09 242.50,270.09 241.58,270.09 240.66,270.09 239.74,270.09 238.82,270.09 237.90,270.09 236.98,270.09 236.06,270.09 235.14,270.09 234.22,270.09 233.30,270.09 232.38,270.09 231.47,270.09 230.55,270.09 229.63,270.09 228.71,270.09 227.79,270.09 226.87,270.09 225.95,270.09 225.03,270.09 224.11,270.09 223.19,270.09 222.27,270.09 221.35,270.09 220.43,270.09 219.51,270.09 218.59,270.09 217.67,270.09 216.75,270.09 215.83,270.09 214.91,270.09 213.99,270.09 213.07,270.09 212.15,270.09 211.24,270.09 210.32,270.09 209.40,270.09 208.48,270.09 207.56,270.09 206.64,270.09 205.72,270.09 204.80,270.09 203.88,270.09 202.96,270.09 202.04,270.09 201.12,270.09 200.20,270.09 199.28,270.09 198.36,270.09 197.44,270.09 196.52,270.09 195.60,270.09 194.68,270.09 193.76,270.09 192.84,270.09 191.93,270.09 191.01,270.09 190.09,270.09 189.17,270.09 188.25,270.09 187.33,270.09 186.41,270.09 185.49,270.09 184.57,270.09 183.65,270.09 182.73,270.09 181.81,270.09 180.89,270.09 179.97,270.09 179.05,270.09 178.13,270.09 177.21,270.09 176.29,270.09 175.37,270.09 174.45,270.09 173.53,270.09 172.61,270.09 171.70,270.09 170.78,270.09 169.86,270.09 168.94,270.09 168.02,270.09 167.10,270.09 166.18,270.09 165.26,270.09 164.34,270.09 163.42,270.09 162.50,270.09 161.58,270.09 160.66,270.09 159.74,270.09 158.82,270.09 157.90,270.09 156.98,270.09 156.06,270.09 155.14,270.09 154.22,270.09 153.30,270.09 152.38,270.09 151.47,270.09 150.55,270.09 149.63,270.09 148.71,270.09 147.79,270.09 146.87,270.09 145.95,270.09 145.03,270.09 144.11,270.09 143.19,270.09 142.27,270.09 141.35,270.09 140.43,270.09 139.51,270.09 138.59,270.09 137.67,270.09 136.75,270.09 135.83,270.09 134.91,270.09 133.99,270.09 133.07,270.09 132.16,270.09 131.24,270.09 130.32,270.09 129.40,270.09 128.48,270.09 127.56,270.09 126.64,270.09 125.72,270.09 124.80,270.09 123.88,270.09 122.96,270.09 122.04,270.09 121.12,270.09 120.20,270.09 119.28,270.09 118.36,270.09 117.44,270.09 116.52,270.09 115.60,270.09 114.68,270.09 113.76,270.09 112.84,270.09 111.93,270.09 111.01,270.09 110.09,270.09 109.17,270.09 108.25,270.09 107.33,270.09 106.41,270.09 105.49,270.09 104.57,270.09 103.65,270.09 102.73,270.09 101.81,270.09 100.89,270.09 99.97,270.09 99.05,270.09 98.13,270.09 97.21,270.09 96.29,270.09 95.37,270.09 94.45,270.09 93.53,270.09 92.62,270.09 91.70,270.09 90.78,270.09 89.86,270.09 88.94,270.09 88.02,270.09 87.10,270.09 86.18,270.09 85.26,270.09 84.34,270.09 83.42,270.09 82.50,270.09 81.58,270.09 80.66,270.09 79.74,270.09 78.82,270.09 77.90,270.09 76.98,270.09 76.06,270.09 75.14,270.09 74.22,270.09 73.30,270.09 72.39,270.09 71.47,270.09 70.55,270.09 69.63,270.09 68.71,270.09 67.79,270.09 66.87,270.09 65.95,270.09 65.03,270.09 64.11,270.09 63.19,270.09 62.27,270.09 61.35,270.09 60.43,270.09 59.51,270.09 58.59,270.09 57.67,270.09 56.75,270.09 55.83,270.09 54.91,270.09 53.99,270.09 53.07,270.09 52.16,270.09 51.24,270.09 50.32,270.09 49.40,270.09 48.48,270.09 47.56,270.09 46.64,270.09 45.72,270.09 44.80,270.09 43.88,270.09 42.96,270.09 42.04,270.09 ' style='stroke-width: 0.00; stroke: none; stroke-linecap: butt; fill: #B7791F; fill-opacity: 0.35;' />
+<polyline points='42.04,263.84 42.96,263.30 43.88,262.74 44.80,262.13 45.72,261.49 46.64,260.81 47.56,260.09 48.48,259.33 49.40,258.52 50.32,257.68 51.24,256.79 52.16,255.86 53.07,254.88 53.99,253.85 54.91,252.78 55.83,251.67 56.75,250.51 57.67,249.29 58.59,248.02 59.51,246.71 60.43,245.36 61.35,243.95 62.27,242.49 63.19,240.99 64.11,239.45 65.03,237.86 65.95,236.21 66.87,234.53 67.79,232.81 68.71,231.05 69.63,229.24 70.55,227.40 71.47,225.53 72.39,223.62 73.30,221.69 74.22,219.72 75.14,217.72 76.06,215.71 76.98,213.67 77.90,211.62 78.82,209.55 79.74,207.46 80.66,205.37 81.58,203.27 82.50,201.17 83.42,199.06 84.34,196.95 85.26,194.85 86.18,192.75 87.10,190.66 88.02,188.58 88.94,186.50 89.86,184.44 90.78,182.40 91.70,180.37 92.62,178.35 93.53,176.35 94.45,174.38 95.37,172.42 96.29,170.47 97.21,168.55 98.13,166.64 99.05,164.76 99.97,162.89 100.89,161.04 101.81,159.21 102.73,157.40 103.65,155.60 104.57,153.83 105.49,152.06 106.41,150.32 107.33,148.59 108.25,146.87 109.17,145.17 110.09,143.49 111.01,141.82 111.93,140.16 112.84,138.52 113.76,136.89 114.68,135.28 115.60,133.68 116.52,132.10 117.44,130.53 118.36,128.98 119.28,127.44 120.20,125.93 121.12,124.43 122.04,122.95 122.96,121.49 123.88,120.05 124.80,118.63 125.72,117.23 126.64,115.86 127.56,114.52 128.48,113.19 129.40,111.89 130.32,110.61 131.24,109.37 132.16,108.15 133.07,106.96 133.99,105.79 134.91,104.66 135.83,103.56 136.75,102.48 137.67,101.43 138.59,100.42 139.51,99.44 140.43,98.48 141.35,97.55 142.27,96.66 143.19,95.79 144.11,94.96 145.03,94.15 145.95,93.37 146.87,92.62 147.79,91.90 148.71,91.21 149.63,90.54 150.55,89.90 151.47,89.29 152.38,88.70 153.30,88.13 154.22,87.58 155.14,87.06 156.06,86.56 156.98,86.08 157.90,85.62 158.82,85.18 159.74,84.77 160.66,84.37 161.58,83.98 162.50,83.62 163.42,83.27 164.34,82.94 165.26,82.63 166.18,82.33 167.10,82.05 168.02,81.79 168.94,81.54 169.86,81.31 170.78,81.10 171.70,80.91 172.61,80.74 173.53,80.58 174.45,80.45 175.37,80.33 176.29,80.24 177.21,80.17 178.13,80.12 179.05,80.09 179.97,80.08 180.89,80.10 181.81,80.15 182.73,80.21 183.65,80.30 184.57,80.42 185.49,80.56 186.41,80.72 187.33,80.90 188.25,81.11 189.17,81.34 190.09,81.59 191.01,81.86 191.93,82.15 192.84,82.46 193.76,82.78 194.68,83.12 195.60,83.47 196.52,83.83 197.44,84.20 198.36,84.58 199.28,84.96 200.20,85.35 201.12,85.74 202.04,86.12 202.96,86.51 203.88,86.89 204.80,87.26 205.72,87.62 206.64,87.97 207.56,88.32 208.48,88.65 209.40,88.96 210.32,89.27 211.24,89.56 212.15,89.83 213.07,90.08 213.99,90.32 214.91,90.55 215.83,90.76 216.75,90.95 217.67,91.13 218.59,91.30 219.51,91.45 220.43,91.60 221.35,91.73 222.27,91.85 223.19,91.97 224.11,92.08 225.03,92.19 225.95,92.29 226.87,92.39 227.79,92.50 228.71,92.60 229.63,92.71 230.55,92.83 231.47,92.95 232.38,93.08 233.30,93.22 234.22,93.38 235.14,93.54 236.06,93.72 236.98,93.91 237.90,94.12 238.82,94.34 239.74,94.58 240.66,94.84 241.58,95.12 242.50,95.42 243.42,95.73 244.34,96.07 245.26,96.42 246.18,96.80 247.10,97.19 248.02,97.61 248.94,98.04 249.86,98.50 250.78,98.97 251.70,99.46 252.61,99.97 253.53,100.50 254.45,101.04 255.37,101.60 256.29,102.18 257.21,102.77 258.13,103.38 259.05,104.01 259.97,104.65 260.89,105.30 261.81,105.97 262.73,106.65 263.65,107.34 264.57,108.04 265.49,108.76 266.41,109.49 267.33,110.24 268.25,110.99 269.17,111.75 270.09,112.53 271.01,113.32 271.92,114.12 272.84,114.93 273.76,115.76 274.68,116.59 275.60,117.44 276.52,118.30 277.44,119.17 278.36,120.05 279.28,120.94 280.20,121.85 281.12,122.76 282.04,123.69 282.96,124.62 283.88,125.56 284.80,126.51 285.72,127.47 286.64,128.44 287.56,129.41 288.48,130.38 289.40,131.36 290.32,132.34 291.24,133.31 292.15,134.29 293.07,135.26 293.99,136.23 294.91,137.19 295.83,138.14 296.75,139.08 297.67,140.01 298.59,140.93 299.51,141.84 300.43,142.73 301.35,143.61 302.27,144.46 303.19,145.31 304.11,146.13 305.03,146.94 305.95,147.74 306.87,148.51 307.79,149.27 308.71,150.02 309.63,150.75 310.55,151.46 311.47,152.16 312.38,152.85 313.30,153.52 314.22,154.19 315.14,154.85 316.06,155.50 316.98,156.15 317.90,156.79 318.82,157.43 319.74,158.06 320.66,158.70 321.58,159.34 322.50,159.98 323.42,160.63 324.34,161.27 325.26,161.93 326.18,162.59 327.10,163.26 328.02,163.94 328.94,164.62 329.86,165.32 330.78,166.02 331.69,166.74 332.61,167.47 333.53,168.21 334.45,168.96 335.37,169.72 336.29,170.50 337.21,171.28 338.13,172.08 339.05,172.90 339.97,173.72 340.89,174.56 341.81,175.41 342.73,176.28 343.65,177.15 344.57,178.04 345.49,178.94 346.41,179.86 347.33,180.79 348.25,181.72 349.17,182.67 350.09,183.63 351.01,184.60 351.92,185.58 352.84,186.57 353.76,187.56 354.68,188.57 355.60,189.57 356.52,190.59 357.44,191.60 358.36,192.62 359.28,193.64 360.20,194.66 361.12,195.67 362.04,196.68 362.96,197.69 363.88,198.69 364.80,199.69 365.72,200.68 366.64,201.65 367.56,202.62 368.48,203.57 369.40,204.51 370.32,205.44 371.23,206.35 372.15,207.24 373.07,208.12 373.99,208.99 374.91,209.84 375.83,210.67 376.75,211.49 377.67,212.29 378.59,213.08 379.51,213.86 380.43,214.62 381.35,215.37 382.27,216.11 383.19,216.84 384.11,217.55 385.03,218.26 385.95,218.97 386.87,219.66 387.79,220.35 388.71,221.04 389.63,221.72 390.55,222.40 391.46,223.08 392.38,223.76 393.30,224.44 394.22,225.12 395.14,225.79 396.06,226.47 396.98,227.15 397.90,227.83 398.82,228.51 399.74,229.19 400.66,229.87 401.58,230.55 402.50,231.23 403.42,231.91 404.34,232.58 405.26,233.26 406.18,233.93 407.10,234.60 408.02,235.26 408.94,235.92 409.86,236.57 410.78,237.22 411.69,237.87 412.61,238.50 413.53,239.14 414.45,239.76 415.37,240.38 416.29,241.00 417.21,241.60 418.13,242.20 419.05,242.80 419.97,243.39 420.89,243.97 421.81,244.55 422.73,245.12 423.65,245.68 424.57,246.24 425.49,246.80 426.41,247.35 427.33,247.89 428.25,248.44 429.17,248.97 430.09,249.50 431.00,250.03 431.92,250.55 432.84,251.07 433.76,251.58 434.68,252.09 435.60,252.59 436.52,253.09 437.44,253.58 438.36,254.07 439.28,254.55 440.20,255.02 441.12,255.49 442.04,255.95 442.96,256.40 443.88,256.85 444.80,257.28 445.72,257.71 446.64,258.13 447.56,258.54 448.48,258.95 449.40,259.34 450.32,259.72 451.23,260.10 452.15,260.47 453.07,260.82 453.99,261.17 454.91,261.51 455.83,261.84 456.75,262.16 457.67,262.47 458.59,262.77 459.51,263.06 460.43,263.34 461.35,263.62 462.27,263.88 463.19,264.14 464.11,264.39 465.03,264.63 465.95,264.86 466.87,265.09 467.79,265.31 468.71,265.52 469.63,265.72 470.55,265.91 471.46,266.10 472.38,266.29 473.30,266.46 474.22,266.63 475.14,266.79 476.06,266.95 476.98,267.11 477.90,267.25 478.82,267.39 479.74,267.53 480.66,267.66 481.58,267.79 482.50,267.91 483.42,268.02 484.34,268.14 485.26,268.24 486.18,268.35 487.10,268.45 488.02,268.54 488.94,268.63 489.86,268.72 490.77,268.81 491.69,268.89 492.61,268.96 493.53,269.04 494.45,269.11 495.37,269.17 496.29,269.24 497.21,269.30 498.13,269.36 499.05,269.41 499.97,269.46 500.89,269.51 501.81,269.56 502.73,269.60 503.65,269.64 504.57,269.68 505.49,269.71 506.41,269.75 507.33,269.78 508.25,269.81 509.17,269.83 510.09,269.86 511.00,269.88 511.92,269.90 ' style='stroke-width: 1.26; stroke: #B7791F; stroke-linecap: butt;' />
+</g>
+<g clip-path='url(#g2_cpMC4wMHw1MTguNDB8MC4wMHwzMTYuODA=)'>
+<text x='36.21' y='273.81' text-anchor='end' style='font-size: 10.40px;fill: #2D3748; font-family: "Arial";' textLength='14.45px' lengthAdjust='spacingAndGlyphs'>0.0</text>
+<text x='36.21' y='224.78' text-anchor='end' style='font-size: 10.40px;fill: #2D3748; font-family: "Arial";' textLength='14.45px' lengthAdjust='spacingAndGlyphs'>0.5</text>
+<text x='36.21' y='175.76' text-anchor='end' style='font-size: 10.40px;fill: #2D3748; font-family: "Arial";' textLength='14.45px' lengthAdjust='spacingAndGlyphs'>1.0</text>
+<text x='36.21' y='126.74' text-anchor='end' style='font-size: 10.40px;fill: #2D3748; font-family: "Arial";' textLength='14.45px' lengthAdjust='spacingAndGlyphs'>1.5</text>
+<text x='36.21' y='77.72' text-anchor='end' style='font-size: 10.40px;fill: #2D3748; font-family: "Arial";' textLength='14.45px' lengthAdjust='spacingAndGlyphs'>2.0</text>
+<text x='42.04' y='292.85' text-anchor='middle' style='font-size: 10.40px;fill: #2D3748; font-family: "Arial";' textLength='20.23px' lengthAdjust='spacingAndGlyphs'>0.00</text>
+<text x='159.51' y='292.85' text-anchor='middle' style='font-size: 10.40px;fill: #2D3748; font-family: "Arial";' textLength='20.23px' lengthAdjust='spacingAndGlyphs'>0.25</text>
+<text x='276.98' y='292.85' text-anchor='middle' style='font-size: 10.40px;fill: #2D3748; font-family: "Arial";' textLength='20.23px' lengthAdjust='spacingAndGlyphs'>0.50</text>
+<text x='394.45' y='292.85' text-anchor='middle' style='font-size: 10.40px;fill: #2D3748; font-family: "Arial";' textLength='20.23px' lengthAdjust='spacingAndGlyphs'>0.75</text>
+<text x='511.92' y='292.85' text-anchor='middle' style='font-size: 10.40px;fill: #2D3748; font-family: "Arial";' textLength='20.23px' lengthAdjust='spacingAndGlyphs'>1.00</text>
+<text x='276.98' y='307.59' text-anchor='middle' style='font-size: 13.00px;fill: #2D3748; font-family: "Arial";' textLength='272.56px' lengthAdjust='spacingAndGlyphs'>Estimated propensity score  e(X) = P(adopt | X)</text>
+<text transform='translate(15.79,175.09) rotate(-90)' text-anchor='middle' style='font-size: 13.00px;fill: #2D3748; font-family: "Arial";' textLength='43.36px' lengthAdjust='spacingAndGlyphs'>Density</text>
+<rect x='169.40' y='34.72' width='15.60' height='15.60' style='stroke-width: 1.26; stroke: #2B6CB0; stroke-linecap: butt; fill: #2B6CB0; fill-opacity: 0.35;' />
+<rect x='270.38' y='34.72' width='15.60' height='15.60' style='stroke-width: 1.26; stroke: #B7791F; stroke-linecap: butt; fill: #B7791F; fill-opacity: 0.35;' />
+<text x='192.31' y='46.24' style='font-size: 10.40px; font-family: "Arial";' textLength='70.75px' lengthAdjust='spacingAndGlyphs'>Adopters (D=1)</text>
+<text x='293.30' y='46.24' style='font-size: 10.40px; font-family: "Arial";' textLength='92.11px' lengthAdjust='spacingAndGlyphs'>Non-adopters (D=0)</text>
+<text x='42.04' y='17.64' style='font-size: 15.60px; font-weight: bold;fill: #1A365D; font-family: "Arial";' textLength='330.14px' lengthAdjust='spacingAndGlyphs'>Propensity-score overlap by adoption status</text>
+</g>
+</g>
+</svg>
+<figcaption aria-hidden="true">Propensity-score densities by adoption
+status, clearly shifted apart but with completely overlapping
+support.</figcaption>
+</figure>
+<h3 id="nearest-neighbor-matching-and-the-abadie-imbens-variance">6.5
+Nearest-Neighbor Matching and the Abadie-Imbens Variance</h3>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>mi   <span class="ot">&lt;-</span> <span class="fu">matchit</span>(D <span class="sc">~</span> size <span class="sc">+</span> dig <span class="sc">+</span> eff <span class="sc">+</span> ind, <span class="at">data =</span> obs, <span class="at">method =</span> <span class="st">&quot;nearest&quot;</span>,</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>                <span class="at">distance =</span> <span class="st">&quot;glm&quot;</span>, <span class="at">link =</span> <span class="st">&quot;logit&quot;</span>, <span class="at">estimand =</span> <span class="st">&quot;ATT&quot;</span>, <span class="at">replace =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>mdat <span class="ot">&lt;-</span> <span class="fu">match.data</span>(mi)</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>match_pt <span class="ot">&lt;-</span> <span class="fu">coef</span>(<span class="fu">lm</span>(Y <span class="sc">~</span> D, <span class="at">data =</span> mdat, <span class="at">weights =</span> weights))[<span class="st">&quot;D&quot;</span>]</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>lps  <span class="ot">&lt;-</span> <span class="fu">predict</span>(ps_fit)   <span class="co"># linear predictor (logit PS)</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>mout <span class="ot">&lt;-</span> <span class="fu">Match</span>(<span class="at">Y =</span> obs<span class="sc">$</span>Y, <span class="at">Tr =</span> obs<span class="sc">$</span>D, <span class="at">X =</span> lps, <span class="at">estimand =</span> <span class="st">&quot;ATT&quot;</span>,</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>              <span class="at">M =</span> <span class="dv">1</span>, <span class="at">replace =</span> <span class="cn">TRUE</span>, <span class="at">ties =</span> <span class="cn">TRUE</span>, <span class="at">BiasAdjust =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
+<p>Doing 1:1 matching with replacement on the propensity, MatchIt’s
+point estimate is 0.248. Using <code>Matching::Match</code> on the same
+logit PS to take the Abadie-Imbens variance, the point estimate is 0.246
+with AI-SE 0.021. Here we match on an estimated propensity, whereas the
+Abadie and Imbens (2006) variance treats the matching variable as known;
+Abadie and Imbens (2016) proved that matching on an estimated propensity
+changes the large-sample variance and usually makes it smaller, so the
+0.021 should be read as a somewhat conservative estimate. For contrast,
+running OLS directly on the matched sample gives an SE of 0.025, which
+is methodologically wrong (and the bootstrap is outright invalid for NN
+matching). This time the two SEs happen to be numerically close, but the
+point is that the AI-SE is the one that stands up, not how much they
+differ.</p>
+<h3 id="ipw-and-aipw">6.6 IPW and AIPW</h3>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>ipw_att <span class="ot">&lt;-</span> <span class="cf">function</span>(Y, D, e) {</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  w <span class="ot">&lt;-</span> e <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">-</span> e); m1 <span class="ot">&lt;-</span> <span class="fu">mean</span>(Y[D <span class="sc">==</span> <span class="dv">1</span>])</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(<span class="at">ht    =</span> m1 <span class="sc">-</span> <span class="fu">sum</span>((<span class="dv">1</span><span class="sc">-</span>D)<span class="sc">*</span>w<span class="sc">*</span>Y) <span class="sc">/</span> <span class="fu">sum</span>(D),           <span class="co"># Horvitz-Thompson</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">hajek =</span> m1 <span class="sc">-</span> <span class="fu">sum</span>((<span class="dv">1</span><span class="sc">-</span>D)<span class="sc">*</span>w<span class="sc">*</span>Y) <span class="sc">/</span> <span class="fu">sum</span>((<span class="dv">1</span><span class="sc">-</span>D)<span class="sc">*</span>w))     <span class="co"># Hajek</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>ipw_pt <span class="ot">&lt;-</span> <span class="fu">ipw_att</span>(obs<span class="sc">$</span>Y, obs<span class="sc">$</span>D, obs<span class="sc">$</span>e)</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>aipw_att <span class="ot">&lt;-</span> <span class="cf">function</span>(dat, e) {</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>  m0 <span class="ot">&lt;-</span> <span class="fu">predict</span>(<span class="fu">lm</span>(Y <span class="sc">~</span> size<span class="sc">+</span>dig<span class="sc">+</span>eff<span class="sc">+</span>ind, <span class="at">data =</span> dat[dat<span class="sc">$</span>D<span class="sc">==</span><span class="dv">0</span>, ]), <span class="at">newdata =</span> dat)</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>  p  <span class="ot">&lt;-</span> <span class="fu">mean</span>(dat<span class="sc">$</span>D); w <span class="ot">&lt;-</span> e <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">-</span> e)</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mean</span>((dat<span class="sc">$</span>D<span class="sc">*</span>(dat<span class="sc">$</span>Y<span class="sc">-</span>m0) <span class="sc">-</span> (<span class="dv">1</span><span class="sc">-</span>dat<span class="sc">$</span>D)<span class="sc">*</span>w<span class="sc">*</span>(dat<span class="sc">$</span>Y<span class="sc">-</span>m0)) <span class="sc">/</span> p)</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>aipw_pt <span class="ot">&lt;-</span> <span class="fu">aipw_att</span>(obs, obs<span class="sc">$</span>e)</span></code></pre></div>
+<p>The Horvitz-Thompson version of IPW gives 0.217 (bootstrap SE 0.036),
+and the Hajek version gives 0.230 (bootstrap SE 0.024).
+Horvitz-Thompson’s standard error is clearly larger, because its weights
+are not normalized, making it the noisiest of these estimators; Hajek
+steadies things considerably after normalizing, which is exactly the
+lesson of Section 4.4, and even though overlap is benign here and
+extreme weights are not severe, the difference is still visible. AIPW
+gives 0.235 (bootstrap SE 0.019), the smallest standard error, and the
+efficiency advantage of double robustness is realized. The IPW and AIPW
+standard errors from the nonparametric bootstrap are valid, in direct
+contrast to NN matching where the bootstrap is prohibited.</p>
+<h3 id="the-full-reconciliation-and-the-cia-failure-variant">6.7 The
+Full Reconciliation and the CIA-Failure Variant</h3>
+<p>Lining up all the estimators to reconcile against the target, the CIA
+arm’s true ATT of 0.254 (with the true ATE of 0.200 as reference):</p>
+<div class="table-scroll">
+<table>
+<thead>
+<tr>
+<th>Estimator</th>
+<th>Estimate</th>
+<th>SE</th>
+<th>Target</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Study A difference in means</td>
+<td>0.206</td>
+<td>0.034</td>
+<td>ATE (truth 0.205)</td>
+</tr>
+<tr>
+<td>Study B naive difference</td>
+<td>0.575</td>
+<td>0.019</td>
+<td>None (biased by 0.322)</td>
+</tr>
+<tr>
+<td>OLS interacted adjustment</td>
+<td>0.239</td>
+<td>0.016</td>
+<td>ATT</td>
+</tr>
+<tr>
+<td>NN matching (AI SE)</td>
+<td>0.246</td>
+<td>0.021</td>
+<td>ATT</td>
+</tr>
+<tr>
+<td>IPW Horvitz-Thompson</td>
+<td>0.217</td>
+<td>0.036</td>
+<td>ATT</td>
+</tr>
+<tr>
+<td>IPW Hajek</td>
+<td>0.230</td>
+<td>0.024</td>
+<td>ATT</td>
+</tr>
+<tr>
+<td>AIPW</td>
+<td>0.235</td>
+<td>0.019</td>
+<td>ATT</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The conclusion is clean: the naive difference of 0.575 is absurdly
+high, and every adjusted estimator pulls it back to between 0.22 and
+0.25, hovering around the true ATT of 0.254. To be honest about it,
+these adjusted values all sit slightly below the ATT, landing between
+the ATE of 0.200 and the ATT of 0.254, and this is finite-sample
+sampling variation, not bias; we cannot claim any estimator “hits the
+ATT exactly.” In direction and magnitude, the teaching point that “the
+naive is far above the truth, and after adjustment it is roughly the
+ATT” holds cleanly.</p>
+<figure>
+<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' viewBox='0 0 547.20 331.20' role="img" aria-label="Point estimates and 95 percent confidence intervals for each estimator, against the true ATT (dashed) and ATE (dotted). The naive difference sits far to the right, while the randomized pilot and the adjusted estimators cluster near the truth." style="max-width:100%;height:auto;display:block;margin:0 auto">
+<g class='svglite'>
+<defs>
+  <style type='text/css'><![CDATA[
+    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {
+      fill: none;
+      stroke: #000000;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-miterlimit: 10.00;
+    }
+    .svglite text {
+      white-space: pre;
+    }
+    .svglite g.glyphgroup path {
+      fill: inherit;
+      stroke: none;
+    }
+  ]]></style>
+</defs>
+<rect width='100%' height='100%' style='stroke: none; fill: #FAFAF9;'/>
+<defs>
+  <clipPath id='g3_cpMC4wMHw1NDcuMjB8MC4wMHwzMzEuMjA='>
+    <rect x='0.00' y='0.00' width='547.20' height='331.20' />
+  </clipPath>
+</defs>
+<g clip-path='url(#g3_cpMC4wMHw1NDcuMjB8MC4wMHwzMzEuMjA=)'>
+<rect x='0.00' y='0.00' width='547.20' height='331.20' style='stroke-width: 1.26; stroke: none; fill: #FAFAF9;' />
+</g>
+<defs>
+  <clipPath id='g3_cpMTA4Ljc3fDU0MC43Mnw3MC41OHwyOTMuOTk='>
+    <rect x='108.77' y='70.58' width='431.95' height='223.40' />
+  </clipPath>
+</defs>
+<g clip-path='url(#g3_cpMTA4Ljc3fDU0MC43Mnw3MC41OHwyOTMuOTk=)'>
+<rect x='108.77' y='70.58' width='431.95' height='223.40' style='stroke-width: 1.26; stroke: none; fill: #FAFAF9;' />
+<polyline points='108.77,272.37 540.72,272.37 ' style='stroke-width: 1.26; stroke: #E6E3DF; stroke-linecap: butt;' />
+<polyline points='108.77,236.33 540.72,236.33 ' style='stroke-width: 1.26; stroke: #E6E3DF; stroke-linecap: butt;' />
+<polyline points='108.77,200.30 540.72,200.30 ' style='stroke-width: 1.26; stroke: #E6E3DF; stroke-linecap: butt;' />
+<polyline points='108.77,164.27 540.72,164.27 ' style='stroke-width: 1.26; stroke: #E6E3DF; stroke-linecap: butt;' />
+<polyline points='108.77,128.24 540.72,128.24 ' style='stroke-width: 1.26; stroke: #E6E3DF; stroke-linecap: butt;' />
+<polyline points='108.77,92.20 540.72,92.20 ' style='stroke-width: 1.26; stroke: #E6E3DF; stroke-linecap: butt;' />
+<polyline points='203.48,293.99 203.48,70.58 ' style='stroke-width: 1.26; stroke: #E6E3DF; stroke-linecap: butt;' />
+<polyline points='358.17,293.99 358.17,70.58 ' style='stroke-width: 1.26; stroke: #E6E3DF; stroke-linecap: butt;' />
+<polyline points='512.85,293.99 512.85,70.58 ' style='stroke-width: 1.26; stroke: #E6E3DF; stroke-linecap: butt;' />
+<line x1='245.12' y1='293.99' x2='245.12' y2='70.58' style='stroke-width: 1.26; stroke: #1A365D; stroke-dasharray: 6.73,6.73; stroke-linecap: butt;' />
+<line x1='203.83' y1='293.99' x2='203.83' y2='70.58' style='stroke-width: 1.26; stroke: #C53030; stroke-dasharray: 1.68,5.04; stroke-linecap: butt;' />
+<text x='247.97' y='266.13' style='font-size: 9.67px;fill: #1A365D; font-family: "Arial";' textLength='71.39px' lengthAdjust='spacingAndGlyphs'>true ATT = 0.254</text>
+<text x='200.94' y='230.10' text-anchor='end' style='font-size: 9.67px;fill: #C53030; font-family: "Arial";' textLength='72.11px' lengthAdjust='spacingAndGlyphs'>true ATE = 0.200</text>
+<polyline points='260.37,276.33 260.37,268.40 ' style='stroke-width: 1.49; stroke: #B7791F; stroke-linecap: butt;' />
+<polyline points='260.37,272.37 156.36,272.37 ' style='stroke-width: 1.49; stroke: #B7791F; stroke-linecap: butt;' />
+<polyline points='156.36,276.33 156.36,268.40 ' style='stroke-width: 1.49; stroke: #B7791F; stroke-linecap: butt;' />
+<polyline points='522.42,240.30 522.42,232.37 ' style='stroke-width: 1.49; stroke: #2B6CB0; stroke-linecap: butt;' />
+<polyline points='522.42,236.33 465.22,236.33 ' style='stroke-width: 1.49; stroke: #2B6CB0; stroke-linecap: butt;' />
+<polyline points='465.22,240.30 465.22,232.37 ' style='stroke-width: 1.49; stroke: #2B6CB0; stroke-linecap: butt;' />
+<polyline points='258.12,96.17 258.12,88.24 ' style='stroke-width: 1.49; stroke: #2B6CB0; stroke-linecap: butt;' />
+<polyline points='258.12,92.20 208.81,92.20 ' style='stroke-width: 1.49; stroke: #2B6CB0; stroke-linecap: butt;' />
+<polyline points='208.81,96.17 208.81,88.24 ' style='stroke-width: 1.49; stroke: #2B6CB0; stroke-linecap: butt;' />
+<polyline points='270.48,132.20 270.48,124.27 ' style='stroke-width: 1.49; stroke: #2B6CB0; stroke-linecap: butt;' />
+<polyline points='270.48,128.24 206.93,128.24 ' style='stroke-width: 1.49; stroke: #2B6CB0; stroke-linecap: butt;' />
+<polyline points='206.93,132.20 206.93,124.27 ' style='stroke-width: 1.49; stroke: #2B6CB0; stroke-linecap: butt;' />
+<polyline points='262.29,168.23 262.29,160.31 ' style='stroke-width: 1.49; stroke: #2B6CB0; stroke-linecap: butt;' />
+<polyline points='262.29,164.27 190.96,164.27 ' style='stroke-width: 1.49; stroke: #2B6CB0; stroke-linecap: butt;' />
+<polyline points='190.96,168.23 190.96,160.31 ' style='stroke-width: 1.49; stroke: #2B6CB0; stroke-linecap: butt;' />
+<polyline points='258.44,204.27 258.44,196.34 ' style='stroke-width: 1.49; stroke: #2B6CB0; stroke-linecap: butt;' />
+<polyline points='258.44,200.30 201.94,200.30 ' style='stroke-width: 1.49; stroke: #2B6CB0; stroke-linecap: butt;' />
+<polyline points='201.94,204.27 201.94,196.34 ' style='stroke-width: 1.49; stroke: #2B6CB0; stroke-linecap: butt;' />
+<circle cx='208.36' cy='272.37' r='3.62' style='stroke-width: 0.84; stroke: #B7791F; fill: #B7791F;' />
+<circle cx='493.82' cy='236.33' r='3.62' style='stroke-width: 0.84; stroke: #2B6CB0; fill: #2B6CB0;' />
+<circle cx='233.47' cy='92.20' r='3.62' style='stroke-width: 0.84; stroke: #2B6CB0; fill: #2B6CB0;' />
+<circle cx='238.70' cy='128.24' r='3.62' style='stroke-width: 0.84; stroke: #2B6CB0; fill: #2B6CB0;' />
+<circle cx='226.63' cy='164.27' r='3.62' style='stroke-width: 0.84; stroke: #2B6CB0; fill: #2B6CB0;' />
+<circle cx='230.19' cy='200.30' r='3.62' style='stroke-width: 0.84; stroke: #2B6CB0; fill: #2B6CB0;' />
+</g>
+<g clip-path='url(#g3_cpMC4wMHw1NDcuMjB8MC4wMHwzMzEuMjA=)'>
+<text x='102.94' y='276.09' text-anchor='end' style='font-size: 10.40px;fill: #2D3748; font-family: "Arial";' textLength='83.94px' lengthAdjust='spacingAndGlyphs'>RCT diff-in-means</text>
+<text x='102.94' y='240.05' text-anchor='end' style='font-size: 10.40px;fill: #2D3748; font-family: "Arial";' textLength='89.36px' lengthAdjust='spacingAndGlyphs'>Naive diff-in-means</text>
+<text x='102.94' y='204.02' text-anchor='end' style='font-size: 10.40px;fill: #2D3748; font-family: "Arial";' textLength='26.58px' lengthAdjust='spacingAndGlyphs'>AIPW</text>
+<text x='102.94' y='167.99' text-anchor='end' style='font-size: 10.40px;fill: #2D3748; font-family: "Arial";' textLength='56.02px' lengthAdjust='spacingAndGlyphs'>IPW (Hajek)</text>
+<text x='102.94' y='131.96' text-anchor='end' style='font-size: 10.40px;fill: #2D3748; font-family: "Arial";' textLength='96.47px' lengthAdjust='spacingAndGlyphs'>NN matching (AI SE)</text>
+<text x='102.94' y='95.92' text-anchor='end' style='font-size: 10.40px;fill: #2D3748; font-family: "Arial";' textLength='74.55px' lengthAdjust='spacingAndGlyphs'>OLS adjustment</text>
+<text x='203.48' y='307.25' text-anchor='middle' style='font-size: 10.40px;fill: #2D3748; font-family: "Arial";' textLength='14.45px' lengthAdjust='spacingAndGlyphs'>0.2</text>
+<text x='358.17' y='307.25' text-anchor='middle' style='font-size: 10.40px;fill: #2D3748; font-family: "Arial";' textLength='14.45px' lengthAdjust='spacingAndGlyphs'>0.4</text>
+<text x='512.85' y='307.25' text-anchor='middle' style='font-size: 10.40px;fill: #2D3748; font-family: "Arial";' textLength='14.45px' lengthAdjust='spacingAndGlyphs'>0.6</text>
+<text x='324.75' y='321.99' text-anchor='middle' style='font-size: 13.00px;fill: #2D3748; font-family: "Arial";' textLength='283.81px' lengthAdjust='spacingAndGlyphs'>Estimated effect on log tickets resolved per agent</text>
+<line x1='212.25' y1='42.52' x2='226.07' y2='42.52' style='stroke-width: 1.49; stroke: #B7791F; stroke-linecap: butt;' />
+<circle cx='219.16' cy='42.52' r='3.62' style='stroke-width: 0.84; stroke: #B7791F; fill: #B7791F;' />
+<line x1='308.89' y1='42.52' x2='322.71' y2='42.52' style='stroke-width: 1.49; stroke: #2B6CB0; stroke-linecap: butt;' />
+<circle cx='315.80' cy='42.52' r='3.62' style='stroke-width: 0.84; stroke: #2B6CB0; fill: #2B6CB0;' />
+<text x='234.28' y='46.24' style='font-size: 10.40px; font-family: "Arial";' textLength='66.41px' lengthAdjust='spacingAndGlyphs'>Study A (RCT)</text>
+<text x='330.91' y='46.24' style='font-size: 10.40px; font-family: "Arial";' textLength='108.06px' lengthAdjust='spacingAndGlyphs'>Study B (observational)</text>
+<text x='108.77' y='17.64' style='font-size: 15.60px; font-weight: bold;fill: #1A365D; font-family: "Arial";' textLength='354.36px' lengthAdjust='spacingAndGlyphs'>Estimates vs. the truth: naive bias and its repair</text>
+</g>
+</g>
+</svg>
+<figcaption aria-hidden="true">Point estimates and 95 percent confidence
+intervals for each estimator, against the true ATT (dashed) and ATE
+(dotted). The naive difference sits far to the right, while the
+randomized pilot and the adjusted estimators cluster near the
+truth.</figcaption>
+</figure>
+<p>The real alarm bell rings in the last step. Change the selection so
+that it additionally attaches to the unobserved <span
+class="math inline">U</span> (the CIA-failure arm), and the true ATT
+becomes 0.311. Run the same procedure once more:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>dff <span class="ot">&lt;-</span> obs; dff<span class="sc">$</span>D <span class="ot">&lt;-</span> obs<span class="sc">$</span>D_fail; dff<span class="sc">$</span>Y <span class="ot">&lt;-</span> obs<span class="sc">$</span>Y_fail   <span class="co"># cleanly swap in the failure-arm treatment and outcome</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>naive_f <span class="ot">&lt;-</span> <span class="fu">mean</span>(dff<span class="sc">$</span>Y[dff<span class="sc">$</span>D<span class="sc">==</span><span class="dv">1</span>]) <span class="sc">-</span> <span class="fu">mean</span>(dff<span class="sc">$</span>Y[dff<span class="sc">$</span>D<span class="sc">==</span><span class="dv">0</span>])</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>ps <span class="ot">&lt;-</span> <span class="fu">glm</span>(D <span class="sc">~</span> size<span class="sc">+</span>dig<span class="sc">+</span>eff<span class="sc">+</span>ind, <span class="at">data =</span> dff, <span class="at">family =</span> binomial)</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>e  <span class="ot">&lt;-</span> <span class="fu">predict</span>(ps, <span class="at">type =</span> <span class="st">&quot;response&quot;</span>); w <span class="ot">&lt;-</span> e<span class="sc">/</span>(<span class="dv">1</span><span class="sc">-</span>e)</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>m0 <span class="ot">&lt;-</span> <span class="fu">predict</span>(<span class="fu">lm</span>(Y <span class="sc">~</span> size<span class="sc">+</span>dig<span class="sc">+</span>eff<span class="sc">+</span>ind, <span class="at">data =</span> dff[dff<span class="sc">$</span>D<span class="sc">==</span><span class="dv">0</span>, ]), <span class="at">newdata =</span> dff)</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>aipw_f <span class="ot">&lt;-</span> <span class="fu">mean</span>((dff<span class="sc">$</span>D<span class="sc">*</span>(dff<span class="sc">$</span>Y<span class="sc">-</span>m0) <span class="sc">-</span> (<span class="dv">1</span><span class="sc">-</span>dff<span class="sc">$</span>D)<span class="sc">*</span>w<span class="sc">*</span>(dff<span class="sc">$</span>Y<span class="sc">-</span>m0)) <span class="sc">/</span> <span class="fu">mean</span>(dff<span class="sc">$</span>D))</span></code></pre></div>
+<p>The naive difference is 0.835 (biased by 0.524). This time the same
+exquisite OLS adjustment reaches only 0.611 (residual bias 0.300), and
+the doubly robust AIPW reaches only 0.613 (residual bias 0.302).
+Adjustment shaves off only part of the bias, and the remaining residual
+of about 0.30 cannot be wiped away no matter what. The reason lies not
+in the method but in the assumption: <span class="math inline">U</span>
+both drives adoption and raises <span class="math inline">Y(0)</span>
+yet is not in <span class="math inline">X</span>, so the CIA is broken
+at the root. AIPW’s double robustness can rescue a misspecified model
+but not a wrong identifying assumption. This residual that cannot be
+wiped away is exactly the endogeneity that instrumental variables in
+Chapter 12 will handle.</p>
+<h2 id="failure-modes-and-robustness">7 Failure Modes and
+Robustness</h2>
+<p>In the simulation the identifying assumptions are manufactured, but
+in real research they can fail at any moment. This section lays out the
+most common ways they fail and the operational responses.</p>
+<p>Inadequate overlap is the most common hard failure of
+selection-on-observables methods. When some class of units almost all
+adopts or almost all does not, <span class="math inline">e(X)</span>
+approaches 0 or 1, IPW’s weights blow up, one or two extreme units
+dominate the whole estimate, and the variance is enormous and unstable.
+The diagnosis is direct: plot the grouped density of the propensity and
+see whether mass piles up at either end and whether the supports
+overlap. Northwind’s overlap was made benign on purpose, and real data
+are often not so courteous. The response is usually trimming, dropping
+the units whose <span class="math inline">e(X)</span> falls in the
+extreme intervals (say outside <span class="math inline">[0.1,
+0.9]</span>) and estimating only in the region of good common
+support.</p>
+<p>But trimming itself overcorrects, and this is a tradeoff to face
+head-on. Dropping units with extreme propensity quietly changes the
+estimand: what you estimate is no longer the ATT for all adopters but
+the ATT for “the portion of adopters in the region of good common
+support,” and the units dropped are often exactly the most typical, most
+policy-relevant extreme units. The harder you trim, the further the
+estimand drifts, and while the variance shrinks, the question being
+answered has also changed. The honest practice is to report how the
+estimate changes before and after trimming, how many observations were
+dropped, and to state clearly who the remaining population is.</p>
+<p>The matching standard-error trap is worth stressing once more. Under
+matching with replacement, both the ordinary regression SE and the
+bootstrap are wrong, the former ignoring the correlation induced by
+match reuse, the latter inconsistent because the matching functional is
+not smooth. What stands up is the Abadie-Imbens analytic variance; if
+matching is on an estimated propensity, it further needs the
+Abadie-Imbens (2016) correction, which usually gives a smaller variance.
+In Northwind the two SEs happen to be close, but this must not be taken
+to mean either one will do, since in real data they can differ by a good
+deal. Whenever you report the standard error of a matching estimate,
+first confirm it is the AI variance and not whatever the software spits
+out by default.</p>
+<p>The CIA is untestable, which is the deepest weakness of the whole
+method, and it must be handled squarely in the argument rather than
+dodged. All you can do is provide indirect circumstantial evidence:
+balance tests to see whether the adjusted covariates are balanced across
+the two groups, placebo tests to see whether a fake treatment that
+should have no effect estimates zero, and pre-treatment outcome tests to
+see whether pre-treatment outcomes are already comparable. These are
+only necessary conditions, and passing them still does not prove the
+CIA. Northwind takes this to the extreme: the CIA-holding arm and the
+CIA-failure arm have nearly identical covariate distributions and nearly
+identical post-adjustment balance, yet one recovers the ATT while the
+other leaves a residual bias of 0.30. The balance test simply cannot
+tell the two cases apart, because the difference hides in the unobserved
+<span class="math inline">U</span>.</p>
+<p>Selection on unobservables is exactly the substance of CIA failure.
+As long as there remains one factor that influences both adoption and
+outcome yet is unobserved, any adjustment based on observable variables
+leaves a residual. This is not a problem that a better matching
+algorithm can solve; it is a failure at the level of identification. The
+way out is either to find quasi-exogenous variation in treatment at the
+design level, using instrumental variables to isolate the endogeneity on
+its own (Chapter 12), or to use panel structure to difference out the
+time-invariant unobserved heterogeneity (Difference-in-Differences,
+later in this series). The honest boundary of selection-on-observables
+methods is to lay out plainly whether the CIA is credible, rather than
+papering over it with a pile of estimator numbers.</p>
+<p>Bad controls are a counterintuitive class of error: more control
+variables are not better. You must never control for any downstream
+variable that responds to treatment. In Northwind, if you were to stuff
+“the additional automation investment a firm makes after adopting the
+assistant” into the regression as a covariate, it would seem to make the
+comparison cleaner, but it in fact blocks a channel through which the
+effect travels, counting part of the real effect as a difference to be
+controlled away; worse still, if this downstream variable is a collider,
+controlling for it artificially manufactures a correlation between
+variables that were unrelated, introducing collider bias. The discipline
+is a single rule: covariates must be measured pre-treatment. To deal
+with trend differences or unobserved heterogeneity, the right road is
+design (IV, panel differencing), not stuffing more controls into the
+regression.</p>
+<p>Stringing these failure modes together, the credibility of selection
+on observables comes down in the end not to the sophistication of the
+estimator but to one judgment: whether the factors influencing adoption
+have truly all been observed. The overlap figure, balance tests, placebo
+tests, the robustness of trimming, and the check for bad controls are
+all evidence marshaled around this one question, and none of them can
+substitute for a substantive judgment about the adoption mechanism. When
+that judgment does not hold, the right response is not to switch to a
+fancier estimator but to switch to a different identification route.</p>
+<h2 id="further-reading">8 Further Reading</h2>
+<div class="readings">
+<p>Required reading, in the suggested order:</p>
+<ul>
+<li>Imbens and Rubin (2015, <em>Causal Inference for Statistics, Social,
+and Biomedical Sciences</em>). The most authoritative textbook on the
+potential-outcomes framework, treating unconfoundedness, matching, and
+subclassification systematically and with restraint, the full backing
+for Sections 2 through 4 of this chapter.</li>
+<li>Rosenbaum and Rubin (1983, <em>Biometrika</em>). The original text
+of the propensity-score theorem; focus on the definitions of the
+balancing score and strong ignorability, the source of Section 3.7.</li>
+<li>LaLonde (1986, <em>American Economic Review</em>) and Dehejia and
+Wahba (1999, <em>JASA</em>; 2002, <em>ReStat</em>). The classic case of
+whether observational methods can reproduce an experiment, best read
+together with the critique of Smith and Todd (2005, <em>Journal of
+Econometrics</em>) to see clearly how fragile the CIA is.</li>
+<li>Imbens (2015, <em>Journal of Human Resources</em>). A practical
+guide to the propensity score, with the most down-to-earth treatment of
+overlap diagnostics, trimming, and the tradeoffs of weighting.</li>
+</ul>
+<p>Further reading:</p>
+<ul>
+<li>Abadie and Imbens (2006, <em>Econometrica</em>). The large-sample
+distribution and analytic variance of matching estimators, the
+theoretical source of the SE trap in Section 4.3.</li>
+<li>Abadie and Imbens (2008, <em>Econometrica</em>). The proof that the
+bootstrap is invalid for nearest-neighbor matching with a fixed number
+of matches, the original reference for that classic trap.</li>
+<li>Abadie and Imbens (2016, <em>Econometrica</em>). The correct
+large-sample variance when matching on an estimated propensity score,
+pointing out that the 2006 variance is conservative here.</li>
+<li>Robins, Rotnitzky and Zhao (1994) and Bang and Robins (2005,
+<em>Biometrics</em>). The theoretical origins of AIPW and double
+robustness; read for the proof of the double-robustness property.</li>
+<li>Blake, Nosko and Tadelis (2015, <em>Econometrica</em>). The
+representative work of using an experiment to puncture an observational
+estimate in a platform setting, Section 5.2 of this chapter.</li>
+<li>Athey and Imbens (2017, <em>Journal of Economic Perspectives</em>)
+and Imbens (2024 review). A map of modern causal inference, placing
+matching, weighting, and machine-learning estimators on a single chart;
+reading it and then returning to this chapter makes each method’s
+position clearer.</li>
+</ul>
+</div>
+<div class="apa-refs">
+<ul>
+<li>Abadie, A., &amp; Imbens, G. W. (2006). Large sample properties of
+matching estimators for average treatment effects. <em>Econometrica,
+74</em>(1), 235-267. <a
+href="https://doi.org/10.1111/j.1468-0262.2006.00655.x"
+class="uri">https://doi.org/10.1111/j.1468-0262.2006.00655.x</a></li>
+<li>Abadie, A., &amp; Imbens, G. W. (2008). On the failure of the
+bootstrap for matching estimators. <em>Econometrica, 76</em>(6),
+1537-1557. <a href="https://doi.org/10.3982/ECTA6474"
+class="uri">https://doi.org/10.3982/ECTA6474</a></li>
+<li>Abadie, A., &amp; Imbens, G. W. (2016). Matching on the estimated
+propensity score. <em>Econometrica, 84</em>(2), 781-807. <a
+href="https://doi.org/10.3982/ECTA11293"
+class="uri">https://doi.org/10.3982/ECTA11293</a></li>
+<li>Athey, S., &amp; Imbens, G. W. (2017). The state of applied
+econometrics: Causality and policy evaluation. <em>Journal of Economic
+Perspectives, 31</em>(2), 3-32. <a
+href="https://doi.org/10.1257/jep.31.2.3"
+class="uri">https://doi.org/10.1257/jep.31.2.3</a></li>
+<li>Bang, H., &amp; Robins, J. M. (2005). Doubly robust estimation in
+missing data and causal inference models. <em>Biometrics, 61</em>(4),
+962-973. <a href="https://doi.org/10.1111/j.1541-0420.2005.00377.x"
+class="uri">https://doi.org/10.1111/j.1541-0420.2005.00377.x</a></li>
+<li>Blake, T., Nosko, C., &amp; Tadelis, S. (2015). Consumer
+heterogeneity and paid search effectiveness: A large-scale field
+experiment. <em>Econometrica, 83</em>(1), 155-174. <a
+href="https://doi.org/10.3982/ECTA12423"
+class="uri">https://doi.org/10.3982/ECTA12423</a></li>
+<li>Dehejia, R. H., &amp; Wahba, S. (1999). Causal effects in
+nonexperimental studies: Reevaluating the evaluation of training
+programs. <em>Journal of the American Statistical Association,
+94</em>(448), 1053-1062. <a
+href="https://doi.org/10.1080/01621459.1999.10473858"
+class="uri">https://doi.org/10.1080/01621459.1999.10473858</a></li>
+<li>Dehejia, R. H., &amp; Wahba, S. (2002). Propensity score-matching
+methods for nonexperimental causal studies. <em>Review of Economics and
+Statistics, 84</em>(1), 151-161. <a
+href="https://doi.org/10.1162/003465302317331982"
+class="uri">https://doi.org/10.1162/003465302317331982</a></li>
+<li>Imbens, G. W. (2015). Matching methods in practice: Three examples.
+<em>Journal of Human Resources, 50</em>(2), 373-419. <a
+href="https://doi.org/10.3368/jhr.50.2.373"
+class="uri">https://doi.org/10.3368/jhr.50.2.373</a></li>
+<li>Imbens, G. W. (2024). Causal inference in the social sciences.
+<em>Annual Review of Statistics and Its Application, 11</em>(1),
+123-152. <a
+href="https://doi.org/10.1146/annurev-statistics-033121-114601"
+class="uri">https://doi.org/10.1146/annurev-statistics-033121-114601</a></li>
+<li>Imbens, G. W., &amp; Rubin, D. B. (2015). <em>Causal inference for
+statistics, social, and biomedical sciences: An introduction</em>.
+Cambridge University Press. <a
+href="https://doi.org/10.1017/CBO9781139025751"
+class="uri">https://doi.org/10.1017/CBO9781139025751</a></li>
+<li>LaLonde, R. J. (1986). Evaluating the econometric evaluations of
+training programs with experimental data. <em>American Economic Review,
+76</em>(4), 604-620. <a href="https://www.jstor.org/stable/1806062"
+class="uri">https://www.jstor.org/stable/1806062</a></li>
+<li>Robins, J. M., Rotnitzky, A., &amp; Zhao, L. P. (1994). Estimation
+of regression coefficients when some regressors are not always observed.
+<em>Journal of the American Statistical Association, 89</em>(427),
+846-866. <a href="https://doi.org/10.1080/01621459.1994.10476818"
+class="uri">https://doi.org/10.1080/01621459.1994.10476818</a></li>
+<li>Rosenbaum, P. R., &amp; Rubin, D. B. (1983). The central role of the
+propensity score in observational studies for causal effects.
+<em>Biometrika, 70</em>(1), 41-55. <a
+href="https://doi.org/10.1093/biomet/70.1.41"
+class="uri">https://doi.org/10.1093/biomet/70.1.41</a></li>
+<li>Smith, J. A., &amp; Todd, P. E. (2005). Does matching overcome
+LaLonde’s critique of nonexperimental estimators? <em>Journal of
+Econometrics, 125</em>(1-2), 305-353. <a
+href="https://doi.org/10.1016/j.jeconom.2004.04.011"
+class="uri">https://doi.org/10.1016/j.jeconom.2004.04.011</a></li>
+</ul>
+</div>
+    <footer class="page-footer">
+<span>Foundations of Information Systems Economics: Empirical Methods for Information Systems Economics</span>
+    </footer>
+  </main>
+</div>
+<script>
+(function(){var p=(location.pathname.split('/').pop()||'index.html');document.querySelectorAll('.file-nav a').forEach(function(a){if(a.getAttribute('href')===p)a.classList.add('current');});})();
+
+/* Preserve complete formulas without internal scrollbars. Only formulas whose
+   natural width exceeds their text column are reduced, and resize restores the
+   largest size that fits. */
+(function () {
+  function fitMath() {
+    document.querySelectorAll('span.math').forEach(function (host) {
+      var katex = host.querySelector('.katex');
+      if (!katex) return;
+      katex.style.fontSize = '';
+      var parent = host.classList.contains('display') ? host : host.parentElement;
+      var available = Math.max(1, parent.clientWidth);
+      /* KaTeX's box can be clipped to the host before measurement; scrollWidth
+         retains the full typeset width and is therefore the correct basis. */
+      var needed = Math.max(katex.scrollWidth, katex.getBoundingClientRect().width);
+      /* Keep a small safety margin for KaTeX glyph overhangs and browser
+         sub-pixel rounding, so the last radical/bar is never clipped. */
+      var target = available * 0.98;
+      if (needed > target) {
+        katex.style.fontSize = Math.max(0.34, target / needed) + 'em';
+      }
+    });
+  }
+  document.addEventListener('DOMContentLoaded', function () {
+    requestAnimationFrame(fitMath);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitMath);
+  });
+  window.addEventListener('resize', fitMath);
+}());
+</script>
+<script defer src="assets/notes.js"></script>
+</body>
+</html>

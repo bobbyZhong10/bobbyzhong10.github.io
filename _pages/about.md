@@ -60,5 +60,20 @@ My research focuses on the economics of digital platforms and artificial intelli
 <section class="home-section home-section--compact">
   <div class="visitor-map">
     <script type='text/javascript' id='mapmyvisitors' src='https://mapmyvisitors.com/map.js?cl=ffffff&w=280&t=n&d=TA8pmEL4G-sfNd8cPpO5EpflMiKxnDDIwjKdS5HqpDw&co=d6cfe8&ct=000000'></script>
+    <script>
+      (function(container) {
+        function labelMapLink() {
+          var link = container.querySelector('a[href]');
+          if (!link) return false;
+          link.setAttribute('aria-label', 'Visitor map');
+          return true;
+        }
+        if (labelMapLink()) return;
+        var observer = new MutationObserver(function() {
+          if (labelMapLink()) observer.disconnect();
+        });
+        observer.observe(container, { childList: true, subtree: true });
+      }(document.currentScript.parentElement));
+    </script>
   </div>
 </section>

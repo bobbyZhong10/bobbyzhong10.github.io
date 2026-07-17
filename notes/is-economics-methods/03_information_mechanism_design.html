@@ -1,0 +1,1564 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Information Economics, Contracts &amp; Mechanism Design | IS
+Economics · Empirical Methods</title>
+  <link rel="stylesheet" href="assets/style.css" />
+  <script defer="" src="assets/katex/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <link rel="stylesheet" href="assets/katex/katex.min.css" />
+</head>
+<body>
+<div class="page-wrapper">
+  <nav class="sidebar">
+    <div class="sidebar-title">Foundations of Information Systems Economics</div>
+    <div class="sidebar-subtitle">Theory · Methods · Applications</div>
+    <div class="toc-section-label">On this page</div>
+    <div class="toc">
+<ul>
+<li><a href="#introduction" id="toc-introduction">Introduction</a></li>
+<li><a href="#an-auction-that-cannot-extract-the-truth"
+id="toc-an-auction-that-cannot-extract-the-truth">1 An Auction That
+Cannot Extract the Truth</a></li>
+<li><a href="#mechanisms-and-constraints-under-private-information"
+id="toc-mechanisms-and-constraints-under-private-information">2
+Mechanisms and Constraints Under Private Information</a></li>
+<li><a href="#core-structure-from-adverse-selection-to-mechanism-design"
+id="toc-core-structure-from-adverse-selection-to-mechanism-design">3
+Core Structure: From Adverse Selection to Mechanism Design</a></li>
+<li><a href="#auctions-and-revenue-equivalence"
+id="toc-auctions-and-revenue-equivalence">4 Auctions and Revenue
+Equivalence</a></li>
+<li><a href="#anchoring-papers" id="toc-anchoring-papers">5 Anchoring
+Papers</a></li>
+<li><a href="#running-case-vireos-ad-slot-auction"
+id="toc-running-case-vireos-ad-slot-auction">6 Running Case: Vireo’s Ad
+Slot Auction</a></li>
+<li><a href="#failure-modes-and-robustness-of-mechanisms"
+id="toc-failure-modes-and-robustness-of-mechanisms">7 Failure Modes and
+Robustness of Mechanisms</a></li>
+<li><a href="#further-reading" id="toc-further-reading">8 Further
+Reading</a></li>
+</ul>
+    </div>
+    <div class="file-nav">
+      <div class="nav-label">This series</div>
+      <a href="index.html">Home · Overview</a>
+      <a href="introduction.html">Introduction · How to Use</a>
+      <a href="01_consumer_producer_welfare.html">01 Consumer, Producer &amp; Welfare</a>
+      <a href="02_game_theory.html">02 Game Theory</a>
+      <a href="03_information_mechanism_design.html">03 Information &amp; Mechanism Design</a>
+      <a href="04_pricing_imperfect_competition.html">04 Pricing &amp; Imperfect Competition</a>
+      <a href="05_estimation_mle_gmm.html">05 Estimation: MLE &amp; GMM</a>
+      <a href="06_inference.html">06 Inference: Bootstrap &amp; Clustering</a>
+      <a href="07_panel_dynamic_panel.html">07 Panel &amp; Dynamic Panel</a>
+      <a href="08_nonparametrics.html">08 Nonparametrics &amp; Semiparametrics</a>
+      <a href="09_potential_outcomes.html">09 Potential Outcomes &amp; Selection</a>
+      <a href="10_research_design_architecture.html">10 Research Design</a>
+      <a href="11_measurement_digital_traces.html">11 Measurement &amp; Digital Traces</a>
+      <a href="12_iv_late_mte.html">12 IV: LATE &amp; MTE</a>
+      <a href="13_did_event_studies.html">13 DiD &amp; Event Studies</a>
+      <a href="14_rdd_synthetic_control.html">14 RDD &amp; Synthetic Control</a>
+      <a href="15_sensitivity_partial_identification.html">15 Sensitivity &amp; Partial Identification</a>
+      <a href="16_causal_ml_dml.html">16 Causal ML &amp; DML</a>
+      <a href="17_digital_experimentation.html">17 Digital Experimentation</a>
+      <a href="18_interference_marketplace_experiments.html">18 Interference &amp; Marketplace Experiments</a>
+      <a href="19_discrete_choice.html">19 Discrete Choice &amp; Mixed Logit</a>
+      <a href="20_demand_blp.html">20 Demand Estimation &amp; BLP</a>
+      <a href="21_supply_markups_mergers.html">21 Supply, Markups &amp; Mergers</a>
+      <a href="22_entry_partial_id.html">22 Entry &amp; Partial Identification</a>
+      <a href="23_dynamic_structural.html">23 Dynamic Structural Models</a>
+      <a href="24_platforms_networks.html">24 Platforms &amp; Network Effects</a>
+      <a href="25_search_advertising.html">25 Search, Advertising &amp; Information Goods</a>
+      <a href="26_ai_algorithms_data.html">26 AI, Adoption &amp; Data Economics</a>
+      <a href="27_quick_reference.html">27 Quick Reference &amp; Tools</a>
+    </div>
+  </nav>
+  <main class="main-content" id="top">
+    <header class="page-header">
+      <h1>Information Economics, Contracts &amp; Mechanism Design</h1>
+      <div class="subtitle">Private Information, Incentives, and the
+Design of Rules</div>
+      <div class="meta">Foundations of Information Systems Economics · Chapter 3</div>
+    </header>
+<h2 id="introduction">Introduction</h2>
+<p>A platform asks advertisers to report how much a click is worth to
+them, then hands the best ad slot to the highest reported value. The
+rule looks fair, except it skips one detail: the advertiser knows its
+own value and the platform does not, and when a single bid decides both
+the slot and the payment, telling the truth need not pay off. Any
+institution that asks participants to volunteer their private
+information, without first answering the question of whether lying is
+profitable, tends to collect strategy rather than information.</p>
+<p>Asymmetric information wears two faces. What is hidden before
+contracting is a type: a low quality seller, a low risk borrower, and a
+high value advertiser can all try to disguise themselves. What is hidden
+after contracting is an action: effort, maintenance, and content
+moderation cannot be fully monitored. Signaling, screening, and
+contracts each address one of these difficulties, while mechanism design
+turns the problem around: instead of taking the rules as given and
+predicting an equilibrium, it starts from the outcome we want and
+searches for rules under which self interested participants cooperate of
+their own accord. Incentive compatibility and individual rationality are
+therefore not side conditions but the boundary within which an
+institution can function at all.</p>
+<p>This chapter takes Vireo’s ad slot auction as its through line. We
+start from a rule that cannot extract the truth, then compare VCG, the
+generalized second price auction, reserve prices, and revenue
+equivalence, and finally carry the same ideas into information design,
+cheap talk, and matching. The question running through the chapter is
+plain: the platform cannot order participants to hand over their true
+information, but can it arrange payments, menus, or signals so that
+telling the truth or self selecting turns out to be in their own
+interest? That question is also the first one worth asking when we later
+study platform governance, online advertising, rating systems, and
+digital contracts.</p>
+<h2 id="an-auction-that-cannot-extract-the-truth">1 An Auction That
+Cannot Extract the Truth</h2>
+<div class="case">
+<p>The search platform Vireo wants to sell the ad slots on a page of
+search results to advertisers. To shrink the problem to the smallest
+scale we can compute by hand, consider a concrete setup: there are two
+ad slots, the top slot delivers 100 clicks per month and the second slot
+40 clicks (a higher position draws more clicks, and this gap in click
+volume is the position effect). Three advertisers have private per click
+values of 10, 6, and 4 yuan respectively (a larger number means the
+advertiser cares more about the exposure, and this value is known only
+to the advertiser itself). Vireo wants to give the slots to the
+advertisers who value them most, and to collect as much money as
+possible.</p>
+</div>
+<p>Vireo’s product manager proposes something straightforward: let the
+three advertisers each report a per click price they are willing to pay,
+give the top slot to the highest report and the second slot to the next
+highest, and charge each advertiser the price it reported. This is the
+pay-your-bid first price auction. He casually estimates the revenue:
+advertisers will report their true values 10, 6, and 4, so the top slot
+advertiser pays <span class="math inline">10 \times 100 = 1000</span>,
+the second slot pays <span class="math inline">6 \times 40 = 240</span>,
+and one auction brings in 1240 yuan.</p>
+<p>Buried in that estimate is a fatal assumption: that advertisers will
+report truthfully. But a moment of thinking on the advertiser’s behalf
+shows that when you pay what you report, nobody reports the truth. If
+the advertiser with value 10 truly reported 10, it would win the top
+slot but hand over all of its surplus, for a net payoff of zero. It will
+clearly shave its report down, low enough that it still just wins, while
+keeping as much surplus as possible for the position it lands. Exactly
+how far it shaves depends on how it guesses its rivals will report, and
+the rivals are running the same calculation, so bidding turns into a
+game of mutual second guessing in which nobody’s report equals anybody’s
+value. The product manager’s 1240 rests entirely on the sand of “the
+report equals the value.” Once we admit that advertisers will shade,
+that number can neither be computed accurately nor extract what he
+really wants to know: who values these slots the most.</p>
+<p>The root of the problem is that the first price auction gives
+advertisers no reason to report truthfully. What Vireo really needs is a
+set of rules under which “reporting the true value” is itself each
+advertiser’s best choice, no matter what the others report. Does such a
+rule exist? If it does, how much money does it collect, and is it the
+one that collects the most? These questions are the heart of mechanism
+design, and this chapter answers them one by one. Section 3.6 gives a
+VCG mechanism that makes truthful reporting a dominant strategy, and
+Section 6 applies it to Vireo’s numerical example and finds that it
+should really collect only 680 yuan, far less than that inflated 1240,
+but a defensible number built on the advertisers’ truth. Truth is worth
+more than an inflated figure on paper: that is the first idea this
+chapter aims to establish.</p>
+<h2 id="mechanisms-and-constraints-under-private-information">2
+Mechanisms and Constraints Under Private Information</h2>
+<p>To analyze asymmetric information, we first write a mechanism down in
+full. Take adverse selection as the skeleton: each participant has a
+private type <span class="math inline">\theta_i</span>, encoding
+information known only to itself (value, quality, cost), and the prior
+distribution of types is common knowledge (a reminder: throughout this
+chapter <span class="math inline">\theta</span> denotes a private type,
+unlike the convention elsewhere in the book where <span
+class="math inline">\theta</span> denotes a structural parameter, so
+read it from context). A mechanism specifies what messages participants
+may send (for instance, reporting a price), and the outcome under each
+combination of messages (including who gets what allocation, and who
+pays how much in transfers). Participants choose messages to maximize
+their own payoff given their types, so the outcome of the mechanism is
+the equilibrium of a game whose inputs are the types.</p>
+<p>Two constraints run through all of mechanism design, and we must
+state them clearly up front. The first is incentive compatibility (IC):
+the mechanism must make each participant, out of self interest, make the
+choice the designer wants. In a direct mechanism (where participants
+report their types directly), IC means that reporting your type
+truthfully is no worse than misreporting as any other type. The second
+is individual rationality (IR, also called the participation
+constraint): participating voluntarily is no worse than not
+participating, or the participant will drop out. Almost every mechanism
+design problem optimizes some objective (efficiency or revenue) subject
+to the IC and IR constraints, and this “objective plus two classes of
+constraints” structure is the unifying template for all the analysis in
+this chapter, of a piece with the discipline of the previous chapter,
+which insisted on fixing the target quantity before discussing
+implementation.</p>
+<p>The objective has two common choices, corresponding to two kinds of
+mechanism. A mechanism that pursues efficiency gives the allocation to
+the people who value it most, maximizing total surplus, and VCG is its
+representative. A mechanism that pursues revenue collects the most for
+the designer subject to IC and IR, and Myerson’s optimal auction is its
+representative. The two generally do not coincide: the efficient
+mechanism need not collect the most revenue, and the revenue optimal
+mechanism often sacrifices a bit of efficiency (for instance, by setting
+a reserve price that keeps low value bidders out). The revenue
+equivalence and optimal auction results in Section 4 will make this
+tension precise.</p>
+<p>The primitives of moral hazard differ slightly, but the template is
+the same. Here what is private is not a type but an action (usually
+effort), which affects the probability distribution of the outcome but
+is itself unobservable. The designer can only pay based on the
+observable outcome, so IC becomes “make the participant voluntarily
+choose the effort level the designer wants,” and the constraint is
+written on the marginal return to effort. Section 3.4 develops this.</p>
+<p>To summarize: a mechanism consists of messages and outcomes,
+participants best respond according to their private types or actions,
+and all mechanism design optimizes efficiency or revenue subject to IC
+(which aligns self interested choices with the designer’s intent) and IR
+(which keeps participants in voluntarily). We now work through the two
+broad classes of asymmetric information one by one, in the most detailed
+section of the chapter.</p>
+<h2 id="core-structure-from-adverse-selection-to-mechanism-design">3
+Core Structure: From Adverse Selection to Mechanism Design</h2>
+<p>This section dissects the core models one by one, organized by the
+type of asymmetric information and by who moves first, and finally
+converges on the two grand theorems of mechanism design: the revelation
+principle and VCG.</p>
+<h3 id="adverse-selection-and-market-unraveling">3.1 Adverse Selection
+and Market Unraveling</h3>
+<p>The most basic consequence of asymmetric information is that it can
+make an entire market that should exist disappear. Akerlof’s used car
+market is the prototype of this idea, and it holds equally well in
+platform language. Imagine a resale platform for used equipment, where
+the quality <span class="math inline">\theta</span> of a seller’s
+equipment is, from the buyer’s perspective, uniformly distributed on
+<span class="math inline">[0, 1]</span>. The seller knows the exact
+<span class="math inline">\theta</span> and values it at exactly <span
+class="math inline">\theta</span>, while a buyer who acquires equipment
+of quality <span class="math inline">\theta</span> is willing to pay
+<span class="math inline">1.5\theta</span> (the buyer puts it to better
+use, so values it more, and there should be room to trade).</p>
+<p>The trouble is that the buyer cannot see <span
+class="math inline">\theta</span> and can only bid based on average
+quality. At price <span class="math inline">p</span>, the only sellers
+willing to sell are those whose value does not exceed <span
+class="math inline">p</span>, that is, the batch with <span
+class="math inline">\theta \leq p</span>, whose average quality is <span
+class="math inline">p/2</span>. A rational buyer anticipates this and is
+willing to pay only <span class="math inline">1.5 \times (p/2) =
+0.75p</span>, strictly below the asking price <span
+class="math inline">p</span>. So at any positive price the buyer refuses
+to trade, and the market shrinks all the way down to only the worst
+equipment with <span class="math inline">\theta = 0</span>, with the
+entire block of mutually beneficial trade eaten away by adverse
+selection. This is market unraveling: the presence of low quality
+sellers squeezes high quality sellers out of the market, because price
+cannot tell the two apart. The platform analogue is everywhere. Once low
+quality sellers, order faking merchants, and fake reviews cannot be
+distinguished from the good ones, they drive the good ones out, and this
+is the fundamental reason platforms pour so many resources into building
+rating, certification, and guarantee systems: at bottom, these are all
+information mechanisms for fighting adverse selection.</p>
+<h3 id="signaling-the-informed-party-speaks-up">3.2 Signaling: The
+Informed Party Speaks Up</h3>
+<p>There are two directions for fighting adverse selection, depending on
+who breaks the asymmetry. The first is to let the party holding the
+private information do something to prove itself, and this is signaling,
+with Spence’s education signaling model as the prototype.</p>
+<p>The core mechanism is this: if an action is less costly for a high
+type than for a low type, then that action can credibly separate the
+two. An equipment seller offering a long warranty is the platform
+version of a signal. For a seller of good equipment, the warranty almost
+never triggers a payout and is cheap; for a seller of bad equipment, the
+warranty will most likely have to pay out and is expensive. So only good
+sellers are willing to offer a long warranty, and the warranty itself
+becomes a credible signal of quality, even though the buyer cannot see
+quality but can see the warranty. The key here is the single-crossing
+property: the cost of the signal varies systematically with type, so
+high and low types make different tradeoffs over “how strong a signal to
+send,” which lets the signal separate them.</p>
+<p>The equilibria of a signaling game come in two kinds. In a separating
+equilibrium different types send signals of different strength, and the
+buyer can perfectly infer type from the signal; in a pooling equilibrium
+all types send the same signal, and the signal carries no information.
+Which equilibrium arises depends on the cost structure and on the
+buyer’s off-path beliefs (what to believe upon seeing a signal never
+observed), and the latter is exactly the object that, as noted in
+Section 3.5 of the previous chapter, needs refinements such as
+sequential equilibrium to pin down. Signaling has a welfare implication
+worth emphasizing: it is often pure waste. To separate itself from the
+low quality types, a high quality type must incur a heavy cost to send
+the signal (excessive warranties, excessive investment), and this cost
+creates no real value, spent purely to overcome the asymmetry, a social
+cost that adverse selection imposes on the market.</p>
+<h3 id="screening-the-uninformed-party-designs-a-menu">3.3 Screening:
+The Uninformed Party Designs a Menu</h3>
+<p>The second direction for fighting adverse selection runs the other
+way: let the party without the information design a self selection menu
+that induces each type to reveal itself, and this is screening. Its only
+difference from signaling is who moves first: in signaling the informed
+party speaks first, and in screening the uninformed party puts out a
+menu first.</p>
+<p>Screening is everywhere in platform settings. A cloud service
+platform faces two classes of customers, high usage and low usage, but
+cannot tell who is who, so instead of setting a single price it lays out
+a tiered menu (a basic plan with a usage cap and a low price, a
+professional plan with no cap and a high price) and lets customers
+choose, and high usage customers naturally choose the professional plan.
+For this menu to work, it must satisfy IC and IR: each class of customer
+must find that choosing the tier designed for it is no worse than
+choosing another tier (IC) and no worse than choosing nothing (IR).
+Solving these constraints forces out a core concept that recurs
+throughout mechanism design: information rent.</p>
+<p>The logic of information rent goes like this: to keep the high type
+customer from impersonating the low type and choosing the cheap tier,
+the platform must leave the high type a little extra benefit (otherwise
+it would go and grab the benefit of the low price tier), and this
+benefit the platform is forced to concede is the information rent, the
+rent the holder of private information captures by virtue of its
+informational advantage. The result is a general tradeoff running
+through contract theory, the rent-efficiency tradeoff: to hold down the
+information rent it must pay the high type, the designer deliberately
+distorts the allocation given to the low type (for instance, capping the
+basic plan’s usage below the efficient level), trading an efficiency
+loss for a rent saving. This structure of “distort the bottom to squeeze
+the top” will be computed in detail in Section 6 and later in this
+series when we cover second degree price discrimination, and it is also
+the key to understanding why platforms so often make their low end
+products deliberately crippled.</p>
+<figure>
+<svg viewBox="0 0 700 320" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, 'Noto Sans SC', sans-serif" role="img" aria-label="Single crossing and information rent in screening: the reservation utility curves of two customer classes (t = \theta V(q), steeper for the high type). The low type receives the distorted, pushed down q_L and sits on its own IR curve (no rent); the high type receives the efficient quantity q_H and, to satisfy IC, is left a slice of information rent (its payment t_H falls below the height of its own IR curve at q_H, the vertical gap in the figure)." style="max-width:100%;height:auto;display:block;margin:0 auto">
+  <line x1="70" y1="40" x2="70" y2="280" stroke="#94a1b2" stroke-width="1.5"/>
+  <line x1="70" y1="280" x2="640" y2="280" stroke="#94a1b2" stroke-width="1.5"/>
+  <text x="70" y="30" text-anchor="start" font-size="13" fill="#64748b">payment t</text>
+  <text x="640" y="300" text-anchor="end" font-size="13" fill="#64748b">allocation q →</text>
+
+  <polyline fill="none" stroke="#c53030" stroke-width="2.2" points="79.2,253.6 106.9,226.9 134.6,209.8 162.4,196.0 190.1,184.3 217.8,173.8 245.6,164.2 273.3,155.4 301.0,147.2 328.8,139.5 356.5,132.1 384.3,125.1 412.0,118.4 439.7,112.0 467.5,105.8 495.2,99.9 522.9,94.1 550.7,88.5 578.4,83.0 606.1,77.7 620.0,75.1"/>
+  <text x="600" y="70" text-anchor="end" font-size="12" fill="#c53030">high type IR: t = θH·V(q)</text>
+
+  <polyline fill="none" stroke="#c53030" stroke-width="1.5" stroke-dasharray="5 4" points="120.8,270.3 162.4,248.6 204.0,231.5 245.6,216.8 287.2,203.8 328.8,192.0 370.4,181.2 412.0,171.0 453.6,161.5 495.2,152.4 536.8,143.8 578.4,135.6 620.0,127.7"/>
+
+  <polyline fill="none" stroke="#7c7f46" stroke-width="2.2" points="79.2,265.3 106.9,250.5 134.6,241.0 162.4,233.4 190.1,226.8 217.8,221.0 245.6,215.7 273.3,210.8 301.0,206.2 328.8,201.9 356.5,197.8 384.3,194.0 412.0,190.2 439.7,186.7 467.5,183.2 495.2,179.9 522.9,176.7 550.7,173.6 578.4,170.6 606.1,167.6 620.0,166.2"/>
+  <text x="612" y="163" text-anchor="end" font-size="12" fill="#5a5d33">low type IR</text>
+
+  <line x1="253.3" y1="214.3" x2="253.3" y2="280" stroke="#cfccc4" stroke-width="1.2" stroke-dasharray="4 4"/>
+  <line x1="482.5" y1="102.6" x2="482.5" y2="280" stroke="#cfccc4" stroke-width="1.2" stroke-dasharray="4 4"/>
+  <text x="253.3" y="296" text-anchor="middle" font-size="12" fill="#5a5d33">q_L (distorted down)</text>
+  <text x="482.5" y="296" text-anchor="middle" font-size="12" fill="#c53030">q_H (efficient qty)</text>
+
+  <circle cx="253.3" cy="214.3" r="4.5" fill="#5a5d33"/>
+  <text x="245" y="207" text-anchor="end" font-size="12" fill="#5a5d33">A</text>
+  <circle cx="482.5" cy="155.1" r="4.5" fill="#c53030"/>
+  <text x="491" y="152" text-anchor="start" font-size="12" fill="#c53030">B</text>
+
+  <line x1="482.5" y1="102.6" x2="482.5" y2="155.1" stroke="#1a365d" stroke-width="3"/>
+  <text x="492" y="132" text-anchor="start" font-size="12" fill="#1a365d">information rent</text>
+</svg>
+<figcaption aria-hidden="true">Single crossing and information rent in
+screening: the reservation utility curves of two customer classes (<span
+class="math inline">t = \theta V(q)</span>, steeper for the high type).
+The low type receives the distorted, pushed down <span
+class="math inline">q_L</span> and sits on its own IR curve (no rent);
+the high type receives the efficient quantity <span
+class="math inline">q_H</span> and, to satisfy IC, is left a slice of
+information rent (its payment <span class="math inline">t_H</span> falls
+below the height of its own IR curve at <span
+class="math inline">q_H</span>, the vertical gap in the
+figure).</figcaption>
+</figure>
+<div class="intuition">
+<p>Signaling and screening are two sides of the same coin, and grasping
+their division of labor saves a lot of confusion: who has the
+information and who moves first determines which language to use. The
+informed party moving first and burning money to prove itself is
+signaling (a job seeker earning a degree, a seller offering a warranty);
+the uninformed party moving first and laying out a menu to induce self
+selection is screening (an employer setting a pay ladder, a platform
+tiering its service, a monopolist doing price discrimination). Both rely
+on single-crossing to make types separable, and both incur a cost: the
+cost of signaling is the good type’s money burning, and the cost of
+screening is the distortion of the low end allocation plus the
+information rent at the high end. The platform is both the stage for
+signaling and the designer of screening, and seeing clearly which side
+of the coin it stands on at any moment gets you half the analysis for
+free.</p>
+</div>
+<h3 id="moral-hazard-incentivizing-an-unseen-action">3.4 Moral Hazard:
+Incentivizing an Unseen Action</h3>
+<p>Everything above is hidden information before contracting. Moral
+hazard is a hidden action after contracting: once the contract is
+signed, the effort one party takes is unseen by the other, who observes
+only the outcome, which is shaped by effort but also laced with luck. In
+the classic principal-agent problem, a principal (say, a platform) hires
+an agent (say, an operations team) to do work, the agent’s effort
+affects the probability distribution of performance, but effort itself
+is unobservable, so the platform can only pay based on observable
+performance.</p>
+<p>Let us make the mechanism concrete with the smallest example we can
+compute by hand. The operations team can choose high effort or low
+effort, with high effort costing 5 and low effort costing 0. Under high
+effort the probability of high performance (worth 100) is 0.8, and under
+low effort only 0.2; when performance is low the value is 0. The
+platform pays by performance, <span class="math inline">w_H</span> when
+performance is high and <span class="math inline">w_L</span> when it is
+low, subject to limited liability (<span class="math inline">w \geq
+0</span>, so it cannot charge the team). If the platform wants to induce
+high effort, it must make high effort no worse than low effort for the
+team, which is the IC constraint:</p>
+<p><span class="math display">0.8\, w_H + 0.2\, w_L - 5 \;\geq\; 0.2\,
+w_H + 0.8\, w_L</span></p>
+<p>Rearranging gives <span class="math inline">0.6(w_H - w_L) \geq
+5</span>, that is <span class="math inline">w_H - w_L \geq 25/3</span>.
+The pay gap between good and bad performance must be large enough for
+the team to have any motive to exert effort. Under limited liability the
+platform pushes <span class="math inline">w_L</span> down to 0, so <span
+class="math inline">w_H = 25/3 \approx 8.33</span>. Substituting back,
+the team’s expected payoff is <span class="math inline">0.8 \times 25/3
+- 5 = 5/3 \approx 1.67 &gt; 0</span>, strictly positive, a rent the team
+collects for free.</p>
+<p>This small example distills two general lessons of moral hazard. The
+first is the risk-incentive tradeoff: to incentivize effort you must
+make pay vary with performance (widening the gap between <span
+class="math inline">w_H</span> and <span
+class="math inline">w_L</span>), but performance is laced with luck, so
+making pay track performance means loading risk onto a risk averse
+agent, and the stronger the incentive the more risk imposed, so the
+optimal contract compromises between incentives and insurance. The
+second is the limited-liability rent: when you cannot fine the agent,
+widening the pay gap enough to satisfy IC often forces you to leave the
+agent a rent it collects even if it does nothing extra, which is exactly
+the 5/3 above. Commission rates, ratings, bans, and deposit schemes on
+platforms are, at bottom, all incentive designs for solving moral hazard
+under limited liability.</p>
+<p>Generalizing effort from two levels to a continuum is what makes
+clear how the shape of the optimal contract is determined by the
+performance signal. Let effort <span class="math inline">e</span> be a
+continuous variable with an increasing, convex cost <span
+class="math inline">c(e)</span>, let performance <span
+class="math inline">x</span> have density <span class="math inline">f(x
+\mid e)</span>, and let the agent’s compensation contract be a curve
+<span class="math inline">w(x)</span> that varies with performance.
+Solving the inner optimization “which <span class="math inline">e</span>
+will the agent choose” directly is hard, and the standard move is the
+first-order approach: under suitable regularity conditions, replace the
+entire IC constraint with the first order condition of the agent’s
+effort choice, <span class="math inline">\int u(w(x))\,\partial_e
+f(x\mid e)\,dx = c&#39;(e)</span>, collapsing the two level problem into
+a single level problem solvable by Lagrange methods. The optimal
+contract that comes out has a beautiful characterization, Holmström’s
+(1979) informativeness principle: the optimal pay should hinge on the
+likelihood ratio <span class="math inline">\partial_e f(x\mid e)/f(x\mid
+e)</span>, which measures the extent to which observing performance
+<span class="math inline">x</span> is evidence of high effort rather
+than luck. Its practical import is strong: any additional signal that
+reduces the noise in inferring effort, even if it creates no value
+directly, should be written into the contract (which is exactly why,
+when a platform evaluates a seller, it folds in side evidence like
+return rates, response times, and peer benchmarks); conversely, a metric
+unrelated to effort and purely noisy should not enter pay. The
+first-order approach has its fragility too: when the performance
+distribution fails conditions like the monotone likelihood ratio,
+replacing IC with the first order condition can break down and give a
+false optimum, a boundary Section 7 will flag.</p>
+<h3
+id="the-revelation-principle-why-direct-truthful-mechanisms-are-enough">3.5
+The Revelation Principle: Why Direct Truthful Mechanisms Are Enough</h3>
+<p>The space of mechanisms is frighteningly large: bids, menus, multi
+round games, arbitrarily complex message rules, and the designer can
+choose any of them. The revelation principle is a powerful result that
+abruptly shrinks this space, and it says: any outcome a mechanism can
+implement in equilibrium can also be implemented by a mechanism that is
+direct (participants report only their own types) and truthful
+(reporting truthfully is an equilibrium).</p>
+<p>The intuition is unexpectedly simple. Suppose some complex mechanism
+has an equilibrium in which participants follow some equilibrium
+strategies given their types. Now build a direct mechanism: let
+participants report only their types, and then have the designer
+execute, on their behalf, the equilibrium strategy corresponding to that
+type in the original mechanism. Since acting according to the true type
+was already an equilibrium in the original mechanism, reporting the type
+truthfully is an equilibrium in this new mechanism, and the outcome is
+exactly the same as the original. In other words, the designer can
+internalize “the strategy the participants would have played” into the
+mechanism and execute it itself, leaving participants with nothing to do
+but report their types truthfully.</p>
+<p>The use of this principle is methodological: to argue whether some
+objective can be achieved and what the optimal mechanism looks like, we
+need not search across all the strange and exotic mechanisms, but only
+within the small class of “direct and truthfully incentive compatible”
+mechanisms, because anything any other mechanism can do, this small
+class can do too. Section 4’s derivation of revenue equivalence and
+Myerson’s derivation of the optimal auction both rely on this
+contraction. It also explains why the analysis of mechanism design
+always starts from “let participants report their types truthfully”:
+that is not a simplifying assumption but a lossless reduction guaranteed
+by the revelation principle.</p>
+<h3 id="vcg-making-truth-a-dominant-strategy">3.6 VCG: Making Truth a
+Dominant Strategy</h3>
+<p>Now we return to the question of Section 1: does there exist a
+mechanism that makes truthful reporting a dominant strategy while giving
+the allocation to those who value it most? There does, and it is the
+Vickrey-Clarke-Groves (VCG) mechanism, which this section presents and
+proves to be dominant strategy truthful.</p>
+<p>The construction of VCG takes only two sentences. The allocation
+rule: choose the allocation that maximizes the sum of all participants’
+reported values, that is, the efficient allocation. The payment rule:
+each participant <span class="math inline">i</span> pays the externality
+it imposes on everyone else, namely “the maximum total value the others
+would have obtained without <span class="math inline">i</span>” minus
+“the total value the others actually obtain under the chosen allocation
+with <span class="math inline">i</span>.” The second part is precisely
+the so-called Clarke pivot: you pay only when your presence actually
+changes others’ allocation, and you pay exactly the value of the others
+you crowd out.</p>
+<div class="theorem">
+<p>(Dominant strategy truthfulness of VCG) Under the VCG mechanism, no
+matter how the other participants report, reporting one’s own value
+truthfully is a (weakly) dominant strategy for every participant.</p>
+</div>
+<p>The proof is short and pretty, and worth giving in full. Let
+participant <span class="math inline">i</span>’s true value function be
+<span class="math inline">v_i(\cdot)</span>, and let the mechanism
+choose allocation <span class="math inline">a^*</span> based on all
+reports. <span class="math inline">i</span>’s payment is</p>
+<p><span class="math display">t_i = \max_{a}\sum_{j \neq i} \hat v_j(a)
+\;-\; \sum_{j \neq i} \hat v_j(a^*)</span></p>
+<p>where <span class="math inline">\hat v_j</span> is <span
+class="math inline">j</span>’s report. <span
+class="math inline">i</span>’s net utility (measured at its true value)
+is</p>
+<p><span class="math display">u_i = v_i(a^*) - t_i = \Big[v_i(a^*) +
+\sum_{j \neq i}\hat v_j(a^*)\Big] - \max_{a}\sum_{j \neq i}\hat
+v_j(a)</span></p>
+<p>The second term on the right, <span class="math inline">\max_a
+\sum_{j\neq i}\hat v_j(a)</span>, contains none of <span
+class="math inline">i</span>’s report and is a constant independent of
+what <span class="math inline">i</span> reports. So to maximize <span
+class="math inline">u_i</span>, <span class="math inline">i</span> need
+only maximize the first term in brackets, <span
+class="math inline">v_i(a^*) + \sum_{j\neq i}\hat v_j(a^*)</span>. But
+<span class="math inline">a^*</span> is the allocation the mechanism
+chooses to maximize <span class="math inline">\hat v_i(a) + \sum_{j\neq
+i}\hat v_j(a)</span> given the reports, and if <span
+class="math inline">i</span> reports truthfully with <span
+class="math inline">\hat v_i = v_i</span>, the <span
+class="math inline">a^*</span> the mechanism selects maximizes exactly
+the sum <span class="math inline">i</span> truly cares about.
+Misreporting can only make the mechanism select an allocation that is
+worse, or at best equal, for <span class="math inline">i</span>’s true
+utility. Hence truthful reporting is a dominant strategy. QED.</p>
+<p>The essence of this proof is that “constant independent of one’s own
+report”: VCG designs each person’s payment to cancel exactly the part of
+the allocation that concerns the others, so that each person’s net
+utility differs from total social welfare only by a constant beyond
+their control, and individual self interest aligns perfectly with social
+efficiency, making truth telling a dominant choice. The second price
+auction (the Vickrey auction, in which the highest bidder wins and pays
+the second highest bid) is exactly the single object special case of
+VCG, and the second highest price the winner pays is precisely the
+externality it imposes on the bidder with the second highest value.
+Section 6 applies VCG to Vireo’s two ad slots and shows how it yields
+the figure of 680 yuan, a revenue built on truth.</p>
+<h3
+id="bayesian-persuasion-designing-information-rather-than-allocation">3.7
+Bayesian Persuasion: Designing Information Rather Than Allocation</h3>
+<p>The mechanisms so far all design “who gets what and who pays how
+much,” but the platform holds another, subtler lever: it often controls
+information, and can decide how to disclose information about quality,
+matching, and risk to the other side. Designing the information itself,
+so as to steer the other side’s choice, is information design, and its
+foundational framework is Kamenica and Gentzkow’s (2011) Bayesian
+persuasion. Its key difference from signaling and screening lies in
+where commitment sits: the sender (say, the platform) first publicly
+commits to a disclosure rule (an experiment mapping the true state to a
+signal), then nature draws the state and a signal is released according
+to the rule, and the receiver (say, the buyer) updates by Bayes’ rule
+upon seeing the signal and then chooses an action in its own interest.
+The sender cannot lie (the signal distribution is locked by commitment),
+but can strategically choose “how much to reveal and how to reveal
+it.”</p>
+<p>A minimal example of a platform recommendation makes the point best.
+Suppose a product is in one of two states, good or bad, the buyer’s
+prior is <span class="math inline">\Pr(\text{good}) = 0.3</span>, the
+buyer buys only when the posterior <span
+class="math inline">\Pr(\text{good}) \geq 0.5</span>, and the platform
+only wants to maximize the probability of purchase and does not care
+about good or bad. When no information is disclosed, the posterior is
+just the prior, <span class="math inline">0.3 &lt; 0.5</span>, the buyer
+does not buy, and the platform gets nothing. But if the platform designs
+a disclosure rule, the effect changes at once: when the product is good
+it always sends “recommend to buy,” and when it is bad it also sends
+“recommend to buy” with probability <span class="math inline">x</span>.
+The buyer’s posterior after seeing “recommend to buy” is <span
+class="math inline">0.3/(0.3 + 0.7x)</span>, which the platform pushes
+down to exactly the threshold <span class="math inline">0.5</span> (any
+higher wastes persuasive power), solving to <span class="math inline">x
+= 3/7</span>. The probability of purchase is then <span
+class="math inline">0.3 + 0.7\times\tfrac{3}{7} = 0.6</span>, lifting
+the transaction probability from <span class="math inline">0</span> to
+<span class="math inline">0.6</span> by pure information design. The
+point is that optimal disclosure is neither “tell everything” nor “tell
+nothing,” but a controlled mixing in of just enough noise to leave the
+receiver half believing, exactly to the point of being willing to
+act.</p>
+<div class="intuition">
+<p>Bayesian persuasion has a geometric solution called concavification,
+and one picture is worth a thousand words. Draw the sender’s payoff as a
+function of the posterior belief <span class="math inline">\mu</span>,
+call it <span class="math inline">v(\mu)</span>. In the example above
+<span class="math inline">v(\mu) = 1</span> when <span
+class="math inline">\mu \geq 0.5</span> (the buyer buys) and <span
+class="math inline">0</span> otherwise, a step that jumps up at <span
+class="math inline">0.5</span>. The best expected payoff the sender can
+achieve equals the value at the prior of the concave closure of <span
+class="math inline">v</span> (the smallest concave function that lies
+above <span class="math inline">v</span>). On the segment <span
+class="math inline">[0, 0.5]</span> this concave hull is the straight
+line <span class="math inline">2\mu</span> connecting <span
+class="math inline">(0,0)</span> to <span
+class="math inline">(0.5,1)</span>, and plugging in the prior <span
+class="math inline">0.3</span> gives exactly <span
+class="math inline">0.6</span>, not a hair off the purchase probability
+computed by hand above. The intuition of concavification is this: any
+information experiment is nothing but a way to split the prior into
+several posteriors whose weighted average is still the prior (Bayes
+plausibility), and what the sender can achieve is precisely the convex
+combinations of the payoffs at these posteriors, and taking the supremum
+over all splits gives the concave hull. When information has value is
+instantly visible: if and only if <span class="math inline">v</span> is
+non concave near the prior, so that concavification can raise the value;
+if <span class="math inline">v</span> is already concave, no disclosure
+beats disclosing nothing. This method is the theoretical backbone of
+ratings, recommendations, certification, and platform information
+policy, and it bears directly on research into how platforms shape user
+beliefs in the age of AI.</p>
+</div>
+<h3 id="cheap-talk-soft-information-without-commitment">3.8 Cheap Talk:
+Soft Information Without Commitment</h3>
+<p>The power of Bayesian persuasion comes from commitment, but a great
+deal of real world information transmission has no commitment at all: a
+seller’s verbal description of a product, a user review, an analyst
+recommendation, are all soft information in the sense of cheap talk
+(Crawford and Sobel 1982), where the sender observes the state and
+offhandedly sends a costless, unverifiable message that binds it to
+nothing after the fact, and the receiver acts on it. With no commitment
+and a message that costs nothing, how much information can be
+transmitted depends on how aligned the two sides’ interests are.</p>
+<p>The conclusion is clean and deep. If the sender and receiver have
+perfectly aligned interests (bias <span class="math inline">b =
+0</span>), fully truthful communication is possible; once the sender has
+a systematic bias (say, a seller always wants you to think quality is
+higher), full communication collapses, because the sender always has a
+motive to exaggerate. What can be sustained then is only a partition
+equilibrium: the state space is cut into several intervals, the sender
+honestly reveals only which interval the state falls into rather than
+the exact value, and the receiver believes only down to the interval.
+The larger the bias <span class="math inline">b</span>, the fewer
+intervals can be sustained and the coarser the communication, and past
+some threshold it degenerates to a babbling equilibrium, in which the
+message carries no information and the receiver simply ignores it. Take
+the standard setup of a uniformly distributed state and quadratic loss:
+the largest number of intervals <span class="math inline">N</span> that
+can be sustained is the largest integer for which <span
+class="math inline">N(N-1) &lt; 1/(2b)</span> holds, and every increment
+in bias makes possible communication one notch coarser. Setting cheap
+talk and persuasion side by side is most instructive: both transmit
+information, but with commitment (persuasion) the sender can actively
+shape the other side’s beliefs to its own advantage, while without
+commitment (cheap talk) it cannot even manage truthfulness, and its
+informativeness is pinned down hard by the conflict of interest. How
+much rating systems, seller descriptions, and influencer recommendations
+on a platform can be trusted, the answer hides in this divide between
+commitment and interest alignment.</p>
+<p>To summarize: asymmetric information splits into adverse selection
+and moral hazard, the former addressed by signaling (the informed party
+burns money to speak up) or screening (the uninformed party lays out a
+menu to induce selection), at the cost of wasteful money burning or low
+end distortion plus information rent, and the latter addressed by pay
+that floats with performance to incentivize unseen effort, at the cost
+of the risk-incentive tradeoff plus a limited liability rent, with its
+optimal contract shaped by the likelihood ratio of the performance
+signal (the informativeness principle); the revelation principle
+guarantees that we need only study direct truthful mechanisms, and VCG
+gives a concrete mechanism that makes truth a dominant strategy while
+achieving efficiency; and when what the platform holds is information
+itself, Bayesian persuasion uses commitment plus concavification to
+design disclosure, while cheap talk without commitment is limited by
+interest alignment, and the two together map out the limits of
+information as a lever. The next section applies this mechanism language
+to auctions and matching, answering the other half of the target
+quantities, revenue and allocation.</p>
+<h2 id="auctions-and-revenue-equivalence">4 Auctions and Revenue
+Equivalence</h2>
+<p>Auctions are the most mature application of mechanism design and the
+one closest to platform business. This section adds a revenue
+perspective to the previous section’s efficiency perspective, answering
+two questions: whether different auction rules yield the same revenue,
+and what the revenue maximizing auction looks like.</p>
+<h3 id="four-basic-auctions-and-two-clues-about-truth">4.1 Four Basic
+Auctions and Two Clues About Truth</h3>
+<p>Single object auctions come in four textbook forms: first-price
+sealed-bid (the highest bidder wins and pays its own bid), second-price
+sealed-bid (Vickrey, the highest bidder wins and pays the second highest
+bid), English (an ascending open outcry until only one bidder remains),
+and Dutch (a descending price from high until someone accepts). They are
+pairwise equivalent: Dutch and first-price are strategically equivalent
+(both require deciding, in one shot and without knowing whether others
+bid higher, how much to bid), and English and second-price are outcome
+equivalent (both make the winner effectively pay only up to the second
+highest value).</p>
+<p>The second price auction is the single object special case of the
+previous section’s VCG, and truthful reporting is a dominant strategy:
+report your true value, and if you win you pay the second highest price
+and lock in a nonnegative surplus, while misreporting can only lose a
+win you should have had or turn a nonloss into a loss. The first price
+is different: paying your own bid means reporting the true value gives
+zero surplus, so you must shade. How much to shade is a Bayesian game:
+in the standard setup of symmetric, independent private values, values
+uniform on <span class="math inline">[0, 1]</span>, and <span
+class="math inline">n</span> bidders, the symmetric equilibrium bid
+function is <span class="math inline">b(v) = \frac{n-1}{n} v</span>,
+with everyone shading their bid to <span
+class="math inline">\frac{n-1}{n}</span> of their true value. The more
+competitors (the larger <span class="math inline">n</span>), the less
+they shade, because with more rivals a low bid is easily topped.</p>
+<h3 id="revenue-equivalence">4.2 Revenue Equivalence</h3>
+<p>Two auctions, one that cannot extract the truth and forces shading,
+and one that can extract the truth, will their revenues differ wildly?
+The revenue equivalence theorem gives a startling answer: under fairly
+broad conditions, their expected revenues are exactly the same.</p>
+<div class="theorem">
+<p>(Revenue equivalence theorem) When bidders are risk neutral, private
+values are independent and identically distributed, and the mechanism
+awards the object to the bidder with the highest value while giving the
+lowest type an expected utility of zero, every such auction mechanism
+yields the seller the same expected revenue.</p>
+</div>
+<p>Verify with the uniform example above. The second price auction’s
+expected revenue is the expectation of the second highest value, and the
+second highest of <span class="math inline">n</span> uniform <span
+class="math inline">[0,1]</span> values has expectation <span
+class="math inline">\frac{n-1}{n+1}</span>. The first price auction’s
+expected revenue is the expectation of the highest bid, and writing the
+highest value as <span class="math inline">v_{(1)}</span>, this is <span
+class="math inline">\frac{n-1}{n}\,\mathbb{E}[v_{(1)}] =
+\frac{n-1}{n}\cdot\frac{n}{n+1} = \frac{n-1}{n+1}</span>, not a hair off
+the second price. When <span class="math inline">n = 2</span> both are
+<span class="math inline">1/3</span>, and when <span
+class="math inline">n = 3</span> both are <span
+class="math inline">1/2</span>. The first price relies on “everyone
+shades but occasionally wins with a high bid,” and the second price on
+“report the true value but pay only the second highest,” two different
+paths whose expected revenues meet at the same endpoint.</p>
+<p>The reason behind revenue equivalence is deep. It shows that the
+seller’s expected revenue does not depend on the auction’s surface rules
+but only on the allocation rule (who wins) and the treatment of the
+lowest type. The proof of the theorem uses precisely the revelation
+principle: after reducing any auction to a direct truthful mechanism,
+each bidder’s expected payment is uniquely pinned down by its winning
+probability curve (Myerson’s envelope argument), so as long as the
+winning rule is the same, the expected revenue is the same. This
+conclusion is extremely useful for platforms designing auctions: since
+revenue does not come from gimmicks, the choice of auction form should
+turn on other dimensions, such as collusion resistance, simplicity, and
+resistance to strategic manipulation, rather than the fantasy that some
+exotic rule can conjure extra revenue out of thin air.</p>
+<h3 id="optimal-auctions-and-reserve-prices">4.3 Optimal Auctions and
+Reserve Prices</h3>
+<p>Revenue equivalence says that auctions in the class that “awards the
+object to the highest value bidder” yield the same revenue, but it does
+not say this class earns the most revenue. Myerson’s optimal auction
+proves that the revenue maximizing auction usually has to sacrifice a
+bit of efficiency, by setting a reserve price below which nothing is
+sold, even if the buyer’s value is still positive.</p>
+<p>The logic of the reserve price is monopoly pricing incarnate within
+an auction. The seller facing the highest value buyer is essentially a
+monopolist: raising the threshold (the reserve price) loses the trade
+with some probability, but collects more money when the trade happens,
+and the optimal reserve balances the two. For the uniform <span
+class="math inline">[0, 1]</span> distribution, the optimal reserve
+solves <span class="math inline">r = \frac{1 - F(r)}{f(r)}</span>, that
+is <span class="math inline">r = 1 - r</span>, giving <span
+class="math inline">r^* = 1/2</span>. With this reserve set, when <span
+class="math inline">n = 2</span> the seller’s expected revenue rises
+from <span class="math inline">1/3</span> without a reserve to <span
+class="math inline">5/12</span>, at the cost of a positive probability
+that both buyers’ values fall below <span class="math inline">1/2</span>
+and the object goes unsold, damaging efficiency. This is the precise
+embodiment in auctions of the tension between efficiency and revenue: a
+revenue seeking seller would rather risk a failed sale in order to use
+the reserve to squeeze out the money from low value trades. Myerson
+generalizes this logic into the virtual value, and the optimal auction
+is equivalent to awarding the object to the bidder with the highest,
+positive virtual value, with the reserve price being the point where the
+virtual value equals zero.</p>
+<h3 id="matching-and-market-design">4.4 Matching and Market Design</h3>
+<p>Auctions use price to allocate objects, but the platform has a large
+class of allocation problems that use no monetary pricing at all and
+instead pair two sides: labor platforms match workers with employers,
+ride hailing platforms match drivers with riders, admissions systems
+match students with schools, and dating platforms match users with
+users. Each side has preferences over the other, and the question is how
+to match in a way that stays put. The core concept characterizing
+“matched in a way that stays put” is stability: a matching is stable if
+there is no blocking pair (a pair on the two sides who both prefer each
+other to their current partners). Stability is the primary objective
+because an unstable matching unravels on its own, since a blocking pair
+always has a motive to pair off privately, and in a decentralized market
+this coming apart is a real hazard.</p>
+<p>Gale and Shapley’s (1962) deferred acceptance (DA) algorithm gives a
+construction that always produces a stable matching. Let one side (say,
+workers) propose in order of preference, let the other side (employers)
+tentatively hold the best offer in hand and reject the rest, let the
+rejected turn to their next choice, and repeat until no new rejection
+occurs. The algorithm must terminate, and its endpoint must be a stable
+matching. It also has two important properties. The first is
+proposer-optimality: the proposing side gets the best partner it can get
+in any stable matching, and the side being proposed to gets the worst,
+so who moves first makes a big difference. The second is that
+strategy-proofness holds for the proposing side: reporting preferences
+truthfully is a dominant strategy for the proposer, though sadly no
+stable matching mechanism can be strategy-proof for both sides at once.
+Section 6.5 runs DA on a 3 by 3 numerical example and shows how
+proposer-optimality shows up in the numbers. This theory is no
+blackboard toy: hospital resident matching, public school choice, and
+the matchmaking of all two sided platforms rest on it at bottom, and
+Roth’s line of market design took DA into these real markets, which is
+why it won a Nobel Prize.</p>
+<h3
+id="myerson-satterthwaite-the-impossibility-of-efficient-bilateral-trade">4.5
+Myerson-Satterthwaite: The Impossibility of Efficient Bilateral
+Trade</h3>
+<p>Mechanism design has good news like VCG, where “efficiency is
+attainable,” and it has bad news that draws a boundary, worth every
+platform market maker’s memory. Consider the simplest matchmaking: a
+seller privately knows its cost <span class="math inline">c</span>, a
+buyer privately knows its value <span class="math inline">v</span>, both
+drawn from overlapping distributions, and efficiency requires trade if
+and only if <span class="math inline">v \geq c</span>. Myerson and
+Satterthwaite (1983) prove that no mechanism can simultaneously achieve
+efficiency (trade whenever it should), incentive compatibility (both
+sides willing to report truthfully), individual rationality (both sides
+participate voluntarily), and budget balance (no reliance on outside
+subsidy, the platform breaking even on its own). The four good
+properties cannot all be gathered at one table, and some efficient
+trades that should happen are always forced to be given up.</p>
+<p>Take the classic setup with <span class="math inline">v</span> and
+<span class="math inline">c</span> each uniform on <span
+class="math inline">[0, 1]</span> to see it most clearly. The first-best
+should trade when <span class="math inline">v \geq c</span>, with
+probability <span class="math inline">1/2</span>, while the second best
+(the linear equilibrium of the buyer seller double auction) trades only
+when <span class="math inline">v \geq c + 1/4</span>, with the trade
+probability falling to <span class="math inline">9/32 \approx
+0.281</span>, and all those efficient trades whose gains from trade fall
+between <span class="math inline">0</span> and <span
+class="math inline">1/4</span> are sacrificed. This wedge of <span
+class="math inline">1/4</span> is exactly the efficiency loss forced out
+by the combination of both sides hiding their private information, both
+retaining the right to walk away, and no outside subsidy allowed. Its
+significance is fundamental: a platform matchmaking a buyer and a
+seller, each holding a private value, cannot simultaneously consummate
+every mutually beneficial trade, keep participation voluntary, and not
+subsidize the deal out of its own pocket. This impossibility marks the
+limit of market making, and it explains why real platforms fall back on
+second best devices like posted prices, commissions, and thickening the
+market. It stands in exact contrast to VCG: VCG can achieve efficiency
+but cannot achieve budget balance (it needs an outside subsidy to break
+even), and Myerson-Satterthwaite says precisely that efficiency, budget
+balance, and voluntary participation cannot all be had at once.</p>
+<p>To summarize: among the four basic auctions the second price extracts
+the truth and the first price forces shading, but the revenue
+equivalence theorem proves that as long as the winning rule is the same
+and bidders are symmetric and risk neutral, the expected revenue is
+equal, so the choice of auction form should turn on collusion resistance
+and simplicity rather than the fantasy of collecting more; pursuing
+maximum revenue requires sacrificing efficiency and setting a reserve,
+whose logic is the auction version of monopoly pricing; two sided
+allocation without money is handled by matching, and Gale-Shapley’s
+deferred acceptance always produces a stable matching that is
+proposer-optimal and strategy-proof for the proposer; and
+Myerson-Satterthwaite draws a hard boundary of mechanism design, that
+efficiency, incentive compatibility, voluntary participation, and budget
+balance cannot all be had at once, so market making has its natural
+limits. These conclusions all rest on assumptions like independent
+private values and risk neutrality, and Section 7 discusses what happens
+when they fail.</p>
+<h3 id="from-incentive-constraints-to-testable-predictions">4.6 From
+Incentive Constraints to Testable Predictions</h3>
+<p>The empirical content of information models comes from how the
+incentive constraints move as the primitives move. Take screening:
+single crossing makes the high type naturally more willing to choose a
+high quality contract; and to keep the high type from disguising itself
+as the low type to grab a bargain, the principal usually pushes down the
+allocation the low type receives, and the more expensive the information
+rent it pays, the more severe this downward distortion. In the standard
+model the high type end satisfies no distortion at the top and is not
+distorted. So when the type gap widens, or when the share of high types
+rises, the direction and magnitude of the low type’s distortion move
+together with the objective function, and this can be read in the data
+through the shape of the contract menu, users’ upgrade choices, and the
+pattern of bunching (different types clustering on the same
+contract).</p>
+<p>For a separating equilibrium to hold in a signaling model, the
+premise is that sending the signal is less costly for the high type.
+Once education, certification, or a platform seller badge becomes
+affordable to everyone, more low types imitate along, the threshold
+needed for separation is pushed up, and it may even collapse entirely
+into pooling. Hidden here is a recurring identification trap: seeing
+that sellers holding a badge have higher quality only shows that
+selection exists, that good sellers are more willing and more able to
+obtain the badge, and it does not mean that the badge itself transmits
+value to buyers. To identify the true effect of signaling, one must
+exogenously change the visibility of the badge or the receiver’s
+beliefs, rather than simply comparing holders with non holders.</p>
+<p>On the moral hazard side, the informativeness principle says that as
+long as a performance signal carries information about effort even after
+controlling for other signals, the optimal contract should generally
+respond to it. The more precise the signal, the lower the risk cost of
+reaching the same incentive strength, so one can either strengthen the
+incentive or lower the compensation cost. In the data, after a
+monitoring technology goes live, the pay-performance sensitivity should
+change accordingly. But be careful: if this technology, while improving
+measurability, also directly raises productivity, then one must design a
+further layer of variation to separate the measurement channel from the
+productivity channel, or the two get mixed into a single coefficient and
+cannot be read apart.</p>
+<p>Auction theory gives a sharper joint prediction. Under independent
+private values plus symmetry and risk neutrality, various standard
+auctions satisfy revenue equivalence and yield equal revenue; the bid
+shading in the first-price weakens as the number of competitors grows,
+while the second-price is always truthful bidding. And affiliation or
+risk aversion breaks this equivalence. So only when the revenue gap
+between different auction formats varies systematically with the number
+of bidders, the degree of information disclosure, or common-value
+exposure does the data truly have the power to distinguish these
+mechanisms, and looking at the revenue of a single auction is not
+enough.</p>
+<div class="table-scroll">
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr>
+<th>Mechanism</th>
+<th>Comparative static</th>
+<th>Observable prediction</th>
+<th>Identification warning</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Screening</td>
+<td>Distortion of the low type rises as the information rent gets more
+expensive</td>
+<td>Quality falls at the low end of the menu, bunching rises</td>
+<td>Type distribution and cost are often endogenous together</td>
+</tr>
+<tr>
+<td>Signaling</td>
+<td>Signal cost falls for the low type</td>
+<td>Pooling rises, signal-quality gradient flattens</td>
+<td>Holder quality gap may be only selection</td>
+</tr>
+<tr>
+<td>Moral hazard</td>
+<td>Performance signal becomes more precise</td>
+<td>Pay-performance sensitivity or contract cost changes</td>
+<td>Monitoring may directly raise productivity</td>
+</tr>
+<tr>
+<td>Auction competition</td>
+<td>Bidder count rises</td>
+<td>First-price shading shrinks, revenue rises</td>
+<td>Bidder entry is endogenous, needs an entry shifter</td>
+</tr>
+<tr>
+<td>Persuasion</td>
+<td>Sender prior or receiver threshold changes</td>
+<td>Disclosure partition and action rate jump</td>
+<td>Requires observing the information policy and beliefs</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>These predictions share the same discipline: IC, IR, or Bayes
+plausibility provide only necessary constraints, and the data satisfying
+these constraints does not mean any one mechanism has been uniquely
+singled out. To truly identify a mechanism, we rely on the kind of
+institutional change that makes competing models give different joint
+responses to the same shock.</p>
+<h2 id="anchoring-papers">5 Anchoring Papers</h2>
+<p>The abstract theorems of mechanism design gain their weight only when
+they land in real auctions and markets. This section selects two
+foundational works, one that laid the entire analytical framework for
+the optimal auction and revenue equivalence, and one that carried
+mechanism design into search advertising, the most important real world
+battlefield of platform economics, each organized by paper, method,
+result, significance, and limitation.</p>
+<h3 id="myerson-1981">5.1 Myerson (1981)</h3>
+<div class="case">
+<p>Paper and position of the method: “Optimal Auction Design,”
+Mathematics of Operations Research. This paper rewrote auction theory in
+the language of mechanism design, giving both the revenue equivalence
+theorem and the complete characterization of the optimal auction, and it
+is the cornerstone of the entire field, with Myerson receiving the 2007
+Nobel Prize in Economics for his contributions to mechanism design.</p>
+<p>Method: using the revelation principle to reduce any auction to a
+direct truthful mechanism, using an envelope argument to prove that each
+bidder’s expected payment is uniquely determined by its winning
+probability (which directly gives revenue equivalence), then introducing
+the virtual value to write the seller’s expected revenue as an
+expectation over virtual values, thereby turning “designing the revenue
+maximizing auction” into a pointwise maximization problem, and reaching
+the conclusion that the optimal auction awards the object to the bidder
+with the highest, nonnegative virtual value, with the reserve price at
+the zero point of the virtual value.</p>
+<p>Result: it established the revenue equivalence theorem (standard
+auctions yield the same revenue under broad conditions), and
+characterized the optimal auction (which generally needs a reserve
+price, trading efficiency for revenue). These two results, one showing
+that “gimmicks do not collect more money” and one showing that
+“collecting more requires a threshold,” together lay the theoretical
+foundation of modern auction design.</p>
+<p>Significance and limitation: Myerson’s framework is the full source
+for Section 4 of this chapter, and it is also the theoretical premise
+for the structural auction econometrics later in this series, since
+empirical auction analysis recovers the distribution of private values
+precisely by inverting bidders’ equilibrium strategies. The limitation
+lies in its core assumptions, independent private values, risk
+neutrality, and single dimensional types, and once buyers’ values are
+correlated (common value), bidders are risk averse, or types are
+multidimensional, the clean conclusions of revenue equivalence and the
+optimal auction all loosen, as detailed in Section 7.</p>
+</div>
+<h3 id="edelman-ostrovsky-and-schwarz-2007">5.2 Edelman, Ostrovsky and
+Schwarz (2007)</h3>
+<div class="case">
+<p>Paper: “Internet Advertising and the Generalized Second-Price
+Auction: Selling Billions of Dollars Worth of Keywords,” American
+Economic Review. It brought the search ad slot auction, a real mechanism
+worth tens of billions of dollars a year, into rigorous mechanism design
+analysis, and it is required reading for the information systems and
+platform economics direction, with Varian (2007) independently giving a
+closely related analysis.</p>
+<p>Method: what search engines actually use is not VCG but the
+generalized second-price (GSP) auction: advertisers report a per click
+price, higher reports get the more forward slots with more clicks, and
+the winner of each slot pays the per click fee of the report ranked just
+below it. The paper points out that despite the “second price” in its
+name, GSP is not a generalization of VCG, and truthful reporting is not
+a dominant strategy in GSP. They characterize the equilibria of GSP
+using game theory, propose the refinement of locally envy-free
+equilibrium, and prove that the lowest such equilibrium reproduces
+exactly the allocation and payments of VCG.</p>
+<p>Result: GSP has multiple Nash equilibria, and truthful reporting is
+generally not one of them; but there exists a locally envy-free
+equilibrium reproducing VCG’s efficient allocation and payments, so at
+this equilibrium GSP is both efficient and equal to VCG in revenue. This
+explains why the real world search ad auction uses the simpler form GSP
+yet can still approximate VCG’s theoretical properties.</p>
+<p>Significance and limitation: this paper is the direct prototype of
+this chapter’s running case, and it welds mechanism design to the real
+business of a platform. The limitation lies in its static, single
+keyword, exogenous click through rate setup, which simplifies reality,
+since real ad auctions have quality scores, budget constraints, cross
+keyword competition, and dynamic learning, and a large body of later
+work proceeds precisely by relaxing these, a thread we will return to
+later in this series when we cover platforms and advertising.</p>
+</div>
+<p>Taken together the two papers mark out this chapter’s theoretical
+depth and its real world landing point: Myerson gives the general
+theorems of auction design from the most abstract angle, and
+Edelman-Ostrovsky-Schwarz map these theorems onto search advertising, a
+core battlefield of platform economics. They also foreshadow the later
+theme of structural auction econometrics, inverting the distribution of
+private values from observed bids.</p>
+<h2 id="running-case-vireos-ad-slot-auction">6 Running Case: Vireo’s Ad
+Slot Auction</h2>
+<p>Now we run the mechanisms of Sections 3 and 4 in full on Vireo’s two
+ad slots. Recall the setup: the top slot has 100 clicks and the second
+slot 40 clicks, and the three advertisers have per click values 10, 6,
+and 4. All the numbers can be computed by hand, and the R code below
+transcribes the hand computation verbatim and checks it.</p>
+<h3 id="the-efficient-allocation-and-vcg-payments">6.1 The Efficient
+Allocation and VCG Payments</h3>
+<p>Efficiency requires giving the slots to those who value clicks most:
+the advertiser with value 10 gets the top slot (100 clicks), the
+advertiser with value 6 gets the second slot (40 clicks), and the
+advertiser with value 4 gets nothing.</p>
+<figure>
+<svg viewBox="0 0 700 320" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, 'Noto Sans SC', sans-serif" role="img" aria-label="The efficient allocation and VCG payments in Vireo’s position auction: three advertisers (per click values 10, 6, 4) compete for two slots (click rates 100, 40). The highest value wins the top slot and pays the externality of 520 it imposes on others (5.2 per click); the second highest gets the second slot and pays 160 (4 per click); total revenue 680." style="max-width:100%;height:auto;display:block;margin:0 auto">
+  <text x="120" y="40" text-anchor="middle" font-size="13" fill="#64748b">advertisers (value per click)</text>
+  <g font-size="13" fill="#1a365d">
+    <rect x="40" y="70" width="150" height="40" rx="6" fill="#eef2f7" stroke="#2b6cb0" stroke-width="1.5"/>
+    <text x="115" y="95" text-anchor="middle">advertiser 1 · v=10</text>
+    <rect x="40" y="140" width="150" height="40" rx="6" fill="#eef2f7" stroke="#2b6cb0" stroke-width="1.5"/>
+    <text x="115" y="165" text-anchor="middle">advertiser 2 · v=6</text>
+    <rect x="40" y="210" width="150" height="40" rx="6" fill="#f5f5f4" stroke="#94a1b2" stroke-width="1.3"/>
+    <text x="115" y="235" text-anchor="middle" fill="#64748b">advertiser 3 · v=4</text>
+  </g>
+
+  <text x="500" y="40" text-anchor="middle" font-size="13" fill="#64748b">ad slots (click rate)</text>
+  <g font-size="13">
+    <rect x="430" y="70" width="170" height="40" rx="6" fill="#fdedeb" stroke="#c53030" stroke-width="1.6"/>
+    <text x="515" y="95" text-anchor="middle" fill="#c53030">top slot · 100 clicks</text>
+    <rect x="430" y="140" width="170" height="40" rx="6" fill="#f3f4ea" stroke="#7c7f46" stroke-width="1.6"/>
+    <text x="515" y="165" text-anchor="middle" fill="#5a5d33">second slot · 40 clicks</text>
+    <text x="515" y="235" text-anchor="middle" fill="#94a1b2">(no slot · 0 clicks)</text>
+  </g>
+
+  <line x1="190" y1="90" x2="430" y2="90" stroke="#c53030" stroke-width="2.5" marker-end="url(#g2_ar)"/>
+  <line x1="190" y1="160" x2="430" y2="160" stroke="#7c7f46" stroke-width="2.5" marker-end="url(#g2_ar)"/>
+  <line x1="190" y1="230" x2="430" y2="222" stroke="#cbd5e1" stroke-width="1.5" stroke-dasharray="5 4"/>
+  <defs>
+    <marker id="g2_ar" markerWidth="9" markerHeight="9" refX="7" refY="3" orient="auto">
+      <path d="M0,0 L7,3 L0,6 Z" fill="#64748b"/>
+    </marker>
+  </defs>
+
+  <text x="310" y="82" text-anchor="middle" font-size="11.5" fill="#c53030">pays 520 (5.2/click)</text>
+  <text x="310" y="152" text-anchor="middle" font-size="11.5" fill="#5a5d33">pays 160 (4/click)</text>
+
+  <text x="350" y="290" text-anchor="middle" font-size="13" fill="#1a365d">VCG payment = externality on others; revenue 520 + 160 = 680</text>
+</svg>
+<figcaption aria-hidden="true">The efficient allocation and VCG payments
+in Vireo’s position auction: three advertisers (per click values 10, 6,
+4) compete for two slots (click rates 100, 40). The highest value wins
+the top slot and pays the externality of 520 it imposes on others (5.2
+per click); the second highest gets the second slot and pays 160 (4 per
+click); total revenue 680.</figcaption>
+</figure>
+<p>VCG payments are computed by externality. For advertiser 1 who gets
+the top slot, ask “how much would the others get without it”: advertiser
+2 would rise to the top slot and get <span class="math inline">6 \times
+100</span>, advertiser 3 would move up to the second slot and get <span
+class="math inline">4 \times 40</span>, for a total of 760; and “how
+much the others actually get with it”: advertiser 2 gets <span
+class="math inline">6 \times 40 = 240</span> in the second slot,
+advertiser 3 gets nothing, for a total of 240. So advertiser 1 pays
+<span class="math inline">760 - 240 = 520</span>, or <span
+class="math inline">520/100 = 5.2</span> per click. For advertiser 2,
+without it advertiser 1 still sits in the top slot and advertiser 3
+moves up to the second slot for <span class="math inline">4 \times 40 =
+160</span>, so the others total <span class="math inline">1000 + 160 =
+1160</span>; with it advertiser 1 gets 1000 in the top slot and
+advertiser 3 gets nothing, for a total of 1000; so advertiser 2 pays
+<span class="math inline">1160 - 1000 = 160</span>, or <span
+class="math inline">160/40 = 4</span> per click. Advertiser 3 gets
+nothing and pays 0.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>v   <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">6</span>, <span class="dv">4</span>)            <span class="co"># per click values (sorted)</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>ctr <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">100</span>, <span class="dv">40</span>, <span class="dv">0</span>)         <span class="co"># slot click rates (3rd entry means no slot)</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># efficient allocation: advertiser i -&gt; slot i; VCG payment = others&#39; max value in its absence - others&#39; realized value</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>pay1 <span class="ot">&lt;-</span> (v[<span class="dv">2</span>]<span class="sc">*</span>ctr[<span class="dv">1</span>] <span class="sc">+</span> v[<span class="dv">3</span>]<span class="sc">*</span>ctr[<span class="dv">2</span>]) <span class="sc">-</span> (v[<span class="dv">2</span>]<span class="sc">*</span>ctr[<span class="dv">2</span>] <span class="sc">+</span> v[<span class="dv">3</span>]<span class="sc">*</span>ctr[<span class="dv">3</span>])</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>pay2 <span class="ot">&lt;-</span> (v[<span class="dv">1</span>]<span class="sc">*</span>ctr[<span class="dv">1</span>] <span class="sc">+</span> v[<span class="dv">3</span>]<span class="sc">*</span>ctr[<span class="dv">2</span>]) <span class="sc">-</span> (v[<span class="dv">1</span>]<span class="sc">*</span>ctr[<span class="dv">1</span>] <span class="sc">+</span> v[<span class="dv">3</span>]<span class="sc">*</span>ctr[<span class="dv">3</span>])</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">pay1 =</span> pay1, <span class="at">pay2 =</span> pay2, <span class="at">per_click_1 =</span> pay1<span class="sc">/</span>ctr[<span class="dv">1</span>], <span class="at">per_click_2 =</span> pay2<span class="sc">/</span>ctr[<span class="dv">2</span>],</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">VCG_revenue =</span> pay1 <span class="sc">+</span> pay2)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;        pay1        pay2 per_click_1 per_click_2 VCG_revenue</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;         520         160         5.2         4.0         680</span></span></code></pre></div>
+<p>The total VCG revenue is <span class="math inline">520 + 160 =
+680</span>, and the advertisers’ net utilities are <span
+class="math inline">10\times100 - 520 = 480</span> and <span
+class="math inline">6\times40 - 160 = 80</span>, both nonnegative, so
+truthful reporting is a dominant strategy. Compared with the product
+manager’s 1240 from Section 1, built on “the report equals the value,
+pay your bid,” VCG collects less, but every cent of it stands on the
+advertisers’ truth, and that is credible, predictable revenue.</p>
+<h3 id="gsp-versus-vcg">6.2 GSP Versus VCG</h3>
+<p>The real world search engine uses GSP: the winner of each slot pays
+the per click fee of the report ranked just below it. If advertisers
+naively report truthfully 10, 6, and 4, the top slot pays the second
+report 6 and the second slot pays the third report 4, for revenue <span
+class="math inline">6\times100 + 4\times40 = 760</span>, even higher
+than VCG. But this is not a stable outcome, because truthful reporting
+is not a dominant strategy in GSP, and advertisers strategically adjust
+their reports. Edelman-Ostrovsky-Schwarz prove that GSP has a locally
+envy-free equilibrium whose allocation and payments reproduce VCG
+exactly, that is, the per click prices return to 5.2 and 4 and the total
+revenue returns to 680. So the 760 is a paper figure under “naive
+truth,” and the strategic equilibrium pulls it back to VCG’s 680.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># GSP naive truthful reporting: top slot pays the second report, second slot pays the third report</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>gsp_naive <span class="ot">&lt;-</span> v[<span class="dv">2</span>]<span class="sc">*</span>ctr[<span class="dv">1</span>] <span class="sc">+</span> v[<span class="dv">3</span>]<span class="sc">*</span>ctr[<span class="dv">2</span>]</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co"># GSP locally envy-free equilibrium reproduces VCG: revenue returns to 680</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">GSP_naive_truthful =</span> gsp_naive, <span class="at">GSP_locally_envy_free =</span> <span class="dv">680</span>, <span class="at">VCG =</span> <span class="dv">680</span>)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    GSP_naive_truthful GSP_locally_envy_free                   VCG</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;                   760                   680                   680</span></span></code></pre></div>
+<h3 id="revenue-equivalence-and-the-reserve-price">6.3 Revenue
+Equivalence and the Reserve Price</h3>
+<p>Let us check Vireo’s single slot case against the revenue equivalence
+framework. Suppose the per click values of two advertisers are
+independent and uniform on <span class="math inline">[0, 1]</span>. The
+second price auction collects the second highest of the truthful
+reports, with expectation <span class="math inline">\frac{n-1}{n+1} =
+1/3</span>; the first price auction has each shade to <span
+class="math inline">b(v) = \frac{1}{2}v</span>, and the expectation of
+the highest bid is also <span class="math inline">1/3</span>, the two
+equal, exactly revenue equivalence. If Vireo pursues revenue rather than
+efficiency and sets the optimal reserve <span class="math inline">r^* =
+1/2</span>, the expected revenue rises to <span
+class="math inline">5/12</span>, at the cost of a <span
+class="math inline">1/4</span> probability that both advertisers’ values
+fall below <span class="math inline">1/2</span> and the slot goes
+unsold.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="dv">2</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>spa <span class="ot">&lt;-</span> (n <span class="sc">-</span> <span class="dv">1</span>)<span class="sc">/</span>(n <span class="sc">+</span> <span class="dv">1</span>)                 <span class="co"># second price expected revenue = expected second highest value</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>fpa <span class="ot">&lt;-</span> (n <span class="sc">-</span> <span class="dv">1</span>)<span class="sc">/</span>n <span class="sc">*</span> n<span class="sc">/</span>(n <span class="sc">+</span> <span class="dv">1</span>)           <span class="co"># first price: shading (n-1)/n * expected highest value</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>rev_reserve <span class="ot">&lt;-</span> <span class="dv">5</span><span class="sc">/</span><span class="dv">12</span>                    <span class="co"># uniform[0,1], n=2, expected revenue with reserve 1/2</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">second_price =</span> spa, <span class="at">first_price =</span> fpa, <span class="at">with_reserve =</span> rev_reserve)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; second_price  first_price with_reserve</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    0.3333333    0.3333333    0.4166667</span></span></code></pre></div>
+<h3 id="information-design-persuasion-at-vireos-recommendation-slot">6.4
+Information Design: Persuasion at Vireo’s Recommendation Slot</h3>
+<p>Vireo also runs a product recommendation slot, and this time it is
+not an auction but the design of information. Suppose a product is in
+one of two states, good or bad, the user’s prior is <span
+class="math inline">\Pr(\text{good}) = 0.3</span>, the user clicks to
+buy only when the posterior is at least <span
+class="math inline">0.5</span>, and Vireo only wants to maximize
+purchases. When no information is disclosed the posterior stays at <span
+class="math inline">0.3</span> and the user does not buy. Vireo
+therefore commits to a disclosure rule: a good product always sends
+“recommend,” and a bad product also sends “recommend” with probability
+<span class="math inline">x</span>, pushing the posterior after seeing
+“recommend” down to exactly the threshold <span
+class="math inline">0.5</span>:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>prior <span class="ot">&lt;-</span> <span class="fl">0.3</span>; thresh <span class="ot">&lt;-</span> <span class="fl">0.5</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> prior<span class="sc">*</span>(<span class="dv">1</span> <span class="sc">-</span> thresh)<span class="sc">/</span>(thresh<span class="sc">*</span>(<span class="dv">1</span> <span class="sc">-</span> prior))     <span class="co"># probability a bad product also sends &quot;recommend&quot;</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">false_positive_x =</span> x, <span class="at">P_buy =</span> prior <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">-</span> prior)<span class="sc">*</span>x,</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">concavification =</span> <span class="dv">2</span><span class="sc">*</span>prior, <span class="at">no_info_baseline =</span> <span class="dv">0</span>)</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; false_positive_x            P_buy  concavification no_info_baseline</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;        0.4285714        0.6000000        0.6000000        0.0000000</span></span></code></pre></div>
+<p>The probability that a bad product is mixed into “recommend” is <span
+class="math inline">3/7 \approx 0.429</span>, and the purchase
+probability rises from <span class="math inline">0</span> under no
+disclosure to <span class="math inline">0.6</span>. This <span
+class="math inline">0.6</span> is not a hair off the concave hull value
+of <span class="math inline">2\times 0.3</span> given by
+concavification, and the two paths (solving the signal structure by
+hand, taking the concave hull geometrically) meet at the same number.
+The power of information design lies in the controlled mixing in of
+noise, leaving the user half believing, exactly to the point of being
+willing to order.</p>
+<h3 id="matching-stable-pairing-in-vireos-talent-market">6.5 Matching:
+Stable Pairing in Vireo’s Talent Market</h3>
+<p>Vireo also opens a matchmaking service, pairing 3 workers with 3
+companies, each side with its own preferences. Use deferred acceptance
+to find a stable matching and compare who proposes:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>worker_pref <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>), <span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">1</span>,<span class="dv">3</span>), <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>))   <span class="co"># workers&#39; preferences over companies</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>firm_pref   <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="fu">c</span>(<span class="dv">2</span>,<span class="dv">1</span>,<span class="dv">3</span>), <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>), <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>))   <span class="co"># companies&#39; preferences over workers</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>DA <span class="ot">&lt;-</span> <span class="cf">function</span>(propP, recvP){                       <span class="co"># proposers propose, receivers hold/reject</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  n <span class="ot">&lt;-</span> <span class="fu">length</span>(propP); nextc <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="dv">1</span>, n); held <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="cn">NA_integer_</span>, n); free <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">:</span>n</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="cf">while</span>(<span class="fu">length</span>(free)){</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    p <span class="ot">&lt;-</span> free[<span class="dv">1</span>]; r <span class="ot">&lt;-</span> propP[[p]][nextc[p]]; nextc[p] <span class="ot">&lt;-</span> nextc[p] <span class="sc">+</span> <span class="dv">1</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span>(<span class="fu">is.na</span>(held[r])){ held[r] <span class="ot">&lt;-</span> p; free <span class="ot">&lt;-</span> free[<span class="sc">-</span><span class="dv">1</span>] }</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span> <span class="cf">if</span>(<span class="fu">match</span>(p, recvP[[r]]) <span class="sc">&lt;</span> <span class="fu">match</span>(held[r], recvP[[r]])){</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>      free <span class="ot">&lt;-</span> <span class="fu">c</span>(free[<span class="sc">-</span><span class="dv">1</span>], held[r]); held[r] <span class="ot">&lt;-</span> p }</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>  held</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>h <span class="ot">&lt;-</span> <span class="fu">DA</span>(worker_pref, firm_pref); worker_opt <span class="ot">&lt;-</span> <span class="fu">integer</span>(<span class="dv">3</span>)</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span>(f <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>) worker_opt[h[f]] <span class="ot">&lt;-</span> f                 <span class="co"># convert to the worker -&gt; company view</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>firm_opt <span class="ot">&lt;-</span> <span class="fu">DA</span>(firm_pref, worker_pref)              <span class="co"># companies propose, already worker -&gt; company</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a><span class="fu">rbind</span>(<span class="at">worker_proposes =</span> worker_opt, <span class="at">firm_proposes =</span> firm_opt)</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;                 [,1] [,2] [,3]</span></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; worker_proposes    1    2    3</span></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; firm_proposes      2    1    3</span></span></code></pre></div>
+<p>The two proposing directions give two matchings that are both stable
+yet different. When workers propose, worker 1 and worker 2 both match
+their top choice (company 1 and company 2); when companies propose,
+these two workers match only their second choice (company 2 and company
+1), and the two companies get their wish instead. Proposer-optimality is
+just this plain in the numbers: whoever moves first gets the best
+partner it can get in any stable matching.</p>
+<p>The accounts of this section now balance out: on the same Vireo
+platform, in the ad auction VCG prices by externality to make truth a
+dominant strategy and collects 680, GSP is simpler in form and its
+locally envy-free equilibrium reproduces VCG’s 680, and revenue
+equivalence proves the first and second price have equal expected
+revenue while pursuing revenue relies on the reserve to lift <span
+class="math inline">1/3</span> to <span class="math inline">5/12</span>;
+putting on the hat of information design, Vireo uses a committed
+disclosure rule to persuade the purchase probability up to <span
+class="math inline">0.6</span>, exactly the concave hull value; putting
+on the hat of matchmaking, deferred acceptance produces a stable
+matching and proposer-optimality is plain to see. Every step can be
+computed by hand and self checked, and the distance from abstract
+theorem to platform business is laid bare in these numerical
+examples.</p>
+<h2 id="failure-modes-and-robustness-of-mechanisms">7 Failure Modes and
+Robustness of Mechanisms</h2>
+<p>The theorems of mechanism design are beautiful, but carrying them to
+real platforms goes astray in a few places, which this section works
+through one by one.</p>
+<p>Though VCG carries the theoretical halo of dominant strategy
+truthfulness, it is rarely adopted as is in reality, and the reasons are
+worth spelling out. The first is the non monotonicity and fragility of
+revenue: VCG revenue can fall rather than rise as competitors increase,
+can be extremely low under certain allocations, and is easily
+manipulated by shill bidding (a seller staging fake competitive bids)
+and bidder collusion. The second is complexity and opacity: VCG’s
+payment rule requires solving for the counterfactual allocation in
+others’ absence, advertisers struggle to understand why they pay a given
+price, and understandability is crucial to a real market’s adoption.
+This is precisely the practical reason search engines choose the simpler
+form GSP: though GSP sacrifices dominant strategy truthfulness, it buys
+transparency and robustness in exchange, and its equilibrium can
+approximate VCG’s properties. This seam between theoretical optimum and
+engineering usability is a theme that recurs whenever mechanism design
+lands in practice.</p>
+<p>Common value and the winner’s curse are a major source of failure for
+the revenue equivalence assumptions. Section 4’s analysis assumes
+private value (each person’s value concerns only itself). But in many
+platform auctions the value has a common value component: the true
+commercial value of a keyword is roughly the same for all advertisers,
+only each has a noisy estimate. Then the winner is often the one who
+overestimates the most, and winning is itself the bad news that “your
+estimate was high,” so a rational bidder must shade in advance to
+account for it, and this is the winner’s curse. It breaks revenue
+equivalence, and it also forces auction design to consider how
+information is revealed during bidding, with English auctions, because
+they progressively reveal exit information, often earning higher revenue
+than sealed bid auctions under common value.</p>
+<p>Correlated types loosen revenue equivalence further. Revenue
+equivalence requires types to be independent and identically
+distributed, and once bidders’ values are positively correlated, the
+seller can exploit the correlation to design a mechanism with higher
+revenue (Crémer-McLean’s extreme result can even extract all the
+surplus), and standard auctions are no longer equivalent. In real ad
+auctions values are highly correlated (the value of the same keyword
+rises and falls with the broad market), so revenue equivalence should be
+treated as a benchmark rather than an iron law.</p>
+<p>Multidimensional types and multidimensional screening are the soft
+spot of screening theory. The screening in Section 3.3 has a clean
+solution under a single dimensional type (one usage dimension), but real
+customers are often heterogeneous along multiple dimensions (usage, time
+of day, preference for reliability), and multidimensional screening
+problems generally have no clean characterization, with the optimal menu
+possibly extremely complex or even involving randomization. Many of the
+difficulties platforms face when designing pricing menus trace their
+roots to the multidimensionality of types.</p>
+<p>The robustness of moral hazard also has its boundaries. The optimal
+contract in Section 3.4 is sensitive to the specification of the
+performance distribution and the agent’s risk preferences, and in
+reality the performance measure can often be gamed, so a strong
+incentive may induce the distorted behavior of making the metric look
+good rather than actually doing the work well, and in a multitask
+setting a strong incentive on the measurable task also crowds out the
+unmeasurable but equally important tasks. When designing incentives,
+measurability and gameability are practical constraints that should be
+thought through before mathematical optimality.</p>
+<p>Stringing these together, mechanism design gives platforms a powerful
+language for designing rules and steering behavior under private
+information, but its sharpest theorems all rest on assumptions of
+private values, independent types, single dimensionality, and
+commitability, and the collusion, correlated values, multidimensional
+heterogeneity, and metric gaming of real platforms erode these
+assumptions one by one. Robust mechanism design lies not in applying the
+optimal formula but in recognizing which assumption you deviate from and
+where that deviation pushes the conclusion, and often in preferring a
+second best but transparent, manipulation resistant mechanism. This is
+the same attitude that runs through this series: the credibility of a
+method lies not in the sophistication of the technique but in putting
+the assumptions on the table.</p>
+<h2 id="further-reading">8 Further Reading</h2>
+<div class="readings">
+<p>Required reading, in suggested order:</p>
+<ul>
+<li>Mas-Colell, Whinston and Green, Microeconomic Theory, Chapter 16
+(adverse selection, signaling, screening), Chapter 17 (principal-agent
+and moral hazard), and Chapter 27 (mechanism design and auctions). The
+theoretical skeleton of this chapter comes mainly from these three
+chapters, and reading them through first sorts out the two broad classes
+of asymmetric information and the overall framework of mechanism
+design.</li>
+<li>Vickrey (1961). The founding work of the second price auction and
+auction theory, the origin of Section 4’s clues about truth, short and
+classic.</li>
+<li>Krishna, Auction Theory. The standard textbook of auction theory,
+treating revenue equivalence and the optimal auction in more detail than
+MWG, suitable for deepening Section 4.</li>
+</ul>
+<p>Further reading:</p>
+<ul>
+<li>Myerson (1981). The complete framework of the optimal auction and
+revenue equivalence, the full source for Section 4, focusing on the
+virtual value and the envelope argument.</li>
+<li>Edelman, Ostrovsky and Schwarz (2007). The mechanism analysis of the
+search ad GSP auction, required reading for the information systems and
+platform direction, directly corresponding to this chapter’s running
+case.</li>
+<li>Varian (2007). An independent analysis of position auctions,
+complementary to Edelman-Ostrovsky-Schwarz, focusing on the equilibrium
+characterization.</li>
+<li>Spence (1973). The original text of the education signaling model,
+the foundation of signaling, for understanding how single-crossing makes
+a signal credible.</li>
+<li>Akerlof (1970). The origin of the lemons market and adverse
+selection, the source of the market unraveling logic.</li>
+<li>Holmström (1979) and Grossman and Hart (1983). Two cornerstones of
+moral hazard and optimal contracts, the former giving the
+informativeness principle and the latter giving a general analysis
+independent of the first-order approach, designed precisely to work
+around the possible failure of the first-order approach, the basis of
+Section 3.4; for the validity conditions of the first-order approach
+itself (MLRP plus CDFC), see further Rogerson (1985) and Jewitt
+(1988).</li>
+<li>Kamenica and Gentzkow (2011) and Bergemann and Morris (2019). The
+foundation of Bayesian persuasion and the unified survey of information
+design, the full source for Section 3.7, required reading for the AI and
+platform information policy direction.</li>
+<li>Crawford and Sobel (1982). The origin of cheap talk and the
+partition equilibrium, the source of Section 3.8’s analysis of the
+credibility of soft information.</li>
+<li>Gale and Shapley (1962) and Roth and Sotomayor (1990). The
+foundation and synthesis of deferred acceptance and stable matching
+theory, to be read alongside Roth (1984) on the empirics of resident
+matching, the source of Section 4.4’s market design, required reading
+for the two sided platform direction.</li>
+<li>Myerson and Satterthwaite (1983). The original text of the
+impossibility theorem for efficient bilateral trade, the source of
+Section 4.5’s limit of market making.</li>
+</ul>
+</div>
+<div class="apa-refs">
+<ul>
+<li>Akerlof, G. A. (1970). The market for “lemons”: Quality uncertainty
+and the market mechanism. <em>The Quarterly Journal of Economics,
+84</em>(3), 488-500. <a href="https://doi.org/10.2307/1879431"
+class="uri">https://doi.org/10.2307/1879431</a></li>
+<li>Bergemann, D., &amp; Morris, S. (2019). Information design: A
+unified perspective. <em>Journal of Economic Literature, 57</em>(1),
+44-95. <a href="https://doi.org/10.1257/jel.20181489"
+class="uri">https://doi.org/10.1257/jel.20181489</a></li>
+<li>Crawford, V. P., &amp; Sobel, J. (1982). Strategic information
+transmission. <em>Econometrica, 50</em>(6), 1431-1451. <a
+href="https://doi.org/10.2307/1913390"
+class="uri">https://doi.org/10.2307/1913390</a></li>
+<li>Edelman, B., Ostrovsky, M., &amp; Schwarz, M. (2007). Internet
+advertising and the generalized second-price auction: Selling billions
+of dollars worth of keywords. <em>American Economic Review, 97</em>(1),
+242-259. <a href="https://doi.org/10.1257/aer.97.1.242"
+class="uri">https://doi.org/10.1257/aer.97.1.242</a></li>
+<li>Gale, D., &amp; Shapley, L. S. (1962). College admissions and the
+stability of marriage. <em>American Mathematical Monthly, 69</em>(1),
+9-15. <a href="https://doi.org/10.1080/00029890.1962.11989827"
+class="uri">https://doi.org/10.1080/00029890.1962.11989827</a></li>
+<li>Grossman, S. J., &amp; Hart, O. D. (1983). An analysis of the
+principal-agent problem. <em>Econometrica, 51</em>(1), 7-45. <a
+href="https://doi.org/10.2307/1912246"
+class="uri">https://doi.org/10.2307/1912246</a></li>
+<li>Holmström, B. (1979). Moral hazard and observability. <em>The Bell
+Journal of Economics, 10</em>(1), 74-91. <a
+href="https://doi.org/10.2307/3003320"
+class="uri">https://doi.org/10.2307/3003320</a></li>
+<li>Jewitt, I. (1988). Justifying the first-order approach to
+principal-agent problems. <em>Econometrica, 56</em>(5), 1177-1190. <a
+href="https://doi.org/10.2307/1911363"
+class="uri">https://doi.org/10.2307/1911363</a></li>
+<li>Kamenica, E., &amp; Gentzkow, M. (2011). Bayesian persuasion.
+<em>American Economic Review, 101</em>(6), 2590-2615. <a
+href="https://doi.org/10.1257/aer.101.6.2590"
+class="uri">https://doi.org/10.1257/aer.101.6.2590</a></li>
+<li>Krishna, V. (2009). <em>Auction theory</em> (2nd ed.). Academic
+Press.</li>
+<li>Mas-Colell, A., Whinston, M. D., &amp; Green, J. R. (1995).
+<em>Microeconomic theory</em>. Oxford University Press.</li>
+<li>Myerson, R. B. (1981). Optimal auction design. <em>Mathematics of
+Operations Research, 6</em>(1), 58-73. <a
+href="https://doi.org/10.1287/moor.6.1.58"
+class="uri">https://doi.org/10.1287/moor.6.1.58</a></li>
+<li>Myerson, R. B., &amp; Satterthwaite, M. A. (1983). Efficient
+mechanisms for bilateral trading. <em>Journal of Economic Theory,
+29</em>(2), 265-281. <a
+href="https://doi.org/10.1016/0022-0531(83)90048-0"
+class="uri">https://doi.org/10.1016/0022-0531(83)90048-0</a></li>
+<li>Rogerson, W. P. (1985). The first-order approach to principal-agent
+problems. <em>Econometrica, 53</em>(6), 1357-1367. <a
+href="https://doi.org/10.2307/1913212"
+class="uri">https://doi.org/10.2307/1913212</a></li>
+<li>Roth, A. E. (1984). The evolution of the labor market for medical
+interns and residents: A case study in game theory. <em>Journal of
+Political Economy, 92</em>(6), 991-1016. <a
+href="https://doi.org/10.1086/261272"
+class="uri">https://doi.org/10.1086/261272</a></li>
+<li>Roth, A. E., &amp; Sotomayor, M. A. O. (1990). <em>Two-sided
+matching: A study in game-theoretic modeling and analysis</em>
+(Econometric Society Monographs No. 18). Cambridge University Press. <a
+href="https://doi.org/10.1017/CCOL052139015X"
+class="uri">https://doi.org/10.1017/CCOL052139015X</a></li>
+<li>Spence, M. (1973). Job market signaling. <em>The Quarterly Journal
+of Economics, 87</em>(3), 355-374. <a
+href="https://doi.org/10.2307/1882010"
+class="uri">https://doi.org/10.2307/1882010</a></li>
+<li>Varian, H. R. (2007). Position auctions. <em>International Journal
+of Industrial Organization, 25</em>(6), 1163-1178. <a
+href="https://doi.org/10.1016/j.ijindorg.2006.10.002"
+class="uri">https://doi.org/10.1016/j.ijindorg.2006.10.002</a></li>
+<li>Vickrey, W. (1961). Counterspeculation, auctions, and competitive
+sealed tenders. <em>The Journal of Finance, 16</em>(1), 8-37. <a
+href="https://doi.org/10.1111/j.1540-6261.1961.tb02789.x"
+class="uri">https://doi.org/10.1111/j.1540-6261.1961.tb02789.x</a></li>
+</ul>
+</div>
+    <footer class="page-footer">
+<span>Foundations of Information Systems Economics: Empirical Methods for Information Systems Economics</span>
+    </footer>
+  </main>
+</div>
+<script>
+(function(){var p=(location.pathname.split('/').pop()||'index.html');document.querySelectorAll('.file-nav a').forEach(function(a){if(a.getAttribute('href')===p)a.classList.add('current');});})();
+
+/* Preserve complete formulas without internal scrollbars. Only formulas whose
+   natural width exceeds their text column are reduced, and resize restores the
+   largest size that fits. */
+(function () {
+  function fitMath() {
+    document.querySelectorAll('span.math').forEach(function (host) {
+      var katex = host.querySelector('.katex');
+      if (!katex) return;
+      katex.style.fontSize = '';
+      var parent = host.classList.contains('display') ? host : host.parentElement;
+      var available = Math.max(1, parent.clientWidth);
+      /* KaTeX's box can be clipped to the host before measurement; scrollWidth
+         retains the full typeset width and is therefore the correct basis. */
+      var needed = Math.max(katex.scrollWidth, katex.getBoundingClientRect().width);
+      /* Keep a small safety margin for KaTeX glyph overhangs and browser
+         sub-pixel rounding, so the last radical/bar is never clipped. */
+      var target = available * 0.98;
+      if (needed > target) {
+        katex.style.fontSize = Math.max(0.34, target / needed) + 'em';
+      }
+    });
+  }
+  document.addEventListener('DOMContentLoaded', function () {
+    requestAnimationFrame(fitMath);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitMath);
+  });
+  window.addEventListener('resize', fitMath);
+}());
+</script>
+<script defer src="assets/notes.js"></script>
+</body>
+</html>

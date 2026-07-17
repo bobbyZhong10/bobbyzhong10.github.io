@@ -1,0 +1,29 @@
+<svg viewBox="0 0 720 400" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, 'Noto Sans SC', sans-serif">
+  <line x1="70" y1="40" x2="70" y2="300" stroke="#94a1b2" stroke-width="1.5"/>
+  <line x1="70" y1="300" x2="685" y2="300" stroke="#94a1b2" stroke-width="1.5"/>
+  <text x="70" y="30" text-anchor="start" font-size="13" fill="#64748b">outcome (e.g. log GMV)</text>
+  <text x="685" y="320" text-anchor="end" font-size="13" fill="#64748b">time →</text>
+
+  <line x1="380" y1="40" x2="380" y2="300" stroke="#cfccc4" stroke-width="1.5" stroke-dasharray="4 4"/>
+  <text x="380" y="320" text-anchor="middle" font-size="13" fill="#2d3748">treatment date</text>
+
+  <line x1="70" y1="250" x2="680" y2="175" stroke="#1a365d" stroke-width="2.5"/>
+
+  <line x1="70" y1="205" x2="380" y2="167" stroke="#c53030" stroke-width="2.5"/>
+  <line x1="380" y1="167" x2="680" y2="88" stroke="#c53030" stroke-width="2.5"/>
+  <line x1="380" y1="167" x2="680" y2="129" stroke="#c53030" stroke-width="2" stroke-dasharray="6 5" opacity="0.7"/>
+
+  <line x1="656" y1="88" x2="656" y2="129" stroke="#2d3748" stroke-width="1.2"/>
+  <line x1="651" y1="88" x2="661" y2="88" stroke="#2d3748" stroke-width="1.2"/>
+  <line x1="651" y1="129" x2="661" y2="129" stroke="#2d3748" stroke-width="1.2"/>
+  <text x="648" y="112" text-anchor="end" font-size="12" fill="#2d3748">effect ATT</text>
+
+  <text x="210" y="150" text-anchor="middle" font-size="12" fill="#64748b">pre-period: parallel trends</text>
+
+  <line x1="90" y1="360" x2="122" y2="360" stroke="#1a365d" stroke-width="2.5"/>
+  <text x="128" y="364" font-size="12.5" fill="#2d3748">control</text>
+  <line x1="228" y1="360" x2="260" y2="360" stroke="#c53030" stroke-width="2.5"/>
+  <text x="266" y="364" font-size="12.5" fill="#2d3748">treated (observed)</text>
+  <line x1="452" y1="360" x2="484" y2="360" stroke="#c53030" stroke-width="2" stroke-dasharray="6 5" opacity="0.7"/>
+  <text x="490" y="364" font-size="12.5" fill="#2d3748">treated (counterfactual)</text>
+</svg>

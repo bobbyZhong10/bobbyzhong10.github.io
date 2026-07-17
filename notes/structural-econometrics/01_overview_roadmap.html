@@ -1,0 +1,587 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script>(function(){try{var t=localStorage.getItem('theme');if(t==='dark'||t==='light')document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <title>01 Overview & Decision Framework | From Choices to Counterfactuals</title>
+  <link rel="stylesheet" href="assets/katex/katex.min.css">
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="page-wrapper">
+
+  <!-- ==================== SIDEBAR ==================== -->
+  <nav class="sidebar">
+    <div class="sidebar-title">From Choices to Counterfactuals: Structural Estimation for Digital Platform Research</div>
+    <div class="sidebar-subtitle">Chapter 01 · Overview &amp; Decision Framework</div>
+
+    <div class="toc-section-label">Contents</div>
+    <div class="toc">
+      <a href="#what-this-is">1.1 What This Series Answers</a>
+      <a href="#running-case" class="level-3">The streaming example that runs through the book</a>
+      <a href="#model-map">1.2 The Model Map</a>
+      <a href="#do-you-need-structure">1.3 Do You Need a Structural Model?</a>
+      <a href="#which-model">1.4 Which Model to Use</a>
+      <a href="#capability-matrix" class="level-3">Model × capability summary table</a>
+      <a href="#chapter-guide">1.5 The Chapters at a Glance</a>
+      <a href="#conventions">1.6 Notation and Conventions</a>
+      <a href="#misconceptions">1.7 Common Pitfalls</a>
+      <a href="#summary">1.8 Chapter Summary</a>
+      <a href="#readings">Further Reading</a>
+    </div>
+
+    <div class="file-nav">
+      <div class="nav-label">Chapters</div>
+      <a href="01_overview_roadmap.html" class="current">01 Overview &amp; Decision Framework</a>
+      <a href="02_why_structural.html">02 Why Structural Models</a>
+      <a href="03_rum_logit.html">03 RUM and Logit</a>
+      <a href="04_gev_mixed_logit.html">04 Nested and Mixed Logit</a>
+      <a href="05_simulation_estimation.html">05 Simulation and Numerical Estimation</a>
+      <a href="06_endogeneity_blp.html">06 Endogeneity and BLP</a>
+      <a href="07_dynamic_choice.html">07 Dynamic Discrete Choice</a>
+      <a href="08_applications.html">08 Platform Research Applications</a>
+      <a href="09_workflow_reference.html">09 Workflow, Validation, and Reference</a>
+    </div>
+  </nav>
+
+  <!-- ==================== MAIN ==================== -->
+  <main class="main-content">
+
+    <header class="page-header">
+      <h1>Overview and Decision Framework</h1>
+      <div class="subtitle">The Map: Models, Decisions, and How This Series Fits Together</div>
+      <div class="meta">From Choices to Counterfactuals: Structural Estimation for Digital Platform Research · Chapter 01</div>
+    </header>
+
+    <div class="global-legend">
+      <span class="legend-label">Variable colors</span>
+      <span><span class="dot dot-observed"></span>Observed in data</span>
+      <span><span class="dot dot-estimated"></span>Parameters to estimate</span>
+      <span><span class="dot dot-researcher"></span>Set by the researcher</span>
+    </div>
+
+    <p>Say you do research inside a platform team, and you have a very concrete question in front of you: should the subscription go from one tier to two, should the search ranking use a different weighting? You sit down to build a model, and two prior questions stop you first: <strong>does this question really call for a structural model at all, and if it does, which one should you pick?</strong></p>
+
+    <p>Neither question can be sidestepped in any structural estimation, and both almost always need an answer before you write down the first formula. This chapter walks you through both of these decisions. The first, whether the modeling is worth it, gets its full argument in Chapter 02; here you get only a quick pass. The second, which model to build, is this chapter's main business: with one model map and two decision flowcharts we lay out, segment by segment, the road that runs from a question to a model. The series' whole decision framework lives in this one chapter, which is also shorter than the ones that follow.</p>
+
+    <!-- ============================================ -->
+    <h2 id="what-this-is">1.1 What This Series Answers</h2>
+
+    <p>The questions a platform researcher answers day to day mostly look like this: what happens if the subscription price goes from one tier to two, what happens if search ranking uses a different weighting, what happens if five-star ratings become likes, what happens if the free trial shrinks from 30 days to 7? Line them up and you see a shared shape: none of them asks "how big was the effect of the last change we made," they ask "if we try something we have not tried before, how will users respond, who will churn, how will welfare change?" Experiments and regressions are good at the first kind; on the second they often stall, because the answer simply is not in the variation the data has already seen.</p>
+
+    <p>The second kind is exactly where structural models take over. A structural model is not "a fancier regression"; it is a toolkit for making grounded, replicable predictions about environments you have never observed. The way it works: first estimate the primitives of user preferences, the parts that stay fixed even when policy changes, then use them to recompute choices and welfare under any new scenario. When the modeling effort is worth it and when a cheaper method will do is a judgment Chapter 02 weighs at length; Section 1.3 here gives you a first pass.</p>
+
+    <p>Who is this series written for? For you, if you already command the basic tools of regression and causal inference (OLS, instrumental variables, panel fixed effects, difference-in-differences), and it assumes no prior exposure to structural estimation. The technical throughline of the book is the discrete choice model, which in mathematical terms comes down to a single integral: a choice probability is an integral. When a closed form exists you compute it directly; when it does not you approximate it by simulation. The estimation methods of Chapters 03 through 07 unfold in that order along this thread. Two methodological principles run throughout: first, before you estimate anything, write the model down as a plain statement about the data-generating process (DGP); second, decide whether the question needs a structural method before you get into technical detail. From estimating preference parameters to simulating a scenario that has not yet launched is exactly the full chain the book's title, From Choices to Counterfactuals, points to.</p>
+
+    <h3 id="running-case">The streaming example that runs through the book</h3>
+
+    <p>Abstract ideas need something concrete to hold onto. So Chapters 03 through 05 share one illustrative setup, letting you follow the same set of options all the way down. Here it is: a user has to pick one streaming video subscription from four options, namely general-interest platform A, general-interest platform B, niche documentary platform C, plus the outside option of not subscribing and watching free content only. The three platforms' attributes are listed in the table below. <span class="demo-badge">illustrative data</span></p>
+
+    <div class="table-scroll">
+    <table>
+      <thead>
+        <tr><th>Option</th><th>Monthly fee (yuan)</th><th>Weekly ads (minutes)</th><th>Content rating</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>General-interest platform A</td><td>30</td><td>30</td><td>4.5</td></tr>
+        <tr><td>General-interest platform B</td><td>28</td><td>35</td><td>4.3</td></tr>
+        <tr><td>Niche documentary platform C</td><td>45</td><td>40</td><td>4.7</td></tr>
+        <tr><td>Not subscribing (free content only)</td><td colspan="3" style="text-align:center">outside option, utility normalized to 0</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <p>These options and parameters stay with you through Chapter 05: Chapter 03 uses them to derive logit probabilities, elasticities, and IIA; Chapter 04 adds nesting and random coefficients to improve the substitution pattern; Chapter 05 uses them to show how to estimate by simulation when there is no closed form. By Chapter 06 the scene shifts: with only aggregate market shares left, you take the BLP route, and the question of dynamic retention is left to Chapter 07. Numbers used for teaching like these all carry a single <span class="demo-badge">illustrative data</span> badge throughout the book; its meaning is explained in Section 1.6.</p>
+
+    <div class="takeaway-box">
+      <div class="box-title">Bottom Line</div>
+      This series serves questions of the form "what would happen if we tried something we have not tried before." The technical throughline is discrete choice; the discipline of judgment is to confirm the modeling is worth it before debating which model to pick.
+    </div>
+
+    <!-- ============================================ -->
+    <h2 id="model-map">1.2 The Model Map</h2>
+
+    <p>Structural discrete choice models are not a pile of unrelated tricks stacked together; they spread out across a map along two axes. The first axis asks whether the decision is <strong>static or dynamic</strong>: does the user make a single here-and-now choice and be done, or must they look ahead, because what they choose this period changes the state later on? The second asks whether it is a <strong>single-agent decision or a strategic interaction</strong>: are you modeling how just one party optimizes, or must several parties' decisions be pinned down together in a single equilibrium? Cross the two axes and four quadrants appear, and with them a clear picture of what this series covers and what it does not.</p>
+
+    <div class="figure">
+    <svg viewBox="0 0 760 432" role="img" aria-label="The model map for structural discrete choice: a four-quadrant grid of static/dynamic by single-agent/strategic-interaction, with the series' backbone in the single-agent column">
+      <defs>
+        <marker id="f11arr" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto">
+          <path d="M0,0 L6,3 L0,6 Z" style="fill:var(--fig-axis)"></path>
+        </marker>
+      </defs>
+
+      <!-- cost-gradient annotations -->
+      <line x1="250" y1="40" x2="545" y2="40" style="stroke:var(--fig-axis);stroke-width:1.3;fill:none" marker-end="url(#f11arr)"></line>
+      <text x="397" y="31" text-anchor="middle" class="mut lbl-s">One step right: one more equilibrium</text>
+      <line x1="40" y1="98" x2="40" y2="398" style="stroke:var(--fig-axis);stroke-width:1.3;fill:none" marker-end="url(#f11arr)"></line>
+      <text x="26" y="248" text-anchor="middle" class="mut lbl-s" transform="rotate(-90 26 248)">One step down: one more intertemporal optimization</text>
+
+      <!-- column headers -->
+      <text x="295" y="66" text-anchor="middle" class="ink lbl" style="font-weight:700">Single-agent decisions</text>
+      <text x="585" y="66" text-anchor="middle" class="ink lbl" style="font-weight:700">Strategic interaction</text>
+      <!-- row labels -->
+      <text x="150" y="158" text-anchor="end" class="ink lbl" style="font-weight:700">Static</text>
+      <text x="150" y="332" text-anchor="end" class="ink lbl" style="font-weight:700">Dynamic</text>
+
+      <!-- top-left: static x single-agent (backbone) -->
+      <rect x="160" y="80" width="270" height="150" rx="8" style="fill:var(--fig-1-soft);stroke:var(--fig-1);stroke-width:1.8"></rect>
+      <text x="178" y="122" class="ink lbl" style="font-weight:700">MNL · Nested · Mixed · agg. BLP</text>
+      <text x="178" y="150" class="mut lbl-s" style="font-size:10px">Pricing/ranking counterfactuals, welfare, WTP</text>
+      <text x="178" y="210" class="lbl-s" style="fill:var(--fig-1);font-weight:700">Chapters 03–06 · series backbone</text>
+
+      <!-- top-right: static x strategic interaction -->
+      <rect x="450" y="80" width="270" height="150" rx="8" class="bx"></rect>
+      <text x="468" y="122" class="ink lbl" style="font-weight:700;font-size:12px">Bertrand-Nash pricing · static entry</text>
+      <text x="468" y="150" class="mut lbl-s" style="font-size:10px">Seller pricing response; platform competition</text>
+      <text x="468" y="210" class="lbl-s" style="fill:var(--fig-2);font-weight:700">Ch. 06 supply side (framework only)</text>
+
+      <!-- bottom-left: dynamic x single-agent (backbone) -->
+      <rect x="160" y="254" width="270" height="150" rx="8" style="fill:var(--fig-1-soft);stroke:var(--fig-1);stroke-width:1.8"></rect>
+      <text x="178" y="296" class="ink lbl" style="font-weight:700">Dynamic discrete choice (Rust · CCP)</text>
+      <text x="178" y="324" class="mut lbl-s" style="font-size:10px">Retention, switching costs, adoption timing</text>
+      <text x="178" y="384" class="lbl-s" style="fill:var(--fig-1);font-weight:700">Chapter 07 · series backbone</text>
+
+      <!-- bottom-right: dynamic x strategic interaction -->
+      <rect x="450" y="254" width="270" height="150" rx="8" class="bx"></rect>
+      <text x="468" y="296" class="ink lbl" style="font-weight:700">Dynamic games</text>
+      <text x="468" y="324" class="mut lbl-s">Dynamic platform competition, entry/exit</text>
+      <text x="468" y="384" class="lbl-s mut" style="font-weight:700">Beyond this series; see Further Reading</text>
+    </svg>
+    <div class="figcaption"><span class="fig-label">Figure 1.1</span>The model map for structural discrete choice. The horizontal axis is the decision structure (single-agent to strategic interaction); the vertical axis is the time dimension (static to dynamic). The series' backbone is the single-agent column on the left, running from the static logit family and BLP all the way to dynamic discrete choice. Every step to the right means solving one more equilibrium, and every step down means one more layer of intertemporal optimization, so the cost of identification and computation rises accordingly. The dynamic games in the bottom-right quadrant (such as the Ericson-Pakes framework and Aguirregabiria-Mira-style estimation) fall outside the series.</div>
+    </div>
+
+    <p>With the map in place, let us run a few real questions through it and see where each one lands. Subscription pricing usually sits in the top-left: the user compares each tier's price and features in the current period, picks a tier or simply does not subscribe, and it is settled in one shot, with no later state to worry about; that is a static single-agent choice, and the tools of Chapters 03 through 06 apply directly. Change the question to "after the platform cuts its commission, will sellers raise their prices in turn," and it lands in the top-right: each seller's optimal price depends on how rivals price, so it can only be solved jointly in a Bertrand-Nash equilibrium, which is exactly the supply-side structure Chapter 06 provides. Now take subscriber retention and churn, which sits in the bottom-left: canceling this month means giving up the playlist you painstakingly built and the interface you are used to, so the user weighs the future payoff before deciding, and this period's choice changes the future state; this is precisely the object of the dynamic discrete choice of Chapter 07. Finally, the line "two ride-hailing platforms each dynamically pour in subsidies to fight over the same pool of drivers" touches both the dynamic and the interaction axes, lands in the bottom-right, and falls outside this series.</p>
+
+    <p>The backbone of this series is the <strong>left column</strong> of the map, that is, single-agent discrete choice, running from the static logit family and BLP all the way to dynamic discrete choice. The strategic interaction in the right column is touched only where necessary: Chapter 06 introduces Bertrand-Nash pricing equilibrium in passing through the supply side of BLP, and Chapter 08 discusses two-sided markets at the framework level, but full strategic estimation such as entry games and dynamic games is out of scope. Auctions are a self-contained methodology of their own and are likewise not covered. For each of these two directions we list one or two recognized introductory surveys in Further Reading, for readers who need to go deeper.</p>
+
+    <div class="info-box">
+      <div class="box-title">Why start with the single agent</div>
+      <p style="margin-bottom:0">Single-agent discrete choice is the foundation of the whole map. Strategic interaction models almost always need a discrete choice utility structure on the demand side first, and dynamic models add a layer of intertemporal optimization on top of static choice. With a solid foundation, the extensions toward the right column and the dynamic direction go much more smoothly; the other way around, charging straight into equilibrium estimation without laying the foundation, you often cannot even pin down "whose utility is this, and which options are in the choice set."</p>
+    </div>
+
+    <div class="intuition-box">
+      <div class="box-title">Intuition: read the map as a cost map</div>
+      These two axes are not classification for its own sake; think of them as a cost map. Move one step right (single-agent to strategic interaction) and you have to solve one more equilibrium; move one step down (static to dynamic) and you have to solve one more intertemporal optimization. With each step, the burden of identification and the cost of computation jump up a notch. So the default mindset in model selection is this: first see which quadrant the question falls in, and if you can stay in the top-left, do not rush to leave it, unless the research question itself forces you out.
+    </div>
+
+    <!-- ============================================ -->
+    <h2 id="do-you-need-structure">1.3 Do You Need a Structural Model?</h2>
+
+    <p>The map lays out all the available tools, but before you pick one there is an even earlier judgment: does the question in your hands actually call for a structural model? Let us put two nearly identical questions side by side so you can feel the difference. First: last quarter we cut platform A's monthly fee from 30 yuan to 28 yuan, and how much did subscriptions rise? Second: if we cut platform A's monthly fee to 20 yuan, a price point never set before, how much would subscriptions rise? Both ask about price and subscriptions, yet they are not the same kind of question. The first price cut actually happened; if it came from a randomized experiment or a credible quasi-experiment, its causal effect can be identified from that variation that has already occurred. The 20-yuan price point, though, has never appeared, and there is no corresponding policy variation in the data to use directly. This dividing line is exactly the starting point for judging whether you need a structural model.</p>
+
+    <p>Facing the second question, the ideal thing to do, cost aside, is of course to run an experiment: actually set the platform A monthly fee that a batch of users see randomly to 20 yuan and watch how they respond. Unfortunately the 20-yuan price point was never set, and you cannot go back in time to run that experiment after the fact. Failing that, one naive impulse is to dig up the closest historical price cut and extrapolate its measured effect out to 20 yuan. The trouble is that the variation at the 20-yuan price point simply is not in the data. Design-based methods (regression, difference-in-differences, regression discontinuity, and the like) are best at reading off the effect corresponding to variation that has already occurred in the data; but once the change you want to predict falls in a region the data never covered, they stall. So the first question of the judgment lands here: is the counterfactual you want to predict actually <strong>covered</strong> by variation in the data?</p>
+
+    <div class="intuition-box">
+      <div class="box-title">Intuition: look up the table, or extrapolate</div>
+      Think of design-based methods as looking up a table that has already been filled in. If the situation you want to predict matches one of the rows exactly, you just read off the number: fast and stable. The real difficulty is when that row simply does not exist. Then you have only two roads: either honestly admit the answer is not in the table, or first work out the rule the table follows underneath and use that rule to compute the missing row. Structural models take the second road: they estimate the deep preferences that generate the whole table, so that even a row that was never filled in can be computed. The cost? This step leans on the model's assumptions about the rule; it is no longer the data speaking on its own.
+    </div>
+
+    <p>Break this judgment into two ordered steps and you get the flow below. Step one: honestly write down the counterfactual you want to answer, for example "platform A's subscription share after the monthly fee drops to 20 yuan." Step two: check whether that counterfactual is covered by variation in the data. Walk through both steps and the fork becomes clear. First look at coverage: if it is not covered, the change you want to predict falls outside the data's support, this is by definition an ex-ante evaluation, design-based methods stall, and only a full structural model can extrapolate out to it. If it is covered, then ask whether all you need is a single total effect: if you only want the total effect, design-based methods are usually more robust and there is no need to pay the cost of modeling; but if you also want to pull apart mechanisms that are bundled together, or to compute welfare, only then does a full structural model come into play.</p>
+
+    <div class="figure">
+    <svg viewBox="0 0 700 276" role="img" aria-label="Decision flow for whether a structural model is needed: write the counterfactual, judge whether data variation covers it, then whether only a total effect is needed">
+      <defs><marker id="d12" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" style="fill:var(--fig-axis)"></path></marker></defs>
+      <rect x="280" y="12" width="140" height="32" rx="8" class="bx"></rect>
+      <text x="350" y="32" text-anchor="middle" class="ink lbl-s" style="font-weight:700">Write the counterfactual</text>
+      <line x1="350" y1="44" x2="350" y2="59" style="stroke:var(--fig-axis);stroke-width:1.4" marker-end="url(#d12)"></line>
+      <polygon points="350,60 430,88 350,116 270,88" style="fill:var(--fig-1-soft);stroke:var(--fig-1);stroke-width:1.6"></polygon>
+      <text x="350" y="92" text-anchor="middle" class="ink lbl-s">Covered by variation?</text>
+      <line x1="270" y1="88" x2="216" y2="88" style="stroke:var(--fig-axis);stroke-width:1.4" marker-end="url(#d12)"></line>
+      <text x="244" y="80" text-anchor="middle" class="mut lbl-s">No · not covered</text>
+      <rect x="24" y="70" width="192" height="36" rx="8" style="fill:var(--fig-1-soft);stroke:var(--fig-1);stroke-width:1.8"></rect>
+      <text x="120" y="92" text-anchor="middle" class="ink lbl-s" style="font-weight:700">ex-ante → full structural model</text>
+      <line x1="350" y1="116" x2="350" y2="140" style="stroke:var(--fig-axis);stroke-width:1.4" marker-end="url(#d12)"></line>
+      <text x="382" y="132" text-anchor="middle" class="mut lbl-s">Yes · covered</text>
+      <polygon points="350,141 430,169 350,197 270,169" style="fill:var(--fig-1-soft);stroke:var(--fig-1);stroke-width:1.6"></polygon>
+      <text x="350" y="173" text-anchor="middle" class="ink lbl-s">Only a total effect?</text>
+      <line x1="350" y1="197" x2="350" y2="221" style="stroke:var(--fig-axis);stroke-width:1.4" marker-end="url(#d12)"></line>
+      <text x="366" y="214" text-anchor="middle" class="mut lbl-s">Yes</text>
+      <rect x="266" y="222" width="168" height="38" rx="8" class="bx"></rect>
+      <text x="350" y="245" text-anchor="middle" class="ink lbl-s" style="font-weight:700">design-based (more robust)</text>
+      <line x1="430" y1="169" x2="486" y2="169" style="stroke:var(--fig-axis);stroke-width:1.4" marker-end="url(#d12)"></line>
+      <text x="458" y="161" text-anchor="middle" class="mut lbl-s">No</text>
+      <rect x="486" y="150" width="196" height="44" rx="8" style="fill:var(--fig-1-soft);stroke:var(--fig-1);stroke-width:1.8"></rect>
+      <text x="584" y="170" text-anchor="middle" class="ink lbl-s" style="font-weight:700">Full structural model (03–07)</text>
+      <text x="584" y="185" text-anchor="middle" class="mut lbl-s">Mechanism decomposition / welfare</text>
+    </svg>
+    <div class="figcaption"><span class="fig-label">Figure 1.2</span>Whether to bring in a structural model takes two steps to decide. First write down the counterfactual, then ask whether it is covered by variation in the data: not covered means an ex-ante evaluation, and only a full structural model can extrapolate to it; covered, then ask whether only a total effect is needed, and if so use the more robust design-based approach, and if not (you also need mechanism decomposition or welfare) a full structural model is still required. The two branches that lead to a full structural model correspond to the three legitimate reasons: ex-ante evaluation, mechanism decomposition, and welfare.</div>
+    </div>
+
+    <p>The branch in the flow where "it is covered but you still have to model" is the one people most easily miss. Even when the counterfactual sits squarely within the data's support, as long as the question is not about a single total effect, design-based methods are not necessarily enough. Here is a concrete case: platform A's monthly fee has indeed moved back and forth between 30 yuan and 28 yuan, but what you want is not how much subscriptions rose; it is how much welfare the price cut actually delivered to users. This branch comes down mainly to two kinds: mechanism decomposition and welfare. They are not, as a matter of logic, answerable only by a full structural model; mechanism experiments, causal mediation analysis, or sufficient-statistic methods may suffice under specific conditions. But when the researcher needs to place several mechanisms in one behavioral and equilibrium framework and to compute welfare for a policy that was never implemented, a full structural model usually gives the most complete answer. Put these two together with the ex-ante evaluation of the not-covered branch above, and you get exactly the three common reasons to model.</p>
+
+    <div class="info-box">
+      <div class="box-title">Three legitimate reasons: three kinds of output where a full structural model is especially valuable</div>
+      <ul style="margin-bottom:0">
+        <li><strong>ex-ante evaluation</strong> (the not-covered branch): predict a scenario's effect before it launches. Turning a single-tier subscription into two tiers, "cheap with ads, premium without," is a pricing structure that has never appeared in the historical data, falls outside the data's support, and can only be simulated with a model.</li>
+        <li><strong>mechanism decomposition</strong> (covered, but you want more than the total effect): pull a bundled intervention apart to see how much each mechanism contributes. A single redesign adds both more recommendation slots and social tags at once; an A/B test gives you the packaged total effect, but a model can compute the two contributions separately.</li>
+        <li><strong>welfare</strong> (covered, but you want more than the total effect): compute consumer surplus, compensating variation, or the willingness to pay for a given attribute. These are all quantities at the level of utility, and there is nothing to say about them without a utility function.</li>
+      </ul>
+    </div>
+
+    <details>
+      <summary>Going deeper: where the decision rule and the related checks are developed in Chapter 02</summary>
+      <div class="detail-content">
+        <ul style="margin-bottom:0">
+          <li>Whether the counterfactual is covered, and the trade-offs among the three reasons: <a href="02_why_structural.html#marschak">Chapter 02, Section 2.4, Marschak's Maxim</a></li>
+          <li>Standards for scrutinizing identification and exclusion restrictions: <a href="02_why_structural.html#identification">Chapter 02, Section 2.6</a></li>
+          <li>How far extrapolation can reach, and where its boundary lies: <a href="02_why_structural.html#external-validity">Chapter 02, Section 2.7</a></li>
+          <li>How to validate a model with a slice of experimental variation: <a href="02_why_structural.html#validation">Chapter 02, Section 2.8</a></li>
+        </ul>
+      </div>
+    </details>
+
+    <p>"Covered" is a bit abstract; run the number through the streaming example for real and it comes down to earth. The worked example below does not derive formulas (the derivations wait for Chapter 03); it just wants you to see with your own eyes the one number a structural model can deliver and a design-based method cannot.</p>
+
+    <div class="worked-example">
+      <div class="worked-title">The counterfactual a structural model delivers: predicting the share from a monthly-fee promotion <span class="demo-badge">illustrative data</span></div>
+
+      <div class="worked-step">Step 1: The baseline</div>
+      <p>Keeping the streaming setup from Section 1.1, take the parameters $\beta_{\text{price}}=-0.1$, $\beta_{\text{ad}}=-0.05$ (the marginal disutility of a weekly ad minute), $\beta_{\text{content}}=0.8$, and an ASC of $+0.3$ for the niche platform C (its differentiation premium). First, plug the three platforms' attributes into the observable utility $V=\beta'x$ to get $V_A=-0.90$, $V_B=-1.11$, $V_C=-2.44$, with $V=0$ for the outside option. Second, use logit to turn utilities into probabilities: each option's probability is proportional to the exponential of its own utility, so the higher the utility, the higher the probability of being chosen (full derivation in Chapter 03). Work it out and platform A takes 22.30%, platform B 18.07%, platform C 4.78%, and not subscribing 54.85%.</p>
+
+      <div class="worked-step">Step 2: The counterfactual</div>
+      <p>Now suppose platform C, to pull in subscriptions, issues a coupon worth 10 yuan off the monthly fee, cutting the effective fee from 45 yuan to 35 yuan. Every other attribute stays put; only $V_C$ rises from $-2.44$ to $-1.44$. Recompute: platform C's share climbs from 4.78% to 12.01%, a gain of 7.23 percentage points. One reminder: Chapter 03 uses the same setup to examine a smaller cut (monthly fee from 45 yuan to 40 yuan) and walks the derivation from probability to welfare all the way through; that is a different scenario, so do not mix up the numbers in the two places.</p>
+
+      <div class="worked-step">Step 3: Read what this number means</div>
+      <p>In the historical data platform C's monthly fee never went below 45 yuan, so the 12.01% share is nowhere to be found in any existing variation. A design-based method cannot deliver it; only a model that has already estimated preferences can simulate it. This falls exactly on the "not covered, needs ex-ante evaluation" branch of this section's flow.</p>
+
+      <div class="worked-step">Step 4: A word of caution</div>
+      <p>Look one level deeper at where the losses come from: platform A drops 1.69 percentage points, platform B 1.37, and not subscribing 4.16. The three declines happen to keep the original relative proportions exactly, not budging at all; this is logit's proportional substitution (IIA) at work behind the scenes. But in reality, when platform C cuts its price, it should by rights draw more heavily on the A and B users who already pay for video and merely found C too expensive; logit instead goes strictly by share proportions and assigns the largest chunk of the loss to the free users. This counterintuitive spot is exactly what the nested and mixed logit of Chapter 04 set out to fix.</p>
+    </div>
+
+    <div class="takeaway-box">
+      <div class="box-title">Bottom Line</div>
+      First write down the counterfactual, then check whether it is covered by variation in the data. If it is covered and all you need is a single total effect, use the more robust design-based method; if it is not covered, that is exactly an ex-ante evaluation, and only a full structural model can extrapolate to it; and even when it is covered, as long as you still need mechanism decomposition or welfare, you have to model all the same. The full argument is in Chapter 02; this section is only the entrance.
+    </div>
+
+    <!-- ============================================ -->
+    <h2 id="which-model">1.4 Which Model to Use</h2>
+
+    <p>Once you have decided to use a structural model, the next thing is to pick which one. Many people's first instinct is to open the capability table and pick the most flexible class, but the most flexible is not necessarily usable: the real first gate is the <strong>form of the data</strong>. Whether what you are holding is each user's choice-by-choice records or only market-level shares alone already decides whether a whole class of methods is even available; which category your research question belongs to is only a second-order consideration.</p>
+
+    <div class="intuition-box">
+      <div class="box-title">Intuition: the data form is the first gate</div>
+      Many people picture choice models as a menu you can check off at will, taking whichever you like; the real order is exactly the reverse. What data you hold has already crossed off half the menu for you: only with individual-by-individual choice records is the logit family even on the table; when all you have left is market-level shares, the individual information has been smoothed away in aggregation, individual-level heterogeneity cannot be estimated directly, and the only entrance is BLP's share inversion. So the first step in model selection is never to ask which model is strongest, but to see which cell the data has placed the question in, and then pick within that cell.
+    </div>
+
+    <p>Below, we open this gate into a decision tree, branching into four roads from the data form. Four though they are, walking each one uses the same set of judgments: first see which variation the data holds, then see what that variation can identify and what it is powerless against, and finally land on the matching model.</p>
+
+    <div class="figure">
+    <svg viewBox="0 0 720 196" role="img" aria-label="Model-selection decision tree: first identify the data form (individual choices, aggregate shares, rankings/ratings, or session click-stream), then pick the matching model">
+      <defs><marker id="d13" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" style="fill:var(--fig-axis)"></path></marker></defs>
+      <rect x="280" y="12" width="160" height="34" rx="8" style="fill:var(--fig-1-soft);stroke:var(--fig-1);stroke-width:1.8"></rect>
+      <text x="360" y="34" text-anchor="middle" class="ink lbl-s" style="font-weight:700">What data do you have?</text>
+      <line x1="360" y1="46" x2="360" y2="74" style="stroke:var(--fig-axis);stroke-width:1.4"></line>
+      <line x1="92" y1="74" x2="632" y2="74" style="stroke:var(--fig-axis);stroke-width:1.4"></line>
+      <line x1="92" y1="74" x2="92" y2="111" style="stroke:var(--fig-axis);stroke-width:1.4" marker-end="url(#d13)"></line><line x1="272" y1="74" x2="272" y2="111" style="stroke:var(--fig-axis);stroke-width:1.4" marker-end="url(#d13)"></line><line x1="452" y1="74" x2="452" y2="111" style="stroke:var(--fig-axis);stroke-width:1.4" marker-end="url(#d13)"></line><line x1="632" y1="74" x2="632" y2="111" style="stroke:var(--fig-axis);stroke-width:1.4" marker-end="url(#d13)"></line>
+      <rect x="12" y="112" width="160" height="66" rx="8" class="bx"></rect><text x="92" y="134" text-anchor="middle" class="ink lbl-s" style="font-weight:700">Individual choices</text><text x="92" y="152" text-anchor="middle" class="lbl-s" style="fill:var(--fig-1);font-weight:700">One-shot → logit · 03–04</text><text x="92" y="169" text-anchor="middle" class="mut lbl-s">Panel+state → dynamic · 07</text><rect x="192" y="112" width="160" height="66" rx="8" class="bx"></rect><text x="272" y="134" text-anchor="middle" class="ink lbl-s" style="font-weight:700">Aggregate shares</text><text x="272" y="152" text-anchor="middle" class="lbl-s" style="fill:var(--fig-1);font-weight:700">BLP</text><text x="272" y="169" text-anchor="middle" class="mut lbl-s">Share inversion + IV · 06</text><rect x="372" y="112" width="160" height="66" rx="8" class="bx"></rect><text x="452" y="134" text-anchor="middle" class="ink lbl-s" style="font-weight:700">Rankings / ratings</text><text x="452" y="152" text-anchor="middle" class="lbl-s" style="fill:var(--fig-1);font-weight:700">exploded / ordered</text><text x="452" y="169" text-anchor="middle" class="mut lbl-s">Rank &amp; rating gaps · 04</text><rect x="552" y="112" width="160" height="66" rx="8" class="bx"></rect><text x="632" y="134" text-anchor="middle" class="ink lbl-s" style="font-weight:700">Session click-stream</text><text x="632" y="152" text-anchor="middle" class="lbl-s" style="fill:var(--fig-1);font-weight:700">Joint exposure + choice</text><text x="632" y="169" text-anchor="middle" class="mut lbl-s">Model exposure process · 08</text>
+    </svg>
+    <div class="figcaption"><span class="fig-label">Figure 1.3</span>The first gate in model selection is the data form, not which model is strongest. Individual choice-by-choice data: a one-shot decision takes the logit family (Chapters 03–04), while panel data with state dependence takes dynamic discrete choice (Chapter 07). With only aggregate shares, individual information is smoothed away in aggregation, and the entrance is BLP's share inversion (Chapter 06). With rankings or ratings, the extra information uses exploded and ordered models (Chapter 04). With only session click-stream, even the choice set is uncertain, and you have to model the exposure process along with it (Chapter 08).</div>
+    </div>
+
+    <p><strong>Individual choice data</strong> is the most painless starting point. The variation you hold here is: which option each user actually chose within their own set, while each option's attributes, such as price, ads, and rating, are all observed too. The same attribute runs high and low across options and across users, and its correspondence with "who ends up chosen" identifies the attribute's marginal utility, that is, the preference parameter $\beta$. If different users also face different choice sets or attributes, the data can even go a step further and identify whether preferences vary from person to person. This corresponds to the logit family: with homogeneous preferences use MNL, and when you want to relax the substitution pattern or admit heterogeneity, nested and mixed logit come in (Chapters 03–04).</p>
+
+    <p><strong>Aggregate share data</strong> raises the difficulty a notch. Now all you can see is how large a share each product sold in each market, while which specific user chose what, and which options they faced, are all smoothed away in aggregation. Individual heterogeneity can no longer be identified directly from person-by-person choices, but it is not entirely beyond estimation: BLP draws on how product attributes and choice sets vary across markets, combined with a known or externally estimated population distribution, to identify some of the parameters of the random coefficient distribution. Worse, price is often entangled with unobserved product quality, so a direct regression identifies the price coefficient with bias. The remedy's entrance is BLP: first use the share inversion to recover each product's mean utility, then use instruments to handle price endogeneity (Chapter 06).</p>
+
+    <p><strong>Ranking or rating data</strong> carries more information than a single pick. The user reveals not just the single most favored option but a rank order or a score. This extra rank difference and rating difference give a finer comparison of utilities and can identify preferences more precisely. It corresponds to exploded logit and ordered models (the variants section of Chapter 04).</p>
+
+    <p><strong>Session click-stream</strong> is the thorniest, and the difficulty is that even the choice set itself is uncertain. A no-click can mean the user looked and did not like it, or that it was never shown at all. If you treat the whole page of products as the user's choice set, you mistake "never seen" for "seen and not chosen," and so systematically overstate the disutility of lower-ranked products, which means misidentifying preferences. The way out is to build the exposure process explicitly into the model, letting exposure and choice be determined jointly; this is the core of what the two-stage ranking model of Chapter 08 handles.</p>
+
+    <p>The data requirements, computational cost, and corresponding chapter for these four data forms are summarized in the table below; individual choice is further split into one-shot and panel-plus-state-dependence as two rows, so the table has five rows in all.</p>
+
+    <div class="table-scroll">
+    <table>
+      <thead>
+        <tr><th>Data form</th><th>Leaf (recommended model)</th><th>Data requirements</th><th>Computational cost</th><th>Chapters</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Individual choice, one-shot</strong></td>
+          <td>MNL / nested / mixed logit</td>
+          <td>What each person chose, option attributes, choice set</td>
+          <td>Low to medium (mixed logit needs simulated integration)</td>
+          <td><a href="03_rum_logit.html">03</a>–<a href="04_gev_mixed_logit.html">04</a></td>
+        </tr>
+        <tr>
+          <td><strong>Individual choice, panel + state dependence</strong></td>
+          <td>Dynamic discrete choice (Rust / CCP)</td>
+          <td>Panel trajectories, state transitions, exogenous shocks</td>
+          <td>High (solve Bellman or CCP inversion)</td>
+          <td><a href="07_dynamic_choice.html">07</a></td>
+        </tr>
+        <tr>
+          <td><strong>Aggregate shares</strong></td>
+          <td>BLP</td>
+          <td>Market × product shares, characteristics, cost-type instruments</td>
+          <td>Medium to high (GMM + share inversion)</td>
+          <td><a href="06_endogeneity_blp.html">06</a></td>
+        </tr>
+        <tr>
+          <td><strong>Rankings / ratings</strong></td>
+          <td>exploded logit, ordered models (variants section of Chapter 04)</td>
+          <td>Full or partial rankings, rating scale</td>
+          <td>Medium</td>
+          <td><a href="04_gev_mixed_logit.html">04</a></td>
+        </tr>
+        <tr>
+          <td><strong>Session click-stream</strong></td>
+          <td>Two-stage ranking choice model (Chapter 08)</td>
+          <td>Exposure position, clicks, consideration-set proxy</td>
+          <td>Medium to high (joint modeling of exposure and choice)</td>
+          <td><a href="08_applications.html">08</a></td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+
+    <p>Of the four forks, aggregate shares and session click-stream are the ones most easily mistaken for individual choice data and used as such. Once mismatched, the "preferences" you estimate deviate systematically from the truth. The good news is that each of these two mismatches has a recognizable telltale sign.</p>
+
+    <div class="warn-box">
+      <div class="box-title">The recognizable telltale of each mismatch</div>
+      <p style="margin-bottom:0">Use aggregate shares as individual data and the most glaring sign is standard errors that are abnormally small. A common wrong move is to multiply shares by market size, inflating shares into a big pile of "pseudo-individuals" and then fitting an individual logit: the sample size is artificially blown up, standard errors shrink to nearly zero, and t-values come out implausibly large. So the more oddly "significant" the result, the more you should turn back and suspect the data form was used wrong; the correct entrance is the share inversion of Chapter 06. Use session click-stream as choice data and the sign hides in the position variable: once you treat a whole page of products as the choice set, the options further down carry a low utility that is not really theirs, the position coefficient is systematically biased negative, and the more products shown per page, the more exaggerated the bias. The root is still that same line: products never shown are mistaken for seen-and-not-chosen, and the fix is to model the exposure process along with it, see Chapter 08.</p>
+    </div>
+
+    <h3 id="capability-matrix">Model × capability summary table</h3>
+
+    <p>The decision tree branches by data form; the table below takes a different angle, lining up several main models on one common set of capability dimensions for comparison: whether they can relax IIA, admit preference heterogeneity, handle endogeneity, and capture dynamics, and which data each one takes. It is the book-wide version of the ladder table in Chapter 04, establishing a global coordinate frame here and leaving the details to the individual chapters.</p>
+
+    <div class="table-scroll">
+    <table>
+      <thead>
+        <tr><th>Model</th><th>Relax IIA</th><th>Preference heterogeneity</th><th>Handle endogeneity</th><th>Dynamics</th><th>Data form</th><th>Chapters</th></tr>
+      </thead>
+      <tbody>
+        <tr class="tier1">
+          <td><strong>MNL (conditional logit)</strong></td>
+          <td>No, bound by IIA</td>
+          <td>Observed heterogeneity only</td>
+          <td>Needs bolt-on IV / control function</td>
+          <td>No</td>
+          <td>Individual</td>
+          <td>03</td>
+        </tr>
+        <tr class="tier1">
+          <td><strong>Nested logit</strong></td>
+          <td>Relaxed across groups</td>
+          <td>Group-level substitution structure</td>
+          <td>Needs bolt-on</td>
+          <td>No</td>
+          <td>Individual / aggregate</td>
+          <td>04</td>
+        </tr>
+        <tr class="tier1">
+          <td><strong>Mixed logit</strong></td>
+          <td>Yes</td>
+          <td>Yes, random coefficients</td>
+          <td>Needs BLP or a control function</td>
+          <td>No</td>
+          <td>Individual</td>
+          <td>04–05</td>
+        </tr>
+        <tr class="tier1">
+          <td><strong>BLP</strong></td>
+          <td>Yes</td>
+          <td>Yes</td>
+          <td>Endogenous, GMM + instruments</td>
+          <td>No</td>
+          <td>Aggregate shares</td>
+          <td>06</td>
+        </tr>
+        <tr class="tier2">
+          <td><strong>Dynamic discrete choice</strong></td>
+          <td>Depends on the specification</td>
+          <td>Can include (types / random coefficients)</td>
+          <td>Must be handled, including initial conditions</td>
+          <td>Yes</td>
+          <td>Individual panel</td>
+          <td>07</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+
+    <p>This capability table easily prompts a question: since mixed logit and BLP are more flexible on most dimensions, why not always pick the most flexible? Unfortunately flexibility is not free. These two classes of models have to estimate additional distributional parameters, simulate integrals, or invert market shares, so the identification burden and the computational cost both rise; and on top of that, the data form changes the source of identification first: with only aggregate shares, heterogeneity must be identified indirectly through cross-market variation in attributes, choice sets, and the population distribution; with only a cross section, dynamic parameters usually lack the necessary state-transition information. The sound order is: first let the data form lock in the feasible class, then combine economic mechanisms, parameter identification, out-of-sample performance, and appropriate model-comparison tests to judge whether heterogeneity needs to be introduced. The likelihood ratio test itself applies only to nested models, and when a variance parameter sits on the boundary you must use the corresponding nonstandard critical values; it cannot substitute for arguments from theory and identification. Pile on the most complex specification from the outset and the parameters that lack supporting variation will only fit noise, while crowding out the room that sensitivity analysis should have been left.</p>
+
+    <div class="takeaway-box">
+      <div class="box-title">Bottom Line</div>
+      First let the data form determine the feasible set: individual choice corresponds to the logit family (03–04), aggregate shares to BLP (06), and panel with state dependence to the dynamic model (07). Once you have locked in the feasible class, use the capability table to decide whether to pay the extra cost for heterogeneity, endogeneity, or dynamics.
+    </div>
+
+    <!-- ============================================ -->
+    <h2 id="chapter-guide">1.5 The Chapters at a Glance</h2>
+
+    <p>Every exit of the two decision flowcharts leads to some chapter. The table below lays out the position of all nine chapters in a row: what question each answers, what its core tools are, and which representative reference it rests on. The fine descriptions defer to each chapter's own text; here you get only a coordinate frame.</p>
+
+    <div class="table-scroll">
+    <table>
+      <thead>
+        <tr><th style="width:40px">Ch.</th><th>Chapter name</th><th>Question answered</th><th>Core tools</th><th>Representative reference</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>01</td><td>Overview &amp; Decision Framework</td><td>Do you need a structural model, and which one</td><td>Model map, two decision flows</td><td>Galiani &amp; Pantano (2021)</td></tr>
+        <tr><td>02</td><td>Why Structural Models</td><td>What "structure" means, and when modeling is worth it</td><td>policy invariance, the DGP view, Marschak's Maxim</td><td>Marschak (1953); Galiani &amp; Pantano (2021)</td></tr>
+        <tr><td>03</td><td>RUM and Logit</td><td>Where choice probabilities come from, and what IIA is</td><td>Random utility, Type I extreme value distribution, logit, elasticities, logsum</td><td>McFadden (1974)</td></tr>
+        <tr><td>04</td><td>Nested and Mixed Logit</td><td>How to improve the substitution pattern and heterogeneity</td><td>GEV / nested logit, random coefficients, mixed logit</td><td>McFadden (1978)</td></tr>
+        <tr><td>05</td><td>Simulation and Numerical Estimation</td><td>What to do when the integral has no closed form</td><td>Monte Carlo, MSL, Halton draws, numerical optimization</td><td>McFadden (1989)</td></tr>
+        <tr><td>06</td><td>Endogeneity and BLP</td><td>What to do with endogenous prices and only aggregate shares</td><td>Berry inversion, GMM, instruments, the supply side</td><td>Berry (1994); Berry, Levinsohn &amp; Pakes (1995)</td></tr>
+        <tr><td>07</td><td>Dynamic Discrete Choice</td><td>How to model forward-looking decisions and state dependence</td><td>Bellman equation, Rust model, CCP estimation</td><td>Rust (1987)</td></tr>
+        <tr><td>08</td><td>Platform Research Applications</td><td>How the tools land in platform settings</td><td>Two-sided market framework, two-stage ranking, counterfactual design</td><td>Synthesizes several applied papers, see that chapter's Further Reading</td></tr>
+        <tr><td>09</td><td>Workflow, Validation, and Reference</td><td>The full path from question to paper</td><td>Identification argument, out-of-sample validation, quick-reference tables</td><td>No single representative reference</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <p>Strung together, the nine chapters form one main line from judgment to delivery. Chapters 01 and 02 settle "whether and whether it is worth it": first this chapter's decision framework, then the full argument for policy invariance and Marschak's Maxim. Chapters 03 through 05 build the technical backbone: derive logit from random utility, switch to nested and mixed logit when the substitution pattern is unsatisfactory, and hand the integral to simulation when it has no closed form. Chapters 06 and 07 each take on a common real-world obstacle: endogenous prices with only aggregate shares, handled by BLP; forward-looking decisions with state dependence, handed to dynamic discrete choice. Chapter 08 brings these tools back to platform settings, and Chapter 09 closes on the full workflow from research question to paper.</p>
+
+    <!-- ============================================ -->
+    <h2 id="conventions">1.6 Notation and Conventions</h2>
+
+    <p>The coordinates of each chapter are in place; what remains is to standardize the book's notation and labeling conventions. The conventions below are all explained here in one spot, and later chapters use them directly without re-explaining.</p>
+
+    <h3>Variable colors</h3>
+
+    <p>The global legend at the top of the page uses three colors to distinguish a variable's identity, and the formula-explanation boxes color only the symbols. The meanings are as follows.</p>
+
+    <div class="table-scroll">
+    <table>
+      <thead>
+        <tr><th>Color</th><th>Identity</th><th>Typical symbols</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><span class="dot dot-observed" style="display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--var-observed)"></span></td><td>Observed in the data</td><td><span class="var-observed">$x_{nj}$</span> attributes, <span class="var-observed">$p_{j}$</span> price, <span class="var-observed">$s_{jm}$</span> observed share</td></tr>
+        <tr><td><span class="dot dot-estimated" style="display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--var-estimated)"></span></td><td>Parameters to estimate</td><td><span class="var-estimated">$\beta$</span> marginal utility, <span class="var-estimated">$\lambda$</span> nesting parameter</td></tr>
+        <tr><td><span class="dot dot-researcher" style="display:inline-block;width:9px;height:9px;border-radius:50%;background:var(--var-researcher)"></span></td><td>Set by the researcher</td><td><span class="var-researcher">$\varepsilon$</span>'s role, the distribution <span class="var-researcher">$G$</span>, the choice set</td></tr>
+      </tbody>
+    </table>
+    </div>
+    <p style="font-size:14px;color:var(--text-light)">In a few demonstrations, to focus on one random coefficient, the remaining coefficients are fixed at known constants, and those fixed coefficients are colored as "set by the researcher" (see the price-coefficient demonstration in Chapter 05), which does not conflict with the convention above.</p>
+
+    <h3>The illustrative-data badge</h3>
+
+    <p>Any number constructed for teaching and not drawn from a real paper carries an <span class="demo-badge">illustrative data</span> badge, and every number under the badge is internally consistent and reproducible. Quantitative conclusions without a badge come from literature with a verified source. This convention exists to keep "worked examples that explain a mechanism" cleanly separate from "empirically measured evidence."</p>
+
+    <h3>A compact table of core notation</h3>
+
+    <p>The dozen or so symbols below recur throughout, so we standardize them here. The complete notation table is in <a href="09_workflow_reference.html">Chapter 09</a>.</p>
+
+    <div class="table-scroll">
+    <table>
+      <thead>
+        <tr><th>Symbol</th><th>Meaning</th><th>Mainly appears in</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>$U_{nj}$</td><td>Individual $n$'s utility for option $j$</td><td>03</td></tr>
+        <tr><td>$V_{nj}$</td><td>The observable part of utility ($\beta'x$)</td><td>03</td></tr>
+        <tr><td>$\varepsilon_{nj}$</td><td>The random part of utility (unobserved)</td><td>02–03</td></tr>
+        <tr><td>$\beta$</td><td>Preference parameter, the marginal utility of an attribute</td><td>03</td></tr>
+        <tr><td>$x_{nj}$</td><td>Vector of option attributes</td><td>03</td></tr>
+        <tr><td>$P_{nj}$</td><td>Choice probability</td><td>03</td></tr>
+        <tr><td>$G$</td><td>The distributional assumption on $\varepsilon$</td><td>02, 04</td></tr>
+        <tr><td>$\lambda$</td><td>The nesting parameter of nested logit</td><td>04</td></tr>
+        <tr><td>$s_{jm}$</td><td>Product $j$'s share in market $m$</td><td>06</td></tr>
+        <tr><td>$\delta_{jm}$</td><td>The product's mean utility</td><td>06</td></tr>
+        <tr><td>$\xi_{jm}$</td><td>Unobserved product characteristic</td><td>06</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <h3>Key terms</h3>
+
+    <p>Technical terms are kept in English throughout the book. The most common ones are collected below; the rest are introduced where they first appear in each chapter.</p>
+
+    <div class="table-scroll">
+    <table>
+      <thead>
+        <tr><th>Term</th><th>Meaning</th><th>Term</th><th>Meaning</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>counterfactual</td><td>a scenario not observed in the data</td><td>choice set</td><td>the options available to the decision-maker</td></tr>
+        <tr><td>instrumental variable (IV)</td><td>exogenous variation used to fix endogeneity</td><td>substitution pattern</td><td>how demand shifts across options when one changes</td></tr>
+        <tr><td>unobserved heterogeneity</td><td>preference differences the data does not record</td><td>consumer surplus</td><td>the welfare a user gets above what they pay</td></tr>
+        <tr><td>willingness to pay (WTP)</td><td>the price at which a user is indifferent</td><td>external validity</td><td>whether a result carries to a new setting</td></tr>
+        <tr><td>primitives</td><td>policy-invariant preference parameters</td><td>illustrative data</td><td>numbers built for teaching, not from a real study</td></tr>
+        <tr><td>contraction mapping</td><td>the iteration that recovers mean utilities in BLP</td><td>reviewer</td><td>the referee who evaluates the paper</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <!-- ============================================ -->
+    <h2 id="misconceptions">1.7 Common Pitfalls</h2>
+
+    <p>Three pitfalls are especially prone to lead you astray at the model-selection stage; we clear them up here, and later chapters expand on each in the appropriate place.</p>
+
+    <div class="table-scroll">
+    <table>
+      <thead>
+        <tr><th>Pitfall</th><th>Why it's wrong</th><th>What to do instead</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>A structural model is a fancier regression</td>
+          <td>Regression estimates the effect corresponding to variation already in the data; a structural model estimates the primitives that stay fixed even when policy changes. They answer different questions, so there is no ranking one above the other, and neither replaces the other.</td>
+          <td>Use the flow in Section 1.3 to sort out the question type first: if all you need is a single total effect, use a design-based method; only when you want a never-observed counterfactual, mechanism decomposition, or welfare do you model.</td>
+        </tr>
+        <tr>
+          <td>The more flexible the model, the better</td>
+          <td>Flexibility is bought with more parameters. If the extra parameters lack corresponding variation in the data, they only fit noise and add to the identification and computational burden.</td>
+          <td>Use the decision tree in Section 1.4: let the data form lock in the feasible class first, then use a likelihood ratio or goodness-of-fit to decide whether to pay more for heterogeneity, endogeneity, or dynamics.</td>
+        </tr>
+        <tr>
+          <td>A platform can experiment anytime, so it does not need structural models</td>
+          <td>An experiment gives the total effect of a scenario already launched; as for a scenario never launched, how much each mechanism contributes within a bundled intervention, and utility quantities like consumer surplus, an experiment can give none of these.</td>
+          <td>Treat experiments and structure as two complementary hands: experimental variation is used to estimate and validate the model (<a href="02_why_structural.html#validation">Chapter 02, Section 2.8</a>), and the model handles extrapolation to scenarios the experiment did not cover.</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+
+    <!-- ============================================ -->
+    <h2 id="summary">1.8 Chapter Summary</h2>
+
+    <p>With that, the framework of this chapter is fully in place. You now hold two decision paths: to judge whether you need a structural model, look at whether the counterfactual is covered by variation in the data and whether one of the three legitimate reasons holds; to judge which model to use, see which leaf of the decision tree the data form lands on, then weigh the trade-offs with the capability table. The model map draws the boundary of this series, single-agent discrete choice is the backbone, and strategic interaction and auctions serve only as pointers for extension. The notation and color conventions are standardized in Section 1.6 and used directly by later chapters. Carrying this framework, Chapter 02 starts from the most fundamental question of all: what exactly is "structure," and what kind of question is worth the cost of modeling it.</p>
+
+    <!-- ============================================ -->
+    <h2 id="readings">Further Reading</h2>
+
+    <h4>Technical benchmarks and methodology</h4>
+    <ul>
+      <li>Train, K. E. (2009). <em>Discrete choice methods with simulation</em> (2nd ed.). Cambridge University Press. <a href="https://doi.org/10.1017/CBO9780511805271">https://doi.org/10.1017/CBO9780511805271</a> (a systematic textbook on discrete choice and simulation-based estimation, the deep-reading starting point for Chapters 03 through 05)</li>
+      <li>Galiani, S., &amp; Pantano, J. (2021). <em>Structural models: Inception and frontier</em> (Working Paper No. 28698). National Bureau of Economic Research. <a href="https://doi.org/10.3386/w28698">https://doi.org/10.3386/w28698</a> (a methodological survey of "when to adopt a structural model," developed in Chapter 02)</li>
+    </ul>
+
+    <h4>Representative references from the chapter guide</h4>
+    <ul>
+      <li>Marschak, J. (1953). Economic measurements for policy and prediction. In W. C. Hood &amp; T. C. Koopmans (Eds.), <em>Studies in econometric method</em> (pp. 1–26). Wiley. (the origin of policy invariance, developed in Chapter 02)</li>
+      <li>McFadden, D. (1974). Conditional logit analysis of qualitative choice behavior. In P. Zarembka (Ed.), <em>Frontiers in econometrics</em> (pp. 105–142). Academic Press. (the original reference for conditional logit, developed in Chapter 03)</li>
+      <li>McFadden, D. (1978). Modelling the choice of residential location. In A. Karlqvist, L. Lundqvist, F. Snickars, &amp; J. W. Weibull (Eds.), <em>Spatial interaction theory and planning models</em> (pp. 75–96). North-Holland. (the original reference for GEV and nested logit, developed in Chapter 04)</li>
+      <li>McFadden, D. (1989). A method of simulated moments for estimation of discrete response models without numerical integration. <em>Econometrica</em>, <em>57</em>(5), 995–1026. <a href="https://doi.org/10.2307/1913621">https://doi.org/10.2307/1913621</a> (the foundational reference for simulation-based estimation, developed in Chapter 05)</li>
+      <li>Berry, S. T. (1994). Estimating discrete-choice models of product differentiation. <em>RAND Journal of Economics</em>, <em>25</em>(2), 242–262. <a href="https://doi.org/10.2307/2555829">https://doi.org/10.2307/2555829</a> (the original reference for the share inversion, developed in Chapter 06)</li>
+      <li>Berry, S., Levinsohn, J., &amp; Pakes, A. (1995). Automobile prices in market equilibrium. <em>Econometrica</em>, <em>63</em>(4), 841–890. <a href="https://doi.org/10.2307/2171802">https://doi.org/10.2307/2171802</a> (the original BLP reference, developed in Chapter 06)</li>
+      <li>Rust, J. (1987). Optimal replacement of GMC bus engines: An empirical model of Harold Zurcher. <em>Econometrica</em>, <em>55</em>(5), 999–1033. <a href="https://doi.org/10.2307/1911259">https://doi.org/10.2307/1911259</a> (the foundational reference for dynamic discrete choice, developed in Chapter 07)</li>
+    </ul>
+
+    <h4>Introductory surveys for the dynamic direction</h4>
+    <ul>
+      <li>Aguirregabiria, V., &amp; Mira, P. (2010). Dynamic discrete choice structural models: A survey. <em>Journal of Econometrics</em>, <em>156</em>(1), 38–67. <a href="https://doi.org/10.1016/j.jeconom.2009.09.007">https://doi.org/10.1016/j.jeconom.2009.09.007</a> (a systematic survey of dynamic discrete choice)</li>
+      <li>Arcidiacono, P., &amp; Ellickson, P. B. (2011). Practical methods for estimation of dynamic discrete choice models. <em>Annual Review of Economics</em>, <em>3</em>(1), 363–394. <a href="https://doi.org/10.1146/annurev-economics-111809-125038">https://doi.org/10.1146/annurev-economics-111809-125038</a> (a hands-on guide to dynamic estimation)</li>
+    </ul>
+
+    <h4>Pointers beyond the map</h4>
+    <ul>
+      <li>Athey, S., &amp; Haile, P. A. (2007). Nonparametric approaches to auctions. In J. J. Heckman &amp; E. E. Leamer (Eds.), <em>Handbook of econometrics</em> (Vol. 6A, pp. 3847–3965). North-Holland. <a href="https://doi.org/10.1016/S1573-4412(07)06060-6">https://doi.org/10.1016/S1573-4412(07)06060-6</a> (an introduction to the auctions direction, not covered in this series)</li>
+      <li>Aguirregabiria, V., Collard-Wexler, A., &amp; Ryan, S. P. (2021). Dynamic games in empirical industrial organization. In K. Ho, A. Hortaçsu, &amp; A. Lizzeri (Eds.), <em>Handbook of industrial organization</em> (Vol. 4, pp. 225–343). North-Holland. <a href="https://doi.org/10.1016/bs.hesind.2021.11.004">https://doi.org/10.1016/bs.hesind.2021.11.004</a> (an introduction to the dynamic games direction, not covered in this series)</li>
+    </ul>
+
+    <footer class="page-footer">
+      From Choices to Counterfactuals: Structural Estimation for Digital Platform Research · 01 Overview &amp; Decision Framework
+    </footer>
+
+  </main>
+</div>
+
+<script defer src="assets/katex/katex.min.js"></script>
+<script defer src="assets/katex/auto-render.min.js"></script>
+<script defer src="assets/notes.js"></script>
+</body>
+</html>

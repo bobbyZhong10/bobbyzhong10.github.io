@@ -1,0 +1,1768 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Digital Experimentation | Foundations of Information Systems Economics</title>
+  <link rel="stylesheet" href="assets/style.css" />
+  <script defer="" src="assets/katex/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <link rel="stylesheet" href="assets/katex/katex.min.css" />
+</head>
+<body>
+<div class="page-wrapper">
+  <nav class="sidebar">
+    <div class="sidebar-title">Foundations of Information Systems Economics</div>
+    <div class="sidebar-subtitle">Theory · Methods · Applications</div>
+    <div class="toc-section-label">On this page</div>
+    <div class="toc">
+<ul>
+<li><a href="#introduction" id="toc-introduction">Introduction</a></li>
+<li><a href="#a-misread-null-result" id="toc-a-misread-null-result">1 A
+Misread Null Result</a></li>
+<li><a href="#the-economic-model-and-the-estimand"
+id="toc-the-economic-model-and-the-estimand">2 The Economic Model and
+the Estimand</a></li>
+<li><a href="#identification-and-design-from-power-to-interference"
+id="toc-identification-and-design-from-power-to-interference">3
+Identification and Design: From Power to Interference</a></li>
+<li><a href="#estimation-and-design-choices"
+id="toc-estimation-and-design-choices">4 Estimation and Design
+Choices</a></li>
+<li><a href="#anchoring-papers" id="toc-anchoring-papers">5 Anchoring
+Papers</a></li>
+<li><a href="#a-full-walkthrough-on-the-lumen-data"
+id="toc-a-full-walkthrough-on-the-lumen-data">6 A Full Walkthrough on
+the Lumen Data</a></li>
+<li><a href="#failure-modes-and-robustness"
+id="toc-failure-modes-and-robustness">7 Failure Modes and
+Robustness</a></li>
+<li><a href="#further-reading" id="toc-further-reading">8 Further
+Reading</a></li>
+</ul>
+    </div>
+    <div class="file-nav">
+      <div class="nav-label">This series</div>
+      <a href="index.html">Home · Overview</a>
+      <a href="introduction.html">Introduction · How to Use</a>
+      <a href="01_consumer_producer_welfare.html">01 Consumer, Producer &amp; Welfare</a>
+      <a href="02_game_theory.html">02 Game Theory</a>
+      <a href="03_information_mechanism_design.html">03 Information &amp; Mechanism Design</a>
+      <a href="04_pricing_imperfect_competition.html">04 Pricing &amp; Imperfect Competition</a>
+      <a href="05_estimation_mle_gmm.html">05 Estimation: MLE &amp; GMM</a>
+      <a href="06_inference.html">06 Inference: Bootstrap &amp; Clustering</a>
+      <a href="07_panel_dynamic_panel.html">07 Panel &amp; Dynamic Panel</a>
+      <a href="08_nonparametrics.html">08 Nonparametrics &amp; Semiparametrics</a>
+      <a href="09_potential_outcomes.html">09 Potential Outcomes &amp; Selection</a>
+      <a href="10_research_design_architecture.html">10 Research Design</a>
+      <a href="11_measurement_digital_traces.html">11 Measurement &amp; Digital Traces</a>
+      <a href="12_iv_late_mte.html">12 IV: LATE &amp; MTE</a>
+      <a href="13_did_event_studies.html">13 DiD &amp; Event Studies</a>
+      <a href="14_rdd_synthetic_control.html">14 RDD &amp; Synthetic Control</a>
+      <a href="15_sensitivity_partial_identification.html">15 Sensitivity &amp; Partial Identification</a>
+      <a href="16_causal_ml_dml.html">16 Causal ML &amp; DML</a>
+      <a href="17_digital_experimentation.html">17 Digital Experimentation</a>
+      <a href="18_interference_marketplace_experiments.html">18 Interference &amp; Marketplace Experiments</a>
+      <a href="19_discrete_choice.html">19 Discrete Choice &amp; Mixed Logit</a>
+      <a href="20_demand_blp.html">20 Demand Estimation &amp; BLP</a>
+      <a href="21_supply_markups_mergers.html">21 Supply, Markups &amp; Mergers</a>
+      <a href="22_entry_partial_id.html">22 Entry &amp; Partial Identification</a>
+      <a href="23_dynamic_structural.html">23 Dynamic Structural Models</a>
+      <a href="24_platforms_networks.html">24 Platforms &amp; Network Effects</a>
+      <a href="25_search_advertising.html">25 Search, Advertising &amp; Information Goods</a>
+      <a href="26_ai_algorithms_data.html">26 AI, Adoption &amp; Data Economics</a>
+      <a href="27_quick_reference.html">27 Quick Reference &amp; Tools</a>
+    </div>
+  </nav>
+  <main class="main-content" id="top">
+    <header class="page-header">
+      <h1>Digital Experimentation</h1>
+      <div class="subtitle">Designing A/B Tests That Can Actually Detect
+What Matters</div>
+      <div class="meta">Foundations of Information Systems Economics · Chapter 17</div>
+    </header>
+<h2 id="introduction">Introduction</h2>
+<p>Lumen’s new feature is assigned by a coin flip, and at the start of
+the experiment the treatment and control groups balance almost
+impeccably. Two weeks in, the estimate is positive but not significant.
+The product manager says “no effect,” the analyst says “let it run a few
+more days,” and the dashboard gets checked once a day, until one
+afternoon the <span class="math inline">p</span> value finally drops
+below 0.05 and the team declares victory. Randomization worked the whole
+time, yet the conclusion lost its promised error rate somewhere in the
+wait for significance.</p>
+<p>Experiments spare you from selection bias, but not from the
+responsibility of design. When the sample is too small, “not
+significant” may mean only that the experiment cannot see an effect
+large enough to matter commercially. When the metric is too noisy, even
+a flood of traffic gets burned for nothing. And repeated peeking,
+cherry-picking metrics, and after-the-fact slicing of the population can
+reliably manufacture good news out of pure noise. Random assignment
+answers “can we compare without bias,” while power, variance, and the
+stopping rule answer “how much information does this particular
+comparison carry.”</p>
+<p>This chapter follows Lumen’s decision process. The MDE forces the
+team to state, before the experiment starts, how small a lift is worth
+detecting. CUPED uses pre-treatment information to cut noise without
+stealing any post-treatment variable. Sequential methods reconcile
+continuous monitoring with a pre-committed error rate. Finally we check
+a problem that randomization cannot automatically remove: whether
+treatment and control are fighting over the same pool of delivery
+capacity or transactions. If they are, the individual-level A/B test
+still answers some question without bias, only that question need not be
+“what happens when we roll out to everyone.” Chapter 18 takes up that
+piece.</p>
+<h2 id="a-misread-null-result">1 A Misread Null Result</h2>
+<div class="case">
+<p>Lumen is a fictional delivery-marketplace platform. The product team
+has built a new checkout redesign and wants to know whether it lifts
+user spending. We tell the case with simulated data, whose advantage is
+that the true effect is fully known, so that the consequence of every
+design choice can be reconciled against the truth, a teaching condition
+that a real experiment can never grant. The outcome <span
+class="math inline">Y</span> is a user’s revenue over the next two
+weeks. It is noisy: the mean is about 5 currency units but the standard
+deviation is 6, because a handful of heavy users account for most of the
+spending. This is exactly the situation Lewis and Reiley faced in
+advertising experiments, where the signal you are looking for is drowned
+in enormous user-level noise.</p>
+<p>The true effect of the new checkout page is to lift revenue by 2%,
+that is, to add 0.10 on a baseline of 5. This is a genuine,
+worth-shipping improvement. The team runs the experiment at a size that
+sounds perfectly reasonable: 15000 users per arm, treatment on the new
+page, control on the old, for two weeks.</p>
+</div>
+<p>The experiment finishes and the team runs the most standard analysis:
+subtract the control group’s mean revenue from the treatment group’s and
+run a <span class="math inline">t</span> test. The difference is 0.059
+with a standard error of 0.069, so <span class="math inline">t =
+0.86</span> and <span class="math inline">p = 0.392</span>. That <span
+class="math inline">p</span> value is nowhere near the 0.05 line. The
+product manager takes one look, and the conclusion writes itself: the
+redesign has no effect, do not ship, move the team onto something
+else.</p>
+<p>The trouble is that we know the truth. The real effect is 0.10, an
+honest 2% lift, and this experiment missed it completely. Where did
+things go wrong? Not in identification, since random assignment was
+perfect. Not in the analysis, since the <span
+class="math inline">t</span> test was done correctly. The fault is that
+the experiment was doomed from the start never to see what it was
+looking for. With 15000 per arm and noise this large, the minimum effect
+the experiment can detect with 80% power (the MDE) is 0.194, a 3.9%
+lift, nearly twice the true effect. The real 2% effect sits well below
+that threshold, and the experiment’s power against it is only 0.303. In
+other words, even if the effect is entirely real, this experiment has
+only a three-in-ten chance of returning a significant result. Verifying
+by simulation, rerunning this design many times, indeed only 30.6% of
+the experiments reject the null, agreeing tightly with the theoretical
+0.303.</p>
+<p>This is the first, and the most common, error the chapter guards
+against: reading the null result of an underpowered experiment as
+evidence of “no effect.” <span class="math inline">p = 0.392</span> does
+not say the redesign is useless, it says the experiment was too small to
+see clearly. To detect the true 2% effect at 80% power, each arm needs
+about 56500 users, nearly four times the actual investment. Section 3
+will derive the formulas for MDE and sample size so that this kind of
+accident can be computed away before the experiment even starts. Section
+6 will show that this same 15000-user dataset, once run through the
+CUPED of Section 3.2, has its noise cut in half, letting the missed
+effect reappear.</p>
+<h2 id="the-economic-model-and-the-estimand">2 The Economic Model and
+the Estimand</h2>
+<p>The nice thing about a randomized experiment is that the estimand and
+the identification are so simple they barely need saying, but precisely
+because they are simple, it is easy to rush past the parts that should
+be said clearly. This section sets the language straight, with the
+emphasis on the variance of the experimental estimator, because all of
+the design effort in the rest of the chapter is aimed at that
+variance.</p>
+<p>We keep the potential outcomes of Chapter 9. User <span
+class="math inline">i</span> has two potential revenues: <span
+class="math inline">Y_i(1)</span> is the revenue realized if assigned to
+the new page, <span class="math inline">Y_i(0)</span> is the revenue
+under the old page, and the individual effect is <span
+class="math inline">\tau_i = Y_i(1) - Y_i(0)</span>. The experiment
+splits users at random into two groups, the treatment indicator <span
+class="math inline">D_i \in \{0, 1\}</span> is decided by a coin flip,
+and the observed revenue is <span class="math inline">Y_i = D_i Y_i(1) +
+(1 - D_i) Y_i(0)</span>. The target estimand is the average treatment
+effect:</p>
+<p><span class="math display">\tau = \mathbb{E}[Y_i(1) -
+Y_i(0)].</span></p>
+<p>Identification is free, and this is exactly where the entire
+advantage of an experiment over an observational study lies. Because
+<span class="math inline">D_i</span> is randomly assigned, it is
+independent of the potential outcomes, <span
+class="math inline">\big(Y_i(0), Y_i(1)\big) \perp D_i</span>, and so
+the difference in the two groups’ mean observed revenue estimates <span
+class="math inline">\tau</span> without bias:</p>
+<p><span class="math display">\hat\tau = \frac{1}{n_1}\sum_{i: D_i = 1}
+Y_i - \frac{1}{n_0}\sum_{i: D_i = 0} Y_i.</span></p>
+<p>You need not control for any covariate, you need no assumption about
+confounding, randomization zeroes out selection bias in one stroke. This
+is the heart of design-based inference (Chapter 9): the causal
+conclusion rests on the random assignment that the experimenter
+controls, not on modeling assumptions about the world.</p>
+<p>What really matters is the variance of this estimator, because it
+decides whether the experiment sees clearly or not. Under random
+assignment, the variance of <span class="math inline">\hat\tau</span>
+is</p>
+<p><span class="math display">\text{Var}(\hat\tau) =
+\frac{\sigma_1^2}{n_1} + \frac{\sigma_0^2}{n_0},</span></p>
+<p>where <span class="math inline">\sigma_1^2</span> and <span
+class="math inline">\sigma_0^2</span> are the variances of the potential
+outcomes in the two groups (Neyman’s classic result; the version that
+estimates them by within-group sample variances is slightly conservative
+under heterogeneous effects, an honest direction to err in). When the
+two arms are equal in size and similar in variance, it simplifies to
+<span class="math inline">2\sigma^2 / n</span>, where <span
+class="math inline">n</span> is the per-arm sample size. The formula is
+frighteningly plain, yet it is the axis of the chapter: the <span
+class="math inline">\sigma^2</span> in the numerator is the noise in the
+outcome, and the <span class="math inline">n</span> in the denominator
+is the sample size. Whether the experiment can detect an effect turns
+entirely on how large the effect <span class="math inline">\tau</span>
+is relative to the square root of this variance.</p>
+<p>So there are only two ways to raise an experiment’s sensitivity, and
+the design of the whole chapter travels along these two: either grow
+<span class="math inline">n</span> (expensive, and with linearly
+diminishing returns, since the variance falls only as <span
+class="math inline">1/n</span>), or shrink <span
+class="math inline">\sigma^2</span> (this is where CUPED comes in, and
+it can halve the noise without adding a single user). The failed
+experiment of Section 1 was sick precisely because <span
+class="math inline">2\sigma^2/n</span> was too large and <span
+class="math inline">\tau</span> too small, so the signal-to-noise ratio
+<span class="math inline">\tau / \sqrt{2\sigma^2/n}</span> was too weak
+for the test to reject.</p>
+<p>To summarize: identification in a randomized experiment is free, and
+the difference-in-means estimates the ATE without bias and without any
+modeling assumption. All of the technical tension in the chapter
+concentrates on the variance <span
+class="math inline">2\sigma^2/n</span> of the estimator, and lowering it
+runs along two roads, adding sample and cutting variance, which the
+later sections take up in turn.</p>
+<h2 id="identification-and-design-from-power-to-interference">3
+Identification and Design: From Power to Interference</h2>
+<p>This is the most finely analyzed section of the chapter. Unlike the
+earlier chapters, it does not dissect identifying assumptions (in an
+experiment identification is free), it dissects design: how to compute,
+before the experiment starts, what it can see (power and MDE), how to
+cut noise so it sees more clearly (CUPED), how to hold the test level
+under continuous monitoring (sequential testing), and how to estimate
+the right thing even when units interfere with one another (cluster and
+switchback). The logic moves from shallow to deep, each subsection
+solving a new problem exposed by the one before.</p>
+<h3
+id="power-and-mde-the-sums-you-should-do-before-the-experiment-starts">3.1
+Power and MDE: The Sums You Should Do Before the Experiment Starts</h3>
+<p>The accident of Section 1 could have been avoided before the
+experiment ever started, just by doing some arithmetic. That arithmetic
+is the power analysis, and its product is the MDE, the minimum effect
+the current design can reliably detect.</p>
+<p>First let us get the logic straight. We want to test the null <span
+class="math inline">H_0: \tau = 0</span> against the alternative <span
+class="math inline">\tau \neq 0</span>, at level <span
+class="math inline">\alpha</span> (0.05 by convention), rejecting when
+<span class="math inline">|\hat\tau / \text{SE}| &gt; z_{1 -
+\alpha/2}</span>. Power is the probability <span class="math inline">1 -
+\beta</span> (0.80 by convention) that the test rejects the null when
+the true effect is in fact some <span class="math inline">\tau</span>.
+Since <span class="math inline">\hat\tau</span> is approximately normal,
+centered at <span class="math inline">\tau</span> with standard
+deviation SE, power is approximately</p>
+<p><span class="math display">\text{power} \approx
+\Phi\!\left(\frac{\tau}{\text{SE}} - z_{1 - \alpha/2}\right).</span></p>
+<p>The formula says it plainly: for power to be high, the effect must be
+large enough relative to the standard error. Inverting it, setting power
+exactly to <span class="math inline">1 - \beta</span>, gives the
+smallest effect detectable at that confidence, the MDE:</p>
+<p><span class="math display">\text{MDE} = (z_{1 - \alpha/2} + z_{1 -
+\beta}) \cdot \text{SE} = (z_{1 - \alpha/2} + z_{1 - \beta}) \cdot
+\sigma\sqrt{\frac{2}{n}}.</span></p>
+<p>At <span class="math inline">\alpha = 0.05</span> and power <span
+class="math inline">= 0.80</span>, we have <span
+class="math inline">z_{1 - \alpha/2} + z_{1 - \beta} = 1.96 + 0.84 =
+2.80</span>. In Section 1, <span class="math inline">\sigma = 6</span>
+and <span class="math inline">n = 15000</span>, so SE <span
+class="math inline">= 6\sqrt{2/15000} = 0.0693</span> and MDE <span
+class="math inline">= 2.80 \times 0.0693 = 0.194</span>, exactly the
+number behind “the smallest detectable effect is nearly twice the true
+one.” Turning it around, replace the MDE with the effect <span
+class="math inline">\tau</span> you actually care about and solve for
+the required sample size:</p>
+<p><span class="math display">n = \frac{2\sigma^2 (z_{1 - \alpha/2} +
+z_{1 - \beta})^2}{\tau^2}.</span></p>
+<p>To detect Lumen’s <span class="math inline">\tau = 0.10</span>, plug
+<span class="math inline">\sigma \approx 6</span> into this, and each
+arm needs about 56500, nearly four times the actual investment. This
+formula should be run once at the design stage, because it turns “is
+this experiment worth running” into a question that can be answered
+before the experiment starts.</p>
+<p>Three implications are worth spelling out. First, sample size grows
+as <span class="math inline">1/\tau^2</span>, so halving the effect
+quadruples the required sample, which is why the cost of detecting small
+effects rises so steeply, and why Lewis and Reiley lamented that
+measuring an advertising effect can take hundreds of millions of
+observations. Second, MDE falls only slowly, as <span
+class="math inline">1/\sqrt{n}</span>, so piling on sample to buy
+sensitivity has diminishing returns, which pushes the incentive toward
+cutting variance. Third, a power analysis must be done before the
+experiment starts, since taking a nonsignificant result after the fact
+and computing an “observed power” is circular reasoning and utterly
+meaningless; the right question is always “given my sample and my noise,
+how large an effect could I have seen.”</p>
+<h3 id="variance-is-the-enemy-cuped">3.2 Variance Is the Enemy:
+CUPED</h3>
+<p>The MDE formula points its finger at <span
+class="math inline">\sigma^2</span>: cut the variance of the outcome and
+you lower the MDE without adding a single user. CUPED (controlled
+experiment using pre-experiment data, Deng, Xu, Kohavi, and Walker 2013)
+is the variance-reduction tool most used across platforms, and its idea
+is elegant to the point of feeling like a free lunch.</p>
+<p>The key insight is that a large part of a user’s revenue during the
+experiment can be predicted from before the experiment ever began: a
+user who spent heavily in the previous two weeks probably spends heavily
+in these two weeks as well. That predictable variation has nothing to do
+with treatment, it is pure noise, and if we can subtract it off, the
+remaining variance shrinks. Let <span class="math inline">X_i</span> be
+user <span class="math inline">i</span>’s pre-experiment revenue (a
+covariate known before the experiment begins). CUPED uses it to build an
+adjusted outcome:</p>
+<p><span class="math display">Y_i^{cv} = Y_i - \theta (X_i - \bar X),
+\qquad \theta = \frac{\text{Cov}(Y, X)}{\text{Var}(X)}.</span></p>
+<p>Here <span class="math inline">\theta</span> is exactly the slope of
+the regression of <span class="math inline">Y</span> on <span
+class="math inline">X</span>, and <span
+class="math inline">Y^{cv}</span> is the residual of <span
+class="math inline">Y</span> after subtracting the part linearly
+predictable from <span class="math inline">X</span> (with a constant
+<span class="math inline">\theta \bar X</span> added back to keep the
+mean unchanged). Two properties make it work. First, unbiasedness is
+untouched: because random assignment guarantees that <span
+class="math inline">X</span> has the same distribution in both arms,
+<span class="math inline">\mathbb{E}[X - \bar X]</span> is zero in each,
+so the difference-in-means computed on <span
+class="math inline">Y^{cv}</span> still estimates <span
+class="math inline">\tau</span> without bias. Second, a chunk of
+variance is cut away:</p>
+<p><span class="math display">\text{Var}(Y^{cv}) = \text{Var}(Y)\,(1 -
+\rho^2), \qquad \rho = \text{corr}(Y, X).</span></p>
+<p>The fraction of variance removed is exactly <span
+class="math inline">\rho^2</span>, the square of the correlation between
+pre-experiment revenue and experiment-period revenue. In Lumen this
+correlation is about 0.70, so <span class="math inline">\rho^2 \approx
+0.49</span>, and nearly half the variance is cut, equivalently the
+variance drops to <span class="math inline">1 - \rho^2 \approx
+0.51</span> times the original. Because sample size and variance enter
+the MDE formula equivalently, halving the variance is like doubling the
+sample for free: to reach the same power with CUPED you need only about
+29000 per arm rather than about 56500, nearly a halving.</p>
+<div class="intuition">
+<p>CUPED is really something everyone has known for a long time,
+regression adjustment, which statisticians call ANCOVA. Regress <span
+class="math inline">Y</span> jointly on the treatment indicator <span
+class="math inline">D</span> and the pre-experiment covariate <span
+class="math inline">X</span>, and the coefficient on <span
+class="math inline">D</span> is the CUPED estimate. Adding <span
+class="math inline">X</span> absorbs the predictable part of the
+outcome’s variation, so the coefficient on <span
+class="math inline">D</span> is estimated more precisely. Put
+differently, CUPED is not new magic, it is the old truth that
+“controlling for a strong predictor improves precision,” applied to a
+randomized experiment. It shares the spirit of using the pre-period as a
+baseline in the DiD of Chapter 13, both cushioning the experiment-period
+comparison with information from before the experiment.</p>
+</div>
+<p>One discipline must be kept: the covariate <span
+class="math inline">X</span> must take a pre-experiment value. This is
+CUPED’s one red line, and crossing it turns variance reduction into
+bias. If you adjust with a variable measured during or after the
+experiment (say a user’s click count during the experiment), that
+variable may itself be affected by treatment, and subtracting it
+subtracts part of the treatment effect too, biasing the estimate toward
+zero. This is the same mistake as the bad control of Chapter 13. Safe
+covariates can come only from the world before the experiment started,
+the world the treatment has not yet touched. Section 6 will show that
+the same 15000-user data that gave <span class="math inline">p =
+0.392</span>, once adjusted by CUPED, has its <span
+class="math inline">p</span> fall to 0.032, so the missed effect
+reappears, all without recruiting a single extra user.</p>
+<h3 id="peeking-and-sequential-testing">3.3 Peeking and Sequential
+Testing</h3>
+<p>Both power and CUPED assume the experiment runs to a preplanned
+sample size and the result is looked at once, at the end. Real platforms
+do not work that way: the experiment sits on a live dashboard, the
+analyst refreshes it daily or even hourly, and the moment it looks
+significant there is an urge to stop and ship. This continuous
+monitoring combined with “stop as soon as it is significant” is called
+peeking, and it sends the false positive rate completely out of
+control.</p>
+<p>First see how bad the problem is. Suppose the new checkout page
+actually has no effect at all (an A/A test, true <span
+class="math inline">\tau = 0</span>), the experiment runs two weeks, the
+result is checked once a day, and significance is declared as soon as
+any day shows <span class="math inline">p &lt; 0.05</span>. On any
+single day the type I error is indeed 5%, but over fourteen days,
+stopping the moment any one day crosses the line, the cumulative false
+positive rate is far above 5%. Computing this by simulation: one look is
+4.9%, two looks rise to 8.2%, five looks 14.5%, ten looks 19.3%, and all
+fourteen looks reach 21.3%. In other words, a redesign with no effect at
+all, allowed to be peeked at daily, has better than a one-in-five chance
+of being “found” to have a significant effect. This is not analyst
+dishonesty, it is that a fixed-threshold test was never designed for
+repeated looking, and the more you look, the more likely you are to run
+into an accidental significance.</p>
+<div class="warning">
+<p>The harm of peeking goes beyond the inflated false positive rate, it
+also poisons everything that comes after. Once you stop on some day
+because <span class="math inline">p &lt; 0.05</span>, the stopping rule
+itself makes your sample a selected one, and the effect estimate
+reported at that moment will systematically overstate (the day you cross
+the line tends to be the day noise happened to favor you), and the
+confidence interval is distorted too. So “peeking just lets me find a
+real effect sooner” is self-deception, it also makes you more likely to
+find a false effect and to overstate a real one.</p>
+</div>
+<p>The remedy is the idea of always-valid inference: design a test whose
+type I error does not exceed <span class="math inline">\alpha</span> at
+any stopping time, no matter how many times you peek. Johari, Koomen,
+Pekelis, and Walsh brought this to A/B testing, with the mixture
+sequential probability ratio test (mSPRT) as the core tool. It places a
+prior over the effect size (the mixing distribution), builds a
+likelihood-ratio statistic <span class="math inline">\Lambda_n</span>,
+and rejects only when <span class="math inline">\Lambda_n \geq
+1/\alpha</span>. The key property is that under the null <span
+class="math inline">\Lambda_n</span> is a martingale, so by the optional
+stopping theorem, whenever you stop, <span
+class="math inline">\Pr(\exists n: \Lambda_n \geq 1/\alpha) \leq
+\alpha</span>. The analyst can therefore look every day and stop at any
+time with a clear conscience, and the test level holds. In the
+simulation of Section 6, monitoring the same fourteen times
+continuously, mSPRT’s type I error is only 0.007, comfortably below
+0.05, while the naive approach is at 0.213.</p>
+<p>There is no free lunch, and this look-anytime guarantee is bought
+with power. To be robust to any stopping time, mSPRT is more
+conservative than a fixed-sample test that looks once at the end, and
+against the same small effect it has lower power (in Section 6, mSPRT’s
+power against the true effect is 0.312, while the fixed-sample test at
+the same terminal sample size has 0.654). This cost is especially sharp
+for small effects, because a small effect can only be seen once the full
+sample is collected, and the sequential method rarely gets to stop
+early. The real value of sequential design comes when the effect is
+large: when the effect is obvious <span
+class="math inline">\Lambda_n</span> crosses the line quickly, and the
+experiment can end substantially early, saving time and traffic. Besides
+mSPRT, the other mainstream route is group-sequential methods, which use
+the O’Brien-Fleming or Pocock alpha-spending boundaries to allocate the
+total type I error budget across a preset number of checkpoints, strict
+thresholds early and looser ones late, likewise holding the total level
+while allowing stopping partway. Both routes share one principle: to
+look anytime you must pay for the number of looks with test level or
+power, while naively reusing a fixed-threshold test simply gives the
+false positive rate away.</p>
+<h3 id="multiple-testing">3.4 Multiple Testing</h3>
+<p>Peeking is repeated testing along the time dimension, and its twin
+problem is repeated testing along the metric dimension. An experiment
+often watches dozens of metrics at once (revenue, retention, clicks,
+time on site), or compares several variants at once, and declares
+success if any one is significant. The logic is exactly the same as
+peeking: the more tests you run, the higher the chance at least one is
+significant by accident, and the family-wise error rate (FWER, the
+overall type I error of a family of tests) balloons with the number of
+tests. Testing 20 metrics that are all truly null, the chance at least
+one is significant at the 0.05 level is close to <span
+class="math inline">1 - 0.95^{20} \approx 0.64</span>.</p>
+<p>The remedy comes in two kinds, depending on what you fear. If you
+must control the FWER (not a single false positive can be tolerated, as
+in a ship decision), the Bonferroni correction lowers each test’s
+threshold to <span class="math inline">\alpha / m</span> (<span
+class="math inline">m</span> is the number of tests), guaranteeing the
+overall FWER stays below <span class="math inline">\alpha</span>, at the
+cost of being conservative and low in power. If you can tolerate a few
+false positives and care more about the overall quality of discoveries
+(say, exploratory screening for which metrics moved), then controlling
+the false discovery rate (FDR, the expected fraction of false positives
+among the rejected hypotheses) fits better, and the Benjamini-Hochberg
+procedure, which sorts the <span class="math inline">p</span> values and
+applies increasing thresholds, is far more powerful than Bonferroni. The
+common practice on platforms is to layer the metrics, looking first at a
+pre-specified primary metric for the ship decision, and managing the
+rest as guardrail and exploratory metrics separately, avoiding by design
+the fishing of “report whichever is significant.”</p>
+<h3 id="sutva-and-interference">3.5 SUTVA and Interference</h3>
+<p>This subsection is responsible only for identifying the problem and
+building the interface to Chapter 18, and does not fully develop the
+interference estimands here. Chapter 18 will rewrite this intuition as
+exposure-dependent potential outcomes and distinguish the direct,
+indirect, total, and overall effects.</p>
+<p>The variance and testing problems of the earlier sections all assume
+something that holds by default but is often ignored: a user’s outcome
+is determined only by which arm that user is assigned to, and is
+unaffected by anyone else’s assignment. This is the SUTVA (stable unit
+treatment value assumption) of Chapter 13, whose first clause is no
+interference. On many platforms, especially marketplace platforms, this
+clause systematically fails, and once it fails, the perfect
+identification of randomization cannot save the estimate.</p>
+<p>Lumen’s setting lays the problem out plainly. It is a delivery
+marketplace, and delivery capacity (couriers) is a limited shared
+resource. Suppose the new checkout page raises users’ willingness to
+place orders. In a user-level A/B, treatment and control users are mixed
+in the same pool of couriers, the same market, competing for capacity.
+Treatment users order more aggressively, consume more capacity, and
+crowd out the couriers who should have served control, so control users’
+experience is dragged down and their spending is suppressed. The result
+is that treatment looks especially good because control was made to look
+worse, and the difference between the groups folds this see-saw
+(cannibalization) into the effect.</p>
+<p>To see the direction and size of the bias, we first have to be clear
+about the estimand we actually want. Management cares about the global
+average treatment effect: if the new page were given to all users versus
+the old page to all users, how much does average spending differ. This
+is the quantity a ship decision needs. But the user-level A/B does not
+estimate this. It estimates how much higher treatment is than control in
+that particular world where half the population is treated, and in that
+contrast control is cannibalized by treatment while treatment enjoys the
+capacity control gave up, so both sides are biased. In the simulation of
+Section 6, Lumen’s true global effect is 0.040, while the user-level A/B
+gives 0.129, overstating by a factor of 3.2. The direction is
+systematic: for demand-side interventions that worsen congestion, the
+user-level experiment usually overstates, because after a full rollout
+the congestion would be far worse than under a half rollout, and the
+experiment only experienced the mild congestion of a half rollout.</p>
+<div class="warning">
+<p>The insidiousness of interference is that it does not violate
+randomization, the random assignment is still perfect, the <span
+class="math inline">p</span> value is still pretty, yet SUTVA has
+quietly broken underneath. No statistical test can find it, because it
+is not a sampling problem but an estimand problem: you have precisely
+estimated a quantity you did not want. Judging whether you are
+contaminated by interference relies on economic judgment about the
+mechanism through which treatment propagates. Shared capacity, shared
+inventory, shared attention budget, social-network spillovers,
+general-equilibrium feedback through prices or auctions are all channels
+of interference, and they are everywhere on platforms. This is the same
+ghost as the SUTVA failure in the DiD of Chapter 13, only in an
+experiment it is more easily hidden behind the illusion that “I
+randomized, so all is well.”</p>
+</div>
+<h3 id="cluster-and-switchback-designs">3.6 Cluster and Switchback
+Designs</h3>
+<p>The cluster and switchback here serve only as a design preview,
+explaining why changing the granularity of randomization may come closer
+to the rollout effect. Assignment probabilities, two-stage saturation,
+carryover, exposure mapping, and formal inference are all consolidated
+in Chapter 18.</p>
+<p>The root of interference is splitting into different treatment arms
+the units that should have moved together. The fix follows naturally:
+switch the granularity of randomization so that mutually interfering
+units land in the same treatment state, and each unit thereby
+experiences a globally consistent world. Two mainstream designs
+correspond to two granularities.</p>
+<p>Cluster randomization assigns by whole markets: an entire city or
+region is assigned to treatment or control, instead of splitting the
+users inside it. This way, all users within a market use either the new
+page or the old, the cannibalization of capacity happens within a single
+treatment state, and no longer contaminates across arms. As long as
+markets do not interfere with one another, the cluster experiment
+estimates the global effect without bias. The cost is variance: the
+effective sample size collapses from the number of users to the number
+of markets, and an experiment with tens of millions of users may be left
+with only a few dozen independent markets, so the standard error is much
+larger. This is the fundamental interference-variance tradeoff, cluster
+buying unbiasedness with variance.</p>
+<p>Switchback design randomizes by time blocks: it flips the whole
+market back and forth between the new and old page over a sequence of
+time blocks, comparing the average outcome in treated blocks against
+control blocks. Within each time block the entire platform is in a
+single treatment state, and the congestion in the block is the true
+congestion of that state, so comparing treated blocks against control
+blocks approaches the global effect. Switchback suits resources like
+delivery capacity that clear quickly on short time scales especially
+well, since one block’s capacity state does not readily bleed into the
+next. Its risk is along the time dimension: if treatment has a lagged
+effect across blocks (carryover), or there is strong time
+autocorrelation, adjacent blocks are no longer clean, and you must leave
+buffers between blocks or build the time autocorrelation into the
+variance estimate. In the simulation of Section 6, the user-level A/B
+overstates by a factor of 3.2, while switchback and cluster both land
+almost exactly on the true global effect of 0.040, at the cost of
+sampling variability markedly larger than the wildly biased but very
+stable user-level estimate, the interference-variance tradeoff laid out
+in numbers.</p>
+<p>The main points of this section are as follows: identification in an
+experiment is free, but design is not free. Power and MDE let you
+compute before the experiment starts how large an effect you can see,
+avoiding the misreading of underpowered as no effect. CUPED uses
+pre-experiment information to cut variance, equivalent to doubling the
+sample for free. Peeking inflates false positives along time and
+multiple testing along metrics, and the sequential always-valid methods
+and the FWER/FDR corrections remedy them respectively, at the cost of
+power. The interference of SUTVA makes the user-level A/B precisely
+estimate the wrong quantity, and cluster and switchback cage the
+interference with a different randomization granularity, trading
+variance for unbiasedness.</p>
+<h2 id="estimation-and-design-choices">4 Estimation and Design
+Choices</h2>
+<p>The ideas are laid out, and this section is about putting them into
+practice: exactly how each design is computed, how it is implemented,
+and how they trade off against one another.</p>
+<h3 id="the-practice-of-power-and-sample-size">4.1 The Practice of Power
+and Sample Size</h3>
+<p>The pre-experiment power analysis, in practice, is just plugging your
+scenario into the formulas of Section 3.1. It takes three inputs: the
+minimum effect <span class="math inline">\tau</span> you care about
+(from business judgment, how small a lift is worth shipping), the
+standard deviation <span class="math inline">\sigma</span> of the
+outcome (from historical data), and the <span
+class="math inline">\alpha</span> and power targets. Plug into <span
+class="math inline">n = 2\sigma^2(z_{1-\alpha/2} + z_{1-\beta})^2 /
+\tau^2</span> for the per-arm sample size. If the outcome is binary
+(like a conversion rate <span class="math inline">p</span>), plug in
+<span class="math inline">\sigma^2 = p(1-p)</span> directly. If the
+outcome is heavy-tailed (like revenue), be wary when estimating <span
+class="math inline">\sigma</span> from historical data that extreme
+values do not blow up the variance, which is precisely why the CUPED of
+the next section is worth doing. Conversely, if the sample size is
+constrained by traffic and cannot be freely enlarged, plug it into the
+MDE formula to get “the largest effect this experiment can reliably
+see,” and use that to judge whether it is worth running, rather than
+running an experiment doomed to see nothing.</p>
+<h3 id="implementing-cuped">4.2 Implementing CUPED</h3>
+<p>Putting CUPED into practice takes only two steps. First, take from
+the pre-experiment data a covariate <span class="math inline">X</span>
+strongly correlated with the outcome (the pre-experiment value of the
+same metric is usually best, say using the prior two weeks’ revenue to
+predict the experiment-period two weeks’ revenue), and estimate <span
+class="math inline">\theta = \text{Cov}(Y, X) / \text{Var}(X)</span> on
+the pooled sample. Second, construct <span class="math inline">Y^{cv} =
+Y - \theta(X - \bar X)</span>, then do the usual difference-in-means and
+<span class="math inline">t</span> test on <span
+class="math inline">Y^{cv}</span>. Equivalently, regress <span
+class="math inline">Y</span> directly on <span
+class="math inline">D</span> and <span class="math inline">X</span> by
+OLS and read the coefficient on <span class="math inline">D</span>, and
+this ANCOVA form also hands you the correct standard error. Two
+practical notes: <span class="math inline">X</span> can only take a
+pre-experiment value (the red line of Section 3.2), and you may use
+several pre-experiment covariates, or even use machine learning to
+combine them into a single predicted value <span
+class="math inline">\hat Y</span> and then treat that as <span
+class="math inline">X</span> (this is the generalization of CUPED,
+called CUPAC), and the stronger the correlation, the more variance is
+cut.</p>
+<h3 id="implementing-sequential-testing">4.3 Implementing Sequential
+Testing</h3>
+<p>To look repeatedly during the experiment without breaking the test
+level, there are two mature routes. The mSPRT route: set a prior
+variance <span class="math inline">\tau_0^2</span> for the effect (prior
+<span class="math inline">N(0, \tau_0^2)</span>, usually set to your
+expected effect magnitude, and it affects only power, not level),
+compute the mixture likelihood ratio <span
+class="math inline">\Lambda_n</span> at each checkpoint, stop and
+declare significance only when <span class="math inline">\Lambda_n \geq
+1/\alpha</span>, and the corresponding always-valid <span
+class="math inline">p</span> value is the running minimum of <span
+class="math inline">1/\Lambda_n</span>. The group-sequential route: fix
+the number of checkpoints in advance, and use O’Brien-Fleming or Pocock
+boundaries to allocate the total <span class="math inline">\alpha</span>
+budget, where O’Brien-Fleming is extremely strict early and close to the
+usual threshold late, suiting cases that want to preserve late-stage
+power, while Pocock uses one (stricter) threshold at every checkpoint,
+suiting cases that want to stop as early as possible. Both have mature
+implementations (such as gsDesign), and in practice you choose by the
+checking frequency the business can tolerate and its preference for
+early stopping. The core is that the checkpoints and the <span
+class="math inline">\alpha</span> allocation must be fixed before the
+experiment starts, and cannot be added as you go.</p>
+<h3 id="estimating-switchback-and-cluster">4.4 Estimating Switchback and
+Cluster</h3>
+<p>The estimation of interference-robust designs turns on the variance,
+not the point estimate. The cluster design’s point estimate is just the
+market-level difference-in-means, but the standard error must be
+clustered at the market level (the reasoning of Chapter 13), because the
+independent units are markets not users, and a user-level standard error
+would badly understate the uncertainty and produce spurious
+significance. The effective sample size is the number of markets, and
+when markets are few you also need the few-clusters first-aid kit of
+Chapter 13 (CR2, the wild cluster bootstrap). The switchback design’s
+point estimate is the mean difference between treated and control
+blocks, and the variance estimate must confront time autocorrelation:
+adjacent blocks’ outcomes are usually positively correlated, the
+independence assumption fails, and you need a block-level or
+autocorrelation-robust variance estimate. Bojinov, Simchi-Levi, and Zhao
+(2023) give the optimal design and the corresponding inference theory
+for switchbacks. Both designs trade sample size (the number of
+independent units) for robustness to interference, and when reporting
+you should honestly disclose this variance cost, rather than applying a
+user-level formula that understates the uncertainty.</p>
+<p>The practical points of this section are as follows: a power analysis
+takes three inputs available before the experiment starts (the minimum
+effect you care about, the outcome standard deviation, the test level
+and target power), plug them into the formula for the sample size or
+MDE. CUPED needs only one pre-experiment covariate and a single
+residualization, equivalent to running ANCOVA on <span
+class="math inline">D</span> and <span class="math inline">X</span>.
+Sequential testing uses mSPRT or group-sequential boundaries to hold the
+level while allowing stopping partway, and the checkpoints must be fixed
+before the experiment starts. The difficulty of interference-robust
+designs lies entirely in the variance, cluster must cluster to the
+market level and switchback must be robust to time autocorrelation, both
+trading the number of independent units for unbiasedness.</p>
+<h2 id="anchoring-papers">5 Anchoring Papers</h2>
+<p>Methods only stand up when grounded in real research. Three anchoring
+papers, one that pushes the pain of underpower to the extreme, one that
+founds CUPED, and one that exposes interference in marketplace
+experiments, each organized by the five elements of paper, method, data,
+results, and limitations, with the focus on how the design answers the
+difficulty.</p>
+<h3 id="lewis-and-reiley-2014">5.1 Lewis and Reiley (2014)</h3>
+<div class="case">
+<p>Paper: “Online Ads and Offline Sales: Measuring the Effect of Retail
+Advertising via a Controlled Experiment on Yahoo!”, Quantitative
+Marketing and Economics. It is the textbook case of the predicament
+“identification is perfect, yet the effect is almost impossible to
+measure because the noise is too large,” and the opening puzzle of
+Section 1 is its miniature.</p>
+<p>Method: a clean large-scale randomized experiment. The authors worked
+at Yahoo! and matched Yahoo!‘s user database to a large brick-and-mortar
+and online retailer, identifying about 1.5 million consumers, split
+80/20 into treatment and control, with the treatment group shown the
+retailer’s display ads while browsing Yahoo!, after which both groups’
+online plus offline purchases were tracked. Random assignment made ad
+exposure exogenous, and the identification itself is airtight.</p>
+<p>Data: individual-level purchase records for about 1.5 million matched
+consumers, with per-person sales during the treatment period of about
+1.89 (currency units) but a standard deviation as high as 19, and ad
+spend about 1% of the target consumers’ sales.</p>
+<p>Results: the core conclusion is less an effect value than an alarm
+bell. Individual sales are enormously noisy, and the advertising ROI is
+a tiny slice of that sales figure, so to detect a 10% ROI at
+significance the required standard error is about one ten-thousandth of
+the sales standard deviation, which translates into a sample of hundreds
+of millions of consumers. The sample of 1.5 million, huge as it sounds,
+is nowhere near enough for this signal-to-noise ratio, and the
+intent-to-treat (ITT) estimate is drowned in noise and not
+significant.</p>
+<p>Limitations: the authors honestly attribute the nonsignificance to a
+power problem rather than to advertising being ineffective. They also
+show that a naive observational comparison of users who “saw the ad”
+against those who “did not” is badly distorted: in their data such a
+naive comparison gives an estimate opposite in sign and several times
+larger in magnitude, because whether a user saw the ad depends on
+browsing behavior and is by no means random. This is exactly why one
+must run an experiment, and why the experiment must also be large
+enough.</p>
+</div>
+<p>The value of this paper is that it turns the <span
+class="math inline">2\sigma^2/n</span> of Section 2 into a tale of blood
+and tears: an experiment with perfect identification can still measure
+nothing because <span class="math inline">\sigma</span> is too large and
+<span class="math inline">n</span> too small, and a power analysis is
+not a formality, it is the first gate that decides whether the
+experiment lives or dies.</p>
+<h3 id="deng-xu-kohavi-and-walker-2013">5.2 Deng, Xu, Kohavi and Walker
+(2013)</h3>
+<div class="case">
+<p>Paper: “Improving the Sensitivity of Online Controlled Experiments by
+Utilizing Pre-Experiment Data”, Proceedings of the Sixth ACM
+International Conference on Web Search and Data Mining (WSDM). It
+proposes CUPED, the standard tool across platforms for cutting variance
+and raising experimental sensitivity, and the source of the method in
+Section 3.2.</p>
+<p>Method: the core is to build a control variable from pre-experiment
+data to cut the outcome variance. For each user take a pre-experiment
+covariate <span class="math inline">X</span> (the most effective is the
+pre-experiment value of the same metric), construct <span
+class="math inline">Y^{cv} = Y - \theta(X - \bar X)</span> with <span
+class="math inline">\theta</span> chosen to minimize variance. Because
+random assignment guarantees <span class="math inline">X</span> has the
+same distribution in both arms, the adjustment introduces no bias, yet
+the variance is cut by <span class="math inline">1 - \rho^2</span>. The
+paper also discusses generalizations using multiple covariates and
+stratification.</p>
+<p>Data: real A/B tests on Microsoft’s Bing search engine’s large-scale
+online experimentation platform, with metrics including various user
+engagement measures.</p>
+<p>Results: in real experiments, using the same pre-experiment metric
+for CUPED usually cuts about half the variance, equivalent to halving
+the experiment time or sample size to reach the same sensitivity. This
+“double the sample for free” gain made CUPED quickly become a default
+component of the experimentation systems at major platforms.</p>
+<p>Limitations: the gain depends entirely on how strongly the
+pre-experiment covariate correlates with the outcome, and a weak
+correlation gives limited reduction; for new users, or settings with no
+pre-experiment data, there is nothing to work with; and the covariate
+must come strictly from before the experiment, otherwise it introduces
+bias.</p>
+</div>
+<p>This paper carries through the road of “lowering <span
+class="math inline">\sigma^2</span>” from Section 2, and its beauty is
+that without recruiting a single extra user and without changing
+unbiasedness, it doubles the experiment’s sensitivity just by using a
+pre-experiment record that was sitting in the database all along.</p>
+<h3 id="interference-in-marketplace-experiments">5.3 Interference in
+Marketplace Experiments</h3>
+<div class="case">
+<p>Paper: Blake and Coey (2014), “Why Marketplace Experimentation Is
+Harder Than It Seems: The Role of Test-Control Interference”,
+Proceedings of the Fifteenth ACM Conference on Economics and Computation
+(EC). It uses a platform experiment to expose the systematic bias of the
+user-level A/B on marketplace platforms, and it is the empirical support
+for Sections 3.5 and 3.6; the methodological counterpart is Bojinov,
+Simchi-Levi, and Zhao (2023) on the theory of switchback design.</p>
+<p>Method: the core argument is that on a marketplace platform the
+treatment and control groups interfere with each other through the
+shared market mechanism, making the standard A/B estimate deviate from
+the global effect. Taking an e-commerce platform as the example, if
+treatment raises the bids or activity of treatment-group buyers, they
+crowd out control-group buyers in the auction or the matching, so
+control is suppressed, and the difference between the groups overstates
+the effect of a full rollout. The paper uses real platform experiments
+to show the magnitude of this interference, and discusses using
+market-level (cluster) randomization to mitigate it. Bojinov et al., for
+their part, give a formal framework, optimal design, and inference for
+switchback design.</p>
+<p>Data: real experiment data on a large e-commerce/marketplace platform
+(Blake-Coey use a marketplace platform of the eBay kind), comparing
+estimates under user-level versus market-level randomization.</p>
+<p>Results: the effect magnitudes given by the user-level A/B and the
+market-level design differ systematically, the former deviating from the
+global effect because of test-control interference; switching to a
+cluster or switchback design brings the estimate closer to the true
+impact of a full rollout, but the variance grows substantially. This
+“trade bias for variance” tradeoff is the inescapable core tension of
+marketplace experiments.</p>
+<p>Limitations: the effective sample size of a cluster design collapses
+to the number of markets, so the variance is large and it is especially
+hard on platforms with few markets; switchback relies on the treatment
+effect clearing quickly in time with no long lag, otherwise cross-block
+contamination reappears; and judging whether a given intervention is
+subject to interference, and how much, still needs a substantive
+judgment about the market mechanism, with no once-and-for-all test.</p>
+</div>
+<p>Taken together, the three make the meaning of the anchoring clear:
+Lewis and Reiley show that an experiment with perfect identification can
+still lose to noise, so power is the first gate; Deng et al. show how to
+use pre-experiment data to halve the noise and double the sensitivity;
+Blake and Coey, and Bojinov et al., reveal that choosing the wrong
+randomization granularity makes the experiment precisely estimate the
+wrong quantity, and interference must be treated with design rather than
+statistics. Their common lesson is that the success or failure of an
+experiment is mostly decided in the design before it ever starts.</p>
+<h2 id="a-full-walkthrough-on-the-lumen-data">6 A Full Walkthrough on
+the Lumen Data</h2>
+<p>Now we run the earlier tools on Lumen from start to finish. The code
+below uses R 4.5.3 with a fixed random seed for reproducibility, and
+every number quoted in the text comes from the actual output of running
+this code. The basic setup: user two-week revenue has mean 5 and
+standard deviation 6, the correlation between pre-experiment revenue and
+experiment-period revenue is 0.70, and the true effect of the new
+checkout page is 0.10 (a 2% lift).</p>
+<h3 id="the-dgp-and-the-opening-null-result">6.1 The DGP and the Opening
+Null Result</h3>
+<p>The design parameters are as follows: each user has a persistent
+value <span class="math inline">v</span>, and both the pre-experiment
+revenue <span class="math inline">X</span> and the experiment-period
+control revenue <span class="math inline">Y(0)</span> equal <span
+class="math inline">5 + 5v</span> plus independent noise, so the two
+correlate at about 0.70; treatment adds 0.10 to revenue.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>gen_users <span class="ot">&lt;-</span> <span class="cf">function</span>(n) {</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  v  <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  X  <span class="ot">&lt;-</span> <span class="dv">5</span> <span class="sc">+</span> <span class="dv">5</span> <span class="sc">*</span> v <span class="sc">+</span> <span class="fu">rnorm</span>(n, <span class="dv">0</span>, <span class="fl">3.317</span>)   <span class="co"># pre-period revenue</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  Y0 <span class="ot">&lt;-</span> <span class="dv">5</span> <span class="sc">+</span> <span class="dv">5</span> <span class="sc">*</span> v <span class="sc">+</span> <span class="fu">rnorm</span>(n, <span class="dv">0</span>, <span class="fl">3.317</span>)   <span class="co"># control potential</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  Y1 <span class="ot">&lt;-</span> Y0 <span class="sc">+</span> <span class="fl">0.10</span>                        <span class="co"># treated potential (2% lift)</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.frame</span>(<span class="at">X =</span> X, <span class="at">Y0 =</span> Y0, <span class="at">Y1 =</span> Y1)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>First reproduce the opening. With 15000 users per arm, random
+assignment, and a difference-in-means <span class="math inline">t</span>
+test: the difference is 0.059, the standard error 0.069, <span
+class="math inline">t = 0.86</span>, <span class="math inline">p =
+0.392</span>, not significant. Yet the true effect is 0.10. This
+design’s 80%-power MDE at <span class="math inline">n = 15000</span> is
+0.194 (a 3.9% lift), and its power against the true 2% effect is only
+0.303, and verifying by 2000 simulation repetitions, the measured
+rejection rate is 0.306, in agreement with the theory. The null result
+is not no effect, it is an experiment too small.</p>
+<h3 id="power-and-sample-size">6.2 Power and Sample Size</h3>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>za <span class="ot">&lt;-</span> <span class="fu">qnorm</span>(<span class="fl">0.975</span>); zb <span class="ot">&lt;-</span> <span class="fu">qnorm</span>(<span class="fl">0.80</span>); sigma <span class="ot">&lt;-</span> <span class="dv">6</span>; delta <span class="ot">&lt;-</span> <span class="fl">0.10</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>mde <span class="ot">&lt;-</span> (za <span class="sc">+</span> zb) <span class="sc">*</span> sigma <span class="sc">*</span> <span class="fu">sqrt</span>(<span class="dv">2</span> <span class="sc">/</span> <span class="dv">15000</span>)              <span class="co"># 0.194</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>n80 <span class="ot">&lt;-</span> <span class="dv">2</span> <span class="sc">*</span> sigma<span class="sc">^</span><span class="dv">2</span> <span class="sc">*</span> (za <span class="sc">+</span> zb)<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> delta<span class="sc">^</span><span class="dv">2</span>              <span class="co"># ~56500</span></span></code></pre></div>
+<p>To detect the true 0.10 effect with 80% confidence, each arm needs
+about 56500 users, nearly four times the actual investment. Power climbs
+with sample size as follows:</p>
+<div class="table-scroll">
+<table>
+<thead>
+<tr>
+<th>Per-arm sample size</th>
+<th>Power to detect the 2% effect</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>5000</td>
+<td>0.13</td>
+</tr>
+<tr>
+<td>10000</td>
+<td>0.22</td>
+</tr>
+<tr>
+<td>15000</td>
+<td>0.30</td>
+</tr>
+<tr>
+<td>25000</td>
+<td>0.46</td>
+</tr>
+<tr>
+<td>40000</td>
+<td>0.65</td>
+</tr>
+<tr>
+<td>56500</td>
+<td>0.80</td>
+</tr>
+<tr>
+<td>80000</td>
+<td>0.92</td>
+</tr>
+<tr>
+<td>120000</td>
+<td>0.98</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Power climbs only slowly, as <span
+class="math inline">1/\sqrt{n}</span>, and lifting it from 30% to 80% by
+piling on sample costs nearly triple the traffic, which pushes the
+incentive toward the variance reduction of the next section.</p>
+<figure>
+<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' viewBox='0 0 576.00 331.20' role="img" aria-label="Power to detect the true 2% effect as a function of per-arm sample size. The orange line is the naive difference-in-means, the blue line is after CUPED adjustment, and the dashed line is 80% power. The opening 15000-user experiment (orange dot) has only 30% power; CUPED shifts the whole curve left, nearly halving the sample needed for the same power." style="max-width:100%;height:auto;display:block;margin:0 auto">
+<g class='svglite'>
+<defs>
+  <style type='text/css'><![CDATA[
+    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {
+      fill: none;
+      stroke: #000000;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-miterlimit: 10.00;
+    }
+    .svglite text {
+      white-space: pre;
+    }
+    .svglite g.glyphgroup path {
+      fill: inherit;
+      stroke: none;
+    }
+  ]]></style>
+</defs>
+<rect width='100%' height='100%' style='stroke: none; fill: #FFFFFF;'/>
+<defs>
+  <clipPath id='g1_cpMC4wMHw1NzYuMDB8MC4wMHwzMzEuMjA='>
+    <rect x='0.00' y='0.00' width='576.00' height='331.20' />
+  </clipPath>
+</defs>
+<g clip-path='url(#g1_cpMC4wMHw1NzYuMDB8MC4wMHwzMzEuMjA=)'>
+<rect x='0.00' y='0.00' width='576.00' height='331.20' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
+</g>
+<defs>
+  <clipPath id='g1_cpNDAuNDZ8NTcwLjUyfDUuNDh8MjYwLjUx'>
+    <rect x='40.46' y='5.48' width='530.07' height='255.03' />
+  </clipPath>
+</defs>
+<g clip-path='url(#g1_cpNDAuNDZ8NTcwLjUyfDUuNDh8MjYwLjUx)'>
+<polyline points='40.46,248.91 570.52,248.91 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='40.46,190.95 570.52,190.95 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='40.46,132.99 570.52,132.99 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='40.46,75.03 570.52,75.03 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='40.46,17.07 570.52,17.07 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='52.19,260.51 52.19,5.48 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='155.16,260.51 155.16,5.48 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='258.12,260.51 258.12,5.48 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='361.09,260.51 361.09,5.48 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='464.05,260.51 464.05,5.48 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='567.02,260.51 567.02,5.48 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
+<line x1='40.46' y1='63.44' x2='570.52' y2='63.44' style='stroke-width: 0.64; stroke: #8C8C8C; stroke-dasharray: 4.00,4.00; stroke-linecap: butt;' />
+<polyline points='64.55,225.98 68.67,222.10 72.79,218.18 76.90,214.24 81.02,210.28 85.14,206.31 89.26,202.33 93.38,198.35 97.50,194.38 101.62,190.42 105.74,186.47 109.85,182.55 113.97,178.66 118.09,174.79 122.21,170.96 126.33,167.17 130.45,163.42 134.57,159.71 138.68,156.05 142.80,152.43 146.92,148.87 151.04,145.36 155.16,141.90 159.28,138.50 163.40,135.16 167.51,131.87 171.63,128.65 175.75,125.48 179.87,122.38 183.99,119.33 188.11,116.35 192.23,113.43 196.34,110.58 200.46,107.78 204.58,105.05 208.70,102.37 212.82,99.76 216.94,97.22 221.06,94.73 225.17,92.30 229.29,89.93 233.41,87.62 237.53,85.38 241.65,83.18 245.77,81.05 249.89,78.97 254.01,76.95 258.12,74.98 262.24,73.07 266.36,71.21 270.48,69.40 274.60,67.64 278.72,65.93 282.84,64.28 286.95,62.67 291.07,61.10 295.19,59.59 299.31,58.12 303.43,56.69 307.55,55.31 311.67,53.97 315.78,52.67 319.90,51.41 324.02,50.19 328.14,49.01 332.26,47.87 336.38,46.76 340.50,45.69 344.61,44.65 348.73,43.65 352.85,42.68 356.97,41.74 361.09,40.84 365.21,39.96 369.33,39.11 373.44,38.29 377.56,37.50 381.68,36.74 385.80,36.00 389.92,35.29 394.04,34.60 398.16,33.94 402.28,33.30 406.39,32.68 410.51,32.08 414.63,31.51 418.75,30.96 422.87,30.42 426.99,29.90 431.11,29.41 435.22,28.93 439.34,28.47 443.46,28.02 447.58,27.59 451.70,27.18 455.82,26.78 459.94,26.40 464.05,26.03 468.17,25.67 472.29,25.33 476.41,25.00 480.53,24.69 484.65,24.38 488.77,24.09 492.88,23.81 497.00,23.54 501.12,23.27 505.24,23.02 509.36,22.78 513.48,22.55 517.60,22.33 521.72,22.11 525.83,21.91 529.95,21.71 534.07,21.52 538.19,21.33 542.31,21.16 546.43,20.99 ' style='stroke-width: 1.71; stroke: #D55E00; stroke-linecap: butt;' />
+<polyline points='64.55,214.83 68.67,207.10 72.79,199.34 76.90,191.60 81.02,183.92 85.14,176.34 89.26,168.87 93.38,161.56 97.50,154.42 101.62,147.46 105.74,140.71 109.85,134.17 113.97,127.86 118.09,121.77 122.21,115.92 126.33,110.30 130.45,104.92 134.57,99.77 138.68,94.86 142.80,90.17 146.92,85.71 151.04,81.48 155.16,77.45 159.28,73.64 163.40,70.03 167.51,66.62 171.63,63.39 175.75,60.34 179.87,57.47 183.99,54.77 188.11,52.23 192.23,49.84 196.34,47.59 200.46,45.48 204.58,43.51 208.70,41.65 212.82,39.92 216.94,38.30 221.06,36.78 225.17,35.36 229.29,34.04 233.41,32.81 237.53,31.65 241.65,30.58 245.77,29.58 249.89,28.65 254.01,27.79 258.12,26.98 262.24,26.23 266.36,25.54 270.48,24.89 274.60,24.29 278.72,23.74 282.84,23.22 286.95,22.75 291.07,22.31 295.19,21.90 299.31,21.52 303.43,21.17 307.55,20.85 311.67,20.55 315.78,20.27 319.90,20.01 324.02,19.78 328.14,19.56 332.26,19.36 336.38,19.17 340.50,19.00 344.61,18.85 348.73,18.70 352.85,18.57 356.97,18.45 361.09,18.33 365.21,18.23 369.33,18.13 373.44,18.04 377.56,17.96 381.68,17.89 385.80,17.82 389.92,17.76 394.04,17.70 398.16,17.65 402.28,17.60 406.39,17.55 410.51,17.51 414.63,17.48 418.75,17.44 422.87,17.41 426.99,17.38 431.11,17.35 435.22,17.33 439.34,17.31 443.46,17.29 447.58,17.27 451.70,17.25 455.82,17.24 459.94,17.22 464.05,17.21 468.17,17.20 472.29,17.19 476.41,17.18 480.53,17.17 484.65,17.16 488.77,17.15 492.88,17.14 497.00,17.14 501.12,17.13 505.24,17.13 509.36,17.12 513.48,17.12 517.60,17.11 521.72,17.11 525.83,17.11 529.95,17.10 534.07,17.10 538.19,17.10 542.31,17.09 546.43,17.09 ' style='stroke-width: 1.71; stroke: #0072B2; stroke-linecap: butt;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='113.97' cy='178.66' r='2.92' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<text x='113.97' y='173.61' style='font-size: 8.82px;fill: #D55E00; font-family: "Arial";' textLength='49.05px' lengthAdjust='spacingAndGlyphs'> opening run</text>
+</g>
+<g clip-path='url(#g1_cpMC4wMHw1NzYuMDB8MC4wMHwzMzEuMjA=)'>
+<text x='35.52' y='252.06' text-anchor='end' style='font-size: 8.80px;fill: #4D4D4D; font-family: "Arial";' textLength='17.11px' lengthAdjust='spacingAndGlyphs'>0.00</text>
+<text x='35.52' y='194.10' text-anchor='end' style='font-size: 8.80px;fill: #4D4D4D; font-family: "Arial";' textLength='17.11px' lengthAdjust='spacingAndGlyphs'>0.25</text>
+<text x='35.52' y='136.14' text-anchor='end' style='font-size: 8.80px;fill: #4D4D4D; font-family: "Arial";' textLength='17.11px' lengthAdjust='spacingAndGlyphs'>0.50</text>
+<text x='35.52' y='78.18' text-anchor='end' style='font-size: 8.80px;fill: #4D4D4D; font-family: "Arial";' textLength='17.11px' lengthAdjust='spacingAndGlyphs'>0.75</text>
+<text x='35.52' y='20.22' text-anchor='end' style='font-size: 8.80px;fill: #4D4D4D; font-family: "Arial";' textLength='17.11px' lengthAdjust='spacingAndGlyphs'>1.00</text>
+<text x='52.19' y='271.74' text-anchor='middle' style='font-size: 8.80px;fill: #4D4D4D; font-family: "Arial";' textLength='4.89px' lengthAdjust='spacingAndGlyphs'>0</text>
+<text x='155.16' y='271.74' text-anchor='middle' style='font-size: 8.80px;fill: #4D4D4D; font-family: "Arial";' textLength='9.78px' lengthAdjust='spacingAndGlyphs'>25</text>
+<text x='258.12' y='271.74' text-anchor='middle' style='font-size: 8.80px;fill: #4D4D4D; font-family: "Arial";' textLength='9.78px' lengthAdjust='spacingAndGlyphs'>50</text>
+<text x='361.09' y='271.74' text-anchor='middle' style='font-size: 8.80px;fill: #4D4D4D; font-family: "Arial";' textLength='9.78px' lengthAdjust='spacingAndGlyphs'>75</text>
+<text x='464.05' y='271.74' text-anchor='middle' style='font-size: 8.80px;fill: #4D4D4D; font-family: "Arial";' textLength='14.67px' lengthAdjust='spacingAndGlyphs'>100</text>
+<text x='567.02' y='271.74' text-anchor='middle' style='font-size: 8.80px;fill: #4D4D4D; font-family: "Arial";' textLength='14.67px' lengthAdjust='spacingAndGlyphs'>125</text>
+<text x='305.49' y='284.20' text-anchor='middle' style='font-size: 11.00px; font-family: "Arial";' textLength='162.09px' lengthAdjust='spacingAndGlyphs'>Sample size per arm (thousands)</text>
+<text transform='translate(13.36,132.99) rotate(-90)' text-anchor='middle' style='font-size: 11.00px; font-family: "Arial";' textLength='149.94px' lengthAdjust='spacingAndGlyphs'>Power to detect the true 2% lift</text>
+<line x1='198.93' y1='311.60' x2='212.75' y2='311.60' style='stroke-width: 1.71; stroke: #D55E00; stroke-linecap: butt;' />
+<line x1='325.74' y1='311.60' x2='339.57' y2='311.60' style='stroke-width: 1.71; stroke: #0072B2; stroke-linecap: butt;' />
+<text x='219.96' y='314.75' style='font-size: 8.80px; font-family: "Arial";' textLength='98.58px' lengthAdjust='spacingAndGlyphs'>Plain difference in means</text>
+<text x='346.78' y='314.75' style='font-size: 8.80px; font-family: "Arial";' textLength='67.00px' lengthAdjust='spacingAndGlyphs'>CUPED-adjusted</text>
+</g>
+</g>
+</svg>
+<figcaption aria-hidden="true">Power to detect the true 2% effect as a
+function of per-arm sample size. The orange line is the naive
+difference-in-means, the blue line is after CUPED adjustment, and the
+dashed line is 80% power. The opening 15000-user experiment (orange dot)
+has only 30% power; CUPED shifts the whole curve left, nearly halving
+the sample needed for the same power.</figcaption>
+</figure>
+<h3 id="cuped-cutting-the-noise-in-half">6.3 CUPED: Cutting the Noise in
+Half</h3>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>theta <span class="ot">&lt;-</span> <span class="fu">cov</span>(Y, X) <span class="sc">/</span> <span class="fu">var</span>(X)                    <span class="co"># 0.692</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>Ycv   <span class="ot">&lt;-</span> Y <span class="sc">-</span> theta <span class="sc">*</span> (X <span class="sc">-</span> <span class="fu">mean</span>(X))</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>est   <span class="ot">&lt;-</span> <span class="fu">mean</span>(Ycv[D <span class="sc">==</span> <span class="dv">1</span>]) <span class="sc">-</span> <span class="fu">mean</span>(Ycv[D <span class="sc">==</span> <span class="dv">0</span>])</span></code></pre></div>
+<p>Adjust with the pre-experiment revenue <span
+class="math inline">X</span> via CUPED. Here <span
+class="math inline">\theta = 0.692</span>, and the variance of the
+adjusted estimator drops to 0.526 times the original (the empirical
+variance-retention ratio), agreeing with the theoretical <span
+class="math inline">1 - \rho^2 = 0.513</span>, so about 47% of the
+variance is cut. Back to the opening 15000-user data: before adjustment
+<span class="math inline">p = 0.392</span>, after adjustment the
+estimate is 0.107 with standard error 0.050, <span class="math inline">t
+= 2.14</span>, <span class="math inline">p = 0.032</span>; the same
+data, the same experiment, and CUPED makes the missed effect
+significant. The adjustment introduces no bias, and in simulation the
+bias of the CUPED estimate is 0.0009, negligible. The gain in
+sensitivity is real: at <span class="math inline">n = 15000</span> the
+power rises from 0.305 to 0.502, and the sample needed for 80% power
+falls from about 56500 to about 29000, nearly a halving, without
+recruiting a single extra user.</p>
+<h3 id="peeking-and-the-always-valid-test">6.4 Peeking and the
+Always-Valid Test</h3>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># A/A test (no effect), look daily, stop if ever p &lt; 0.05</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (nk <span class="cf">in</span> daily_looks) <span class="cf">if</span> (<span class="fu">abs</span>(diff_k <span class="sc">/</span> se_k) <span class="sc">&gt;</span> <span class="fl">1.96</span>) { reject <span class="ot">&lt;-</span> <span class="cn">TRUE</span>; <span class="cf">break</span> }</span></code></pre></div>
+<p>First see the harm of peeking. Monitoring a truly null A/A test
+continuously, the naive fixed-threshold false positive rate balloons
+with the number of looks: 1 look 0.049, 2 looks 0.082, 5 looks 0.145, 10
+looks 0.193, all 14 looks 0.213. A redesign with no effect, allowed to
+be peeked at daily, has better than a one-in-five chance of being
+“found.” Switching to mSPRT, monitoring the same 14 times continuously,
+the type I error is only 0.007, comfortably below 0.05. The cost is
+power: mSPRT’s power against the true 2% effect is 0.312, below the
+fixed-sample test’s 0.654 at the same terminal size, and this
+conservatism is precisely the price of “stop anytime,” especially sharp
+for a small effect like this one that can only be seen once the full
+sample is collected.</p>
+<figure>
+<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' viewBox='0 0 576.00 331.20' role="img" aria-label="The type I error rate under continuous monitoring as a function of the number of looks. The orange line is the naive fixed 0.05 threshold, ballooning from the nominal 0.05 all the way to 0.21 at 14 looks; the blue line is mSPRT, staying comfortably below 0.05 no matter how many looks (0.007)." style="max-width:100%;height:auto;display:block;margin:0 auto">
+<g class='svglite'>
+<defs>
+  <style type='text/css'><![CDATA[
+    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {
+      fill: none;
+      stroke: #000000;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-miterlimit: 10.00;
+    }
+    .svglite text {
+      white-space: pre;
+    }
+    .svglite g.glyphgroup path {
+      fill: inherit;
+      stroke: none;
+    }
+  ]]></style>
+</defs>
+<rect width='100%' height='100%' style='stroke: none; fill: #FFFFFF;'/>
+<defs>
+  <clipPath id='g2_cpMC4wMHw1NzYuMDB8MC4wMHwzMzEuMjA='>
+    <rect x='0.00' y='0.00' width='576.00' height='331.20' />
+  </clipPath>
+</defs>
+<g clip-path='url(#g2_cpMC4wMHw1NzYuMDB8MC4wMHwzMzEuMjA=)'>
+<rect x='0.00' y='0.00' width='576.00' height='331.20' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
+</g>
+<defs>
+  <clipPath id='g2_cpNDAuNDZ8NTcwLjUyfDUuNDh8MjYwLjUx'>
+    <rect x='40.46' y='5.48' width='530.07' height='255.03' />
+  </clipPath>
+</defs>
+<g clip-path='url(#g2_cpNDAuNDZ8NTcwLjUyfDUuNDh8MjYwLjUx)'>
+<polyline points='40.46,256.80 570.52,256.80 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='40.46,200.46 570.52,200.46 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='40.46,144.12 570.52,144.12 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='40.46,87.78 570.52,87.78 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='40.46,31.44 570.52,31.44 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='212.82,260.51 212.82,5.48 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='398.16,260.51 398.16,5.48 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
+<line x1='40.46' y1='200.46' x2='570.52' y2='200.46' style='stroke-width: 0.64; stroke: #8C8C8C; stroke-dasharray: 4.00,4.00; stroke-linecap: butt;' />
+<text x='64.55' y='196.79' style='font-size: 8.54px;fill: #666666; font-family: "Arial";' textLength='48.89px' lengthAdjust='spacingAndGlyphs'>nominal 0.05</text>
+<polyline points='64.55,201.87 101.62,164.12 212.82,93.41 398.16,39.04 546.43,17.07 ' style='stroke-width: 1.71; stroke: #D55E00; stroke-linecap: butt;' />
+<circle cx='64.55' cy='201.87' r='2.49' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='101.62' cy='164.12' r='2.49' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='212.82' cy='93.41' r='2.49' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='398.16' cy='39.04' r='2.49' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<circle cx='546.43' cy='17.07' r='2.49' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<line x1='40.46' y1='248.91' x2='570.52' y2='248.91' style='stroke-width: 1.71; stroke: #0072B2; stroke-linecap: butt;' />
+</g>
+<g clip-path='url(#g2_cpMC4wMHw1NzYuMDB8MC4wMHwzMzEuMjA=)'>
+<text x='35.52' y='259.95' text-anchor='end' style='font-size: 8.80px;fill: #4D4D4D; font-family: "Arial";' textLength='17.11px' lengthAdjust='spacingAndGlyphs'>0.00</text>
+<text x='35.52' y='203.61' text-anchor='end' style='font-size: 8.80px;fill: #4D4D4D; font-family: "Arial";' textLength='17.11px' lengthAdjust='spacingAndGlyphs'>0.05</text>
+<text x='35.52' y='147.27' text-anchor='end' style='font-size: 8.80px;fill: #4D4D4D; font-family: "Arial";' textLength='17.11px' lengthAdjust='spacingAndGlyphs'>0.10</text>
+<text x='35.52' y='90.93' text-anchor='end' style='font-size: 8.80px;fill: #4D4D4D; font-family: "Arial";' textLength='17.11px' lengthAdjust='spacingAndGlyphs'>0.15</text>
+<text x='35.52' y='34.59' text-anchor='end' style='font-size: 8.80px;fill: #4D4D4D; font-family: "Arial";' textLength='17.11px' lengthAdjust='spacingAndGlyphs'>0.20</text>
+<text x='212.82' y='271.74' text-anchor='middle' style='font-size: 8.80px;fill: #4D4D4D; font-family: "Arial";' textLength='4.89px' lengthAdjust='spacingAndGlyphs'>5</text>
+<text x='398.16' y='271.74' text-anchor='middle' style='font-size: 8.80px;fill: #4D4D4D; font-family: "Arial";' textLength='9.78px' lengthAdjust='spacingAndGlyphs'>10</text>
+<text x='305.49' y='284.20' text-anchor='middle' style='font-size: 11.00px; font-family: "Arial";' textLength='135.25px' lengthAdjust='spacingAndGlyphs'>Number of looks at the data</text>
+<text transform='translate(13.36,132.99) rotate(-90)' text-anchor='middle' style='font-size: 11.00px; font-family: "Arial";' textLength='127.22px' lengthAdjust='spacingAndGlyphs'>Type-I error rate (A/A test)</text>
+<line x1='189.97' y1='311.60' x2='203.79' y2='311.60' style='stroke-width: 1.71; stroke: #0072B2; stroke-linecap: butt;' />
+<line x1='304.91' y1='311.60' x2='318.73' y2='311.60' style='stroke-width: 1.71; stroke: #D55E00; stroke-linecap: butt;' />
+<circle cx='311.82' cy='311.60' r='2.49' style='stroke-width: 0.71; stroke: #D55E00; fill: #D55E00;' />
+<text x='211.00' y='314.75' style='font-size: 8.80px; font-family: "Arial";' textLength='86.70px' lengthAdjust='spacingAndGlyphs'>mSPRT (always-valid)</text>
+<text x='325.94' y='314.75' style='font-size: 8.80px; font-family: "Arial";' textLength='96.80px' lengthAdjust='spacingAndGlyphs'>Naive fixed-0.05 peeking</text>
+</g>
+</g>
+</svg>
+<figcaption aria-hidden="true">The type I error rate under continuous
+monitoring as a function of the number of looks. The orange line is the
+naive fixed 0.05 threshold, ballooning from the nominal 0.05 all the way
+to 0.21 at 14 looks; the blue line is mSPRT, staying comfortably below
+0.05 no matter how many looks (0.007).</figcaption>
+</figure>
+<h3 id="interference-and-switchback">6.5 Interference and
+Switchback</h3>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># marketplace: capacity C shared; treated users cannibalize control&#39;s supply</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>slot_outcome <span class="ot">&lt;-</span> <span class="cf">function</span>(want_prob) {</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  wants  <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(<span class="fu">length</span>(want_prob), <span class="dv">1</span>, want_prob)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  serve  <span class="ot">&lt;-</span> <span class="cf">if</span> (<span class="fu">sum</span>(wants) <span class="sc">&gt;</span> C) C <span class="sc">/</span> <span class="fu">sum</span>(wants) <span class="cf">else</span> <span class="dv">1</span>   <span class="co"># capacity rationing</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  wants <span class="sc">*</span> <span class="fu">rbinom</span>(<span class="fu">length</span>(wants), <span class="dv">1</span>, serve)</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>Lumen’s delivery marketplace has a shared-capacity constraint: 80
+markets, 12 blocks per market, 600 users per block, and capacity 150.
+The new page raises users’ willingness to order from 0.20 to 0.35. The
+true global effect (all-new versus all-old) is 0.040, with the
+all-control world producing 0.207 per person and the all-treatment world
+0.248, a difference of 0.040. The estimates from three designs:</p>
+<div class="table-scroll">
+<table>
+<thead>
+<tr>
+<th>Design</th>
+<th>Estimate</th>
+<th>Bias</th>
+<th>Sampling SD</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>User-level A/B</td>
+<td>0.129</td>
+<td>+0.089</td>
+<td>0.001</td>
+</tr>
+<tr>
+<td>Switchback</td>
+<td>0.040</td>
+<td>0.000</td>
+<td>0.002</td>
+</tr>
+<tr>
+<td>Cluster</td>
+<td>0.040</td>
+<td>0.000</td>
+<td>0.002</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The user-level A/B gives 0.129, overstating the true global effect by
+a factor of 3.2, because treatment users cannibalized control’s
+capacity, and both sides are biased. Switchback (flipping whole blocks)
+and cluster (assigning whole markets) both land almost exactly on 0.040,
+because each block or market experiences a globally consistent treatment
+state, and the cannibalization happens within groups, not contaminating
+across them. The cost is variance: the sampling SD of the two
+interference-robust designs (0.002) is markedly larger than the wildly
+biased but very stable user-level estimate (0.001), the
+interference-variance tradeoff laid out in numbers.</p>
+<figure>
+<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' viewBox='0 0 576.00 316.80' role="img" aria-label="The effect estimates from the three designs against the true global effect (green dashed line). The user-level A/B overstates badly because of capacity cannibalization, while switchback and cluster land on the truth but with wider confidence intervals, trading variance for unbiasedness." style="max-width:100%;height:auto;display:block;margin:0 auto">
+<g class='svglite'>
+<defs>
+  <style type='text/css'><![CDATA[
+    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {
+      fill: none;
+      stroke: #000000;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-miterlimit: 10.00;
+    }
+    .svglite text {
+      white-space: pre;
+    }
+    .svglite g.glyphgroup path {
+      fill: inherit;
+      stroke: none;
+    }
+  ]]></style>
+</defs>
+<rect width='100%' height='100%' style='stroke: none; fill: #FFFFFF;'/>
+<defs>
+  <clipPath id='g3_cpMC4wMHw1NzYuMDB8MC4wMHwzMTYuODA='>
+    <rect x='0.00' y='0.00' width='576.00' height='316.80' />
+  </clipPath>
+</defs>
+<g clip-path='url(#g3_cpMC4wMHw1NzYuMDB8MC4wMHwzMTYuODA=)'>
+<rect x='0.00' y='-0.000000000000057' width='576.00' height='316.80' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
+</g>
+<defs>
+  <clipPath id='g3_cpNDUuMzV8NTcwLjUyfDUuNDh8MjU5LjA0'>
+    <rect x='45.35' y='5.48' width='525.17' height='253.56' />
+  </clipPath>
+</defs>
+<g clip-path='url(#g3_cpNDUuMzV8NTcwLjUyfDUuNDh8MjU5LjA0)'>
+<polyline points='45.35,214.03 570.52,214.03 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='45.35,153.31 570.52,153.31 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='45.35,92.59 570.52,92.59 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='45.35,31.87 570.52,31.87 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='143.82,259.04 143.82,5.48 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='307.93,259.04 307.93,5.48 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='472.05,259.04 472.05,5.48 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
+<line x1='45.35' y1='237.51' x2='570.52' y2='237.51' style='stroke-width: 1.28; stroke: #009E73; stroke-dasharray: 6.83,6.83; stroke-linecap: butt;' />
+<polyline points='132.33,17.00 155.30,17.00 ' style='stroke-width: 0.85; stroke: #0072B2; stroke-linecap: butt;' />
+<polyline points='143.82,17.00 143.82,27.67 ' style='stroke-width: 0.85; stroke: #0072B2; stroke-linecap: butt;' />
+<polyline points='132.33,27.67 155.30,27.67 ' style='stroke-width: 0.85; stroke: #0072B2; stroke-linecap: butt;' />
+<polyline points='296.45,227.78 319.42,227.78 ' style='stroke-width: 0.85; stroke: #0072B2; stroke-linecap: butt;' />
+<polyline points='307.93,227.78 307.93,247.52 ' style='stroke-width: 0.85; stroke: #0072B2; stroke-linecap: butt;' />
+<polyline points='296.45,247.52 319.42,247.52 ' style='stroke-width: 0.85; stroke: #0072B2; stroke-linecap: butt;' />
+<polyline points='460.56,228.63 483.54,228.63 ' style='stroke-width: 0.85; stroke: #0072B2; stroke-linecap: butt;' />
+<polyline points='472.05,228.63 472.05,246.52 ' style='stroke-width: 0.85; stroke: #0072B2; stroke-linecap: butt;' />
+<polyline points='460.56,246.52 483.54,246.52 ' style='stroke-width: 0.85; stroke: #0072B2; stroke-linecap: butt;' />
+<circle cx='143.82' cy='22.34' r='3.34' style='stroke-width: 0.71; stroke: #0072B2; fill: #0072B2;' />
+<circle cx='307.93' cy='237.65' r='3.34' style='stroke-width: 0.71; stroke: #0072B2; fill: #0072B2;' />
+<circle cx='472.05' cy='237.57' r='3.34' style='stroke-width: 0.71; stroke: #0072B2; fill: #0072B2;' />
+</g>
+<g clip-path='url(#g3_cpMC4wMHw1NzYuMDB8MC4wMHwzMTYuODA=)'>
+<text x='40.41' y='217.18' text-anchor='end' style='font-size: 8.80px;fill: #4D4D4D; font-family: "Arial";' textLength='22.00px' lengthAdjust='spacingAndGlyphs'>0.050</text>
+<text x='40.41' y='156.46' text-anchor='end' style='font-size: 8.80px;fill: #4D4D4D; font-family: "Arial";' textLength='22.00px' lengthAdjust='spacingAndGlyphs'>0.075</text>
+<text x='40.41' y='95.74' text-anchor='end' style='font-size: 8.80px;fill: #4D4D4D; font-family: "Arial";' textLength='22.00px' lengthAdjust='spacingAndGlyphs'>0.100</text>
+<text x='40.41' y='35.02' text-anchor='end' style='font-size: 8.80px;fill: #4D4D4D; font-family: "Arial";' textLength='22.00px' lengthAdjust='spacingAndGlyphs'>0.125</text>
+<text x='143.82' y='270.27' text-anchor='middle' style='font-size: 8.80px;fill: #4D4D4D; font-family: "Arial";' textLength='55.73px' lengthAdjust='spacingAndGlyphs'>User-level A/B</text>
+<text x='307.93' y='270.27' text-anchor='middle' style='font-size: 8.80px;fill: #4D4D4D; font-family: "Arial";' textLength='44.52px' lengthAdjust='spacingAndGlyphs'>Switchback</text>
+<text x='472.05' y='270.27' text-anchor='middle' style='font-size: 8.80px;fill: #4D4D4D; font-family: "Arial";' textLength='27.86px' lengthAdjust='spacingAndGlyphs'>Cluster</text>
+<text transform='translate(13.36,132.26) rotate(-90)' text-anchor='middle' style='font-size: 11.00px; font-family: "Arial";' textLength='128.30px' lengthAdjust='spacingAndGlyphs'>Estimated treatment effect</text>
+<line x1='267.24' y1='297.20' x2='281.07' y2='297.20' style='stroke-width: 1.28; stroke: #009E73; stroke-dasharray: 6.83,6.83; stroke-linecap: butt;' />
+<text x='288.27' y='300.35' style='font-size: 8.80px; font-family: "Arial";' textLength='62.08px' lengthAdjust='spacingAndGlyphs'>True global ATE</text>
+</g>
+</g>
+</svg>
+<figcaption aria-hidden="true">The effect estimates from the three
+designs against the true global effect (green dashed line). The
+user-level A/B overstates badly because of capacity cannibalization,
+while switchback and cluster land on the truth but with wider confidence
+intervals, trading variance for unbiasedness.</figcaption>
+</figure>
+<p>The walkthrough of this section can be summarized as follows: on one
+and the same platform, randomization is perfect throughout, and the
+opening 15000-user experiment, being underpowered, misreports the true
+2% effect as null; a power analysis could compute this before the
+experiment starts, CUPED uses pre-experiment data to halve the noise and
+make the effect significant on the same data, the sequential mSPRT holds
+the test level while allowing continuous monitoring where naive peeking
+pushes the false positive rate to 0.21, and the user-level A/B
+overstates the global effect by a factor of 3.2 because of capacity
+interference while switchback and cluster trade variance back for
+unbiasedness. The success or failure of an experiment is mostly in the
+design, not in the analysis.</p>
+<h2 id="failure-modes-and-robustness">7 Failure Modes and
+Robustness</h2>
+<p>Everything in the simulation is constructed, but real experiments
+come with a long list of pitfalls, and this section lays out the most
+common failure modes and their actionable remedies.</p>
+<p>The most basic failure is being underpowered yet treating the null
+result as settled, already detailed in Section 1. Its twin error is
+post-hoc power analysis: taking a nonsignificant result and computing an
+“observed power” for self-comfort, which is circular reasoning, since
+observed power is just a monotone transform of the <span
+class="math inline">p</span> value and provides no information at all.
+The right discipline is to fix the MDE and sample size before the
+experiment starts, and even if the result is nonsignificant, report the
+confidence interval and let the width of the interval speak. A wide
+interval covering both 0 and a business-important effect should honestly
+be read as “not measured precisely,” not as “no effect.”</p>
+<p>The second kind is sample ratio mismatch (SRM). The experiment is
+designed 50/50, but the two groups’ sample proportions actually received
+deviate significantly (say 50.5/49.5, which can be anomalous in a large
+sample), and this is almost always the signal of a system bug: a flaw in
+the splitting logic, lost logs for one group, a redirect that drops some
+users. Once SRM appears, the premise of randomization has broken, and
+any effect estimate is untrustworthy. The response is to make the SRM
+test (a chi-square test on the group counts) the first automatic
+guardrail of every experiment, and if it fails, check the pipeline first
+and do not look at results.</p>
+<p>The third kind is time-related contamination of the effect. The
+novelty effect is when users, briefly curious about a new feature, show
+inflated short-term metrics that fall back after a few weeks; the
+primacy effect is the reverse, users unaccustomed to the new page show
+deflated short-term metrics that slowly recover. Both make early
+readings unrepresentative of the long-run truth, and the response is to
+run long enough to see whether the metrics stabilize, or to analyze new
+versus returning users specifically and slice by exposure duration.
+Related are seasonality and day-of-week effects, where too short an
+experiment window mistakes the fluctuation of some special period for an
+effect, which is why an experiment is usually required to span at least
+a full weekly cycle.</p>
+<p>The fourth kind is hiding interference behind a pretty <span
+class="math inline">p</span> value, already detailed in Section 3.5.
+Here we add one diagnostic in practice: if you suspect interference from
+a shared resource like capacity or inventory, you can stratify the
+experiment by the treatment share (say using different treatment
+proportions in different cities) and see whether the effect estimate
+varies systematically with the treatment share; if it does, the
+interference is confirmed. The cure is still to change the design
+(cluster or switchback), not to do any after-the-fact correction on
+user-level data.</p>
+<p>The fifth kind is the confluence of multiple comparisons and
+selective reporting. Beyond the metric multiplicity of Section 3.4,
+there is a more insidious selectivity: the experiment fails to show an
+overall effect, so you slice into subgroups (“the overall effect is not
+significant, but it is for female users”), and slicing enough always
+finds a significant subgroup, which is subgroup fishing, essentially
+uncorrected multiple testing. The response is to pre-register the
+subgroups you will examine, apply a multiplicity correction to subgroup
+analyses, and treat any subgroup effect found after the fact as a
+hypothesis to be verified rather than a conclusion. Related is the
+winner’s curse: picking the largest, most significant effect from a
+batch of experiments to ship, and its effect estimate is systematically
+too high, because being selected is precisely because noise favored it,
+so the prudent approach is to expect shrinkage on the post-ship effect,
+or to re-verify on held-out data.</p>
+<p>Finally, the wisdom of Twyman’s law: any result that looks especially
+interesting or especially anomalous is probably wrong. An absurdly large
+effect, a metric moving in a direction that defies common sense, the
+first response should be to check instrumentation (is the logging
+correct), check SRM, check the data pipeline, not to rush it into a ship
+report. The credibility of platform experiments is half in the design
+and half in this engineering discipline of staying skeptical of
+anomalous results.</p>
+<p>Stringing these failure modes together, the difficulty of digital
+experimentation has never been in identification, since randomization
+delivers identification as a free lunch; the difficulty is in designing
+the experiment so that it sees what it should see, is not fooled by
+noise or peeking, and does not mistake interference for effect. Power
+analysis, CUPED, sequential methods, the SRM guardrail, and
+interference-robust designs are all safeguards provided to make an
+experiment with perfect identification really answer the right question,
+and none of them can substitute for careful thought about the design
+before the experiment starts.</p>
+<h2 id="further-reading">8 Further Reading</h2>
+<div class="readings">
+<p>Required reading, in suggested reading order:</p>
+<ul>
+<li>Kohavi, Tang and Xu (2020, Trustworthy Online Controlled
+Experiments). The authoritative survey textbook on platform
+experimentation, the practical panorama of every section of this
+chapter, best read first as an overview.</li>
+<li>Lewis and Reiley (2014, Quantitative Marketing and Economics). The
+classic case of underpower, the real-world version of Section 1 of this
+chapter, and read its estimates of noise and required sample size
+closely.</li>
+<li>Deng, Xu, Kohavi and Walker (2013, WSDM). The original CUPED paper,
+and read the derivation of the variance reduction and the choice of
+pre-experiment covariate closely.</li>
+<li>Johari, Koomen, Pekelis and Walsh (2017, KDD) and (2022, Operations
+Research). The peeking problem and always-valid inference, the source of
+mSPRT, and read the type I error control under continuous monitoring
+closely.</li>
+<li>Blake and Coey (2014, ACM EC). The cautionary work on interference
+in marketplace experiments, the empirical support for Section 3.5.</li>
+</ul>
+<p>Further reading:</p>
+<ul>
+<li>Kohavi, Deng, Frasca, Walker, Xu and Pohlmann (2013, KDD). Lessons
+learned from large-scale online experimentation, the source of
+guardrails like SRM and Twyman’s law.</li>
+<li>Bojinov, Simchi-Levi and Zhao (2023, Management Science). The
+optimal design and inference theory for switchback design, the
+methodological basis for Sections 3.6 and 4.4.</li>
+<li>Athey, Eckles and Imbens (2018, Journal of the American Statistical
+Association). Exact tests under network interference, building
+interference into an object of estimation rather than only a
+threat.</li>
+<li>Xu, Chen, Fernandez, Sinno and Bhasin (2015, KDD). LinkedIn’s
+experimentation platform in practice, how engineering and statistics
+combine.</li>
+<li>Deng, Lu and Litz (2017, WSDM). The pitfalls, challenges, and
+solutions in analyzing online A/B tests, a practical checklist for
+avoiding traps.</li>
+<li>Bakshy, Eckles and Bernstein (2014, WWW). Facebook’s experimentation
+infrastructure PlanOut, the design and execution of large-scale
+experiments.</li>
+</ul>
+</div>
+<div class="apa-refs">
+<ul>
+<li>Athey, S., Eckles, D., &amp; Imbens, G. W. (2018). Exact p-values
+for network interference. <em>Journal of the American Statistical
+Association, 113</em>(521), 230-240. <a
+href="https://doi.org/10.1080/01621459.2016.1241178"
+class="uri">https://doi.org/10.1080/01621459.2016.1241178</a></li>
+<li>Bakshy, E., Eckles, D., &amp; Bernstein, M. S. (2014). Designing and
+deploying online field experiments. In <em>Proceedings of the 23rd
+International Conference on World Wide Web</em> (pp. 283-292).
+Association for Computing Machinery. <a
+href="https://doi.org/10.1145/2566486.2567967"
+class="uri">https://doi.org/10.1145/2566486.2567967</a></li>
+<li>Blake, T., &amp; Coey, D. (2014). Why marketplace experimentation is
+harder than it seems: The role of test-control interference. In
+<em>Proceedings of the Fifteenth ACM Conference on Economics and
+Computation</em> (pp. 567-582). Association for Computing Machinery. <a
+href="https://doi.org/10.1145/2600057.2602837"
+class="uri">https://doi.org/10.1145/2600057.2602837</a></li>
+<li>Bojinov, I., Simchi-Levi, D., &amp; Zhao, J. (2023). Design and
+analysis of switchback experiments. <em>Management Science, 69</em>(7),
+3759-3777. <a href="https://doi.org/10.1287/mnsc.2022.4583"
+class="uri">https://doi.org/10.1287/mnsc.2022.4583</a></li>
+<li>Deng, A., Lu, J., &amp; Litz, J. (2017). Trustworthy analysis of
+online A/B tests: Pitfalls, challenges and solutions. In <em>Proceedings
+of the Tenth ACM International Conference on Web Search and Data
+Mining</em> (pp. 641-649). Association for Computing Machinery. <a
+href="https://doi.org/10.1145/3018661.3018677"
+class="uri">https://doi.org/10.1145/3018661.3018677</a></li>
+<li>Deng, A., Xu, Y., Kohavi, R., &amp; Walker, T. (2013). Improving the
+sensitivity of online controlled experiments by utilizing pre-experiment
+data. In <em>Proceedings of the Sixth ACM International Conference on
+Web Search and Data Mining</em> (pp. 123-132). Association for Computing
+Machinery. <a href="https://doi.org/10.1145/2433396.2433413"
+class="uri">https://doi.org/10.1145/2433396.2433413</a></li>
+<li>Johari, R., Koomen, P., Pekelis, L., &amp; Walsh, D. (2017). Peeking
+at A/B tests: Why it matters, and what to do about it. In
+<em>Proceedings of the 23rd ACM SIGKDD International Conference on
+Knowledge Discovery and Data Mining</em> (pp. 1517-1525). Association
+for Computing Machinery. <a
+href="https://doi.org/10.1145/3097983.3097992"
+class="uri">https://doi.org/10.1145/3097983.3097992</a></li>
+<li>Johari, R., Koomen, P., Pekelis, L., &amp; Walsh, D. (2022). Always
+valid inference: Continuous monitoring of A/B tests. <em>Operations
+Research, 70</em>(3), 1806-1821. <a
+href="https://doi.org/10.1287/opre.2021.2135"
+class="uri">https://doi.org/10.1287/opre.2021.2135</a></li>
+<li>Kohavi, R., Deng, A., Frasca, B., Walker, T., Xu, Y., &amp;
+Pohlmann, N. (2013). Online controlled experiments at large scale. In
+<em>Proceedings of the 19th ACM SIGKDD International Conference on
+Knowledge Discovery and Data Mining</em> (pp. 1168-1176). Association
+for Computing Machinery. <a
+href="https://doi.org/10.1145/2487575.2488217"
+class="uri">https://doi.org/10.1145/2487575.2488217</a></li>
+<li>Kohavi, R., Tang, D., &amp; Xu, Y. (2020). <em>Trustworthy online
+controlled experiments: A practical guide to A/B testing</em>. Cambridge
+University Press.</li>
+<li>Lewis, R. A., &amp; Reiley, D. H. (2014). Online ads and offline
+sales: Measuring the effect of retail advertising via a controlled
+experiment on Yahoo! <em>Quantitative Marketing and Economics,
+12</em>(3), 235-266. <a href="https://doi.org/10.1007/s11129-014-9146-6"
+class="uri">https://doi.org/10.1007/s11129-014-9146-6</a></li>
+<li>Xu, Y., Chen, N., Fernandez, A., Sinno, O., &amp; Bhasin, A. (2015).
+From infrastructure to culture: A/B testing challenges in large scale
+social networks. In <em>Proceedings of the 21th ACM SIGKDD International
+Conference on Knowledge Discovery and Data Mining</em> (pp. 2227-2236).
+Association for Computing Machinery. <a
+href="https://doi.org/10.1145/2783258.2788602"
+class="uri">https://doi.org/10.1145/2783258.2788602</a></li>
+</ul>
+</div>
+    <footer class="page-footer">
+<span>Foundations of Information Systems Economics: Empirical Methods for Information Systems Economics</span>
+    </footer>
+  </main>
+</div>
+<script>
+(function(){var p=(location.pathname.split('/').pop()||'index.html');document.querySelectorAll('.file-nav a').forEach(function(a){if(a.getAttribute('href')===p)a.classList.add('current');});})();
+
+/* Preserve complete formulas without internal scrollbars. Only formulas whose
+   natural width exceeds their text column are reduced, and resize restores the
+   largest size that fits. */
+(function () {
+  function fitMath() {
+    document.querySelectorAll('span.math').forEach(function (host) {
+      var katex = host.querySelector('.katex');
+      if (!katex) return;
+      katex.style.fontSize = '';
+      var parent = host.classList.contains('display') ? host : host.parentElement;
+      var available = Math.max(1, parent.clientWidth);
+      /* KaTeX's box can be clipped to the host before measurement; scrollWidth
+         retains the full typeset width and is therefore the correct basis. */
+      var needed = Math.max(katex.scrollWidth, katex.getBoundingClientRect().width);
+      /* Keep a small safety margin for KaTeX glyph overhangs and browser
+         sub-pixel rounding, so the last radical/bar is never clipped. */
+      var target = available * 0.98;
+      if (needed > target) {
+        katex.style.fontSize = Math.max(0.34, target / needed) + 'em';
+      }
+    });
+  }
+  document.addEventListener('DOMContentLoaded', function () {
+    requestAnimationFrame(fitMath);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitMath);
+  });
+  window.addEventListener('resize', fitMath);
+}());
+</script>
+<script defer src="assets/notes.js"></script>
+</body>
+</html>

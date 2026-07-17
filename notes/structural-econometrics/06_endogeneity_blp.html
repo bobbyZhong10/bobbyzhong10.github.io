@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script>(function(){try{var t=localStorage.getItem('theme');if(t==='dark'||t==='light')document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <title>06 Endogeneity and BLP | From Choices to Counterfactuals</title>
+  <link rel="stylesheet" href="assets/katex/katex.min.css">
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="page-wrapper">
+
+  <!-- ==================== SIDEBAR ==================== -->
+  <nav class="sidebar">
+    <div class="sidebar-title">From Choices to Counterfactuals: Structural Estimation for Digital Platform Research</div>
+    <div class="sidebar-subtitle">Chapter 06 · Endogeneity and BLP</div>
+
+    <div class="toc-section-label">Contents</div>
+    <div class="toc">
+      <a href="#endogeneity-problem">6.1 Why Endogeneity Cannot Be Avoided</a>
+      <a href="#iv-bridge">6.2 From IV to Berry: A Conceptual Bridge</a>
+      <a href="#berry-inversion">6.3 The Berry (1994) Inversion</a>
+      <a href="#blp-model">6.4 The BLP Model Setup</a>
+      <a href="#contraction-mapping">6.5 The Contraction Mapping</a>
+      <a href="#gmm">6.6 GMM Estimation</a>
+      <a href="#instruments">6.7 A Menu of Instruments</a>
+      <a href="#nevo-case">6.8 Case Study: Nevo's Cereal Research</a>
+      <a href="#supply-side">6.9 The Supply Side and Marginal Cost</a>
+      <a href="#pyblp">6.10 PyBLP in Practice</a>
+      <a href="#counterfactuals">6.11 Counterfactuals</a>
+      <a href="#advanced-topics">6.12 Advanced Topics at a Glance</a>
+      <a href="#misconceptions">6.13 Common Pitfalls</a>
+      <a href="#summary">6.14 Chapter Summary</a>
+      <a href="#readings">Further Reading</a>
+    </div>
+
+    <div class="file-nav">
+      <div class="nav-label">Chapters</div>
+      <a href="01_overview_roadmap.html">01 Overview & Decision Framework</a>
+      <a href="02_why_structural.html">02 Why Structural Models</a>
+      <a href="03_rum_logit.html">03 RUM and Logit</a>
+      <a href="04_gev_mixed_logit.html">04 Nested and Mixed Logit</a>
+      <a href="05_simulation_estimation.html">05 Simulation and Numerical Estimation</a>
+      <a href="06_endogeneity_blp.html" class="current">06 Endogeneity and BLP</a>
+      <a href="07_dynamic_choice.html">07 Dynamic Discrete Choice</a>
+      <a href="08_applications.html">08 Platform Research Applications</a>
+      <a href="09_workflow_reference.html">09 Workflow, Validation, and Reference</a>
+    </div>
+  </nav>
+
+  <!-- ==================== MAIN ==================== -->
+  <main class="main-content">
+
+    <header class="page-header">
+      <h1>Endogeneity and BLP</h1>
+      <div class="subtitle">Endogeneity, the Berry Inversion, and BLP Demand Estimation</div>
+      <div class="meta">From Choices to Counterfactuals: Structural Estimation for Digital Platform Research · Chapter 06</div>
+    </header>
+
+    <div class="global-legend">
+      <span class="legend-label">Variable colors</span>
+      <span><span class="dot dot-observed"></span>Observed in data</span>
+      <span><span class="dot dot-estimated"></span>Parameters to estimate</span>
+      <span><span class="dot dot-researcher"></span>Set by the researcher</span>
+    </div>
+
+    <p>Through the first four chapters we quietly assumed two things: that price is exogenous, and that the researcher holds individual-level records of who chose what. This chapter relaxes both assumptions at once, in order to confront two difficulties that tend to travel together in the real world. The first is that price is correlated with unobserved product quality, so that OLS estimates the price coefficient with a bias. The second is that a great deal of platform data hands you only market shares: what any single user actually chose is something you never get to see. BLP (Berry, Levinsohn &amp; Pakes 1995) solves both difficulties together, through a layered, nested estimation procedure. By the end of this chapter you should be able to run a demand estimation in PyBLP on your own, and to mount a defense of your chosen instruments that will hold up under scrutiny.</p>
+
+    <div class="info-box">
+      <div class="box-title">The running notation of this chapter</div>
+      <p style="margin-bottom:0">From Section 6.4 through Section 6.7, each technical section opens with the same pipeline breadcrumb, which marks where in the procedure you currently stand. The full BLP estimation pipeline runs in five steps: propose a candidate value for the nonlinear parameters <span class="var-estimated">$\theta_2$</span>, use it to predict market shares $S$, invert those to recover mean utility <span class="var-estimated">$\delta$</span>, separate out the unobserved-quality residual <span class="var-researcher">$\xi$</span>, and finally feed it into the GMM objective function. These five steps form a single thread, and every formula that follows can be located somewhere along it.</p>
+    </div>
+
+    <!-- ============================================ 6.1 -->
+    <h2 id="endogeneity-problem">6.1 Why Endogeneity Cannot Be Avoided</h2>
+
+    <p>Open the paid-app chart in an app store and scroll down, and you will most likely run into something awkward: the more expensive apps rank higher, not lower. Read literally, this seems to say that users simply prefer the pricier ones, and that raising the price would buy you more downloads. It sounds absurd, yet it is not something conjured out of thin air. Regress the monthly share of every app in some category on its price, and the price coefficient often comes out near zero, and under some specifications even positive, as if the data were endorsing the idea that "the higher the sticker price, the better it sells." No researcher genuinely believes that raising prices boosts sales, yet this is what OLS honestly computes. So the problem lies not in the data, but in this casual regression you just ran.</p>
+
+    <p>What we actually want to pin down is something else: if you raised the price of one particular app on its own, how many users would you lose? That is the causal effect of price on demand, and everything downstream, the elasticities, the markups, every counterfactual, rests on it. But what sits on the paid chart is only the price the firm settled on after weighing everything repeatedly; no one has ever randomly tried a high price on the same app one round and a low price the next. Without that kind of controlled comparison, the positive correlation between price and sales need not be causal. Very likely there is another hand behind the scene, tugging on both ends at once.</p>
+
+    <p>That hand comes from the way prices are set. Price is not thrown at each app at random; it is set by the firm, and the firm happens to hold information we cannot see. Part of the utility of product $j$ is always something the researcher does not observe: brand reputation, build quality, ecosystem position, word of mouth. Bundle all of it together and call it unobserved quality <span class="var-researcher">$\xi_j$</span>. Whether that quality is high or low is something the firm knows perfectly well. An app that is well built and well liked is one the firm knows to be good, and it naturally dares to price it higher. Information about quality is thereby mixed into the price. Written on a single line, this is $\text{Cov}(p_j, \xi_j) &gt; 0$: price and the quality hidden inside the error term are positively correlated.</p>
+
+    <p>Once that correlation slips into the regression, the price coefficient is contaminated. Regress share on price, and OLS cannot tell "high price" apart from "high quality"; the two forces are tangled together, and the price coefficient is pushed toward zero, or even flips positive. A positive coefficient amounts to the model saying "raising the price makes people want to buy more," which runs against profit maximization and against common sense alike. The absurd result we opened with has its root right here.</p>
+
+    <p>Just how destructive is endogeneity? A single comparison from the original BLP (1995) paper makes the point best of all. Under a plain logit that does not correct for endogeneity, out of 2,217 model/year observations, fully 1,494 are judged to lack price elasticity ($|\eta| &lt; 1$). That result is by itself untenable: a profit-maximizing firm always sets its optimal price on the elastic portion of demand. As long as it is still sitting in the inelastic range, raising the price a little more always earns more, and no firm would stop there. Switch to an instrumental variable, and the inelastic observations drop from 1,494 to 22; add the full random-coefficients model, and every observation becomes elastic. On the same batch of data, whether the price coefficient is positive or negative, large or small, depends almost entirely on whether you have corrected for endogeneity.</p>
+
+    <div class="intuition-box">
+      <div class="box-title">Intuition: read the correlation as a shadow</div>
+      The apps that are expensive on the paid chart also tend to sell well, and this positive correlation can be unpacked into a causal diagram. An app near the top of the ranking most likely started with solid quality, that is, a high $\xi$; and precisely because that quality is solid, the firm dares to price it high and users are willing to pay. Quality therefore raises price and sales at the same time, becoming the common upstream cause of both. Price and sales appear to walk hand in hand, but in truth both are being tugged from behind by the common cause of quality; the correlation is merely the shadow it casts. To measure the effect of price on its own, you must first hold that quality hand fixed, and that is exactly the job of an instrumental variable.
+    </div>
+
+    <p>Price is not the only variable on a platform that can be endogenous. Ranking position is sorted out by an algorithm according to expected click-through, and recommendation exposure is handed out by operations according to how hot an item is; both are entangled with demand shocks. Those two we leave for Chapter 08. This chapter clamps down on the most classic and most teachable case, price endogeneity. Once the logic is fully chewed through, carrying it over to ranking and exposure is nothing more than swapping the name of the endogenous variable in the middle.</p>
+
+    <div class="warn-box">
+      <div class="box-title">Pitfall: endogeneity cannot be eliminated by "adding a few more controls"</div>
+      <p style="margin-bottom:0">Since $\xi_j$ is unobserved, there is no way to put it into the regression as a control. Adding a few more observable attributes can at most shrink the range of $\xi_j$ a little; it cannot remove its correlation with price. There are really only two ways out: either find an instrument that pushes price without touching the demand shock (the main thread of this chapter), or rely on an experiment or quasi-experiment to manufacture exogenous variation in price artificially (the validation tradition of Section 2.8 in Chapter 02). Hoping to press endogeneity down by piling on controls is a mistake a referee will see through at a glance.</p>
+    </div>
+
+    <div class="takeaway-box">
+      <div class="box-title">Bottom Line</div>
+      The price-setter observes quality that the researcher does not, so price is positively correlated with $\xi_j$, and the OLS price coefficient is biased toward zero or even turns positive. Endogeneity determines the sign and magnitude of the price coefficient; it is not a minor blemish that can be ignored.
+    </div>
+
+    <!-- ============================================ 6.2 -->
+    <h2 id="iv-bridge">6.2 From IV to Berry: A Conceptual Bridge</h2>
+
+    <p>Set cost aside for a moment and imagine an ideal experiment. Suppose you could randomly assign the price of the same app, high this month and low the next; the ups and downs of price would then be completely decoupled from quality. At that point you would only have to compare download counts across different prices, and the response of demand to price would be read off directly, which is elasticity itself. But in reality no such random variation exists: price is set carefully by the firm with an eye on quality, not drawn from a hat. What an instrumental variable does is find, when true randomization is impossible, a segment of price movement that is unrelated to quality, and let it stand in for the random assignment that cannot be carried out. Where exactly that exogenous movement comes from and why it is unrelated to quality is the business of the instrument menu in Section 6.7; this section follows the thread and shows how it builds from the linear IV you have long been familiar with all the way up to the Berry inversion.</p>
+
+    <p>Linear instrumental variables are exactly the toolkit you learned long ago. When the endogenous variable $X$ is correlated with the error $\epsilon$, you find an instrument $Z$ that is correlated with $X$ but not with $\epsilon$; two-stage least squares first projects $X$ onto the space spanned by $Z$, then uses that exogenous variation to recover the coefficient. In a word, it uses the instrument to strip away the part of the endogenous variable that is contaminated by the error.</p>
+
+    <p>Discrete choice refuses to be so cooperative: the dependent variable is no longer a continuous quantity purchased, but a nonlinear share function $S_j = G(p, x, \xi)$. The unobserved quality $\xi_j$ is buried inside an integral and a pile of exponential functions; it cannot be pulled out as a regression residual, and 2SLS has nowhere to start. The contribution of Berry (1994) is precisely to build this bridge: he shows that in homogeneous logit, the nonlinear share system can be inverted exactly into an equation that is linear in $\xi_j$. Once the inversion is done, $\xi_j$ is restored from "hidden inside the integral" to "the regression residual," and 2SLS can be used at once. BLP (1995) then generalizes this inversion to a mixed logit with random coefficients, at the cost that the inversion no longer has a closed form and must be approached step by step through numerical iteration.</p>
+
+    <div class="table-scroll">
+    <table>
+      <thead>
+        <tr><th>Dimension</th><th>Linear IV / 2SLS</th><th>Berry (1994) homogeneous logit</th><th>BLP (1995) mixed logit</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Dependent variable</strong></td><td>$Y_i$ (continuous)</td><td>$\ln(S_j/S_0)$ (linear after inversion)</td><td>$\delta_j$ (linear after numerical inversion)</td></tr>
+        <tr><td><strong>Endogenous variable</strong></td><td>$X_i$</td><td>$p_j$ (price)</td><td>$p_j$ (price)</td></tr>
+        <tr><td><strong>Instrument</strong></td><td>$Z_i$</td><td>cost shifters, rival characteristics</td><td>same as Berry types</td></tr>
+        <tr><td><strong>Heterogeneity</strong></td><td>none</td><td>none (full IIA)</td><td>random coefficients $\beta_i \sim (\bar\beta, \Sigma)$</td></tr>
+        <tr><td><strong>Inversion</strong></td><td>not needed, already linear</td><td>closed form: $\delta_j=\ln S_j-\ln S_0$</td><td>numerical: contraction mapping</td></tr>
+        <tr><td><strong>Estimator</strong></td><td>2SLS</td><td>2SLS (after inversion)</td><td>GMM (with nonlinear search)</td></tr>
+        <tr><td><strong>Data structure</strong></td><td>individual level</td><td>market level (aggregate shares)</td><td>market level (aggregate shares)</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <p>This table is the map to the whole chapter. Reading left to right, the endogenous variable is always price and the instrument's job is always to supply exogenous variation from the supply side; only two things actually change: whether the model lets price sensitivity vary from person to person, and whether the inversion has a closed form. Berry breaks the nonlinear problem into a linear one; where the closed-form inversion fails, BLP takes over with numerical iteration. The next two sections carry out these two steps in turn.</p>
+
+    <div class="takeaway-box">
+      <div class="box-title">Bottom Line</div>
+      The difficulty of endogeneity in discrete choice is that $\xi$ is hidden inside the nonlinear share. The Berry inversion restores it to a linear regression residual, so 2SLS can be used; BLP extends this idea to random coefficients, at the cost of switching the inversion to numerical iteration.
+    </div>
+
+    <!-- ============================================ 6.3 -->
+    <h2 id="berry-inversion">6.3 The Berry (1994) Inversion</h2>
+
+    <p>This inversion is easiest to explain in two passes. This first pass takes the simplest case: assume everyone is equally sensitive to price, that is, a homogeneous logit with no random coefficients, and first make fully clear how to solve $\xi$ out of the shares. Section 6.4 then makes a second pass, putting in price sensitivity that varies from person to person; the idea is the same, only there is no longer a closed form. Start with the simple version. A market has $J$ products, plus an outside option (not buying, with utility normalized to 0). The average utility of product $j$ across all consumers is $\delta_j = x_j'\beta - \alpha p_j + \xi_j$, and its choice probability is exactly the market share:</p>
+
+    <div class="formula-box">
+      <div class="formula-title">Shares and inversion in homogeneous logit</div>
+      <div class="formula-math">$$S_j = \frac{\exp(\delta_j)}{1 + \sum_{k=1}^{J}\exp(\delta_k)}, \qquad S_0 = \frac{1}{1+\sum_{k=1}^{J}\exp(\delta_k)}$$</div>
+      <div class="formula-math">$$\ln S_j - \ln S_0 = \delta_j = x_j'\beta - \alpha p_j + \xi_j$$</div>
+      <div class="formula-explain">
+        <table>
+          <tr><td class="var-observed">$S_j,\,S_0$</td><td>the share of product $j$ and the share of the outside option (computed directly from the data)</td></tr>
+          <tr><td class="var-estimated">$\delta_j$</td><td>mean utility, the target of the inversion</td></tr>
+          <tr><td class="var-observed">$x_j,\,p_j$</td><td>product attributes and price (observed), with $p_j$ endogenous</td></tr>
+          <tr><td class="var-estimated">$\beta,\,\alpha$</td><td>attribute coefficients and the price coefficient (to be estimated)</td></tr>
+          <tr><td class="var-researcher">$\xi_j$</td><td>unobserved quality, which becomes the regression residual after inversion</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <p>The derivation is just two lines: divide both sides of the share formula by $S_0$, the denominators cancel, leaving $S_j/S_0 = \exp(\delta_j)$; take logs on both sides, and you obtain $\ln S_j - \ln S_0 = \delta_j$. The beauty is in this step: the entire nonlinear choice model has been compressed into a linear equation. The left-hand side $\ln(S_j/S_0)$ is entirely determined by the data, the right-hand side is as standard a linear specification as they come, and $\xi_j$ is the residual. But do not forget that price is endogenous, so this is no longer ordinary OLS but a linear IV problem: use an instrument $z_j$ to handle $p_j$, and 2SLS delivers a consistent $\alpha$.</p>
+
+    <details>
+      <summary>Optional: why the outside option is the pivot of the inversion</summary>
+      <div class="detail-content">
+        <p>The inversion holds only because there is an outside option whose utility is normalized to 0, serving as the reference point. $S_0$ pins down the absolute level of the denominator; without it, shares are identified only up to a common constant, and the level of $\delta_j$ would float free. This confirms exactly what Section 2.6 of Chapter 02 kept repeating: logit only recognizes differences in utility. How $S_0$ is defined (how large the market is drawn, what "not buying" actually means) directly shifts all the $\delta_j$ together, and elasticities and welfare shift along with them. If the market size is set too large, $S_0$ is overstated and all the $\delta_j$ sink together by a notch; this is also the place where inversion-based models are most often subjected to robustness checks.</p>
+      </div>
+    </details>
+
+    <div class="worked-example">
+      <div class="worked-title">Worked example: inverting a demo app-store market <span class="demo-badge">illustrative data</span></div>
+      <p>Under one image-tools category there are 5 paid apps, plus the outside option of "not downloading any paid app at all." The table below gives the observed prices and market shares for one month (the denominator of the shares is the number of potential users in this category). All numbers are illustrative data.</p>
+      <div class="table-scroll">
+      <table>
+        <thead>
+          <tr><th>App</th><th>Price (yuan)</th><th>Observed share $S_j$</th><th>$\delta_j=\ln(S_j/S_0)$</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>C Basic Tools</td><td>3</td><td>0.05</td><td>$-2.468$</td></tr>
+          <tr><td>A Minimal Editor</td><td>6</td><td>0.06</td><td>$-2.286$</td></tr>
+          <tr><td>B All-in-One Camera</td><td>12</td><td>0.08</td><td>$-1.998$</td></tr>
+          <tr><td>E Creator Suite</td><td>18</td><td>0.10</td><td>$-1.775$</td></tr>
+          <tr><td>D Pro Master</td><td>30</td><td>0.12</td><td>$-1.593$</td></tr>
+        </tbody>
+      </table>
+      </div>
+
+      <div class="worked-step">Step 1: compute the outside-option share</div>
+      <p>The five inside shares sum to $0.05+0.06+0.08+0.10+0.12 = 0.41$, so $S_0 = 1 - 0.41 = 0.59$.</p>
+
+      <div class="worked-step">Step 2: invert to get $\delta_j$</div>
+      <p>Plug each one into $\delta_j = \ln(S_j/S_0)$. Take C as an example, $\ln(0.05/0.59) = \ln(0.0847) = -2.468$; then D, $\ln(0.12/0.59) = \ln(0.2034) = -1.593$. Computing the whole column gives the last column of the table above. At this step, the nonlinear model has already turned into a perfectly ordinary table of regression data, with $\delta_j$ as the dependent variable.</p>
+
+      <div class="worked-step">Step 3: the naive regression exposes endogeneity</div>
+      <p>Regress $\delta_j$ directly on price by OLS, and you get $\hat\delta_j = -2.468 + 0.032\,p_j$. The price coefficient is <strong>positive</strong> ($+0.032$), and the correlation between price and $\delta_j$ is as high as $0.963$. Read literally, raising the price actually lifted utility, which is plainly wrong. The root cause is exactly what Section 6.1 described: in this batch of data the higher-priced apps happen to be of higher quality (high $\xi$), and OLS, confused, credits the price account with what quality did.</p>
+
+      <div class="worked-step">Step 4: hand it to 2SLS</div>
+      <p>The remedy is to find an instrument that pushes only price and never touches $\xi_j$. Suppose each app's cloud-service and licensing cost $z_j$ is observable; it raises price but has nothing to do with whether users like the app. Run the first stage of $z_j$ on $p_j$, then use the fitted price to estimate $\delta_j = x_j'\beta - \alpha p_j + \xi_j$, and the price coefficient will turn negative again, with a magnitude back in a reasonable range. The inversion straightens the problem out; the instrument clears the endogeneity away. The full menu of instruments waits until Section 6.7.</p>
+    </div>
+
+    <p>The homogeneous-logit inversion is clean and crisp, but unfortunately it inherits logit's IIA defect along with everything else: the ratio of shares between any two products has nothing to do with a third product, and substitution can only run proportionally. What does that mean? When one product is delisted, the users it loses are apportioned only according to the sizes of the remaining options' existing shares, with no regard to which is more similar to it; two products that were near neighbors cannot preferentially catch each other's lost demand. To loosen this straitjacket, price sensitivity has to be allowed to vary from person to person, that is, random coefficients have to be introduced, and this is exactly where BLP enters, the second pass foreshadowed earlier.</p>
+
+    <div class="takeaway-box">
+      <div class="box-title">Bottom Line</div>
+      The Berry inversion $\delta_j=\ln S_j-\ln S_0$ turns nonlinear logit into a linear equation, $\xi_j$ is restored to a regression residual, and 2SLS can be used. But it still carries IIA, and substitution can only happen proportionally, which is exactly the motivation for moving to random coefficients.
+    </div>
+
+    <!-- ============================================ 6.4 -->
+    <h2 id="blp-model">6.4 The BLP Model Setup</h2>
+
+    <div class="pipeline-bar">
+      <span class="pipe-step here">θ₂ guess nonlinear params</span>
+      <span class="pipe-arrow">→</span>
+      <span class="pipe-step">s predict shares</span>
+      <span class="pipe-arrow">→</span>
+      <span class="pipe-step">δ invert</span>
+      <span class="pipe-arrow">→</span>
+      <span class="pipe-step">ξ separate residual</span>
+      <span class="pipe-arrow">→</span>
+      <span class="pipe-step">GMM objective</span>
+    </div>
+
+    <div class="info-box">
+      <div class="box-title">Background you'll need: market shares and inversion</div>
+      <p>The next two sections take BLP's machinery apart block by block. Before starting, let us recap in one sentence each the two most basic points used in Section 6.3, so that readers whose foundations are a bit rusty do not fall behind.</p>
+      <p><strong>What a market share is</strong>: the market share of a product is the fraction of the whole potential market that chooses it. The denominator is all the users in the potential market, and it deliberately reserves a slot for "buying nothing at all," recorded as the outside-option share $S_0$; the shares of all inside products, plus $S_0$, sum to exactly 1. Shares are counted directly from the data and are the raw material of the entire estimation.</p>
+      <p><strong>Why we invert</strong>: the share equation is nonlinear (utility is first exponentiated, then turned into a proportion), and the unobserved quality $\xi$ is buried inside it, so it cannot be taken directly to a regression. What inversion does is push this nonlinear share equation back one step, solving for each product's mean utility $\delta$. Since $\delta$ is linear in price, attributes, and $\xi$, once you have it in hand you are back to the linear regression and IV you know. In homogeneous logit, Section 6.3 finished the inversion in a single log step; with random coefficients, that step must be replaced by iteration, which is exactly the subject of Section 6.5.</p>
+    </div>
+
+    <p>This section corresponds to the first step of the pipeline: before estimating anything, think through which parameters truly have to rely on the outer numerical search. That depends on how utility is specified, so let us first write out BLP's utility. Its starting point is a very plain observation: for the same product, different people give different ratings. This evaluation is clearest when split into three layers. The first layer is what this product is worth to the "average person" in the market, a single number shared across the whole market; the second is a specific person's deviation from that average, varying by individual; the third is the pure random component that even the first two layers cannot explain. The three layers are written $\delta$, $\mu$, and $\varepsilon$ respectively.</p>
+
+    <div class="formula-box">
+      <div class="formula-title">The BLP utility decomposition</div>
+      <div class="formula-math">$$U_{ijm} = \underbrace{\delta_{jm}}_{\text{common}} + \underbrace{\mu_{ijm}}_{\text{indiv. dev.}} + \underbrace{\varepsilon_{ijm}}_{\text{EV error}}$$</div>
+      <div class="formula-explain">
+        <table>
+          <tr><td class="var-estimated">$\delta_{jm}$</td><td>mean utility, absorbing all product-market-level information, including unobserved quality $\xi_{jm}$</td></tr>
+          <tr><td>$\mu_{ijm}$</td><td>the individual's deviation from the mean, generated by demographics and random taste (a constructed quantity, not a free parameter)</td></tr>
+          <tr><td class="var-researcher">$\varepsilon_{ijm}$</td><td>i.i.d. Type I extreme-value error, which gives the logit kernel</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <p>The split is not for the sake of tidiness, but to house two entirely different kinds of problem in separate places. Endogeneity is a market-level trouble: the unobserved quality $\xi_{jm}$ is the same value for all consumers in the market, and it is precisely what the firm watches when it sets price, so endogeneity properly belongs in the $\delta$ that everyone shares. Heterogeneity is an individual-level phenomenon: price sensitivity and taste preferences vary from person to person, and the firm cannot price to each person's private preferences separately, so heterogeneity properly belongs in the $\mu$ that varies by individual. With one landing in $\delta$ and the other in $\mu$, each can be handled by its own method: $\delta$ is handed to instrumental variables to deal with endogeneity, and $\mu$ is handed to simulation to deal with heterogeneity. Below we spread out $\delta$ and $\mu$ each in turn.</p>
+
+    <div class="formula-box">
+      <div class="formula-title">Expanding the two blocks</div>
+      <div class="formula-math">$$\delta_{jm} = x_{jm}'\bar\beta - \bar\alpha\, p_{jm} + \xi_{jm}, \qquad \mu_{ijm} = \big[p_{jm},\, x_{jm}\big]'\big(\Pi D_i + \Sigma\, \nu_i\big)$$</div>
+      <div class="formula-explain">
+        <table>
+          <tr><td class="var-estimated">$\bar\beta,\,\bar\alpha$</td><td>linear parameters $\theta_1$: the average consumer's attribute and price coefficients</td></tr>
+          <tr><td class="var-researcher">$\xi_{jm}$</td><td>product-market-level unobserved quality, the source of endogeneity, requiring an instrument</td></tr>
+          <tr><td class="var-estimated">$\Pi$</td><td>one of the nonlinear parameters: how taste varies with observable demographics</td></tr>
+          <tr><td class="var-observed">$D_i$</td><td>the demographics of consumer $i$ (income, age, and so on), drawn from a census or a panel</td></tr>
+          <tr><td class="var-estimated">$\Sigma$</td><td>the other nonlinear parameter: the taste standard deviation that remains after controlling for demographics; the attribute vector $x_{jm}$ is taken to include a constant, so the intercept may also carry a random coefficient (consistent with the code in 6.10)</td></tr>
+          <tr><td class="var-researcher">$\nu_i$</td><td>a standard-normal random-taste draw, drawn independently for each consumer during simulation</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <p>Spread out this way, you can see that the parameters are born into two groups with different jobs, and the shape of the whole algorithm is settled by this grouping. The computational cost of the two groups, one low and one high, is exactly the key to seeing why BLP is tractable at all.</p>
+
+    <p>The linear parameters $\theta_1 = (\bar\beta, \bar\alpha)$ live only in $\delta$ and are the average consumer's attribute and price coefficients. Extracting them costs almost nothing: as long as $\delta$ is known, one IV regression of $\delta$ on $x, p$ delivers them, with no need to trouble the numerical search at all.</p>
+
+    <p>The nonlinear parameters $\theta_2 = (\Pi, \Sigma)$ live only in $\mu$ and govern the shape of the taste distribution. Solving for them is far more expensive: $\theta_2$ determines the shape of that integral over consumers inside the choice probability, and this integral has no closed form, so it can only be tried one candidate at a time through outer numerical optimization.</p>
+
+    <p>As a result, the only thing that truly needs to be searched at great expense is $\theta_2$, and the search dimension shrinks from "all parameters" down to "just $\theta_2$." This is the fundamental reason BLP is computationally tractable, and it is why the pipeline puts $\theta_2$ in the first step.</p>
+
+    <div class="info-box">
+      <div class="box-title">The original BLP (1995) setup: income enters utility, rather than a random coefficient on price</div>
+      <p style="margin-bottom:0">Textbooks often simplify BLP in one sentence to "put a random coefficient on the price coefficient," which is in fact inaccurate. In the original BLP paper income enters utility through $\alpha \cdot \ln(y_i - p_j)$, where $y_i$ is consumer income drawn from the March CPS. The heterogeneity in price sensitivity is generated by the income distribution: the same 100-yuan increase stings a low-income person and is barely felt by a high-income one. This is explicit modeling of the income effect, with the advantage that it can borrow the real income distribution to improve efficiency and make substitution patterns more realistic. So if in writing you say "BLP places a random coefficient on price," you have parted from the original text. In addition, BLP jointly estimated the supply side (multiproduct Bertrand-Nash pricing), which is left for Section 6.9.</p>
+    </div>
+
+    <div class="takeaway-box">
+      <div class="box-title">Bottom Line</div>
+      $U = \delta + \mu + \varepsilon$: $\delta$ carries endogeneity (including $\xi$, with the linear parameters $\theta_1$ living here), and $\mu$ carries heterogeneity (with the nonlinear parameters $\theta_2$ living here). Only $\theta_2$ needs the outer search; $\theta_1$ is extracted by a single regression once $\delta$ is given.
+    </div>
+
+    <!-- ============================================ 6.5 -->
+    <h2 id="contraction-mapping">6.5 The Contraction Mapping</h2>
+
+    <div class="pipeline-bar">
+      <span class="pipe-step">θ₂ guess nonlinear params</span>
+      <span class="pipe-arrow">→</span>
+      <span class="pipe-step here">s predict shares</span>
+      <span class="pipe-arrow">→</span>
+      <span class="pipe-step here">δ invert</span>
+      <span class="pipe-arrow">→</span>
+      <span class="pipe-step">ξ separate residual</span>
+      <span class="pipe-arrow">→</span>
+      <span class="pipe-step">GMM objective</span>
+    </div>
+
+    <p>The contraction mapping sounds, by its name, like the most intimidating hurdle in the chapter, yet doing it turns out to be surprisingly simple: it is nothing more than comparing the model's prediction against the observation, and wherever they fail to match, nudging things in that direction. This section corresponds to the second and third steps of the pipeline: given a set of $\theta_2$, first predict shares, then invert to get $\delta$. In Berry's homogeneous logit this step took no effort at all, one log gives $\delta_j = \ln S_j - \ln S_0$. But once random coefficients are mixed in, the old method no longer works: $\delta_{jm}$ is wrapped deep inside that integral over consumers, the predicted share becomes a nonlinear average over $\delta$, and there is no longer any way to pull it out on its own with a single log. Since a closed form cannot be written, take another route and squeeze $\delta$ out step by step.</p>
+
+    <p>That route is iteration. Berry (1994) first established that the share mapping is invertible; BLP (1995), in the appendix, went further and gave the concrete iteration below: given $\theta_2$, start from any $\delta$ at all and repeatedly apply this one update. BLP proved that this iteration is a contraction mapping, so that no matter where it starts, it converges to the unique $\delta$ that makes the model's predicted shares exactly equal the observed shares.</p>
+
+    <div class="formula-box">
+      <div class="formula-title">The BLP contraction mapping</div>
+      <div class="formula-math">$$\delta^{\,t+1}_{jm} = \delta^{\,t}_{jm} + \ln S_{jm} - \ln \hat S_{jm}\!\left(\delta^{\,t};\, \theta_2\right)$$</div>
+      <div class="formula-explain">
+        <table>
+          <tr><td class="var-observed">$S_{jm}$</td><td>the observed share in the data</td></tr>
+          <tr><td class="var-estimated">$\hat S_{jm}(\delta^t;\theta_2)$</td><td>the predicted share simulated under the current $\delta^t$ and $\theta_2$, $\hat S_{jm}=\frac1{N}\sum_i P_{ijm}$</td></tr>
+          <tr><td class="var-estimated">$\delta^{\,t}_{jm}$</td><td>the mean utility at iteration $t$</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <p>This update reads without the slightest twist: take a log of the observed share and of the current predicted share, and by however much they differ, add that much to $\delta$. If a product's share is being predicted too high, press its $\delta$ down a little; if predicted too low, lift it up a little.</p>
+
+    <div class="intuition-box">
+      <div class="box-title">Intuition: tuning a radio to find a station</div>
+      Imagine hunting for a station on a dial-knob radio. First you turn to some frequency at random, and the signal is wrong; based on the discrepancy you nudge in one direction, then listen, then adjust again, each adjustment smaller than the last, until you lock on. The contraction mapping is exactly this motion. $\delta$ is like the frequency, and the observed share is like the station you want to receive. The adjustment at each step is exactly $\ln S - \ln\hat S$: where the model predicts a product's share too high, its $\delta$ is nudged down slightly; where predicted too low, nudged up. The larger the discrepancy, the larger the adjustment; the smaller the discrepancy, the lighter the adjustment, until the signal is clear.
+    </div>
+
+    <details>
+      <summary>Deeper: why this iteration is guaranteed to converge</summary>
+      <div class="detail-content">
+        <p>The intuition of "the more you tune, the closer you get" is, stated rigorously, a contraction property. View this update as a mapping $T$ that sends the current $\delta$ to the next $\delta$. One can show that as long as an outside option is present, $T$ is a contraction with modulus less than 1: take any two starting points $\delta$ and $\delta'$, iterate once, and their distance is bound to shrink, $\lVert T(\delta)-T(\delta')\rVert \le c\,\lVert \delta-\delta'\rVert$, where the constant $c &lt; 1$. The distance is pulled in by a factor of $c$ at every step, and repeated iteration squeezes it toward zero, so the two trajectories eventually merge to the same point. This is exactly what the Banach fixed-point theorem says: a contraction mapping has one and only one fixed point, and it converges to that point from anywhere. So the starting point really does not matter, and starting from logit's $\delta^0$ is purely a matter of convenience. And precisely because this ratio $c$ stays fixed at every step, convergence is linear in speed: the accuracy advances by about two decimal places every fixed number of iterations, unlike Newton's method, which gets faster the closer it gets.</p>
+      </div>
+    </details>
+
+    <div class="worked-example">
+      <div class="worked-title">Worked example: one contraction step <span class="demo-badge">illustrative data</span></div>
+      <p>A small market, 2 products plus an outside option, with observed shares $S = (0.30, 0.20)$ and $S_0 = 0.50$. Product 1 carries a binary characteristic (write $x_1=1,\, x_2=0$), and taste on this characteristic has a random coefficient $\sigma = 1$. Approximate that integral with two equally weighted consumer draws, $\nu \in \{-1, +1\}$.</p>
+
+      <div class="worked-step">Starting point: first invert with logit</div>
+      <p>First set $\delta^0 = \ln(S_j/S_0)$, which gives $\delta^0 = (-0.511, -0.916)$.</p>
+
+      <div class="worked-step">Predict shares</div>
+      <p>Compute the logit probability separately for the two consumers, then average: because product 1 carries that characteristic, the two types of consumer see it one high and one low, and averaged out $\hat S(\delta^0) = (0.337, 0.189)$. Product 1 is overpredicted ($0.337 &gt; 0.30$), and product 2 is slightly underpredicted ($0.189 &lt; 0.20$).</p>
+
+      <div class="worked-step">Update one step</div>
+      <p>$\delta^1_1 = -0.511 + \ln 0.30 - \ln 0.337 = -0.628$, adjusted down; $\delta^1_2 = -0.916 + \ln 0.20 - \ln 0.189 = -0.862$, adjusted up. The directions match the intuition.</p>
+
+      <div class="worked-step">Convergence</div>
+      <p>Iterating further, $\delta$ converges to $\delta^\ast = (-0.718, -0.916)$, at which point the predicted shares return exactly to $(0.30, 0.20)$. What is interesting is product 2's $\delta$, which travels a round trip: the previous step had just lifted it from its starting point of $-0.916$ up to $-0.862$, after which it drifts back down bit by bit, and at convergence it lands right back on its starting value $\ln(S_2/S_0) = -0.916$. This is no coincidence. Product 2 carries no random coefficient, so for every consumer its share ratio to the outside option is exactly $\exp(\delta_2)$; averaged over consumers, this ratio still holds, so at every step $\hat S_2 = \exp(\delta_2)\,\hat S_0$. Substituting into the update, product 2's step actually simplifies to $\delta_2^{\,t+1} = \ln S_2 - \ln \hat S_0^{\,t}$, tracking only the prediction error of the outside-option share. At the very start of the iteration, product 1 is overpredicted and $\hat S_0$ is correspondingly underpredicted (about $0.47 &lt; 0.50$), so $\delta_2$ is pushed up; once product 1's $\delta$ has been tuned into place and $\hat S_0$ returns to $0.50$, $\delta_2$ slides back to $-0.916$. In the end, the only thing truly felt out step by step through iteration is the heterogeneous product 1; product 2's up-and-down journey is merely a byproduct it carries along.</p>
+    </div>
+
+    <div class="figure">
+    <svg viewBox="0 0 700 344" role="img" aria-label="Convergence trajectory of the BLP contraction mapping: product 1 falls monotonically to −0.718, product 2 rises then returns to −0.916">
+      <rect x="486" y="60" width="12" height="12" rx="2" style="fill:var(--fig-1)"></rect>
+      <text x="504" y="70" class="lbl-s">Product 1 (with random coefficient)</text>
+      <rect x="486" y="80" width="12" height="12" rx="2" style="fill:var(--fig-2)"></rect>
+      <text x="504" y="90" class="lbl-s">Product 2 (no random coefficient)</text>
+      <line class="ax" x1="72" y1="300" x2="672" y2="300"></line>
+      <line class="ax" x1="72" y1="62" x2="72" y2="300"></line>
+      <line class="gr dash" x1="72" y1="85.8" x2="672" y2="85.8"></line>
+      <text x="64" y="89.8" text-anchor="end" class="mut lbl-s">-0.5</text>
+      <line class="gr dash" x1="72" y1="133.4" x2="672" y2="133.4"></line>
+      <text x="64" y="137.4" text-anchor="end" class="mut lbl-s">-0.6</text>
+      <line class="gr dash" x1="72" y1="181.0" x2="672" y2="181.0"></line>
+      <text x="64" y="185.0" text-anchor="end" class="mut lbl-s">-0.7</text>
+      <line class="gr dash" x1="72" y1="228.6" x2="672" y2="228.6"></line>
+      <text x="64" y="232.6" text-anchor="end" class="mut lbl-s">-0.8</text>
+      <line class="gr dash" x1="72" y1="276.2" x2="672" y2="276.2"></line>
+      <text x="64" y="280.2" text-anchor="end" class="mut lbl-s">-0.9</text>
+
+      <polyline points="72.0,91.0 147.0,146.5 222.0,167.0 297.0,177.3 372.0,182.9 447.0,185.9 522.0,187.6 597.0,188.5 672.0,189.0" style="fill:none;stroke:var(--fig-1);stroke-width:2"></polyline>
+      <polyline points="72.0,284.0 147.0,258.0 222.0,267.3 297.0,274.7 372.0,278.9 447.0,281.2 522.0,282.4 597.0,283.1 672.0,283.5" style="fill:none;stroke:var(--fig-2);stroke-width:2"></polyline>
+      <circle cx="72.0" cy="91.0" r="2.6" style="fill:var(--fig-1)"></circle>
+      <circle cx="147.0" cy="146.5" r="2.6" style="fill:var(--fig-1)"></circle>
+      <circle cx="222.0" cy="167.0" r="2.6" style="fill:var(--fig-1)"></circle>
+      <circle cx="297.0" cy="177.3" r="2.6" style="fill:var(--fig-1)"></circle>
+      <circle cx="372.0" cy="182.9" r="2.6" style="fill:var(--fig-1)"></circle>
+      <circle cx="447.0" cy="185.9" r="2.6" style="fill:var(--fig-1)"></circle>
+      <circle cx="522.0" cy="187.6" r="2.6" style="fill:var(--fig-1)"></circle>
+      <circle cx="597.0" cy="188.5" r="2.6" style="fill:var(--fig-1)"></circle>
+      <circle cx="672.0" cy="189.0" r="2.6" style="fill:var(--fig-1)"></circle>
+      <circle cx="72.0" cy="284.0" r="2.6" style="fill:var(--fig-2)"></circle>
+      <circle cx="147.0" cy="258.0" r="2.6" style="fill:var(--fig-2)"></circle>
+      <circle cx="222.0" cy="267.3" r="2.6" style="fill:var(--fig-2)"></circle>
+      <circle cx="297.0" cy="274.7" r="2.6" style="fill:var(--fig-2)"></circle>
+      <circle cx="372.0" cy="278.9" r="2.6" style="fill:var(--fig-2)"></circle>
+      <circle cx="447.0" cy="281.2" r="2.6" style="fill:var(--fig-2)"></circle>
+      <circle cx="522.0" cy="282.4" r="2.6" style="fill:var(--fig-2)"></circle>
+      <circle cx="597.0" cy="283.1" r="2.6" style="fill:var(--fig-2)"></circle>
+      <circle cx="672.0" cy="283.5" r="2.6" style="fill:var(--fig-2)"></circle>
+      <text x="72.0" y="318" text-anchor="middle" class="mut lbl-s">0</text><text x="147.0" y="318" text-anchor="middle" class="mut lbl-s">1</text><text x="222.0" y="318" text-anchor="middle" class="mut lbl-s">2</text><text x="297.0" y="318" text-anchor="middle" class="mut lbl-s">3</text><text x="372.0" y="318" text-anchor="middle" class="mut lbl-s">4</text><text x="447.0" y="318" text-anchor="middle" class="mut lbl-s">5</text><text x="522.0" y="318" text-anchor="middle" class="mut lbl-s">6</text><text x="597.0" y="318" text-anchor="middle" class="mut lbl-s">7</text><text x="672.0" y="318" text-anchor="middle" class="mut lbl-s">8</text>
+      <text x="372" y="336" text-anchor="middle" class="mut lbl-s">Iteration</text>
+    </svg>
+    <div class="figcaption"><span class="fig-label">Figure 6.1</span>Convergence trajectory of the contraction mapping (matching the 6.5 worked example). Product 1 carries a random coefficient, and its mean utility δ is iterated down from the logit starting point of −0.511 all the way to −0.718. Product 2 carries no random coefficient and only tracks the outside option's share error, first pushed up to −0.862, then sliding back to its starting value −0.916. At convergence the predicted shares return exactly to the observed (0.30, 0.20).</div>
+    </div>
+
+    <div class="warn-box">
+      <div class="box-title">Pitfall: loosen the inner tolerance by one notch, and the outer GMM is contaminated</div>
+      <p style="margin-bottom:0">This contraction is linearly convergent, with a rate set by the modulus of the contraction: the closer the modulus is to 1, the slower the convergence, and the modulus approaches 1 as product shares rise, so convergence in real data can be one or two orders of magnitude slower than in the small example below, which makes tolerance discipline especially important under slow convergence. Take the small example above: the modulus is about 0.54, so roughly every 7 additional iterations locks in another 2 decimal places, reaching $10^{-6}$ takes 20 iterations, $10^{-8}$ takes 27, and $10^{-14}$ takes 50. If you cut corners for speed and stop the tolerance at $10^{-6}$, $\delta$ walks into the outer layer carrying measurement error: once an error-laden $\delta$ enters the IV regression on $x$ and $p$, $\theta_1$ is estimated with a bias, the gradient of the GMM objective becomes unstable, and the outer optimization may well converge to a spurious optimum. This is why Dubé, Fox &amp; Su (2012) recommend an inner tolerance of at least $10^{-14}$. Square-extrapolation acceleration of the SQUAREM kind (Varadhan &amp; Roland 2008) can save a few iterations, but what it speeds up is the convergence process, and it cannot be used as an excuse to loosen the tolerance. To be safe, you can recompute once each with $10^{-12}$ and $10^{-16}$ to confirm the estimates do not wobble with the tolerance.</p>
+    </div>
+
+    <div class="takeaway-box">
+      <div class="box-title">Bottom Line</div>
+      The contraction mapping inverts the mixed-logit shares into $\delta$ by iteration, with convergence unique but only linear in speed. The tolerance must be tightened to $10^{-14}$; loosening it by one notch carries measurement error into the outer GMM, and the estimates shift accordingly.
+    </div>
+
+    <!-- ============================================ 6.6 -->
+    <h2 id="gmm">6.6 GMM Estimation</h2>
+
+    <div class="pipeline-bar">
+      <span class="pipe-step">θ₂ guess nonlinear params</span>
+      <span class="pipe-arrow">→</span>
+      <span class="pipe-step">s predict shares</span>
+      <span class="pipe-arrow">→</span>
+      <span class="pipe-step">δ invert</span>
+      <span class="pipe-arrow">→</span>
+      <span class="pipe-step here">ξ separate residual</span>
+      <span class="pipe-arrow">→</span>
+      <span class="pipe-step here">GMM objective</span>
+    </div>
+
+    <div class="info-box">
+      <div class="box-title">Background you'll need: moment conditions and instruments</div>
+      <p>This section builds GMM out of moment conditions and instruments, so let us recap each term in one sentence first, and the objective function of this section will not be hard to follow.</p>
+      <p><strong>What a moment condition is</strong>: a moment condition, put plainly, is a statement that "some quantity should equal zero in theory." The quantity here is the correlation between the instrument and the error term. Under the true parameters the two should have nothing to do with each other, so their sample correlation should also be close to zero. From start to finish, what GMM does is adjust the parameters to make this quantity, which should be zero, as close to zero in the sample as it can; the tighter the fit, the more accurately the parameters are estimated.</p>
+      <p><strong>What the instrument does</strong>: the reason price cannot be used directly is that it is mixed with the unobserved quality $\xi$ on the demand side (Section 6.1). The instrument's job is to find a "clean" segment of variation for price: a price change that comes only from supply-side cost, or from competition in the market, and has nothing to do with the demand shock $\xi$. Using this exogenous variation to recover the price coefficient keeps the estimate from being dragged off by $\xi$. Exactly which variables can serve as such instruments waits for Section 6.7.</p>
+    </div>
+
+    <p>This section corresponds to the last two steps of the pipeline: separate out the residual $\xi$, then build the GMM objective. After the contraction mapping delivers $\delta(\theta_2)$, the unobserved quality can be separated out: $\xi_{jm}(\theta) = \delta_{jm}(\theta_2) - x_{jm}'\bar\beta + \bar\alpha\, p_{jm}$. The core of identification can be stated in a single sentence: a good instrument should have nothing whatsoever to do with unobserved quality. Translate that sentence into a moment condition, and it requires the two to be orthogonal:</p>
+
+    <div class="formula-box">
+      <div class="formula-title">The moment condition and the GMM objective</div>
+      <div class="formula-math">$$E\big[\,Z_{jm}'\,\xi_{jm}(\theta)\,\big] = 0 \qquad\Longrightarrow\qquad \hat\theta = \arg\min_{\theta}\; \xi(\theta)'Z\,W\,Z'\xi(\theta)$$</div>
+      <div class="formula-explain">
+        <table>
+          <tr><td class="var-researcher">$\xi_{jm}(\theta)$</td><td>the unobserved quality separated out from $\delta$, a function of $\theta$</td></tr>
+          <tr><td class="var-observed">$Z_{jm}$</td><td>the instrument matrix, orthogonal to $\xi$ and correlated with $p_j$</td></tr>
+          <tr><td class="var-researcher">$W$</td><td>the weight matrix, taking the optimal weight in the second step of two-step GMM</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <p>The meaning of this moment condition is very plain: a good instrument is unrelated to unobserved quality, so under the true parameters, $Z$ and $\xi$ should be nearly uncorrelated in the sample. Conversely, as long as an appreciable correlation remains, it signals that the $\theta$ in hand has not yet been chosen correctly. GMM picks parameters accordingly: it makes $Z'\xi$ as close to zero as it can, and just how tight that fit should be is dictated by the weight matrix $W$; the tighter the fit, the more efficient the estimate.</p>
+
+    <p>The procedure for two-step GMM is quite standard: in the first step, use a convenient weight (such as $(Z'Z)^{-1}$) to estimate one round of $\theta$; in the second step, use the optimal weight $W = \hat E[\xi^2 ZZ']^{-1}$ computed from the first-round residuals to estimate again, yielding the efficient estimate. When instruments outnumber parameters, the model is overidentified, and the extra moment conditions can be used for an overidentification test via the Hansen $J$ statistic. But here you must keep one thing in mind: in large samples the $\chi^2$ test is almost bound to reject, and a rejected test does not necessarily mean the instruments are invalid, but may be purely an artifact of the sample being too large. Nevo (2001) makes this point very clearly on the cereal data.</p>
+
+    <p>Join these five steps together and you have the complete nested algorithm: the outer layer searches over $\theta_2$, and the inner layer solves for $\delta$ once for each candidate $\theta_2$, separates the residual, and computes the objective, cycling through in this way.</p>
+
+    <div class="info-box">
+      <div class="box-title">The complete BLP algorithm (the whole pipeline lit up)</div>
+      <div class="pipeline-bar" style="margin-top:6px;margin-bottom:14px;">
+        <span class="pipe-step here">θ₂</span><span class="pipe-arrow">→</span>
+        <span class="pipe-step here">s</span><span class="pipe-arrow">→</span>
+        <span class="pipe-step here">δ</span><span class="pipe-arrow">→</span>
+        <span class="pipe-step here">ξ</span><span class="pipe-arrow">→</span>
+        <span class="pipe-step here">GMM</span>
+      </div>
+      <p>These five steps turn the five-node pipeline above into concrete operations. Both sides have five items, but they do not line up one to one: predicting shares $S$ has already been folded into the inner contraction of step 2, and the IV regression that extracts $\theta_1$ (step 3) is in fact hidden in the transition from $\delta$ to $\xi$, since separating the residual $\xi$ requires having $\theta_1$ in hand first.</p>
+      <ol style="margin-bottom:0">
+        <li><strong>The outer layer supplies a set of $\theta_2$</strong>: the optimizer proposes a set of nonlinear parameters $(\Pi, \Sigma)$.</li>
+        <li><strong>The inner contraction solves for $\delta$</strong>: use the iteration of Section 6.5 to solve $\delta(\theta_2)$ to a tolerance of $10^{-14}$.</li>
+        <li><strong>An IV regression extracts $\theta_1$</strong>: regress $\delta$ on $x, p$ by 2SLS using instruments $Z$, obtaining $(\bar\beta, \bar\alpha)$.</li>
+        <li><strong>Separate the residual $\xi$</strong>: $\xi = \delta - x'\bar\beta + \bar\alpha p$.</li>
+        <li><strong>Compute the GMM objective</strong>: evaluate $\xi'ZWZ'\xi$; if not converged, hand the gradient information back to the outer layer and return to step 1.</li>
+      </ol>
+    </div>
+
+    <div class="figure">
+    <svg viewBox="0 0 720 320" role="img" aria-label="Schematic of the BLP nested algorithm: the outer layer searches over θ2, the inner layer in turn solves δ by contraction, extracts θ1 by IV, separates ξ, and computes the GMM objective; if not converged, θ2 is updated">
+      <defs>
+        <marker id="blpstep" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" style="fill:var(--fig-axis)"></path></marker>
+        <marker id="blploop" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" style="fill:var(--fig-2)"></path></marker>
+      </defs>
+      <rect x="16" y="40" width="688" height="256" rx="14" style="fill:none;stroke:var(--fig-2);stroke-width:1.6;stroke-dasharray:6 4"></rect>
+      <text x="34" y="62" class="lbl-s" style="fill:var(--fig-2);font-weight:700">Outer · optimizer searches θ₂ = (Π, Σ)</text>
+      <rect x="280" y="76" width="160" height="34" rx="8" style="fill:var(--fig-2-soft);stroke:var(--fig-2);stroke-width:1.6"></rect>
+      <text x="360" y="98" text-anchor="middle" class="ink lbl-s">propose a set of θ₂</text>
+      <line x1="360" y1="110" x2="360" y2="146" style="stroke:var(--fig-axis);stroke-width:1.4" marker-end="url(#blpstep)"></line>
+      <rect x="44" y="148" width="632" height="120" rx="10" style="fill:var(--fig-1-soft);stroke:var(--fig-1);stroke-width:1.6"></rect>
+      <text x="62" y="170" class="lbl-s" style="fill:var(--fig-1);font-weight:700">Inner · given θ₂</text>
+      <rect x="62" y="200" width="124" height="46" rx="8" class="bx"></rect>
+      <text x="124" y="220" text-anchor="middle" class="ink lbl-s">contraction: δ</text>
+      <text x="124" y="237" text-anchor="middle" class="mut lbl-s">to tolerance 1e−14</text>
+      <rect x="214" y="200" width="120" height="46" rx="8" class="bx"></rect>
+      <text x="274" y="227" text-anchor="middle" class="ink lbl-s">IV regression: θ₁</text>
+      <rect x="362" y="200" width="104" height="46" rx="8" class="bx"></rect>
+      <text x="414" y="227" text-anchor="middle" class="ink lbl-s">separate ξ</text>
+      <rect x="494" y="200" width="166" height="46" rx="8" class="bx"></rect>
+      <text x="577" y="220" text-anchor="middle" class="ink lbl-s">GMM objective</text>
+      <text x="577" y="237" text-anchor="middle" class="mut lbl-s">ξ′ Z W Z′ ξ</text>
+      <line x1="186" y1="223" x2="214" y2="223" style="stroke:var(--fig-axis);stroke-width:1.4" marker-end="url(#blpstep)"></line>
+      <line x1="334" y1="223" x2="362" y2="223" style="stroke:var(--fig-axis);stroke-width:1.4" marker-end="url(#blpstep)"></line>
+      <line x1="466" y1="223" x2="494" y2="223" style="stroke:var(--fig-axis);stroke-width:1.4" marker-end="url(#blpstep)"></line>
+      <polyline points="660,208 682,208 682,93 442,93" style="fill:none;stroke:var(--fig-2);stroke-width:1.5" marker-end="url(#blploop)"></polyline>
+      <text x="694" y="150" text-anchor="middle" transform="rotate(-90 694 150)" class="lbl-s" style="fill:var(--fig-2);font-weight:700">not converged · update θ₂</text>
+    </svg>
+    <div class="figcaption"><span class="fig-label">Figure 6.2</span>The nested structure of BLP. Each time the outer layer proposes a set of nonlinear parameters θ₂, the inner layer runs through one pass: first the contraction mapping solves the mean utility δ to a high tolerance, then δ is regressed on attributes and price by IV to extract the linear parameters θ₁, the unobserved-quality residual ξ is separated out, and finally the GMM objective ξ′ZWZ′ξ is evaluated; if it is not at the minimum, the gradient is handed back to the outer layer, θ₂ is updated, and another round begins. The only truly expensive part is this outer loop, because only θ₂ requires numerical search.</div>
+    </div>
+
+    <div class="takeaway-box">
+      <div class="box-title">Bottom Line</div>
+      The moment condition $E[Z'\xi]=0$ reduces the identification of endogeneity to a single orthogonality. The outer layer searches over $\theta_2$, the inner layer solves for $\delta$, a regression extracts $\theta_1$, $\xi$ is separated out, and $\xi'ZWZ'\xi$ is evaluated: this nested loop is the entire mechanism of BLP.
+    </div>
+
+    <!-- ============================================ 6.7 -->
+    <h2 id="instruments">6.7 A Menu of Instruments</h2>
+
+    <div class="pipeline-bar">
+      <span class="pipe-step">θ₂ guess nonlinear params</span>
+      <span class="pipe-arrow">→</span>
+      <span class="pipe-step">s predict shares</span>
+      <span class="pipe-arrow">→</span>
+      <span class="pipe-step">δ invert</span>
+      <span class="pipe-arrow">→</span>
+      <span class="pipe-step">ξ separate residual</span>
+      <span class="pipe-arrow">→</span>
+      <span class="pipe-step here">GMM objective</span>
+    </div>
+
+    <p>This section is still parked at the GMM stage of the pipeline: the instrument $Z$ enters precisely that moment condition at the end, and whether the whole procedure can be trusted rests, in the end, entirely on it. The instrument is the link in this pipeline that most tests judgment and is most prone to trouble, so let us first hold up the ruler for judging each instrument, namely the three identification questions this book uses again and again. First question: what exactly do we want to identify? Ultimately the price coefficient $\alpha$, on which elasticities, markups, and counterfactuals are all built. Second question: which variation in the data identifies it? Price has to move, and the source of that movement must be unrelated to unobserved quality $\xi$; otherwise we slide back into the OLS malady of Section 6.1. Third question: when does identification fail? Once this "unrelated to $\xi$" source is broken, the instrument fails, and the estimate becomes biased again.</p>
+
+    <p>Bringing the second and third questions down to practice, an instrument must satisfy two conditions at once. One is relevance: the instrument really has to move price, which can be checked directly with the first-stage regression. The other is the exclusion restriction: the instrument must not influence demand by way of $\xi$, and this cannot be checked in the data and can only be argued from economics. Relevance is the easy gate to pass; the exclusion restriction is the hard one. The four mainstream instruments below all have the same answer to the first question, since they all identify the price coefficient; their differences lie entirely in the second and third questions: which "pushes price only, does not touch $\xi$" variation each brings, and under what circumstances each fails.</p>
+
+    <div class="table-scroll">
+    <table>
+      <thead>
+        <tr><th>Instrument type</th><th>Identifying logic</th><th>Threats to validity</th><th>Counterpart in platform data</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Cost shifters</strong></td>
+          <td>an exogenous variable that pushes cost only, not demand, raises price and is unrelated to $\xi$</td>
+          <td>fails if the cost factor also affects demand (for example, city density is both a delivery-cost proxy and a change in purchase frequency)</td>
+          <td>cloud-service and bandwidth cost, payment-channel fees, raw-material or exchange-rate shocks</td>
+        </tr>
+        <tr>
+          <td><strong>Hausman type</strong></td>
+          <td>the price of the same product in other markets reflects common cost while filtering out local demand shocks</td>
+          <td>when national demand shocks exist (national advertising, viral spread, industry trends), cross-market $\xi$ is correlated and the instrument fails</td>
+          <td>the price of the same app in other cities; the price of the same item at other regional warehouses</td>
+        </tr>
+        <tr>
+          <td><strong>BLP type</strong></td>
+          <td>the product characteristics of the firm and its rivals affect the Nash markup but not the product's own demand shock</td>
+          <td>if firms adjust characteristics in response to demand shocks, characteristics become endogenous; safer when characteristics are fixed in the short run</td>
+          <td>the number and specifications of rivals' features, the average attributes of the firm's other products</td>
+        </tr>
+        <tr>
+          <td><strong>differentiation IVs</strong></td>
+          <td>the "count of nearby rivals" in characteristic space measures local competitive intensity, often with stronger identifying power than the original BLP instruments</td>
+          <td>also fails when the characteristics themselves are endogenous; essentially still a refinement of the BLP instruments</td>
+          <td>the number of rivals close in attributes to the item, the crowdedness within a category</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+
+    <div class="intuition-box">
+      <div class="box-title">Intuition: a good instrument pushes price only, never touches taste</div>
+      Choosing an instrument is a search for a force that "pushes price only from the supply side and never touches taste from the demand side." When gasoline gets more expensive, it raises the transport and production costs of cars, and price rises accordingly, yet the price of gasoline does not directly change a consumer's fondness for a particular brand, so it is a good instrument. Conversely, a product that gets heavy media coverage both raises demand through word of mouth ($\xi$ rises) and may lower cost by scaling up sales, so both supply and demand move at once, the exclusion restriction breaks, and it is not a good instrument. The line between good and bad is always that exclusion restriction: it needs to be argued, not simply asserted.
+    </div>
+
+    <p><strong>Cost shifters</strong> are the most intuitive. The exogenous variation they supply (second question) comes from supply-side cost: find a factor that pushes cost only and does not touch demand, cost rises, price rises with it, and it has no reason to change consumer preferences, so $\xi$ does not budge. The counterpart in platform data is cloud-service and bandwidth cost, payment-channel fees, raw-material or exchange-rate shocks. When does it fail (third question)? When this "cost" factor also pushes from the demand side. Delivery density is a typical counterexample: it proxies delivery cost while also directly changing users' purchase frequency, doing double duty, and the exclusion restriction breaks then and there.</p>
+
+    <p><strong>The Hausman type</strong> borrows the price of the same product in other markets. The exogenous variation it supplies (second question) comes from cost shared across markets: the same app faces roughly the same server and licensing costs across cities, so prices elsewhere carry cost information along with them while filtering out the local demand shock. The controversy focuses entirely on the third question, and this is the most dangerous failure mode in the chapter. Once national demand fluctuations arise, say the platform runs the same ad across the whole network, some topic suddenly goes viral, or the entire industry rises and falls together, the $\xi$ of every city moves in unison, the premise that "prices elsewhere are unrelated to local $\xi$" collapses on the spot, and the instrument along with the estimate is scrapped. Nevo (2001) frankly acknowledged this when using it, mitigating it by focusing on mature brands and adding time dummies and demographics. Before using it, ask yourself one thing: in the setting at hand, is there a common demand shock transmitted across markets? On platforms with nationally uniform pricing and operations, this premise is often even more fragile than in traditional retail.</p>
+
+    <p><strong>BLP type and differentiation IVs</strong> use product characteristics, both those of the firm's other products and those of competitors. The exogenous variation they supply (second question) takes a detour, running through the supply-side pricing game: the more rivals there are in the market and the more similar they are to the product, the greater the competitive pressure on the product, and the lower the equilibrium price is pushed. This influence works entirely through price transmission, and rivals' characteristics themselves do not burrow into the product's own demand shock $\xi_{jm}$, so it satisfies the exclusion restriction, only this claim has to be defended, not asserted out of hand. When does it fail (third question)? When firms temporarily change characteristics to cater to demand shocks, the characteristics themselves become endogenous; in the short run the product line is fixed, so this kind of instrument is relatively safe. Differentiation IVs are a refined version of it, simply counting directly "how many rivals sit next to the product in characteristic space" and using that to measure local competitive intensity, usually with stronger identifying power than the original BLP instruments, though once characteristics are endogenous, they fail all the same.</p>
+
+    <div class="warn-box">
+      <div class="box-title">Pitfall: underidentification of $\theta_2$ disguises itself as "converged"</div>
+      <p style="margin-bottom:0">The identification of the nonlinear parameters $\theta_2$ is far more fragile than that of the price coefficient, and the two blocks $\Pi$ and $\Sigma$ each rely on their own variation. The demographic interaction $\Pi$ relies on differences in shares of the same kind of product across markets with different demographic compositions, that is, cross-market demographic variation; the random-coefficient standard deviation $\Sigma$ (of which $\sigma$ is a diagonal element) relies on the traces that substitution patterns leave in the data. Both need multi-market data to hold them up, and especially without cross-market demographic variation, $\Pi$ cannot be identified at all. Underidentification has several typical symptoms: the GMM objective is nearly flat over a wide range of $\sigma$, so a different starting point gives a very different estimate; $\sigma$ is estimated to the boundary (right against 0, or absurdly large); the standard errors are abnormally large. Hit any of these, and the optimizer will still "converge" and still spit out a point estimate, but that is only local curvature, not true identification at all. The way to diagnose is to plot a slice of the objective function along $\sigma$, re-estimate from several starting points, and run one more Monte Carlo parameter-recovery exercise (see Section 2.6 in Chapter 02). To grit your teeth and report a point estimate that simply cannot be identified is one of the most insidious and most fatal errors in structural papers. The original BLP instruments are weak in quite a few applications (Reynaert &amp; Verboven 2014 discuss this systematically), which is exactly why differentiation IVs and optimal instruments later became so popular.</p>
+    </div>
+
+    <div class="info-box">
+      <div class="box-title">Reporting instrument validity: first stage, exclusion restriction, and overidentification</div>
+      <p style="margin-bottom:0">Whether instruments can be trusted has to rest on evidence, not on glossing over it with "everyone in the literature uses them." When reporting, give the first-stage instrument strength in full (the F statistic for each group of instruments, whether it clears the Stock-Yogo critical value), and spell out for the exclusion restriction, type by type, why it holds up in your setting (the cost-side logic, product characteristics being fixed in the short run, and so on). For robustness, re-estimate with an alternative set of instruments and see whether the coefficients drift (for example, swap BLP-type instruments for Hausman-type ones and see how much the price coefficient moves); under overidentification, report the Hansen J test and make clear how it should be read. Instrument strength can be tested, but the exclusion restriction can only be argued; the sentence "this is standard practice" cannot by itself support its validity on your particular batch of data.</p>
+    </div>
+
+    <div class="takeaway-box">
+      <div class="box-title">Bottom Line</div>
+      The four instrument types each have their own identifying logic and weakness: cost shifters must beware of directly affecting demand, Hausman must beware of national demand shocks, and BLP type and differentiation IVs must beware of endogenous characteristics. Instrument strength can be tested, but the exclusion restriction can only be argued; underidentification of $\theta_2$ disguises itself as convergence and must be diagnosed proactively.
+    </div>
+
+    <!-- ============================================ 6.8 -->
+    <h2 id="nevo-case">6.8 Case Study: Nevo's Cereal Research</h2>
+
+    <p>With the principles of instruments fully worked out, next comes a complete application. Nevo's study of ready-to-eat breakfast cereal is a model of the BLP method, but there is a classic trap buried in it: when you cite it, you absolutely must keep the two papers apart.</p>
+
+    <div class="info-box">
+      <div class="box-title">First, keep them apart: Nevo (2000) and Nevo (2001) are not the same paper</div>
+      <p style="margin-bottom:0"><strong>Nevo (2000, Journal of Economics &amp; Management Strategy 9(4), 513–548)</strong> is a methods guide that demonstrates how to build the estimation pipeline, using the <strong>illustrative fake cereal data</strong> distributed with the code: 24 brands, 94 markets (47 cities × 2 quarters), with no empirical market-power conclusions in it whatsoever. <strong>Nevo (2001, Econometrica 69(2), 307–342)</strong> is the empirical paper, using real IRI supermarket scanner data: 25 brands × up to 65 cities × 20 quarters (1988–1992), for 27,862 observations in total. The two share the same random-coefficients logit method, but the data, sample size, and conclusions belong to the 2001 paper alone. Treating the 94-market teaching data as an empirical sample is a misattribution that crops up again and again in the literature.</p>
+    </div>
+
+    <p>Everything below comes from the empirical part of Nevo (2001). It has three methodological highlights, each worth spelling out.</p>
+
+    <h3>Brand dummies absorb $\xi_j$</h3>
+
+    <p>This is the core move by which Nevo improves on his predecessors. He sets a dummy variable for each brand, pulling the portion of unobserved quality that does not vary with the market at the brand level (brand loyalty, reputation, that is, $\xi_j$) wholesale into the fixed effects. This way, the error in mean utility is left with only the city-quarter-level deviation $\Delta\xi_{jt}$:</p>
+
+    <div class="formula-box">
+      <div class="formula-title">Mean utility after brand fixed effects</div>
+      <div class="formula-math">$$\delta_{jt} = x_j'\bar\beta - \alpha p_{jt} + \underbrace{\xi_j}_{\text{absorbed by brand FE}} + \underbrace{\Delta\xi_{jt}}_{\text{needs IV}}$$</div>
+      <div class="formula-explain">
+        <table>
+          <tr><td class="var-researcher">$\xi_j$</td><td>time-invariant unobserved quality at the brand level, absorbed wholesale by the brand dummies</td></tr>
+          <tr><td class="var-researcher">$\Delta\xi_{jt}$</td><td>the city-quarter-level demand shock, the true target that the instrument must handle</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <p>The benefit is real. The correlation between price and brand-level quality is fully pinned down by the fixed effects, and the remaining endogeneity lives only at the market level, so the instrument's target shrinks from "the whole $\xi_{jt}$" to "$\Delta\xi_{jt}$." The coefficients on brand characteristics are then recovered from the coefficients on the brand dummies by minimum-distance methods. This move is now standard practice in demand estimation on aggregate data, and in writing it is best to note explicitly: after adding brand fixed effects, the instrument targets <strong>market-level</strong> endogeneity, not brand-level.</p>
+
+    <h3>Demographic interactions and results</h3>
+
+    <p>Nevo takes demographics such as log income and log age and interacts them with product attributes, characterizing substitution structures like "high-income households prefer low sugar, households with children prefer high sugar." The core quantitative results are as follows, all copied verbatim from the original tables of Nevo (2001):</p>
+
+    <div class="table-scroll">
+    <table>
+      <thead>
+        <tr><th>Behavioral assumption</th><th>Implied median PCM $(p-mc)/p$</th><th>Comparison with observed gross markup</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>single-product firm pricing</td><td>about 35%–37%</td><td>below observed</td></tr>
+        <tr><td><strong>current multiproduct Bertrand-Nash</strong></td><td><strong>about 42%–44%</strong></td><td>consistent with observed, about 46%</td></tr>
+        <tr><td>25-brand joint ownership (collusion)</td><td>about 72%–75%</td><td>far above observed</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <p>The median own-price elasticity under the full model is $-2.88$ (mean $-2.95$, standard deviation $0.79$); this is the main result to cite, rather than using the extreme values under the logit specification to stand in for it. The chain of reasoning is clear: the observed accounting gross markup of about 46% falls right beside current multiproduct Bertrand-Nash (42%–44%) and far from the collusion level (72%–75%). On this basis one can judge that <strong>pricing in the cereal industry is consistent with non-collusive behavior</strong>, and that markups that high are produced by product differentiation layered on multiproduct firms, not by price collusion. This conclusion overturns the older view that "the cereal industry prices almost as if colluding."</p>
+
+    <div class="info-box">
+      <div class="box-title">A methodological demonstration: behavioral assumptions can be discriminated without solving the supply side</div>
+      <p style="margin-bottom:0">Nevo (2001) did not jointly estimate the supply side as BLP did, but first estimated demand, then used the first-order conditions to back out the implied markup under each of several behavioral assumptions and compared it against the observed markup. This approach is both concise and powerful: as long as demand is estimated credibly, the FOC can compute the markup under each scenario of "single-product pricing, multiproduct Nash, collusion," and whichever is closest to reality identifies market behavior, without ever having to estimate cost parameters. He also made clear that these comparisons are about "discriminating among behavioral models," not about predicting the policy consequence of "what would actually happen if they were broken up into single-product firms."</p>
+    </div>
+
+    <div class="takeaway-box">
+      <div class="box-title">Bottom Line</div>
+      Nevo (2001) uses brand fixed effects to absorb $\xi_j$, shrinking the instrument's target to the market-level $\Delta\xi_{jt}$; the median elasticity is $-2.88$, and the observed markup of about 46% falls near multiproduct Nash (42%–44%) rather than collusion (72%–75%), on which basis cereal pricing is judged non-collusive. Do not treat the 2000 teaching fake data as the source of these conclusions.
+    </div>
+
+    <!-- ============================================ 6.9 -->
+    <h2 id="supply-side">6.9 The Supply Side and Marginal Cost</h2>
+
+    <p>Estimating demand alone cannot answer questions like "is there market power at all" or "how do prices resettle after a merger." To answer them, the supply side has to be added. Assume multiproduct firms price by Bertrand-Nash. When a firm sets the price of every product it owns, it internalizes the substitution among them: raising the price of product $j$ loses some demand, but among the users lost, some switch to the same firm's product $k$, and this gain has to be counted in as well. Written in matrix form, the equilibrium first-order condition is very compact:</p>
+
+    <div class="formula-box">
+      <div class="formula-title">Multiproduct Bertrand-Nash first-order condition</div>
+      <div class="formula-math">$$s(p) + \Omega(p)\,(p - mc) = 0 \qquad\Longrightarrow\qquad p - mc = -\,\Omega(p)^{-1} s(p)$$</div>
+      <div class="formula-explain">
+        <table>
+          <tr><td class="var-observed">$s(p)$</td><td>the share vector (a function of price $p$)</td></tr>
+          <tr><td class="var-estimated">$\Omega(p)$</td><td>the ownership × demand-derivative matrix: for same-firm products $\Omega_{jk}=\partial s_k/\partial p_j$ (diagonal elements negative), 0 for different firms</td></tr>
+          <tr><td class="var-researcher">$mc$</td><td>marginal cost, backed out from this equation</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <p>This equation has to be read backward. Demand estimation delivers every element of the ownership matrix $\Omega$; against the observed prices and shares, one can directly solve for the markup $p - mc$, and thence obtain marginal cost $mc = p + \Omega(p)^{-1}s(p)$. Regress $mc$ on cost drivers once more, and the cost function follows. BLP (1995) is exactly how demand and supply were jointly estimated, and its set of representative results is worth committing to memory: all 2,217 model/year observations (corresponding to 997 distinct models over 1971–1990) are elastic, the average markup in 1990 is about <strong>3,753 dollars</strong> and the average markup rate about <strong>24%</strong>, the markup rises almost monotonically with price, and the absolute markups on luxury cars (Lexus, BMW) far exceed those on compacts. These numbers are the foundation for later pricing counterfactuals and merger simulations.</p>
+
+    <div class="warn-box">
+      <div class="box-title">Correction: BLP (1995) did not run a tariff counterfactual</div>
+      <p style="margin-bottom:0">One erroneous claim circulates widely: "BLP used this model to simulate the effect of a U.S. import tariff on Japanese cars." In fact the original BLP (1995) paper has <strong>no standalone policy counterfactual at all</strong>; what it delivers is demand and cost parameters, the elasticity matrix, markups, and marginal costs, and Section 8 merely lists potential applications. The genuine trade-policy evaluation appears in the sister paper <strong>Berry, Levinsohn &amp; Pakes (1999, American Economic Review 89(3), 400–430)</strong>, which performed a welfare analysis of voluntary export restraints (VER). So for the automobile trade-policy counterfactual, cite the 1999 paper; when discussing the 1995 paper, speak only of parameters, elasticities, and markups, and do not pin on it a counterfactual it never ran. In addition, if $\Omega$ is near-singular (extremely high product differentiation with few substitutes), the marginal cost backed out will be very unstable, which is another thing to watch for when backing out the supply side.</p>
+    </div>
+
+    <div class="takeaway-box">
+      <div class="box-title">Bottom Line</div>
+      The supply side writes the markup as $p-mc=-\Omega^{-1}s$ via the Bertrand-Nash first-order condition, backing out marginal cost from the already-estimated demand. BLP (1995) jointly estimated demand and supply, with an average markup in 1990 of about 3,753 dollars, about 24%; it itself contains no policy counterfactual, and the VER evaluation is in BLP (1999).
+    </div>
+
+    <!-- ============================================ 6.10 -->
+    <h2 id="pyblp">6.10 PyBLP in Practice</h2>
+
+    <p>The hand calculations and formulas have made the principles clear; when it comes to actual estimation, hand it to mature software. PyBLP is the de facto standard library for BLP estimation, with the contraction mapping, GMM, elasticities, and counterfactuals all packaged for you. Its methodology and best practices are in Conlon &amp; Gortmaker (2020, RAND Journal of Economics 51(4), 1108–1161). Below is a core skeleton: read in product and consumer data, define the linear and random coefficients, set up integration and optimization, and after solving, call the elasticity and counterfactual interfaces.</p>
+
+    <pre><code>import pyblp
+import numpy as np
+import pandas as pd
+
+pyblp.options.verbose = False
+product_data = pd.read_csv("products.csv")   # market_ids, product_ids, firm_ids,
+                                             # shares, prices, x1, x2, and instrument columns
+agent_data   = pd.read_csv("agents.csv")     # market_ids, income, age... (demographics)
+
+# 1. Linear part X1 (with absorbed market fixed effects) and random-coefficient part X2
+X1 = pyblp.Formulation("0 + prices + x1 + x2", absorb="C(market_ids)")
+X2 = pyblp.Formulation("1 + prices + x1")            # these coefficients carry random coefficients
+agent_formulation = pyblp.Formulation("0 + income + age")
+integration = pyblp.Integration("halton", size=1000, specification_options={"seed": 0})  # numerical integration: draw over consumers
+
+problem = pyblp.Problem(
+    product_formulations=(X1, X2),
+    agent_formulation=agent_formulation,
+    product_data=product_data,
+    agent_data=agent_data,
+    integration=integration,                 # draw once and build; reuse the same draws throughout the outer search
+)
+
+# 2. Inner contraction: tolerance tightened to 1e-14, accelerated with SQUAREM; outer optimization with BFGS
+iteration   = pyblp.Iteration("squarem", {"atol": 1e-14})
+optimization = pyblp.Optimization("bfgs", {"gtol": 1e-6})
+
+# 3. Solve (two-step GMM): give starting points for the random-coefficient std dev sigma and the demographic interaction pi
+results = problem.solve(
+    sigma=np.diag([0.5, 0.5, 0.3]),          # starting random-coefficient std devs for intercept, price, x1
+    pi=np.zeros((3, 2)),                      # random coefficients × (income, age)
+    iteration=iteration,
+    optimization=optimization,
+    method="2s",
+)
+print(results)
+
+# 4. Elasticities, markups, marginal costs, counterfactuals
+elasticities = results.compute_elasticities()          # own- and cross-price elasticities
+diversion    = results.compute_diversion_ratios()      # where substitution goes
+markups      = results.compute_markups()               # backed out from the supply-side FOC
+costs        = results.compute_costs()
+new_prices   = product_data["prices"].values * 1.10    # counterfactual of a 10% across-the-board price increase
+cf_shares    = results.compute_shares(prices=new_prices)</code></pre>
+
+    <div class="success-box">
+      <div class="box-title">A best-practice checklist for BLP estimation</div>
+      <ul style="margin-bottom:0">
+        <li><strong>absorb fixed effects</strong>: using <code>absorb</code> to soak up fixed effects speeds things up and also folds the unobserved quality at the corresponding level into the intercept. To absorb Nevo's kind of product- or brand-level $\xi_j$, use brand or product fixed effects; market fixed effects instead absorb the common term at the market level, and the two are at different levels.</li>
+        <li><strong>inner tolerance $10^{-14}$</strong>: <code>Iteration("squarem", {"atol": 1e-14})</code>, and never carry over the loose default tolerance.</li>
+        <li><strong>numerical integration must be accurate enough</strong>: prefer quasi-MC draws like quadrature or Halton, both steadier than pure Monte Carlo; if pure Monte Carlo is used, be sure to draw enough points, fix the random seed, and reuse the same draws throughout the entire outer search, otherwise simulation error seeps into $\theta_2$ and muddies identification (Conlon &amp; Gortmaker 2020).</li>
+        <li><strong>multiple starting points</strong>: nonlinear GMM has multiple local optima, so re-estimate from several different sigma starting points and check whether they converge to the same place.</li>
+        <li><strong>sigma boundary check</strong>: if some $\sigma$ shrinks to 0 or takes an excessively large value, it usually means that dimension is underidentified, and you should return to Section 6.7 to diagnose rather than force a report.</li>
+        <li><strong>two-step optimal instruments</strong>: first estimate one round with basic instruments, then use <code>compute_optimal_instruments()</code> to generate approximately optimal instruments and re-estimate, improving the identification and efficiency of $\theta_2$.</li>
+        <li><strong>zero shares</strong>: a share of 0 for a product in a market makes $\ln(0)$ undefined, so you need to merge markets, adjust the definition, or switch to a specification that can handle zero shares.</li>
+      </ul>
+    </div>
+
+    <div class="takeaway-box">
+      <div class="box-title">Bottom Line</div>
+      PyBLP has already packaged the entire pipeline, and the researcher's job is to get the specification and discipline right: absorb fixed effects, inner tolerance $10^{-14}$, multiple starting points, check the sigma boundary, two-step optimal instruments. Take Conlon &amp; Gortmaker (2020) as the authority on methodology.
+    </div>
+
+    <!-- ============================================ 6.11 -->
+    <h2 id="counterfactuals">6.11 Counterfactuals</h2>
+
+    <p>Once demand (and, where necessary, supply along with it) has been estimated, you can simulate scenarios that never actually happened. Counterfactuals of the BLP kind fall roughly into three tiers, each harder than the last, and the most common mistake nearly always trips on the same point: whether or not to re-solve the equilibrium.</p>
+
+    <div class="table-scroll">
+    <table>
+      <thead>
+        <tr><th>Counterfactual type</th><th>Method essentials</th><th>Pitfall</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Price change</strong></td>
+          <td>change price, recompute shares and consumer surplus with the estimated demand</td>
+          <td>if price is set endogenously by firms, moving only demand without re-solving the pricing equilibrium understates the pass-through</td>
+        </tr>
+        <tr>
+          <td><strong>Product entry / exit</strong></td>
+          <td>add or remove a product from the choice set, recompute and reallocate the shares of the remaining products</td>
+          <td>under homogeneous logit the reallocation is strictly proportional (IIA), distorting the substitution pattern</td>
+        </tr>
+        <tr>
+          <td><strong>Platform commission / merger</strong></td>
+          <td>change ownership or cost structure, and use the supply-side FOC to <strong>re-solve</strong> the new Nash equilibrium prices</td>
+          <td>ignoring the re-solving of equilibrium and simply keeping the old prices is the most common error in merger simulation</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+
+    <p>The third tier cannot do without re-solving the supply-side equilibrium: a merger suddenly puts more products in one firm's hands, and it internalizes the new cross-price effects, so prices rise accordingly, and you have to use the first-order condition of Section 6.9 to solve for the new equilibrium prices $p^\ast$ before computing welfare. Moving only demand without re-solving pricing will systematically understate the price increase a merger brings. The first two tiers are relatively simple if price is exogenous. Below we use the app-store market of Section 6.3 to demonstrate the second tier, laying out the IIA distortion in the open.</p>
+
+    <div class="example-box">
+      <div class="example-title">Demonstration: reallocation of shares after delisting "Pro Master" <span class="demo-badge">illustrative data</span></div>
+      <p>Take the same market of five apps from Section 6.3. Suppose the platform delists the most expensive flagship, app D Pro Master (original share 0.12). Under homogeneous logit, removing a product apportions its share to all remaining options exactly proportionally by IIA, with a scaling factor of $1/(1-S_D) = 1/0.88 = 1.136$. The new share of each remaining option (including the outside option) is $s_k' = S_k/(1-S_D)$.</p>
+      <div class="table-scroll">
+      <table>
+        <thead>
+          <tr><th>Option</th><th>Original share</th><th>New share</th><th>Share of D's lost demand absorbed</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>C Basic Tools</td><td>0.05</td><td>0.0568</td><td>5.7%</td></tr>
+          <tr><td>A Minimal Editor</td><td>0.06</td><td>0.0682</td><td>6.8%</td></tr>
+          <tr><td>B All-in-One Camera</td><td>0.08</td><td>0.0909</td><td>9.1%</td></tr>
+          <tr><td>E Creator Suite</td><td>0.10</td><td>0.1136</td><td>11.4%</td></tr>
+          <tr><td>outside (no download)</td><td>0.59</td><td>0.6705</td><td>67.0%</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <p>The problem is visible at a glance. Of the demand D loses, <strong>67% is apportioned to "not downloading any app at all,"</strong> and only 11.4% flows to the other high-end app E. But in reality, users willing to pay 30 yuan for a professional flagship are most likely to switch to the similarly positioned E; they would hardly troop back en masse to not consuming at all. IIA gives such an absurd reallocation because substitution in homogeneous logit looks only at the size of the original shares: the outside option has the largest share, so it draws off the most, entirely disregarding the fact that "D and E were each other's closest substitutes."</p>
+      <p>Random coefficients fix precisely this defect. Once price sensitivity and taste for "professional-grade" are allowed to vary from person to person, high-end users are closer to E in utility, and when D is delisted they flock more toward E rather than the outside option. For the same delisting counterfactual, homogeneous logit and BLP give conclusions that differ by a wide margin, and only BLP's substitution pattern matches intuition. In the end, whether a counterfactual is credible is decided, at last, by whether the substitution pattern is credible.</p>
+    </div>
+
+    <div class="takeaway-box">
+      <div class="box-title">Bottom Line</div>
+      Among the three counterfactual types, mergers and commissions must re-solve the equilibrium with the supply-side FOC, and omitting this step understates the price increase. The delisting reallocation under homogeneous logit is strictly proportional (67% falls back to the outside option in the example), distorted to the point of incredibility, and this is the very reason random coefficients exist.
+    </div>
+
+    <!-- ============================================ 6.12 -->
+    <h2 id="advanced-topics">6.12 Advanced Topics at a Glance</h2>
+
+    <p>The main thread of this chapter ends here. The four directions below are common extensions in the literature, each sketched in a few paragraphs to place it, with the details left to the specialized literature.</p>
+
+    <h3>Posterior inference of individual-level parameters</h3>
+    <p>What mixed logit estimates is the population's taste distribution $\hat\theta$. If you further want to know the preferences $\beta_n$ of a particular consumer $n$, you can take the Bayesian route: treat the population distribution as the prior and this person's observed choices as the likelihood, obtaining the conditional posterior $h(\beta_n \mid y_n, x_n, \hat\theta)$. In practice one approximates it with the simulated conditional mean $\bar\beta_n = \sum_r w_n^r \beta^r$, where the weight $w_n^r$ is proportional to the likelihood of the individual's choices under that draw. The more observations of the individual, the more concentrated the weights and the closer the posterior sits to this person; with very few observations, the posterior retreats to the prior. It is very useful in personalized recommendation and heterogeneous treatment effects, but keep one thing in mind: what you recover is the "individual posterior given the population distribution," not the individual's true value obtained from nothing.</p>
+
+    <h3>Hierarchical Bayesian estimation</h3>
+    <p>MLE gives point estimates; Hierarchical Bayes instead hands you the complete posterior of both population and individual parameters directly, using MCMC (Gibbs and Metropolis-Hastings) to approximate the integrals. Its strength is especially clear on small samples and sparse data: the prior acts as regularization, steadying an otherwise rugged, hard-to-traverse likelihood surface; the individual posteriors also come naturally as a byproduct, without having to proceed in two steps as in the frequentist approach. The cost is that sampling is somewhat slow and convergence diagnostics are required. It is widely used in marketing and conjoint analysis, and a systematic treatment is in Rossi, Allenby &amp; McCulloch (2005).</p>
+
+    <h3>EM and latent-class models</h3>
+    <p>If heterogeneity is itself discrete (consumers fall into $C$ unseen classes), then a latent-class logit $P(y_n) = \sum_c \pi_c P(y_n\mid\beta_c)$ is more appropriate than continuous random coefficients. The EM algorithm is especially natural here: the E step computes each consumer's posterior probability of belonging to each class, and the M step is a weighted logit MLE using those posterior probabilities as weights, the two alternating back and forth with the likelihood monotonically nondecreasing. Compared with brute-force maximization of that mixture likelihood, every EM step is a standard logit, steadier and easier to write, at the cost that it can only handle discrete heterogeneity and may stop at a local optimum. It can be seen as the discrete version of continuous mixed logit.</p>
+
+    <h3>Micro moments: connecting individual data into BLP</h3>
+    <p>The original moment condition of BLP (1995) is the product-market-level $E[Z'\xi]=0$, which consumes only aggregate shares. If the researcher additionally holds individual-level information (who bought what, the buyers' demographic profiles), micro moments can be added, for example "the propensity of high-income people to buy a certain kind of product." Individual moments have far stronger identifying power for $\theta_2$ (especially the demographic interaction $\Pi$) than pure aggregate moments, and can tighten the heterogeneity parameters substantially. This route was opened up by Petrin (2002) and Berry, Levinsohn &amp; Pakes (2004), is the mainstream way of combining aggregate and micro data, and is exactly the technical interface by which Chapter 08 connects platform individual logs into structural models.</p>
+
+    <!-- ============================================ 6.13 -->
+    <h2 id="misconceptions">6.13 Common Pitfalls</h2>
+
+    <div class="table-scroll">
+    <table>
+      <thead>
+        <tr><th>Pitfall</th><th>Why it's wrong</th><th>What to do instead</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>An inner contraction tolerance of $10^{-6}$ is good enough</td>
+          <td>measurement error in $\delta$ leaks into the outer layer, $\theta_1$ is biased, and the GMM gradient is unstable</td>
+          <td>tolerance at least $10^{-14}$ (Dubé, Fox &amp; Su 2012), with a $10^{-12}/10^{-16}$ robustness check (Section 6.5)</td>
+        </tr>
+        <tr>
+          <td>Treating the results from Nevo's (2000) fake cereal data as empirical conclusions</td>
+          <td>2000 is a methods guide using 94-market teaching fake data; the empirical conclusions are only in 2001</td>
+          <td>for empirics cite Nevo (2001): 25 brands × ≤65 cities × 20 quarters, 27,862 observations (Section 6.8)</td>
+        </tr>
+        <tr>
+          <td>Using a Hausman instrument without discussing common demand shocks</td>
+          <td>when national demand shocks exist, cross-market $\xi$ is correlated and the exclusion restriction breaks</td>
+          <td>argue the independence of local demand shocks, or switch to cost / BLP-type instruments for robustness (Section 6.7)</td>
+        </tr>
+        <tr>
+          <td>Reporting a point estimate when $\theta_2$ is unidentified</td>
+          <td>when the objective is flat and $\sigma$ is estimated to the boundary, convergence reflects only local curvature, not identification</td>
+          <td>plot slices of the objective, re-estimate from multiple starting points, Monte Carlo parameter recovery (Section 6.7)</td>
+        </tr>
+        <tr>
+          <td>Regressing $\delta$ on $x,p$ directly by OLS without instruments</td>
+          <td>price is endogenous, and the OLS price coefficient is biased toward zero or even turns positive</td>
+          <td>after inversion it is still an IV problem, and the $\delta$ regression must use instruments (Sections 6.3, 6.6)</td>
+        </tr>
+        <tr>
+          <td>Saying "BLP (1995) simulated the import tariff on Japanese cars"</td>
+          <td>the original BLP (1995) paper has no policy counterfactual and delivers only parameters and elasticities</td>
+          <td>for trade-policy / VER counterfactuals cite Berry, Levinsohn &amp; Pakes (1999, AER) (Section 6.9)</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+
+    <!-- ============================================ 6.14 -->
+    <h2 id="summary">6.14 Chapter Summary</h2>
+
+    <p>This chapter takes on price endogeneity under aggregate data. The root of the trouble is this: the price-setter sees quality $\xi_j$ that the researcher does not, price is positively correlated with $\xi_j$, and the OLS price coefficient is therefore biased toward zero or even flips positive. The Berry (1994) inversion turns the nonlinear logit share into a linear equation $\delta_j = \ln S_j - \ln S_0$, restores $\xi_j$ to a regression residual, and 2SLS can be used, only it carries IIA along with it. BLP (1995) adds random coefficients to loosen IIA, at the cost that the inversion loses its closed form and switches to a contraction mapping to solve $\delta$ numerically, with the tolerance tightened to $10^{-14}$ to avoid contaminating the outer layer. The whole estimation is a nested pipeline: the outer layer searches the nonlinear parameters $\theta_2$, the inner layer solves for $\delta$, an IV regression extracts the linear parameters $\theta_1$, the residual $\xi$ is separated out, and the moment condition $E[Z'\xi]=0$ builds the GMM objective. Credibility comes to rest, at last, on the instruments; cost shifters, Hausman type, BLP type, and differentiation IVs each have their own identifying logic and shortcomings, and the exclusion restriction can only be argued, not asserted out of hand.</p>
+
+    <p>The case study brings the method down to earth. Nevo (2001) uses brand fixed effects to absorb $\xi_j$, shrinking the instrument's target to the market-level $\Delta\xi_{jt}$; the median elasticity is $-2.88$, and the observed markup of about 46% falls beside multiproduct Nash (42%–44%) rather than collusion (72%–75%), on which basis cereal pricing is judged non-collusive, and it also demonstrates in passing that behavioral assumptions can be discriminated using only the FOC without estimating the supply side. The supply side uses the Bertrand-Nash first-order condition to back out marginal cost from demand, and BLP (1995) jointly estimated demand and supply, with an average markup of about 24%; it itself contains no policy counterfactual, and the VER evaluation is in BLP (1999). Among counterfactuals, mergers and commissions must re-solve the equilibrium, and the proportional reallocation of homogeneous logit is distorted, which loops back once more to the motivation for random coefficients. In the next chapter, we push the planning horizon from static to dynamic, to handle forward-looking decisions like switching costs, learning, and durable goods.</p>
+
+    <!-- ============================================ readings -->
+    <h2 id="readings">Further Reading</h2>
+
+    <h4>Direct basis for this chapter</h4>
+    <ul>
+      <li>Berry, S. T. (1994). Estimating discrete-choice models of product differentiation. <em>RAND Journal of Economics</em>, <em>25</em>(2), 242–262. <a href="https://doi.org/10.2307/2555829">https://doi.org/10.2307/2555829</a> (the original paper on the inversion)</li>
+      <li>Berry, S. T., Levinsohn, J., &amp; Pakes, A. (1995). Automobile prices in market equilibrium. <em>Econometrica</em>, <em>63</em>(4), 841–890. <a href="https://doi.org/10.2307/2171802">https://doi.org/10.2307/2171802</a> (the main BLP paper, joint estimation of demand and supply)</li>
+      <li>Nevo, A. (2000). A practitioner's guide to estimation of random-coefficients logit models of demand. <em>Journal of Economics &amp; Management Strategy</em>, <em>9</em>(4), 513–548. <a href="https://doi.org/10.1111/j.1430-9134.2000.00513.x">https://doi.org/10.1111/j.1430-9134.2000.00513.x</a> (methods guide, teaching fake data: 24 brands, 94 markets)</li>
+      <li>Nevo, A. (2001). Measuring market power in the ready-to-eat cereal industry. <em>Econometrica</em>, <em>69</em>(2), 307–342. <a href="https://doi.org/10.1111/1468-0262.00194">https://doi.org/10.1111/1468-0262.00194</a> (empirical paper, real IRI data, 27,862 observations)</li>
+      <li>Train, K. E. (2009). <em>Discrete choice methods with simulation</em> (2nd ed.). Cambridge University Press. <a href="https://doi.org/10.1017/CBO9780511805271">https://doi.org/10.1017/CBO9780511805271</a> (Chapter 13 on endogeneity, Chapter 11 on individual conditional distributions)</li>
+    </ul>
+
+    <h4>Numerical implementation and instruments</h4>
+    <ul>
+      <li>Dubé, J.-P., Fox, J. T., &amp; Su, C.-L. (2012). Improving the numerical performance of static and dynamic aggregate discrete choice random coefficients demand estimation. <em>Econometrica</em>, <em>80</em>(5), 2231–2267. <a href="https://doi.org/10.3982/ECTA8585">https://doi.org/10.3982/ECTA8585</a> (inner tolerance discipline)</li>
+      <li>Conlon, C., &amp; Gortmaker, J. (2020). Best practices for differentiated products demand estimation with PyBLP. <em>RAND Journal of Economics</em>, <em>51</em>(4), 1108–1161. <a href="https://doi.org/10.1111/1756-2171.12352">https://doi.org/10.1111/1756-2171.12352</a></li>
+      <li>Reynaert, M., &amp; Verboven, F. (2014). Improving the performance of random coefficients demand models: The role of optimal instruments. <em>Journal of Econometrics</em>, <em>179</em>(1), 83–98. <a href="https://doi.org/10.1016/j.jeconom.2013.12.001">https://doi.org/10.1016/j.jeconom.2013.12.001</a></li>
+      <li>Gandhi, A., &amp; Houde, J.-F. (2019). <em>Measuring substitution patterns in differentiated-products industries</em> (NBER Working Paper No. 26375). National Bureau of Economic Research. <a href="https://doi.org/10.3386/w26375">https://doi.org/10.3386/w26375</a> (differentiation IVs)</li>
+      <li>Varadhan, R., &amp; Roland, C. (2008). Simple and globally convergent methods for accelerating the convergence of any EM algorithm. <em>Scandinavian Journal of Statistics</em>, <em>35</em>(2), 335–353. <a href="https://doi.org/10.1111/j.1467-9469.2007.00585.x">https://doi.org/10.1111/j.1467-9469.2007.00585.x</a> (SQUAREM acceleration)</li>
+    </ul>
+
+    <h4>Counterfactuals, identification, and extensions</h4>
+    <ul>
+      <li>Berry, S. T., Levinsohn, J., &amp; Pakes, A. (1999). Voluntary export restraints on automobiles: Evaluating a trade policy. <em>American Economic Review</em>, <em>89</em>(3), 400–430. <a href="https://doi.org/10.1257/aer.89.3.400">https://doi.org/10.1257/aer.89.3.400</a> (the correct source for the trade-policy counterfactual)</li>
+      <li>Petrin, A. (2002). Quantifying the benefits of new products: The case of the minivan. <em>Journal of Political Economy</em>, <em>110</em>(4), 705–729. <a href="https://doi.org/10.1086/340779">https://doi.org/10.1086/340779</a> (micro moments)</li>
+      <li>Berry, S. T., Levinsohn, J., &amp; Pakes, A. (2004). Differentiated products demand systems from a combination of micro and macro data: The new car market. <em>Journal of Political Economy</em>, <em>112</em>(1), 68–105. <a href="https://doi.org/10.1086/379939">https://doi.org/10.1086/379939</a></li>
+      <li>Berry, S. T., &amp; Haile, P. A. (2021). Foundations of demand estimation. In K. Ho, A. Hortaçsu, &amp; A. Lizzeri (Eds.), <em>Handbook of industrial organization</em> (Vol. 4, pp. 1–62). Elsevier. <a href="https://doi.org/10.1016/bs.hesind.2021.11.001">https://doi.org/10.1016/bs.hesind.2021.11.001</a> (nonparametric identification)</li>
+      <li>Rossi, P. E., Allenby, G. M., &amp; McCulloch, R. (2005). <em>Bayesian statistics and marketing</em>. John Wiley &amp; Sons. <a href="https://doi.org/10.1002/0470863692">https://doi.org/10.1002/0470863692</a> (hierarchical Bayes)</li>
+    </ul>
+
+    <footer class="page-footer">
+      From Choices to Counterfactuals: Structural Estimation for Digital Platform Research · 06 Endogeneity and BLP
+    </footer>
+
+  </main>
+</div>
+
+<script defer src="assets/katex/katex.min.js"></script>
+<script defer src="assets/katex/auto-render.min.js"></script>
+<script defer src="assets/notes.js"></script>
+</body>
+</html>
+
+
+
+
+
+
+
+

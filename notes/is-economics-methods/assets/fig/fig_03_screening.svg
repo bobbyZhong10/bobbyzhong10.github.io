@@ -1,0 +1,27 @@
+<svg viewBox="0 0 700 320" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, 'Noto Sans SC', sans-serif">
+  <line x1="70" y1="40" x2="70" y2="280" stroke="#94a1b2" stroke-width="1.5"/>
+  <line x1="70" y1="280" x2="640" y2="280" stroke="#94a1b2" stroke-width="1.5"/>
+  <text x="70" y="30" text-anchor="start" font-size="13" fill="#64748b">payment t</text>
+  <text x="640" y="300" text-anchor="end" font-size="13" fill="#64748b">allocation q →</text>
+
+  <polyline fill="none" stroke="#c53030" stroke-width="2.2" points="79.2,253.6 106.9,226.9 134.6,209.8 162.4,196.0 190.1,184.3 217.8,173.8 245.6,164.2 273.3,155.4 301.0,147.2 328.8,139.5 356.5,132.1 384.3,125.1 412.0,118.4 439.7,112.0 467.5,105.8 495.2,99.9 522.9,94.1 550.7,88.5 578.4,83.0 606.1,77.7 620.0,75.1"/>
+  <text x="600" y="70" text-anchor="end" font-size="12" fill="#c53030">high type IR: t = θH·V(q)</text>
+
+  <polyline fill="none" stroke="#c53030" stroke-width="1.5" stroke-dasharray="5 4" points="120.8,270.3 162.4,248.6 204.0,231.5 245.6,216.8 287.2,203.8 328.8,192.0 370.4,181.2 412.0,171.0 453.6,161.5 495.2,152.4 536.8,143.8 578.4,135.6 620.0,127.7"/>
+
+  <polyline fill="none" stroke="#7c7f46" stroke-width="2.2" points="79.2,265.3 106.9,250.5 134.6,241.0 162.4,233.4 190.1,226.8 217.8,221.0 245.6,215.7 273.3,210.8 301.0,206.2 328.8,201.9 356.5,197.8 384.3,194.0 412.0,190.2 439.7,186.7 467.5,183.2 495.2,179.9 522.9,176.7 550.7,173.6 578.4,170.6 606.1,167.6 620.0,166.2"/>
+  <text x="612" y="163" text-anchor="end" font-size="12" fill="#5a5d33">low type IR</text>
+
+  <line x1="253.3" y1="214.3" x2="253.3" y2="280" stroke="#cfccc4" stroke-width="1.2" stroke-dasharray="4 4"/>
+  <line x1="482.5" y1="102.6" x2="482.5" y2="280" stroke="#cfccc4" stroke-width="1.2" stroke-dasharray="4 4"/>
+  <text x="253.3" y="296" text-anchor="middle" font-size="12" fill="#5a5d33">q_L (distorted down)</text>
+  <text x="482.5" y="296" text-anchor="middle" font-size="12" fill="#c53030">q_H (efficient qty)</text>
+
+  <circle cx="253.3" cy="214.3" r="4.5" fill="#5a5d33"/>
+  <text x="245" y="207" text-anchor="end" font-size="12" fill="#5a5d33">A</text>
+  <circle cx="482.5" cy="155.1" r="4.5" fill="#c53030"/>
+  <text x="491" y="152" text-anchor="start" font-size="12" fill="#c53030">B</text>
+
+  <line x1="482.5" y1="102.6" x2="482.5" y2="155.1" stroke="#1a365d" stroke-width="3"/>
+  <text x="492" y="132" text-anchor="start" font-size="12" fill="#1a365d">information rent</text>
+</svg>

@@ -1,0 +1,1696 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Panel Data &amp; Dynamic Panels | Foundations of Information Systems Economics</title>
+  <link rel="stylesheet" href="assets/style.css" />
+  <script defer="" src="assets/katex/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <link rel="stylesheet" href="assets/katex/katex.min.css" />
+</head>
+<body>
+<div class="page-wrapper">
+  <nav class="sidebar">
+    <div class="sidebar-title">Foundations of Information Systems Economics</div>
+    <div class="sidebar-subtitle">Theory · Methods · Applications</div>
+    <div class="toc-section-label">On this page</div>
+    <div class="toc">
+<ul>
+<li><a href="#introduction" id="toc-introduction">Introduction</a></li>
+<li><a href="#two-wrong-numbers-that-straddle-the-truth"
+id="toc-two-wrong-numbers-that-straddle-the-truth">1 Two Wrong Numbers
+That Straddle the Truth</a></li>
+<li><a href="#the-economic-model-and-the-estimand"
+id="toc-the-economic-model-and-the-estimand">2 The Economic Model and
+the Estimand</a></li>
+<li><a
+href="#identification-the-fixed-effects-gift-and-the-nickell-curse"
+id="toc-identification-the-fixed-effects-gift-and-the-nickell-curse">3
+Identification: The Fixed-Effects Gift and the Nickell Curse</a></li>
+<li><a href="#estimation-dynamic-panel-gmm"
+id="toc-estimation-dynamic-panel-gmm">4 Estimation: Dynamic Panel
+GMM</a></li>
+<li><a href="#anchoring-papers" id="toc-anchoring-papers">5 Anchoring
+Papers</a></li>
+<li><a href="#a-full-walkthrough-on-the-nimbus-data"
+id="toc-a-full-walkthrough-on-the-nimbus-data">6 A Full Walkthrough on
+the Nimbus Data</a></li>
+<li><a href="#failure-modes-and-robustness"
+id="toc-failure-modes-and-robustness">7 Failure Modes and
+Robustness</a></li>
+<li><a href="#further-reading" id="toc-further-reading">8 Further
+Reading</a></li>
+</ul>
+    </div>
+    <div class="file-nav">
+      <div class="nav-label">This series</div>
+      <a href="index.html">Home · Overview</a>
+      <a href="introduction.html">Introduction · How to Use</a>
+      <a href="01_consumer_producer_welfare.html">01 Consumer, Producer &amp; Welfare</a>
+      <a href="02_game_theory.html">02 Game Theory</a>
+      <a href="03_information_mechanism_design.html">03 Information &amp; Mechanism Design</a>
+      <a href="04_pricing_imperfect_competition.html">04 Pricing &amp; Imperfect Competition</a>
+      <a href="05_estimation_mle_gmm.html">05 Estimation: MLE &amp; GMM</a>
+      <a href="06_inference.html">06 Inference: Bootstrap &amp; Clustering</a>
+      <a href="07_panel_dynamic_panel.html">07 Panel &amp; Dynamic Panel</a>
+      <a href="08_nonparametrics.html">08 Nonparametrics &amp; Semiparametrics</a>
+      <a href="09_potential_outcomes.html">09 Potential Outcomes &amp; Selection</a>
+      <a href="10_research_design_architecture.html">10 Research Design</a>
+      <a href="11_measurement_digital_traces.html">11 Measurement &amp; Digital Traces</a>
+      <a href="12_iv_late_mte.html">12 IV: LATE &amp; MTE</a>
+      <a href="13_did_event_studies.html">13 DiD &amp; Event Studies</a>
+      <a href="14_rdd_synthetic_control.html">14 RDD &amp; Synthetic Control</a>
+      <a href="15_sensitivity_partial_identification.html">15 Sensitivity &amp; Partial Identification</a>
+      <a href="16_causal_ml_dml.html">16 Causal ML &amp; DML</a>
+      <a href="17_digital_experimentation.html">17 Digital Experimentation</a>
+      <a href="18_interference_marketplace_experiments.html">18 Interference &amp; Marketplace Experiments</a>
+      <a href="19_discrete_choice.html">19 Discrete Choice &amp; Mixed Logit</a>
+      <a href="20_demand_blp.html">20 Demand Estimation &amp; BLP</a>
+      <a href="21_supply_markups_mergers.html">21 Supply, Markups &amp; Mergers</a>
+      <a href="22_entry_partial_id.html">22 Entry &amp; Partial Identification</a>
+      <a href="23_dynamic_structural.html">23 Dynamic Structural Models</a>
+      <a href="24_platforms_networks.html">24 Platforms &amp; Network Effects</a>
+      <a href="25_search_advertising.html">25 Search, Advertising &amp; Information Goods</a>
+      <a href="26_ai_algorithms_data.html">26 AI, Adoption &amp; Data Economics</a>
+      <a href="27_quick_reference.html">27 Quick Reference &amp; Tools</a>
+    </div>
+  </nav>
+  <main class="main-content" id="top">
+    <header class="page-header">
+      <h1>Panel Data &amp; Dynamic Panels</h1>
+      <div class="subtitle">From Fixed Effects to Arellano-Bond</div>
+      <div class="meta">Foundations of Information Systems Economics · Chapter 7</div>
+    </header>
+<h2 id="introduction">Introduction</h2>
+<p>Nimbus wants to know how long a merchant’s good month will last.
+Regress this month’s sales directly on last month’s, and persistence
+comes out at 0.946; add merchant fixed effects, and the estimate crashes
+to 0.425. Both models are perfectly standard, yet the two answers differ
+by a factor of two, while the true value known from the simulation,
+0.70, sits squarely between them. This is not statistics being coy: the
+first model mistakes merchant talent for persistence, and the second, in
+scrubbing that talent away, manufactures a new correlation of its
+own.</p>
+<p>The appeal of panel data lies precisely in its ability to follow the
+same unit over time and so difference out unobservable differences that
+do not vary over time. For static models, fixed effects are often a
+reliable workhorse; but once a lagged outcome appears on the right-hand
+side, the demeaned lag becomes correlated with the demeaned error, and
+Nickell bias shows up in short panels. The distinctions among strict
+exogeneity, sequential exogeneity, and the random effects assumption
+determine which transformation and which estimator are entitled to
+work.</p>
+<p>This chapter starts from the split between 0.946 and 0.425, explains
+how Arellano-Bond builds instruments for the differenced equation out of
+earlier levels, and why Blundell-Bond adds a levels equation when
+persistence is high. Dynamic panel GMM is not a push-button remedy: the
+instruments can be too weak, or so numerous that they “explain”
+everything. Serial correlation tests and overidentification tests are
+therefore part of the analysis. Panel data really do hand the researcher
+a second dimension, but time never gives away identification for
+free.</p>
+<h2 id="two-wrong-numbers-that-straddle-the-truth">1 Two Wrong Numbers
+That Straddle the Truth</h2>
+<div class="case">
+<p>Nimbus is a fictional e-commerce platform. We tell this case with
+simulated data, and the payoff is that the data generating process is
+fully known, so every estimator can be reconciled against the truth, a
+teaching condition that real data can never provide. The platform
+observes 500 merchants across 8 months of monthly GMV (here a
+standardized log-GMV measure). Management wants to know something that
+matters operationally: how “sticky” a merchant’s GMV is, that is, to
+what extent a good month carries over into the next. We capture this
+with a persistence parameter <span class="math inline">\rho</span>; the
+closer <span class="math inline">\rho</span> is to 1, the more durable
+the effect of a shock, and the more worthwhile it becomes to take a long
+view of the platform’s subsidies and campaigns.</p>
+<p>The analyst runs the most direct regression, this month’s GMV on last
+month’s (pooled OLS). The estimated persistence is <span
+class="math inline">\hat\rho = 0.946</span>, a frighteningly high
+number, implying that GMV is almost as sticky as a random walk, with
+last month’s good showing carrying over almost entirely into this month.
+She grows wary at once: merchants differ innately, top merchants post
+high GMV month after month, and this merchant-specific operating talent
+might have inflated persistence. So she adds merchant fixed effects to
+difference out each merchant’s fixed level and estimates again. This
+time <span class="math inline">\hat\rho = 0.425</span>, nearly cut in
+half, implying that GMV is not so sticky after all and that shocks fade
+fairly fast.</p>
+</div>
+<p>Two numbers, one saying GMV is extremely sticky (0.946), the other
+saying not so much (0.425), differing by more than a factor of two.
+Which do we trust? Because this is a simulation, we know the true value
+is <span class="math inline">\rho = 0.70</span>. The answer is
+unexpected: both are wrong, and the truth happens to be caught between
+them.</p>
+<p>This is no coincidence but two systematic biases pushing the estimate
+in opposite directions. Pooled OLS runs high because it never removes
+merchant talent: a high-talent merchant posts high GMV both this month
+and last, the talent lifts both the dependent variable and its lag at
+once, and OLS misreads this “talent-induced high correlation” as
+“persistence,” pushing <span class="math inline">\hat\rho</span> up to
+0.946. Fixed effects run low for a far subtler reason, which is the
+heart of this chapter: the demeaning step that differences out merchant
+talent creates a negative correlation between the transformed lag and
+the transformed error, systematically pressing persistence down, down to
+0.425. This downward bias is called Nickell bias, and Section 3 will
+derive it cleanly.</p>
+<div class="intuition">
+<p>An honest estimate of persistence must both remove merchant talent
+and avoid introducing Nickell bias, and pooled OLS and fixed effects
+each manage one and botch the other. Pooled OLS leaves talent untouched
+and is contaminated by it; fixed effects remove talent but damage the
+dynamic structure in the removing. That the truth 0.70 is straddled by
+0.946 and 0.425 is not luck but the inevitable consequence of these two
+biases pointing in opposite directions. Later in the chapter we will see
+that Arellano-Bond dynamic panel GMM sidesteps both pitfalls at once
+with a clever device, pulling <span class="math inline">\hat\rho</span>
+back to around 0.70. To understand why it is clever, we first have to
+understand why fixed effects are a hero in a static panel and why they
+turn traitor in a dynamic one.</p>
+</div>
+<p>The lesson of Section 1 can be summed up as follows: in panel data,
+pooled OLS that ignores individual heterogeneity overstates persistence,
+while fixed effects that remove heterogeneity understate it through
+Nickell bias, and the truth is caught between them; to estimate the
+dynamic parameter correctly we can neither ignore heterogeneity nor use
+the fixed effects that introduce Nickell bias, which leads us to a GMM
+designed specifically for dynamic panels.</p>
+<h2 id="the-economic-model-and-the-estimand">2 The Economic Model and
+the Estimand</h2>
+<p>Before rolling up our sleeves we set up the panel model and, in the
+simplest static case, install fixed effects as the hero, because all of
+the trouble in dynamic panels is the story of this hero turning
+traitor.</p>
+<h3 id="the-panel-model-and-individual-heterogeneity">2.1 The Panel
+Model and Individual Heterogeneity</h3>
+<p>The basic panel model writes the outcome as the sum of observable
+covariates, an individual effect, and an idiosyncratic error:</p>
+<p><span class="math display">y_{it} = x_{it}&#39;\beta + \alpha_i +
+\varepsilon_{it}.</span></p>
+<p>The subscript <span class="math inline">i</span> is the unit (a
+merchant in Nimbus) and <span class="math inline">t</span> is the time
+point (a month). <span class="math inline">x_{it}</span> is a
+time-varying covariate and <span class="math inline">\beta</span> is the
+coefficient we want. The key new character is <span
+class="math inline">\alpha_i</span>, the individual effect, which
+captures everything time-invariant and not in <span
+class="math inline">x</span>: a merchant’s operating talent, the natural
+scale of its category, the capability of its founding team. <span
+class="math inline">\varepsilon_{it}</span> is an idiosyncratic shock
+that fluctuates over time. <span class="math inline">\alpha_i</span> is
+unobservable, and it is almost surely correlated with <span
+class="math inline">x_{it}</span>, which is exactly the core difficulty
+of identification: a high-talent merchant has both high GMV (high <span
+class="math inline">\alpha_i</span>) and a greater willingness to spend
+on promotions (high <span class="math inline">x_{it}</span>), so
+stuffing <span class="math inline">\alpha_i</span> into the error term
+and running OLS directly contaminates <span
+class="math inline">\beta</span> with this correlation.</p>
+<p>The way out that panels offer is to use the fact that the same
+merchant is observed repeatedly, and difference <span
+class="math inline">\alpha_i</span> away. The most common device is the
+within transformation, also called demeaning: for each unit, subtract
+its own time average across periods. Because <span
+class="math inline">\alpha_i</span> does not vary over time, it equals
+its own time mean, and one subtraction removes it:</p>
+<p><span class="math display">y_{it} - \bar y_i = (x_{it} - \bar
+x_i)&#39;\beta + (\varepsilon_{it} - \bar\varepsilon_i).</span></p>
+<p>Running OLS on the demeaned data is the fixed effects (FE) estimator,
+also called the within estimator. <span
+class="math inline">\alpha_i</span> is wiped out completely, and however
+it correlates with <span class="math inline">x</span> it no longer does
+any harm. This is the precise cashing-in of the panel’s gift: as long as
+the unobservable heterogeneity does not vary over time, fixed effects
+are immune to it, even if it correlates arbitrarily with the
+covariates.</p>
+<h3 id="fixed-effects-as-hero-a-static-example">2.2 Fixed Effects as
+Hero: A Static Example</h3>
+<p>Let us stage this gift on Nimbus. Suppose promotion intensity <span
+class="math inline">x_{it}</span> has a true effect <span
+class="math inline">\beta = 0.5</span> on GMV, and merchant talent <span
+class="math inline">\alpha_i</span> is positively correlated with
+promotion (high-talent merchants promote more). Here three estimators
+give three different numbers. Pooled OLS leaves <span
+class="math inline">\alpha_i</span> in the error and yields <span
+class="math inline">\hat\beta = 0.951</span>, badly inflated by the
+positive correlation between talent and promotion. Fixed effects
+difference <span class="math inline">\alpha_i</span> away and yield
+<span class="math inline">\hat\beta = 0.506</span>, hugging the true
+value of 0.5. In between sits a random effects (RE) estimator that gives
+0.739; Section 3.2 explains what it is and why it too is biased. Fixed
+effects are the only winner here, and they deliver on the panel’s
+promise.</p>
+<div class="intuition">
+<p>Why do fixed effects win? In a phrase: they only compare each
+merchant with itself. They do not ask “do merchants that promote more
+have higher GMV” (a comparison contaminated by talent, because merchants
+that promote more tend to be more talented) but rather “in the months
+when a given merchant promotes more, is its GMV higher than in its own
+months of less promotion.” A single merchant’s talent is the same
+constant across different months, and a within comparison cancels it
+automatically, leaving the net effect of promotion. This “compare with
+itself” idea is the entire source of the power of fixed effects, and
+also their entire cost: they use only within (over-time) variation and
+throw away all between (across-unit) variation, so they cannot estimate
+any time-invariant covariate and are not precise when sample variation
+is scarce.</p>
+</div>
+<h3 id="the-dynamic-estimand">2.3 The Dynamic Estimand</h3>
+<p>Fixed effects triumph in the static case, but management’s real
+question is dynamic: how sticky is GMV. This requires putting the
+outcome’s own lag on the right-hand side:</p>
+<p><span class="math display">y_{it} = \rho\, y_{i,t-1} + \alpha_i +
+\varepsilon_{it}.</span></p>
+<p>The target estimand is the persistence <span
+class="math inline">\rho</span>. On the surface, this just treats <span
+class="math inline">y_{i,t-1}</span> as one more covariate, so copying
+the fixed effects demeaning from Section 2.1 ought to work. Section 1
+has already spoiled the ending: it does not, because the demeaning step
+is exactly where things go wrong here, and <span
+class="math inline">\hat\rho</span> is pressed down to 0.425. Why the
+fixed effects that were invincible in the static case fail the moment a
+lagged dependent variable appears is the heart of the next section’s
+identification analysis.</p>
+<p>The main points of Section 2 can be summed up as follows: the panel
+model splits the outcome into covariates, an individual effect <span
+class="math inline">\alpha_i</span>, and an idiosyncratic error, and the
+unobservable heterogeneity <span class="math inline">\alpha_i</span> is
+the primary threat to identification; fixed effects difference <span
+class="math inline">\alpha_i</span> away by within demeaning and
+identify <span class="math inline">\beta</span> purely by “comparing
+with itself,” a hero in the static panel; but once the target estimand
+becomes the dynamic persistence <span class="math inline">\rho</span>
+and a lagged dependent variable appears on the right-hand side, this
+hero turns traitor.</p>
+<h2 id="identification-the-fixed-effects-gift-and-the-nickell-curse">3
+Identification: The Fixed-Effects Gift and the Nickell Curse</h2>
+<p>This is the most analytically detailed section of the chapter. It
+first clarifies the exogeneity assumption on which fixed effects rest
+(3.1) and the choice between fixed and random effects together with the
+Hausman test (3.2); then the distinction between strict and sequential
+exogeneity and why a lagged dependent variable breaks the former (3.3);
+then it derives Nickell bias and exposes the failure of fixed effects in
+the dynamic model (3.4); and finally it lays out the remedy:
+differencing plus lagged levels as instruments (3.5).</p>
+<h3 id="what-fixed-effects-need-strict-exogeneity">3.1 What Fixed
+Effects Need: Strict Exogeneity</h3>
+<p>For fixed effects to estimate <span class="math inline">\beta</span>
+consistently, it takes more than the mechanical step of “<span
+class="math inline">\alpha_i</span> being differenced away”; it also
+takes an assumption about the error. What remains after demeaning is
+<span class="math inline">(\varepsilon_{it} - \bar\varepsilon_i)</span>,
+and for it to be uncorrelated with the demeaned covariate <span
+class="math inline">(x_{it} - \bar x_i)</span> requires a condition far
+stronger than cross-sectional exogeneity.</p>
+<div class="assumption">
+<p><strong>(strict exogeneity)</strong> The error is uncorrelated with
+the covariates in every period, conditional on the individual
+effect:</p>
+<p><span class="math display">\mathbb{E}[\varepsilon_{it} \mid x_{i1},
+x_{i2}, \ldots, x_{iT}, \alpha_i] = 0, \quad t = 1, \ldots,
+T.</span></p>
+</div>
+<p>Note that the conditioning set here is <span
+class="math inline">x</span> from every period, from <span
+class="math inline">x_{i1}</span> all the way to <span
+class="math inline">x_{iT}</span>, not just the contemporaneous <span
+class="math inline">x_{it}</span>. It requires the contemporaneous error
+<span class="math inline">\varepsilon_{it}</span> to be unrelated to
+covariates in all periods past, present, and future. Why so strong?
+Because within demeaning stirs all periods together: <span
+class="math inline">\bar x_i</span> is the average of <span
+class="math inline">x</span> across all periods, <span
+class="math inline">\bar\varepsilon_i</span> is the average of <span
+class="math inline">\varepsilon</span> across all periods, the demeaned
+<span class="math inline">(x_{it} - \bar x_i)</span> contains <span
+class="math inline">x</span> from every period, and the demeaned <span
+class="math inline">(\varepsilon_{it} - \bar\varepsilon_i)</span>
+contains <span class="math inline">\varepsilon</span> from every period.
+As soon as <span class="math inline">x</span> in any period correlates
+with <span class="math inline">\varepsilon</span> in any period, the two
+demeaned quantities correlate and fixed effects are biased. Strict
+exogeneity is precisely what seals off all these cross-period
+correlations at once.</p>
+<p>It is worth spelling out what strict exogeneity rules out, because
+that leads straight to the trouble in dynamic panels. The most typical
+case it rules out is a covariate that responds to past shocks
+(feedback): if this month’s promotion <span
+class="math inline">x_{it}</span> was partly raised because last month’s
+GMV came in surprisingly low (<span
+class="math inline">\varepsilon_{i,t-1}</span> negative), then <span
+class="math inline">x_{it}</span> correlates with <span
+class="math inline">\varepsilon_{i,t-1}</span> and strict exogeneity
+breaks. Worse still, a lagged dependent variable <span
+class="math inline">y_{i,t-1}</span> is by its very nature such a
+covariate that “responds to past shocks,” which is the cue for Section
+3.3.</p>
+<h3 id="fixed-or-random-effects-the-hausman-test">3.2 Fixed or Random
+Effects: The Hausman Test</h3>
+<p>Fixed effects allow <span class="math inline">\alpha_i</span> to
+correlate arbitrarily with <span class="math inline">x</span>, at the
+cost of throwing away between variation, lower precision, and an
+inability to estimate time-invariant covariates. Is there a way not to
+pay this cost? Yes, provided you dare make a stronger assumption: that
+<span class="math inline">\alpha_i</span> is in fact uncorrelated with
+<span class="math inline">x</span>.</p>
+<div class="assumption">
+<p><strong>(random effects assumption)</strong> The individual effect is
+uncorrelated with the covariates in every period:</p>
+<p><span class="math display">\mathbb{E}[\alpha_i \mid x_{i1}, \ldots,
+x_{iT}] = 0.</span></p>
+</div>
+<p>If this assumption holds, <span class="math inline">\alpha_i</span>
+is just a harmless random disturbance that has slipped into the error
+term and is no longer a threat to identification. We can then use the
+random effects estimator, which does not do full within demeaning but a
+partial demeaning (quasi-demeaning), subtracting <span
+class="math inline">\theta_{RE}\, \bar y_i</span> rather than the whole
+<span class="math inline">\bar y_i</span>, where <span
+class="math inline">\theta_{RE} = 1 - \sqrt{\sigma_\varepsilon^2 /
+(\sigma_\varepsilon^2 + T\sigma_\alpha^2)}</span> is determined by the
+variance components (here <span class="math inline">\theta_{RE}</span>
+is a local notation for the weight in the RE transformation, unrelated
+to the <span class="math inline">\theta</span> the book uses for
+structural parameters). This partial demeaning is a GLS that uses both
+within and between variation, and so is more efficient than fixed
+effects, which use only within variation. The cost is that if the
+assumption that “<span class="math inline">\alpha_i</span> is unrelated
+to <span class="math inline">x</span>” is wrong, random effects have not
+scrubbed the contamination clean and the estimate is biased. In the
+static Nimbus example RE gives 0.739, wedged between the contaminated
+OLS (0.951) and the clean FE (0.506): its partial demeaning shaved off
+some of the talent contamination, but because <span
+class="math inline">\alpha_i</span> really is correlated with promotion,
+it did not shave it clean.</p>
+<p>How do we choose between the robustness of fixed effects and the
+efficiency of random effects? The Hausman test provides a data-driven
+criterion.</p>
+<div class="theorem">
+<p><strong>(Hausman test)</strong> When the random effects assumption
+holds, both fixed and random effects are consistent, but random effects
+are more efficient, and the two should be close; when the assumption
+fails, only fixed effects are consistent, and the two diverge
+significantly. The test statistic</p>
+<p><span class="math display">H = (\hat\beta_{FE} -
+\hat\beta_{RE})&#39;\, \big[\mathrm{Var}(\hat\beta_{FE}) -
+\mathrm{Var}(\hat\beta_{RE})\big]^{-1}\, (\hat\beta_{FE} -
+\hat\beta_{RE}) \xrightarrow{d} \chi^2_k,</span></p>
+<p>with degrees of freedom <span class="math inline">k</span> equal to
+the number of time-varying covariates. A large <span
+class="math inline">H</span> rejects the random effects assumption and
+calls for fixed effects.</p>
+</div>
+<p>Its logic is elegant: it works with the difference between the two
+estimators, <span class="math inline">\hat\beta_{FE} -
+\hat\beta_{RE}</span>. Under the null (<span
+class="math inline">\alpha_i</span> uncorrelated with <span
+class="math inline">x</span>) both are correct, the difference is just
+sampling noise, and <span class="math inline">H</span> is small; when
+the null is false, random effects are biased and fixed effects are not,
+the difference contains a systematic bias, and <span
+class="math inline">H</span> is large. That the variance is taken as the
+difference of the two, <span
+class="math inline">\mathrm{Var}(\hat\beta_{FE}) -
+\mathrm{Var}(\hat\beta_{RE})</span>, rests on a Hausman lemma: under the
+null, the sampling error of the efficient estimator (RE) is uncorrelated
+with “the difference of the two,” so the variance of the difference
+equals exactly the difference of the two variances. In the static Nimbus
+example <span class="math inline">H</span> reaches 3362, the <span
+class="math inline">p</span>-value is effectively zero, random effects
+are decisively rejected, and the correct choice is fixed effects,
+consistent with the setup in which <span
+class="math inline">\alpha_i</span> really is correlated with
+promotion.</p>
+<h3
+id="strict-or-sequential-the-original-sin-of-the-lagged-dependent-variable">3.3
+Strict or Sequential: The Original Sin of the Lagged Dependent
+Variable</h3>
+<p>Now put the lagged dependent variable back and watch how it breaks
+the strict exogeneity of Section 3.1. The dynamic model is <span
+class="math inline">y_{it} = \rho\, y_{i,t-1} + \alpha_i +
+\varepsilon_{it}</span>. Ask a simple question: does the lagged
+dependent variable <span class="math inline">y_{i,t-1}</span> satisfy
+strict exogeneity?</p>
+<p>It does not, and it cannot in principle. Strict exogeneity requires
+<span class="math inline">y_{i,t-1}</span> to be unrelated to the errors
+in every period, yet <span class="math inline">y_{i,t-1}</span> by
+definition equals <span class="math inline">\rho\, y_{i,t-2} + \alpha_i
++ \varepsilon_{i,t-1}</span>, and it plainly contains <span
+class="math inline">\varepsilon_{i,t-1}</span>. So <span
+class="math inline">y_{i,t-1}</span> is perfectly correlated with last
+period’s error <span class="math inline">\varepsilon_{i,t-1}</span>, and
+strict exogeneity breaks at the root. This is not a matter of poor
+specification but the original sin of a lagged dependent variable: a
+variable that is the outcome’s own past value must carry the past
+error.</p>
+<p>Here we need a weaker notion of exogeneity, better suited to the
+dynamic model.</p>
+<div class="assumption">
+<p><strong>(sequential exogeneity / predetermined)</strong> The error is
+uncorrelated with contemporaneous and past covariates, but may correlate
+with future covariates:</p>
+<p><span class="math display">\mathbb{E}[\varepsilon_{it} \mid x_{i1},
+\ldots, x_{it}, \alpha_i] = 0.</span></p>
+</div>
+<p>Sequential exogeneity only requires the contemporaneous error to be
+unrelated to <span class="math inline">x</span> in the current and
+earlier periods, not the future. It is weaker than strict exogeneity: it
+allows covariates to respond to past shocks (future <span
+class="math inline">x</span> may correlate with the current error). A
+lagged dependent variable satisfies sequential exogeneity (<span
+class="math inline">y_{i,t-1}</span> is determined by information at
+<span class="math inline">t-1</span> and earlier, and is unrelated to
+the current shock <span class="math inline">\varepsilon_{it}</span>) but
+not strict exogeneity (it correlates with <span
+class="math inline">\varepsilon_{i,t-1}</span>). This distinction is the
+watershed: the consistency of fixed effects requires strict exogeneity,
+while a dynamic model has only sequential exogeneity, so fixed effects
+must run into trouble in a dynamic model. Exactly how large the trouble
+is, the next section quantifies.</p>
+<h3 id="nickell-bias-how-the-hero-turns-traitor">3.4 Nickell Bias: How
+the Hero Turns Traitor</h3>
+<p>The failure of fixed effects in the dynamic model has a precise name
+and a precise magnitude, due to Nickell (1981). First we explain where
+the bias comes from, then give the formula.</p>
+<div class="intuition">
+<p>The source of the bias is a hidden consequence of the demeaning step.
+Within demeaning of the dynamic model gives <span
+class="math inline">(y_{it} - \bar y_i) = \rho\,(y_{i,t-1} - \bar y_i) +
+(\varepsilon_{it} - \bar\varepsilon_i)</span>. Look at the demeaned lag
+<span class="math inline">(y_{i,t-1} - \bar y_i)</span> and the demeaned
+error <span class="math inline">(\varepsilon_{it} -
+\bar\varepsilon_i)</span>; they ought to be uncorrelated for fixed
+effects to be unbiased. But they are correlated, and the culprit is
+those two means. <span class="math inline">\bar y_i</span> is the
+average of <span class="math inline">y</span> across all periods for
+this merchant, and it contains <span class="math inline">y_{it}</span>,
+which contains <span class="math inline">\varepsilon_{it}</span>, so
+<span class="math inline">\varepsilon_{it}</span> has leaked into <span
+class="math inline">\bar y_i</span>. Then the demeaned lag <span
+class="math inline">(y_{i,t-1} - \bar y_i)</span>, through the <span
+class="math inline">-\bar y_i</span> term, indirectly contains a <span
+class="math inline">-\varepsilon_{it}/T</span> component, which is
+negatively correlated with the <span
+class="math inline">\varepsilon_{it}</span> component in the demeaned
+error. A regressor negatively correlated with the error drags the
+coefficient down, and this is the downward direction of Nickell bias.
+The key is that the magnitude of this contamination is <span
+class="math inline">1/T</span>: the mean is an average of <span
+class="math inline">T</span> numbers, and a single <span
+class="math inline">\varepsilon_{it}</span> makes up only a <span
+class="math inline">1/T</span> share of <span class="math inline">\bar
+y_i</span>, so the larger <span class="math inline">T</span> is, the
+more the contamination is diluted and the smaller the bias.</p>
+</div>
+<p>Nickell (1981) worked out the limit of this bias (as <span
+class="math inline">N \to \infty</span> with <span
+class="math inline">T</span> fixed), whose leading term is</p>
+<p><span class="math display">\mathrm{plim}_{N \to
+\infty}\,(\hat\rho_{FE} - \rho) \approx -\,\frac{1 + \rho}{T -
+1}.</span></p>
+<p>Three things are worth reading off this formula. First, the bias is
+negative, fixed effects systematically understate persistence,
+consistent with intuition. Second, the bias is <span
+class="math inline">O(1/T)</span>, smaller the larger <span
+class="math inline">T</span> is, vanishing as <span
+class="math inline">T \to \infty</span>, so Nickell bias is a
+short-panel problem and irrelevant in long panels. Third, the bias does
+not vanish with <span class="math inline">N</span>: no number of
+merchants can rescue a short panel, because this is mean contamination
+inside each unit, and adding units without adding periods is of no help.
+This point is especially counterintuitive and especially important, for
+it means that in a typical platform panel with large <span
+class="math inline">N</span> and small <span
+class="math inline">T</span> (thousands of merchants, a mere handful of
+months), fixed effects can be wildly wrong about persistence, and the
+enormous sample size helps not at all. In Nimbus <span
+class="math inline">T = 8</span> and <span class="math inline">\rho =
+0.70</span>, and the leading term predicts a bias of about <span
+class="math inline">-(1.7)/7 = -0.24</span>, so fixed effects should
+press <span class="math inline">\rho</span> down to around 0.46; the
+actual estimate is 0.425, right in direction and magnitude (the actual
+bias is slightly larger than the leading term, because the full Nickell
+formula has higher-order negative terms that are not negligible at short
+<span class="math inline">T</span>).</p>
+<div class="warning">
+<p>The most dangerous thing about Nickell bias is that it is silent. The
+fixed effects regression runs just fine, coefficients and standard
+errors all present, with no error message of any kind. An unwitting
+analyst would take the 0.425 and report “GMV persistence is moderate,”
+when the truth is 0.70, persistence is quite high, and the two
+conclusions give opposite advice about whether subsidies should be
+invested for the long term. More insidiously, adding sample size (more
+merchants) not only fails to help but makes that wrong 0.425 look ever
+more “precise,” the standard errors ever smaller, dressing up a biased
+estimate as ever more credible. This is the echo, in dynamic panels, of
+that line at the end of Chapter 5: a beautiful, precise estimate may be
+nothing more than a systematic bias computed very stably.</p>
+</div>
+<h3 id="the-remedy-differencing-plus-lagged-levels">3.5 The Remedy:
+Differencing Plus Lagged Levels</h3>
+<p>The root of Nickell bias is that demeaning mixes <span
+class="math inline">\varepsilon_{it}</span> into the lag. The first step
+of the remedy is to switch to a different way of removing <span
+class="math inline">\alpha_i</span>, using first differencing in place
+of demeaning:</p>
+<p><span class="math display">\Delta y_{it} = \rho\, \Delta y_{i,t-1} +
+\Delta \varepsilon_{it},</span></p>
+<p>where <span class="math inline">\Delta y_{it} = y_{it} -
+y_{i,t-1}</span>. Differencing likewise removes the time-invariant <span
+class="math inline">\alpha_i</span>. But it does not solve the
+endogeneity: the differenced lag <span class="math inline">\Delta
+y_{i,t-1} = y_{i,t-1} - y_{i,t-2}</span> contains <span
+class="math inline">\varepsilon_{i,t-1}</span>, and the differenced
+error <span class="math inline">\Delta\varepsilon_{it} =
+\varepsilon_{it} - \varepsilon_{i,t-1}</span> also contains <span
+class="math inline">\varepsilon_{i,t-1}</span>, so the two are still
+correlated, and running OLS on the differenced equation directly is
+still biased.</p>
+<p>The key move is to find an instrument for this endogenous <span
+class="math inline">\Delta y_{i,t-1}</span>. What variable is both
+correlated with <span class="math inline">\Delta y_{i,t-1}</span> and
+uncorrelated with <span
+class="math inline">\Delta\varepsilon_{it}</span>? The answer hides in
+the model’s own history: sufficiently distant lagged levels. Take <span
+class="math inline">y_{i,t-2}</span>; it is clearly correlated with
+<span class="math inline">\Delta y_{i,t-1} = y_{i,t-1} -
+y_{i,t-2}</span> (<span class="math inline">y_{i,t-2}</span> is right
+there inside it). What about its correlation with <span
+class="math inline">\Delta\varepsilon_{it} = \varepsilon_{it} -
+\varepsilon_{i,t-1}</span>? <span class="math inline">y_{i,t-2}</span>
+is determined by information at <span class="math inline">t-2</span> and
+earlier, containing <span class="math inline">\varepsilon_{i,t-2}</span>
+and earlier errors, while <span
+class="math inline">\Delta\varepsilon_{it}</span> contains only <span
+class="math inline">\varepsilon_{it}</span> and <span
+class="math inline">\varepsilon_{i,t-1}</span>, and when the errors have
+no serial correlation the two are uncorrelated. So <span
+class="math inline">y_{i,t-2}</span> is a valid instrument, giving the
+moment condition</p>
+<p><span class="math display">\mathbb{E}[y_{i,t-2}\,
+\Delta\varepsilon_{it}] = 0.</span></p>
+<p>This is the idea of Anderson and Hsiao, and the starting point of
+dynamic panel GMM. Sequential exogeneity earns its keep here: precisely
+because <span class="math inline">y_{i,t-1}</span> is only predetermined
+rather than strictly exogenous, its earlier lags <span
+class="math inline">y_{i,t-2}, y_{i,t-3}, \ldots</span> are clean enough
+to serve as instruments. Section 4 will see Arellano-Bond push this idea
+to its limit, using every valid lagged level.</p>
+<p>The main points of this section can be summed up as follows: the
+consistency of fixed effects depends on strict exogeneity, that the
+error be unrelated to covariates in every period; the random effects
+assumption is stronger (the individual effect uncorrelated with
+covariates) but more efficient, and the Hausman test chooses between the
+two; a lagged dependent variable by nature satisfies only the weaker
+sequential exogeneity and violates strict exogeneity, causing fixed
+effects, when demeaning, to mix the current error into the lag and
+produce Nickell bias, which is downward in direction, <span
+class="math inline">O(1/T)</span> in magnitude, and does not vanish with
+<span class="math inline">N</span>; the remedy is to switch to
+differencing to remove <span class="math inline">\alpha_i</span>, then
+use a sufficiently distant lagged level <span
+class="math inline">y_{i,t-2}</span> as an instrument, whose validity is
+guaranteed by sequential exogeneity.</p>
+<h2 id="estimation-dynamic-panel-gmm">4 Estimation: Dynamic Panel
+GMM</h2>
+<p>Identification has laid out the road of differencing plus lagged
+levels; this section explains how to make it into an efficient
+estimator. The main line is how Arellano-Bond wring out every valid
+instrument (4.1), how to test whether these instruments hold up (4.2),
+how Blundell-Bond come to the rescue when persistence approaches 1
+(4.3), and the practical matters of too many instruments and clustering
+(4.4).</p>
+<h3 id="arellano-bond-building-instruments-from-inside-the-model">4.1
+Arellano-Bond: Building Instruments From Inside the Model</h3>
+<p>Anderson-Hsiao use only a single lag <span
+class="math inline">y_{i,t-2}</span>, wasting the earlier lags. The
+insight of Arellano and Bond (1991) is that as time advances, more and
+more valid instruments become available, and all of them should be used.
+Look at the instruments for the differenced equation in each period: at
+<span class="math inline">t = 3</span> (the first period that can be
+differenced and instrumented), the valid instrument for <span
+class="math inline">\Delta y_{i2}</span> is <span
+class="math inline">y_{i1}</span>; at <span class="math inline">t =
+4</span>, the valid instruments for <span class="math inline">\Delta
+y_{i3}</span> are <span class="math inline">y_{i1}, y_{i2}</span>; and
+on to <span class="math inline">t = T</span>, where the instruments are
+<span class="math inline">y_{i1}, \ldots, y_{i,T-2}</span>. The valid
+lagged levels grow linearly with the period, and all of them are stacked
+into one system of moment conditions:</p>
+<p><span class="math display">\mathbb{E}[y_{is}\,
+\Delta\varepsilon_{it}] = 0, \quad s \leq t - 2.</span></p>
+<p>That the instruments are “built from inside the model” is the most
+beautiful part of this method: no external instrument is needed, the
+model’s own historical values are the instruments. Solve these moment
+conditions with the GMM machinery of Chapter 5, weighting by the
+efficient weight matrix in two-step feasible GMM, and you get the
+Arellano-Bond estimator, usually called difference GMM. In Nimbus it
+gives <span class="math inline">\hat\rho = 0.705</span>, almost dead-on
+the true value of 0.70, cleanly pulling out the truth between pooled
+OLS’s 0.946 and fixed effects’ 0.425.</p>
+<h3
+id="do-the-instruments-hold-up-overidentification-and-serial-correlation-tests">4.2
+Do the Instruments Hold Up: Overidentification and Serial Correlation
+Tests</h3>
+<p>Difference GMM uses far more instruments than parameters and is
+heavily overidentified, which is both the source of its precision and
+the reason for two tests that must be run.</p>
+<p>The first is the overidentification test, the Hansen <span
+class="math inline">J</span> of Chapter 5 (the older version under
+homoskedasticity is called Sargan). It tests whether all the lagged
+instruments are jointly valid: if they are all clean, the <span
+class="math inline">\rho</span> estimated from different subsets of
+instruments should agree, and <span class="math inline">J</span> is
+small; if some instruments are in fact endogenous (say the error is
+serially correlated, so <span class="math inline">y_{i,t-2}</span> is no
+longer clean), <span class="math inline">J</span> grows and rejects. In
+Nimbus the Sargan <span class="math inline">p</span>-value is 0.29, no
+rejection, and the instruments pass their check-up.</p>
+<p>The second is the Arellano-Bond serial correlation test, which zeroes
+in on one fatal hazard: if the error <span
+class="math inline">\varepsilon_{it}</span> is serially correlated, then
+<span class="math inline">y_{i,t-2}</span> correlates with <span
+class="math inline">\Delta\varepsilon_{it}</span> and the instrument
+fails. The cleverness of the test is to look at the serial correlation
+of the differenced residual <span
+class="math inline">\Delta\hat\varepsilon_{it}</span>. Differencing
+itself manufactures first-order serial correlation (<span
+class="math inline">\Delta\varepsilon_{it}</span> and <span
+class="math inline">\Delta\varepsilon_{i,t-1}</span> share <span
+class="math inline">\varepsilon_{i,t-1}</span>), so first-order
+correlation AR(1) appearing is normal and expected. The real worry is
+second-order correlation AR(2): if <span
+class="math inline">\Delta\varepsilon_{it}</span> and <span
+class="math inline">\Delta\varepsilon_{i,t-2}</span> are correlated, it
+means the level error <span class="math inline">\varepsilon_{it}</span>
+is itself serially correlated and the instrument <span
+class="math inline">y_{i,t-2}</span> is dirty. So the correct diagnosis
+is: AR(1) significant (as it should be), AR(2) insignificant (only then
+are the instruments clean). In Nimbus the AR(1) <span
+class="math inline">p</span>-value is 0.000 (significant as expected)
+and the AR(2) <span class="math inline">p</span>-value is 0.33
+(insignificant), and the validity of the instruments is supported.</p>
+<h3 id="blundell-bond-the-remedy-when-persistence-approaches-1">4.3
+Blundell-Bond: The Remedy When Persistence Approaches 1</h3>
+<p>Difference GMM has a fatal weak spot, exposed when persistence <span
+class="math inline">\rho</span> approaches 1: the lagged levels become
+weak instruments. The reasoning is this: when <span
+class="math inline">\rho</span> approaches 1, the level series of <span
+class="math inline">y</span> approaches a random walk, and the past
+level of a random walk <span class="math inline">y_{i,t-2}</span> has
+almost no predictive power for its difference <span
+class="math inline">\Delta y_{i,t-1}</span> (the increments of a random
+walk are unpredictable). Once the instruments are weak, difference GMM
+repeats the weak-identification story of Chapter 5: biased estimates and
+exploding standard errors.</p>
+<p>The remedy of Blundell and Bond (1998) is to add a new set of moment
+conditions and enlarge the system. On top of “using lagged levels as
+instruments for the differenced equation,” they add “using lagged
+differences as instruments for the levels equation”:</p>
+<p><span class="math display">\mathbb{E}[\Delta y_{i,t-1}\,(\alpha_i +
+\varepsilon_{it})] = 0.</span></p>
+<p>That is, let <span class="math inline">\Delta y_{i,t-1}</span> serve
+as an instrument for the undifferenced levels equation. This new set of
+moment conditions remains valid near a random walk (differences still
+predict levels), rescuing identification. The cost is that it requires
+an additional assumption: the initial condition satisfies mean
+stationarity, roughly that the extent to which each unit’s starting
+point deviates from its long-run mean is unrelated to <span
+class="math inline">\alpha_i</span>. The estimator that uses both sets
+of moment conditions together is called system GMM. In Nimbus we build a
+near-random-walk variant with <span class="math inline">\rho =
+0.90</span>: difference GMM gives <span class="math inline">\hat\rho =
+0.809</span> with a standard error as high as 0.119 (biased and
+imprecise), while system GMM gives 0.911 with a standard error of only
+0.017, greatly improving both precision and accuracy, which is exactly
+where system GMM earns its place over difference GMM.</p>
+<h3 id="too-many-instruments-and-clustering">4.4 Too Many Instruments,
+and Clustering</h3>
+<p>Dynamic panel GMM has a practical trap that recurs: too many
+instruments. Following the ladder of Section 4.1, the differenced
+equation runs from <span class="math inline">t = 3</span> to <span
+class="math inline">t = T</span>, with <span class="math inline">t -
+2</span> lagged instruments in period <span
+class="math inline">t</span>, for a total of <span
+class="math inline">(T-1)(T-2)/2</span>, growing quadratically with the
+period, into the hundreds or thousands once <span
+class="math inline">T</span> is even moderately large. Too many
+instruments do two kinds of harm. First, the many-instruments bias
+mentioned in Chapter 5: when the number of instruments is large relative
+to the sample size, the finite-sample bias of GMM springs back toward
+the fixed effects direction, partly cancelling the gains of GMM. Second,
+too many instruments make the overidentification test lose power; a
+model overfit by thousands of instruments will almost surely fail to be
+rejected by the Sargan test, and that beautiful <span
+class="math inline">p</span>-value is a danger signal rather than
+reassurance. The remedy is to limit the number of instruments: use only
+a few finite lags (say <span class="math inline">y_{i,t-2}</span>
+through <span class="math inline">y_{i,t-4}</span>), or “collapse” the
+instruments from different lags of the same variable into fewer columns.
+Reporting the instrument count and running robustness checks on it is
+basic hygiene for dynamic panel empirical work.</p>
+<p>On clustering, panels have within-group correlation by nature, the
+errors of the same merchant across months are usually positively
+correlated, and standard errors must be clustered at the individual
+level, a direct application of Chapter 6. Default non-clustered standard
+errors would, as in Chapter 6, systematically understate uncertainty. In
+the static Nimbus example the default fixed effects standard error is
+0.0175 and the merchant-clustered one is 0.0179, not much different
+(because the errors in this setup are nearly independent), but in real
+panels serial correlation is often sizeable, and clustering is standard
+rather than optional.</p>
+<p>The main points of this section can be summed up as follows:
+Arellano-Bond difference GMM uses every valid lagged level from the
+model itself as an instrument, pulling persistence out of the gap
+between pooled OLS and fixed effects; the validity of its instruments is
+guarded by the Sargan overidentification test and the AR(2) serial
+correlation test; when persistence approaches 1 the lagged levels become
+weak instruments, and Blundell-Bond system GMM adds the “lagged
+difference as instrument for the levels equation” moment condition to
+the rescue, at the cost of an initial-condition stationarity assumption;
+in practice one must beware the bias springback and test failure caused
+by too many instruments, and cluster the standard errors at the
+individual level.</p>
+<h2 id="anchoring-papers">5 Anchoring Papers</h2>
+<p>A method only stands once it lands in real research. Three anchoring
+papers: one founds difference GMM and its accompanying tests, one uses
+system GMM to patch the shortfall near a random walk, and one applies
+dynamic panel GMM to the empirics of information technology and firm
+performance. Each is laid out along five elements: paper, method, data,
+results, limitations. Nickell (1981), the source of the bias derivation,
+was covered in detail in Section 3 and is not listed separately
+here.</p>
+<h3 id="arellano-and-bond-1991">5.1 Arellano and Bond (1991)</h3>
+<div class="case">
+<p>Paper: “Some Tests of Specification for Panel Data: Monte Carlo
+Evidence and an Application to Employment Equations,” The Review of
+Economic Studies 58(2):277-297. It founds difference GMM, the workhorse
+method for dynamic panels, and everything in Sections 4.1 through 4.2 of
+this chapter comes from it.</p>
+<p>Method: Arellano and Bond first-difference the individual effect out
+of the dynamic panel equation, then use every sufficiently distant
+lagged level as an instrument for the differenced equation, with the
+instrument set growing linearly as time advances, and combine these
+moment conditions efficiently by two-step GMM. They also propose the
+accompanying diagnostics: the <span class="math inline">m_1</span> and
+<span class="math inline">m_2</span> tests for first- and second-order
+serial correlation of the differenced residuals (expecting AR(1)
+significant, AR(2) insignificant), and the Sargan overidentification
+test for instrument validity. This combination of “building instruments
+from inside the model plus built-in diagnostics” became the standard
+workflow of dynamic panel empirical work.</p>
+<p>Data: an employment panel of UK firms, about 140 firms spanning 1976
+to 1984, used to estimate a dynamic employment equation, that is, how a
+firm’s current employment depends on last period’s employment, wages,
+and capital.</p>
+<p>Results: the paper uses Monte Carlo to show the bias improvement of
+difference GMM over fixed effects in short panels, and also gives
+concrete dynamic estimates on the employment equation, demonstrating how
+the <span class="math inline">m_2</span> and Sargan tests judge whether
+a specification is credible in practice. It has since become one of the
+most heavily cited methodological papers in economics and adjacent
+fields.</p>
+<p>Limitations: the paper also plants the seed of the trouble later
+remedied by Blundell-Bond: when persistence approaches 1, the lagged
+level instruments become weak and difference GMM is biased and
+imprecise. The many-instruments bias and test failure brought on by the
+rapid proliferation of instruments with <span
+class="math inline">T</span> are also the aspects of this method most in
+need of caution in practice.</p>
+</div>
+<p>The exemplary significance of this paper is that it gives not just an
+estimator but a whole suite of diagnostics that make the estimator
+testable and falsifiable. The AR(2) and Sargan tests of Section 4.2 are
+its legacy, and those two <span class="math inline">p</span>-values in
+Nimbus (0.33 and 0.29) are produced by following its very workflow.</p>
+<h3 id="blundell-and-bond-1998">5.2 Blundell and Bond (1998)</h3>
+<div class="case">
+<p>Paper: “Initial Conditions and Moment Restrictions in Dynamic Panel
+Data Models,” Journal of Econometrics 87(1):115-143. It patches the
+fatal shortfall of difference GMM when persistence approaches 1, and the
+system GMM of Section 4.3 of this chapter comes from it.</p>
+<p>Method: Blundell and Bond point out that when the autoregressive
+parameter approaches 1, or when the variance of the individual effect is
+large relative to the variance of the idiosyncratic error, the lagged
+level instruments of difference GMM become weak and estimation
+deteriorates badly. Beyond the moment conditions of the differenced
+equation, they append a set of moment conditions for the levels
+equation, using lagged differences as instruments for the levels
+equation, forming system GMM. This new set of moment conditions relies
+on an initial-condition assumption (mean stationarity), whose meaning
+and reasonableness they argue carefully.</p>
+<p>Data: a Monte Carlo system demonstrates the enormous improvement of
+system GMM over difference GMM near a random walk, accompanied by an
+empirical application (such as a firm-level production function or an
+employment panel) illustrating its use.</p>
+<p>Results: system GMM greatly reduces bias and improves precision in
+the high-persistence case, becoming the standard upgrade to difference
+GMM. The great volume of empirical work using dynamic panels today
+reports both difference GMM and system GMM by default, a norm
+established by this paper.</p>
+<p>Limitations: the extra efficiency of system GMM comes from that
+initial-condition stationarity assumption, and once it fails, the newly
+added level moment conditions are themselves invalid and instead
+introduce bias. It is also not a plain linear IV; it needs the full GMM
+machinery, and it too suffers from too many instruments. Whether or not
+to use system GMM is at bottom whether one is willing to shoulder that
+stationarity assumption for the sake of efficiency.</p>
+</div>
+<p>Blundell-Bond and Arellano-Bond make a pair: the former more robust
+with fewer assumptions, the latter more efficient with more assumptions,
+and in practice the two are usually reported together and cross-checked
+against each other. The <span class="math inline">\rho = 0.90</span>
+variant in Nimbus (difference GMM standard error 0.119 versus system
+GMM’s 0.017) stages the division of labor between this pair very
+plainly.</p>
+<h3 id="tambe-and-hitt-2012">5.3 Tambe and Hitt (2012)</h3>
+<div class="case">
+<p>Paper: “The Productivity of Information Technology Investments: New
+Evidence from IT Labor Data,” Information Systems Research 23(3, Part 1
+of 2):599-617. It applies dynamic panel GMM to the classic IS question
+of the return on IT investment, and shares a methodological core with
+Nimbus: using the time dimension of a panel and constructing instruments
+from lagged values to deal with the endogeneity of the regressors.</p>
+<p>Method: Tambe and Hitt estimate a firm-level production function,
+regressing output on IT inputs, non-IT capital, and labor, with the core
+difficulty being the endogeneity of IT investment (high-productivity
+firms both invest more in IT and produce more output, and both reverse
+causality and unobservable productivity shocks would contaminate OLS).
+They line up OLS, fixed effects, and several panel-based
+endogeneity-robust estimators for comparison, including
+Arellano-Bond-type dynamic panel GMM (using lagged levels as instruments
+to handle the endogenous regressor), placing the estimate of the IT
+return under different identification assumptions to cross-check one
+another.</p>
+<p>Data: a newly constructed firm-level panel of IT labor inputs,
+matching IT personnel expenditure data with financial data, covering
+roughly 1987 to 2006, and, unlike earlier studies focused only on
+Fortune 1000 large firms, including many medium-sized and service-sector
+firms.</p>
+<p>Results: the IT output elasticity measured after correcting for
+endogeneity falls only about ten percent (the IT labor elasticity in the
+dynamic panel GMM column is about 0.041), implying that the endogeneity
+bias in past studies of IT value was in fact not large; the IT return is
+significantly lower for medium-sized firms than for large firms and is
+realized more slowly in large firms; and the marginal output of IT
+spending from 2000 to 2006 exceeds that of any prior period, hinting
+that IT-driven process innovation continued after the internet boom.</p>
+<p>Limitations: the main thread of the paper is the measurement of IT
+productivity, and dynamic panel GMM is one of several robustness tools
+it uses against endogeneity rather than the sole workhorse; production
+function estimation also relies on the exogeneity of inputs and on
+functional-form specification, and dynamic panel GMM too suffers from
+the too-many-instruments and weak-instruments problems this chapter
+keeps stressing.</p>
+</div>
+<p>The significance of this paper for the chapter is that it returns
+dynamic panel GMM to a real IS research question: whether IT investment
+is worth it, the difficulty being that IT investment is not sprinkled
+down at random. It demonstrates that when the covariate is endogenous
+and there is panel structure, building instruments from the model’s own
+lagged values is a ready-made path in IS empirical work, and it also
+reminds us of the prudent practice of using it alongside other
+identification strategies for mutual corroboration.</p>
+<p>Taken together, the three make the meaning of anchoring clear:
+Arellano-Bond found difference GMM and its accompanying diagnostics,
+Blundell-Bond use system GMM to patch the shortfall near a random walk,
+and Tambe and Hitt apply the toolkit to measuring the return on IT
+investment. They share the chapter’s core, that the time dimension of a
+panel can both difference out unobservable heterogeneity and build
+instruments from history, handling dynamics and endogeneity
+together.</p>
+<h2 id="a-full-walkthrough-on-the-nimbus-data">6 A Full Walkthrough on
+the Nimbus Data</h2>
+<p>Now we run the earlier tools on Nimbus from start to finish. The code
+below uses R 4.5.3 with the random seed fixed at 737, and every number
+cited in the text comes from the actual output of these runs. Dynamic
+panel GMM uses <code>plm::pgmm</code>.</p>
+<h3 id="the-data-generating-process">6.1 The Data Generating
+Process</h3>
+<p>We design two blocks of data and one seed. The static block installs
+fixed effects: <span class="math inline">y_{it} = \beta x_{it} +
+\alpha_i + \varepsilon_{it}</span> with <span class="math inline">\beta
+= 0.5</span>, and merchant talent <span
+class="math inline">\alpha_i</span> positively correlated with promotion
+<span class="math inline">x_{it}</span> (high-talent merchants promote
+more), which biases pooled OLS and random effects and leaves fixed
+effects unbiased. The dynamic block stages Nickell and GMM: <span
+class="math inline">y_{it} = \rho\, y_{i,t-1} + \alpha_i +
+\varepsilon_{it}</span> with <span class="math inline">\rho =
+0.70</span>, <span class="math inline">N = 500</span> merchants and
+<span class="math inline">T = 8</span> months, plus a near-random-walk
+variant with <span class="math inline">\rho = 0.90</span>.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">737</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="do">## Static block: alpha positively correlated with x</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>alpha <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">600</span>); a <span class="ot">&lt;-</span> alpha[<span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">600</span>, <span class="at">each =</span> <span class="dv">6</span>)]</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fl">0.7</span> <span class="sc">*</span> a <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="dv">3600</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fl">0.5</span> <span class="sc">*</span> x <span class="sc">+</span> a <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="dv">3600</span>)                    <span class="co"># beta = 0.5</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="do">## Dynamic block: AR(1) plus merchant effect, stationary start</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>rho <span class="ot">&lt;-</span> <span class="fl">0.70</span>; al <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">500</span>)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>Y <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="dv">0</span>, <span class="dv">500</span>, <span class="dv">8</span> <span class="sc">+</span> <span class="dv">50</span>)                       <span class="co"># 50-period burn-in</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>Y[,<span class="dv">1</span>] <span class="ot">&lt;-</span> al<span class="sc">/</span>(<span class="dv">1</span><span class="sc">-</span>rho) <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="dv">500</span>, <span class="dv">0</span>, <span class="dv">1</span><span class="sc">/</span><span class="fu">sqrt</span>(<span class="dv">1</span><span class="sc">-</span>rho<span class="sc">^</span><span class="dv">2</span>))</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (s <span class="cf">in</span> <span class="dv">2</span><span class="sc">:</span><span class="dv">58</span>) Y[,s] <span class="ot">&lt;-</span> rho <span class="sc">*</span> Y[,s<span class="dv">-1</span>] <span class="sc">+</span> al <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="dv">500</span>)</span></code></pre></div>
+<p>The dynamic block uses a 50-period burn-in to wash out the transient
+of the initial condition and ensure entry into stationarity. The true
+values <span class="math inline">\beta = 0.5</span>, <span
+class="math inline">\rho = 0.70</span>, and the <span
+class="math inline">\rho = 0.90</span> of the near-random-walk variant
+are the targets for all the estimates that follow.</p>
+<h3 id="fixed-effects-as-hero-static">6.2 Fixed Effects as Hero:
+Static</h3>
+<p>On the static block we compare three estimators.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(plm)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>d <span class="ot">&lt;-</span> <span class="fu">pdata.frame</span>(static, <span class="at">index =</span> <span class="fu">c</span>(<span class="st">&quot;id&quot;</span>, <span class="st">&quot;t&quot;</span>))</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>pool <span class="ot">&lt;-</span> <span class="fu">plm</span>(y <span class="sc">~</span> x, d, <span class="at">model =</span> <span class="st">&quot;pooling&quot;</span>)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>re   <span class="ot">&lt;-</span> <span class="fu">plm</span>(y <span class="sc">~</span> x, d, <span class="at">model =</span> <span class="st">&quot;random&quot;</span>)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>fe   <span class="ot">&lt;-</span> <span class="fu">plm</span>(y <span class="sc">~</span> x, d, <span class="at">model =</span> <span class="st">&quot;within&quot;</span>)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="fu">phtest</span>(fe, re)                                     <span class="co"># Hausman</span></span></code></pre></div>
+<p>Pooled OLS gives <span class="math inline">\hat\beta = 0.951</span>,
+badly inflated by the positive correlation between talent and promotion.
+Random effects partially demean and give <span
+class="math inline">\hat\beta = 0.739</span>, shaving off some
+contamination but not cleanly (because <span
+class="math inline">\alpha_i</span> really is correlated with <span
+class="math inline">x</span>). Fixed effects within-demean and give
+<span class="math inline">\hat\beta = 0.506</span>, hugging the true
+value. The Hausman statistic reaches 3362 with a <span
+class="math inline">p</span>-value of zero, random effects are
+decisively rejected, and fixed effects are confirmed as the choice.
+Fixed effects are the undisputed hero of the static panel.</p>
+<h3 id="the-hero-turns-traitor-dynamics-and-nickell">6.3 The Hero Turns
+Traitor: Dynamics and Nickell</h3>
+<p>On the dynamic block, regress this month’s GMV on last month’s.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>d  <span class="ot">&lt;-</span> <span class="fu">pdata.frame</span>(dyn_main, <span class="at">index =</span> <span class="fu">c</span>(<span class="st">&quot;id&quot;</span>, <span class="st">&quot;t&quot;</span>))</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>pool <span class="ot">&lt;-</span> <span class="fu">plm</span>(y <span class="sc">~</span> <span class="fu">lag</span>(y, <span class="dv">1</span>), d, <span class="at">model =</span> <span class="st">&quot;pooling&quot;</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>fe   <span class="ot">&lt;-</span> <span class="fu">plm</span>(y <span class="sc">~</span> <span class="fu">lag</span>(y, <span class="dv">1</span>), d, <span class="at">model =</span> <span class="st">&quot;within&quot;</span>)</span></code></pre></div>
+<p>Pooled OLS gives <span class="math inline">\hat\rho = 0.946</span>
+(inflated by merchant talent) and fixed effects give <span
+class="math inline">\hat\rho = 0.425</span> (pressed down by Nickell),
+with the truth of 0.70 caught between them. The two wrong numbers of
+Section 1 are confirmed here. The same fixed effects that were a hero in
+Section 6.2 become a villain here, and the gap is entirely due to the
+lagged dependent variable violating strict exogeneity.</p>
+<p>The <span class="math inline">1/T</span> character of Nickell bias
+can be demonstrated directly. Fix <span class="math inline">\rho =
+0.70</span>, let the panel length <span class="math inline">T</span>
+grow from 4 to 32, and watch the fixed effects estimate of <span
+class="math inline">\rho</span>:</p>
+<div class="table-scroll">
+<table>
+<thead>
+<tr>
+<th><span class="math inline">T</span></th>
+<th>4</th>
+<th>8</th>
+<th>16</th>
+<th>32</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Fixed effects <span class="math inline">\hat\rho</span></td>
+<td>0.082</td>
+<td>0.417</td>
+<td>0.570</td>
+<td>0.640</td>
+</tr>
+<tr>
+<td>Arellano-Bond <span class="math inline">\hat\rho</span></td>
+<td>0.705</td>
+<td>0.686</td>
+<td>0.700</td>
+<td>0.701</td>
+</tr>
+<tr>
+<td>Nickell leading term</td>
+<td>0.133</td>
+<td>0.457</td>
+<td>0.587</td>
+<td>0.645</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The fixed effects estimate climbs steadily toward the true value of
+0.70 as <span class="math inline">T</span> grows, as low as 0.082 at
+<span class="math inline">T = 4</span> and back to 0.640 at <span
+class="math inline">T = 32</span>, and the leading-term prediction of
+<span class="math inline">-(1+\rho)/(T-1)</span> (third row) traces this
+climbing path quite accurately (the 0.417 in the <span
+class="math inline">T = 8</span> cell of the table comes from this
+independent resampled experiment, and together with the 0.425 from the
+main sample they are two draws from the same DGP, so a slight
+discrepancy is normal). Arellano-Bond, meanwhile, holds steady near 0.70
+at every <span class="math inline">T</span>, with no <span
+class="math inline">1/T</span> drift, and this is the intuitive picture
+of “adding periods can rescue fixed effects, but the truly consistent
+one is GMM.” Note that fixed effects run a bit below even the leading
+term at short <span class="math inline">T</span>, because the
+higher-order terms of the full Nickell formula are also pulling down in
+short panels.</p>
+<h3 id="arellano-bond-and-blundell-bond">6.4 Arellano-Bond and
+Blundell-Bond</h3>
+<p>Using lagged levels as instruments, run difference GMM and system
+GMM.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>ab <span class="ot">&lt;-</span> <span class="fu">pgmm</span>(y <span class="sc">~</span> <span class="fu">lag</span>(y,<span class="dv">1</span>) <span class="sc">|</span> <span class="fu">lag</span>(y, <span class="dv">2</span><span class="sc">:</span><span class="dv">99</span>), d, <span class="at">effect =</span> <span class="st">&quot;individual&quot;</span>,</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>           <span class="at">model =</span> <span class="st">&quot;twosteps&quot;</span>, <span class="at">transformation =</span> <span class="st">&quot;d&quot;</span>)   <span class="co"># difference GMM</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>bb <span class="ot">&lt;-</span> <span class="fu">pgmm</span>(y <span class="sc">~</span> <span class="fu">lag</span>(y,<span class="dv">1</span>) <span class="sc">|</span> <span class="fu">lag</span>(y, <span class="dv">2</span><span class="sc">:</span><span class="dv">99</span>), d, <span class="at">effect =</span> <span class="st">&quot;individual&quot;</span>,</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>           <span class="at">model =</span> <span class="st">&quot;twosteps&quot;</span>, <span class="at">transformation =</span> <span class="st">&quot;ld&quot;</span>)  <span class="co"># system GMM</span></span></code></pre></div>
+<p>Difference GMM gives <span class="math inline">\hat\rho =
+0.705</span> and system GMM gives 0.701, both landing precisely on the
+true value of 0.70, cleanly pulling out the truth from the gap between
+pooled OLS and fixed effects. The validity of the instruments survives
+testing: Sargan overidentification <span class="math inline">p =
+0.29</span> (no rejection), AR(1) <span class="math inline">p =
+0.000</span> (significant as expected), AR(2) <span
+class="math inline">p = 0.33</span> (insignificant, instruments clean).
+Only a result with this full complement of diagnostics is a persistence
+estimate fit to write into a report.</p>
+<p>The value of system GMM over difference GMM only shows up when
+persistence approaches 1. Use the near-random-walk variant with <span
+class="math inline">\rho = 0.90</span>:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>ab9 <span class="ot">&lt;-</span> <span class="fu">pgmm</span>(y <span class="sc">~</span> <span class="fu">lag</span>(y,<span class="dv">1</span>) <span class="sc">|</span> <span class="fu">lag</span>(y,<span class="dv">2</span><span class="sc">:</span><span class="dv">99</span>), dp, <span class="at">model=</span><span class="st">&quot;twosteps&quot;</span>, <span class="at">transformation=</span><span class="st">&quot;d&quot;</span>)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>bb9 <span class="ot">&lt;-</span> <span class="fu">pgmm</span>(y <span class="sc">~</span> <span class="fu">lag</span>(y,<span class="dv">1</span>) <span class="sc">|</span> <span class="fu">lag</span>(y,<span class="dv">2</span><span class="sc">:</span><span class="dv">99</span>), dp, <span class="at">model=</span><span class="st">&quot;twosteps&quot;</span>, <span class="at">transformation=</span><span class="st">&quot;ld&quot;</span>)</span></code></pre></div>
+<p>Difference GMM gives <span class="math inline">\hat\rho =
+0.809</span> with standard error 0.119, both biased (far from 0.90) and
+imprecise (large standard error), exactly the symptom of lagged levels
+degenerating into weak instruments. System GMM gives 0.911 with standard
+error 0.017, greatly improving both accuracy and precision. Adding the
+“lagged difference as instrument for the levels equation” moment
+condition rescues identification near a random walk.</p>
+<figure>
+<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' viewBox='0 0 777.60 309.60' role="img" aria-label="Left: three estimates of the promotion effect in the static panel (truth 0.50). Pooled OLS (0.95) and random effects (0.74) are inflated by merchant talent, and only fixed effects (0.51) recover the truth. Right: four estimates of persistence in the dynamic panel (truth 0.70). Pooled OLS (0.95) runs high, fixed effects (0.42) are pressed down by Nickell bias, the two straddle the truth, and both Arellano-Bond and Blundell-Bond GMM recover 0.70." style="max-width:100%;height:auto;display:block;margin:0 auto">
+<g class='svglite'>
+<defs>
+  <style type='text/css'><![CDATA[
+    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {
+      fill: none;
+      stroke: #000000;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-miterlimit: 10.00;
+    }
+    .svglite text {
+      white-space: pre;
+    }
+    .svglite g.glyphgroup path {
+      fill: inherit;
+      stroke: none;
+    }
+  ]]></style>
+</defs>
+<rect width='100%' height='100%' style='stroke: none; fill: #FAFAF9;'/>
+<defs>
+  <clipPath id='g1_cpMC4wMHw3NzcuNjB8MC4wMHwzMDkuNjA='>
+    <rect x='0.00' y='0.00' width='777.60' height='309.60' />
+  </clipPath>
+</defs>
+<g clip-path='url(#g1_cpMC4wMHw3NzcuNjB8MC4wMHwzMDkuNjA=)'>
+<rect x='-0.000000000000064' y='0.00' width='777.60' height='309.60' style='stroke-width: 1.07; stroke: #FFFFFF; fill: #FFFFFF;' />
+</g>
+<defs>
+  <clipPath id='g1_cpNTcuMzZ8NzY2LjE0fDQzLjc4fDI4NC44OA=='>
+    <rect x='57.36' y='43.78' width='708.78' height='241.10' />
+  </clipPath>
+</defs>
+<g clip-path='url(#g1_cpNTcuMzZ8NzY2LjE0fDQzLjc4fDI4NC44OA==)'>
+</g>
+<g clip-path='url(#g1_cpMC4wMHw3NzcuNjB8MC4wMHwzMDkuNjA=)'>
+</g>
+<defs>
+  <clipPath id='g1_cpNS40OHwzODkuOTZ8NS40OHwzMDQuMTI='>
+    <rect x='5.48' y='5.48' width='384.48' height='298.64' />
+  </clipPath>
+</defs>
+<g clip-path='url(#g1_cpNS40OHwzODkuOTZ8NS40OHwzMDQuMTI=)'>
+<rect x='5.48' y='5.48' width='384.48' height='298.64' style='stroke-width: 1.16; stroke: none; fill: #FAFAF9;' />
+</g>
+<g clip-path='url(#g1_cpMC4wMHw3NzcuNjB8MC4wMHwzMDkuNjA=)'>
+</g>
+<defs>
+  <clipPath id='g1_cpMzg5Ljk2fDc3Mi4xMnw1LjQ4fDMwNC4xMg=='>
+    <rect x='389.96' y='5.48' width='382.16' height='298.64' />
+  </clipPath>
+</defs>
+<g clip-path='url(#g1_cpMzg5Ljk2fDc3Mi4xMnw1LjQ4fDMwNC4xMg==)'>
+<rect x='389.96' y='5.48' width='382.16' height='298.64' style='stroke-width: 1.16; stroke: none; fill: #FAFAF9;' />
+</g>
+<g clip-path='url(#g1_cpMC4wMHw3NzcuNjB8MC4wMHwzMDkuNjA=)'>
+</g>
+<defs>
+  <clipPath id='g1_cpNTcuMzZ8MzgzLjk5fDQzLjc4fDI4NC44OA=='>
+    <rect x='57.36' y='43.78' width='326.62' height='241.10' />
+  </clipPath>
+</defs>
+<g clip-path='url(#g1_cpNTcuMzZ8MzgzLjk5fDQzLjc4fDI4NC44OA==)'>
+<rect x='57.36' y='43.78' width='326.62' height='241.10' style='stroke-width: 1.16; stroke: none; fill: #FAFAF9;' />
+<polyline points='57.36,284.88 383.99,284.88 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<polyline points='57.36,227.47 383.99,227.47 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<polyline points='57.36,170.07 383.99,170.07 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<polyline points='57.36,112.67 383.99,112.67 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<polyline points='57.36,55.26 383.99,55.26 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<polyline points='118.60,284.88 118.60,43.78 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<polyline points='220.67,284.88 220.67,43.78 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<polyline points='322.74,284.88 322.74,43.78 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<rect x='86.96' y='66.48' width='63.28' height='218.39' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #B7791F;' />
+<rect x='189.03' y='115.19' width='63.28' height='169.69' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #6B7C3A;' />
+<rect x='291.10' y='168.62' width='63.28' height='116.26' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #1A365D;' />
+<line x1='57.36' y1='170.07' x2='383.99' y2='170.07' style='stroke-width: 1.28; stroke: #C53030; stroke-dasharray: 6.83,6.83; stroke-linecap: butt;' />
+<text x='118.60' y='63.88' text-anchor='middle' style='font-size: 9.10px;fill: #2D3748; font-family: "Arial";' textLength='17.72px' lengthAdjust='spacingAndGlyphs'>0.95</text>
+<text x='220.67' y='112.59' text-anchor='middle' style='font-size: 9.10px;fill: #2D3748; font-family: "Arial";' textLength='17.72px' lengthAdjust='spacingAndGlyphs'>0.74</text>
+<text x='322.74' y='166.02' text-anchor='middle' style='font-size: 9.10px;fill: #2D3748; font-family: "Arial";' textLength='17.72px' lengthAdjust='spacingAndGlyphs'>0.51</text>
+<text x='87.98' y='166.34' style='font-size: 8.82px;fill: #C53030; font-family: "Arial";' textLength='37.28px' lengthAdjust='spacingAndGlyphs'>truth 0.50</text>
+</g>
+<g clip-path='url(#g1_cpMC4wMHw3NzcuNjB8MC4wMHwzMDkuNjA=)'>
+<text x='51.98' y='288.31' text-anchor='end' style='font-size: 9.60px;fill: #2D3748; font-family: "Arial";' textLength='18.66px' lengthAdjust='spacingAndGlyphs'>0.00</text>
+<text x='51.98' y='230.91' text-anchor='end' style='font-size: 9.60px;fill: #2D3748; font-family: "Arial";' textLength='18.66px' lengthAdjust='spacingAndGlyphs'>0.25</text>
+<text x='51.98' y='173.50' text-anchor='end' style='font-size: 9.60px;fill: #2D3748; font-family: "Arial";' textLength='18.66px' lengthAdjust='spacingAndGlyphs'>0.50</text>
+<text x='51.98' y='116.10' text-anchor='end' style='font-size: 9.60px;fill: #2D3748; font-family: "Arial";' textLength='18.66px' lengthAdjust='spacingAndGlyphs'>0.75</text>
+<text x='51.98' y='58.70' text-anchor='end' style='font-size: 9.60px;fill: #2D3748; font-family: "Arial";' textLength='18.66px' lengthAdjust='spacingAndGlyphs'>1.00</text>
+<text x='118.60' y='296.35' text-anchor='middle' style='font-size: 8.50px;fill: #2D3748; font-family: "Arial";' textLength='44.94px' lengthAdjust='spacingAndGlyphs'>pooled OLS</text>
+<text x='220.67' y='296.35' text-anchor='middle' style='font-size: 8.50px;fill: #2D3748; font-family: "Arial";' textLength='56.09px' lengthAdjust='spacingAndGlyphs'>random effects</text>
+<text x='322.74' y='296.35' text-anchor='middle' style='font-size: 8.50px;fill: #2D3748; font-family: "Arial";' textLength='45.22px' lengthAdjust='spacingAndGlyphs'>fixed effects</text>
+<text transform='translate(25.28,167.62) rotate(-90)' style='font-size: 12.00px;fill: #2D3748; font-family: "Symbol";' textLength='6.59px' lengthAdjust='spacingAndGlyphs'>β</text>
+<text transform='translate(20.20,167.15) rotate(-90)' style='font-size: 12.00px;fill: #2D3748; font-family: "Arial";' textLength='5.62px' lengthAdjust='spacingAndGlyphs'>^</text>
+<text x='57.36' y='35.81' style='font-size: 9.50px;fill: #718096; font-family: "Arial";' textLength='267.12px' lengthAdjust='spacingAndGlyphs'>OLS/RE inflated by merchant quality; only FE recovers the truth</text>
+<text x='57.36' y='20.41' style='font-size: 12.50px; font-weight: bold;fill: #1A365D; font-family: "Arial";' textLength='198.59px' lengthAdjust='spacingAndGlyphs'>Static panel: effect of promotions</text>
+</g>
+<defs>
+  <clipPath id='g1_cpNDM5LjUyfDc2Ni4xNHw0My43OHwyODQuODg='>
+    <rect x='439.52' y='43.78' width='326.62' height='241.10' />
+  </clipPath>
+</defs>
+<g clip-path='url(#g1_cpNDM5LjUyfDc2Ni4xNHw0My43OHwyODQuODg=)'>
+<rect x='439.52' y='43.78' width='326.62' height='241.10' style='stroke-width: 1.16; stroke: none; fill: #FAFAF9;' />
+<polyline points='439.52,284.88 766.14,284.88 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<polyline points='439.52,227.47 766.14,227.47 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<polyline points='439.52,170.07 766.14,170.07 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<polyline points='439.52,112.67 766.14,112.67 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<polyline points='439.52,55.26 766.14,55.26 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<polyline points='486.18,284.88 486.18,43.78 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<polyline points='563.95,284.88 563.95,43.78 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<polyline points='641.72,284.88 641.72,43.78 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<polyline points='719.48,284.88 719.48,43.78 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<rect x='459.74' y='67.65' width='52.88' height='217.23' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #B7791F;' />
+<rect x='537.51' y='187.39' width='52.88' height='97.49' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #2B6CB0;' />
+<rect x='615.27' y='123.12' width='52.88' height='161.76' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #1A365D;' />
+<rect x='693.04' y='124.03' width='52.88' height='160.85' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #6B7C3A;' />
+<line x1='439.52' y1='124.15' x2='766.14' y2='124.15' style='stroke-width: 1.28; stroke: #C53030; stroke-dasharray: 6.83,6.83; stroke-linecap: butt;' />
+<text x='486.18' y='65.04' text-anchor='middle' style='font-size: 9.10px;fill: #2D3748; font-family: "Arial";' textLength='17.72px' lengthAdjust='spacingAndGlyphs'>0.95</text>
+<text x='563.95' y='184.78' text-anchor='middle' style='font-size: 9.10px;fill: #2D3748; font-family: "Arial";' textLength='17.72px' lengthAdjust='spacingAndGlyphs'>0.42</text>
+<text x='641.72' y='120.51' text-anchor='middle' style='font-size: 9.10px;fill: #2D3748; font-family: "Arial";' textLength='17.72px' lengthAdjust='spacingAndGlyphs'>0.70</text>
+<text x='719.48' y='121.42' text-anchor='middle' style='font-size: 9.10px;fill: #2D3748; font-family: "Arial";' textLength='17.72px' lengthAdjust='spacingAndGlyphs'>0.70</text>
+<text x='462.85' y='120.41' style='font-size: 8.82px;fill: #C53030; font-family: "Arial";' textLength='37.28px' lengthAdjust='spacingAndGlyphs'>truth 0.70</text>
+</g>
+<g clip-path='url(#g1_cpMC4wMHw3NzcuNjB8MC4wMHwzMDkuNjA=)'>
+<text x='434.14' y='288.31' text-anchor='end' style='font-size: 9.60px;fill: #2D3748; font-family: "Arial";' textLength='18.66px' lengthAdjust='spacingAndGlyphs'>0.00</text>
+<text x='434.14' y='230.91' text-anchor='end' style='font-size: 9.60px;fill: #2D3748; font-family: "Arial";' textLength='18.66px' lengthAdjust='spacingAndGlyphs'>0.25</text>
+<text x='434.14' y='173.50' text-anchor='end' style='font-size: 9.60px;fill: #2D3748; font-family: "Arial";' textLength='18.66px' lengthAdjust='spacingAndGlyphs'>0.50</text>
+<text x='434.14' y='116.10' text-anchor='end' style='font-size: 9.60px;fill: #2D3748; font-family: "Arial";' textLength='18.66px' lengthAdjust='spacingAndGlyphs'>0.75</text>
+<text x='434.14' y='58.70' text-anchor='end' style='font-size: 9.60px;fill: #2D3748; font-family: "Arial";' textLength='18.66px' lengthAdjust='spacingAndGlyphs'>1.00</text>
+<text x='486.18' y='295.99' text-anchor='middle' style='font-size: 8.00px;fill: #2D3748; font-family: "Arial";' textLength='42.28px' lengthAdjust='spacingAndGlyphs'>pooled OLS</text>
+<text x='563.95' y='295.99' text-anchor='middle' style='font-size: 8.00px;fill: #2D3748; font-family: "Arial";' textLength='42.55px' lengthAdjust='spacingAndGlyphs'>fixed effects</text>
+<text x='641.72' y='295.99' text-anchor='middle' style='font-size: 8.00px;fill: #2D3748; font-family: "Arial";' textLength='50.77px' lengthAdjust='spacingAndGlyphs'>Arellano-Bond</text>
+<text x='719.48' y='295.99' text-anchor='middle' style='font-size: 8.00px;fill: #2D3748; font-family: "Arial";' textLength='49.88px' lengthAdjust='spacingAndGlyphs'>Blundell-Bond</text>
+<text transform='translate(407.31,167.62) rotate(-90)' style='font-size: 12.00px;fill: #2D3748; font-family: "Symbol";' textLength='6.59px' lengthAdjust='spacingAndGlyphs'>ρ</text>
+<text transform='translate(404.68,167.15) rotate(-90)' style='font-size: 12.00px;fill: #2D3748; font-family: "Arial";' textLength='5.62px' lengthAdjust='spacingAndGlyphs'>^</text>
+<text x='439.52' y='35.81' style='font-size: 9.50px;fill: #718096; font-family: "Arial";' textLength='257.05px' lengthAdjust='spacingAndGlyphs'>OLS biased up, FE biased down (Nickell); GMM recovers rho</text>
+<text x='439.52' y='20.41' style='font-size: 12.50px; font-weight: bold;fill: #1A365D; font-family: "Arial";' textLength='212.55px' lengthAdjust='spacingAndGlyphs'>Dynamic panel: persistence of GMV</text>
+</g>
+</g>
+</svg>
+<figcaption aria-hidden="true">Left: three estimates of the promotion
+effect in the static panel (truth 0.50). Pooled OLS (0.95) and random
+effects (0.74) are inflated by merchant talent, and only fixed effects
+(0.51) recover the truth. Right: four estimates of persistence in the
+dynamic panel (truth 0.70). Pooled OLS (0.95) runs high, fixed effects
+(0.42) are pressed down by Nickell bias, the two straddle the truth, and
+both Arellano-Bond and Blundell-Bond GMM recover 0.70.</figcaption>
+</figure>
+<figure>
+<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' viewBox='0 0 792.00 316.80' role="img" aria-label="Left: Nickell bias fading with panel length T. Fixed effects (blue) badly understate persistence at short T and climb toward the truth of 0.70 as T grows, with the -(1+\rho)/(T-1) leading term (grey dashed) tracing the path; Arellano-Bond (navy) holds steady at 0.70 across all T with no 1/T drift. Right: when persistence approaches 1 (truth 0.90), difference GMM (gold) is biased with an extremely wide confidence interval because the lagged levels degenerate into weak instruments, while system GMM (navy) rescues precision through the extra moment conditions of the levels equation." style="max-width:100%;height:auto;display:block;margin:0 auto">
+<g class='svglite'>
+<defs>
+  <style type='text/css'><![CDATA[
+    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {
+      fill: none;
+      stroke: #000000;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-miterlimit: 10.00;
+    }
+    .svglite text {
+      white-space: pre;
+    }
+    .svglite g.glyphgroup path {
+      fill: inherit;
+      stroke: none;
+    }
+  ]]></style>
+</defs>
+<rect width='100%' height='100%' style='stroke: none; fill: #FAFAF9;'/>
+<defs>
+  <clipPath id='g2_cpMC4wMHw3OTIuMDB8MC4wMHwzMTYuODA='>
+    <rect x='0.00' y='0.00' width='792.00' height='316.80' />
+  </clipPath>
+</defs>
+<g clip-path='url(#g2_cpMC4wMHw3OTIuMDB8MC4wMHwzMTYuODA=)'>
+<rect x='-0.000000000000064' y='-0.00000000000011' width='792.00' height='316.80' style='stroke-width: 1.07; stroke: #FFFFFF; fill: #FFFFFF;' />
+</g>
+<defs>
+  <clipPath id='g2_cpNDkuNzF8NzgwLjU0fDg0Ljk3fDI3Ni45Nw=='>
+    <rect x='49.71' y='84.97' width='730.83' height='192.00' />
+  </clipPath>
+</defs>
+<g clip-path='url(#g2_cpNDkuNzF8NzgwLjU0fDg0Ljk3fDI3Ni45Nw==)'>
+</g>
+<g clip-path='url(#g2_cpMC4wMHw3OTIuMDB8MC4wMHwzMTYuODA=)'>
+</g>
+<defs>
+  <clipPath id='g2_cpNS40OHw0MzMuODF8NS40OHwzMTEuMzI='>
+    <rect x='5.48' y='5.48' width='428.33' height='305.84' />
+  </clipPath>
+</defs>
+<g clip-path='url(#g2_cpNS40OHw0MzMuODF8NS40OHwzMTEuMzI=)'>
+<rect x='5.48' y='5.48' width='428.33' height='305.84' style='stroke-width: 1.16; stroke: none; fill: #FAFAF9;' />
+</g>
+<g clip-path='url(#g2_cpMC4wMHw3OTIuMDB8MC4wMHwzMTYuODA=)'>
+</g>
+<defs>
+  <clipPath id='g2_cpNDMzLjgxfDc4Ni41Mnw1LjQ4fDMxMS4zMg=='>
+    <rect x='433.81' y='5.48' width='352.71' height='305.84' />
+  </clipPath>
+</defs>
+<g clip-path='url(#g2_cpNDMzLjgxfDc4Ni41Mnw1LjQ4fDMxMS4zMg==)'>
+<rect x='433.81' y='5.48' width='352.71' height='305.84' style='stroke-width: 1.16; stroke: none; fill: #FAFAF9;' />
+</g>
+<g clip-path='url(#g2_cpMC4wMHw3OTIuMDB8MC4wMHwzMTYuODA=)'>
+</g>
+<defs>
+  <clipPath id='g2_cpNDkuNzF8NDI3LjgzfDg0Ljk3fDI3Ni45Nw=='>
+    <rect x='49.71' y='84.97' width='378.13' height='192.00' />
+  </clipPath>
+</defs>
+<g clip-path='url(#g2_cpNDkuNzF8NDI3LjgzfDg0Ljk3fDI3Ni45Nw==)'>
+<rect x='49.71' y='84.97' width='378.13' height='192.00' style='stroke-width: 1.16; stroke: none; fill: #FAFAF9;' />
+<polyline points='49.71,235.99 427.83,235.99 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<polyline points='49.71,181.26 427.83,181.26 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<polyline points='49.71,126.54 427.83,126.54 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<polyline points='66.90,276.97 66.90,84.97 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<polyline points='116.00,276.97 116.00,84.97 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<polyline points='214.22,276.97 214.22,84.97 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<polyline points='410.65,276.97 410.65,84.97 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<line x1='49.71' y1='99.17' x2='427.83' y2='99.17' style='stroke-width: 1.07; stroke: #C53030; stroke-dasharray: 5.69,5.69; stroke-linecap: butt;' />
+<polyline points='66.90,97.79 116.00,102.89 214.22,99.31 410.65,98.78 ' style='stroke-width: 1.92; stroke: #1A365D; stroke-linecap: butt;' />
+<polyline points='66.90,254.23 116.00,165.63 214.22,130.18 410.65,114.18 ' style='stroke-width: 1.92; stroke: #718096; stroke-dasharray: 10.24,10.24; stroke-linecap: butt;' />
+<polyline points='66.90,268.25 116.00,176.64 214.22,134.66 410.65,115.58 ' style='stroke-width: 1.92; stroke: #2B6CB0; stroke-linecap: butt;' />
+<circle cx='66.90' cy='268.25' r='2.31' style='stroke-width: 0.77; stroke: #2B6CB0; fill: #2B6CB0;' />
+<circle cx='116.00' cy='176.64' r='2.31' style='stroke-width: 0.77; stroke: #2B6CB0; fill: #2B6CB0;' />
+<circle cx='214.22' cy='134.66' r='2.31' style='stroke-width: 0.77; stroke: #2B6CB0; fill: #2B6CB0;' />
+<circle cx='410.65' cy='115.58' r='2.31' style='stroke-width: 0.77; stroke: #2B6CB0; fill: #2B6CB0;' />
+<circle cx='66.90' cy='97.79' r='2.31' style='stroke-width: 0.77; stroke: #1A365D; fill: #1A365D;' />
+<circle cx='116.00' cy='102.89' r='2.31' style='stroke-width: 0.77; stroke: #1A365D; fill: #1A365D;' />
+<circle cx='214.22' cy='99.31' r='2.31' style='stroke-width: 0.77; stroke: #1A365D; fill: #1A365D;' />
+<circle cx='410.65' cy='98.78' r='2.31' style='stroke-width: 0.77; stroke: #1A365D; fill: #1A365D;' />
+<circle cx='66.90' cy='254.23' r='2.31' style='stroke-width: 0.77; stroke: #718096; fill: #718096;' />
+<circle cx='116.00' cy='165.63' r='2.31' style='stroke-width: 0.77; stroke: #718096; fill: #718096;' />
+<circle cx='214.22' cy='130.18' r='2.31' style='stroke-width: 0.77; stroke: #718096; fill: #718096;' />
+<circle cx='410.65' cy='114.18' r='2.31' style='stroke-width: 0.77; stroke: #718096; fill: #718096;' />
+<text x='336.99' y='96.76' text-anchor='middle' style='font-size: 8.54px;fill: #C53030; font-family: "Arial";' textLength='36.09px' lengthAdjust='spacingAndGlyphs'>truth 0.70</text>
+</g>
+<g clip-path='url(#g2_cpMC4wMHw3OTIuMDB8MC4wMHwzMTYuODA=)'>
+<text x='44.33' y='239.42' text-anchor='end' style='font-size: 9.60px;fill: #2D3748; font-family: "Arial";' textLength='13.33px' lengthAdjust='spacingAndGlyphs'>0.2</text>
+<text x='44.33' y='184.70' text-anchor='end' style='font-size: 9.60px;fill: #2D3748; font-family: "Arial";' textLength='13.33px' lengthAdjust='spacingAndGlyphs'>0.4</text>
+<text x='44.33' y='129.97' text-anchor='end' style='font-size: 9.60px;fill: #2D3748; font-family: "Arial";' textLength='13.33px' lengthAdjust='spacingAndGlyphs'>0.6</text>
+<text x='66.90' y='289.22' text-anchor='middle' style='font-size: 9.60px;fill: #2D3748; font-family: "Arial";' textLength='5.33px' lengthAdjust='spacingAndGlyphs'>4</text>
+<text x='116.00' y='289.22' text-anchor='middle' style='font-size: 9.60px;fill: #2D3748; font-family: "Arial";' textLength='5.33px' lengthAdjust='spacingAndGlyphs'>8</text>
+<text x='214.22' y='289.22' text-anchor='middle' style='font-size: 9.60px;fill: #2D3748; font-family: "Arial";' textLength='10.66px' lengthAdjust='spacingAndGlyphs'>16</text>
+<text x='410.65' y='289.22' text-anchor='middle' style='font-size: 9.60px;fill: #2D3748; font-family: "Arial";' textLength='10.66px' lengthAdjust='spacingAndGlyphs'>32</text>
+<text x='238.77' y='302.82' text-anchor='middle' style='font-size: 12.00px;fill: #2D3748; font-family: "Arial";' textLength='75.81px' lengthAdjust='spacingAndGlyphs'>panel length T</text>
+<text transform='translate(22.83,184.27) rotate(-90)' style='font-size: 12.00px;fill: #2D3748; font-family: "Symbol";' textLength='6.59px' lengthAdjust='spacingAndGlyphs'>ρ</text>
+<text transform='translate(20.20,183.79) rotate(-90)' style='font-size: 12.00px;fill: #2D3748; font-family: "Arial";' textLength='5.62px' lengthAdjust='spacingAndGlyphs'>^</text>
+<line x1='108.76' y1='58.40' x2='122.59' y2='58.40' style='stroke-width: 1.92; stroke: #1A365D; stroke-linecap: butt;' />
+<circle cx='115.67' cy='58.40' r='2.31' style='stroke-width: 0.77; stroke: #1A365D; fill: #1A365D;' />
+<line x1='195.00' y1='58.40' x2='208.82' y2='58.40' style='stroke-width: 1.92; stroke: #718096; stroke-dasharray: 10.24,10.24; stroke-linecap: butt;' />
+<circle cx='201.91' cy='58.40' r='2.31' style='stroke-width: 0.77; stroke: #718096; fill: #718096;' />
+<line x1='306.98' y1='58.40' x2='320.81' y2='58.40' style='stroke-width: 1.92; stroke: #2B6CB0; stroke-linecap: butt;' />
+<circle cx='313.89' cy='58.40' r='2.31' style='stroke-width: 0.77; stroke: #2B6CB0; fill: #2B6CB0;' />
+<text x='130.29' y='61.62' style='font-size: 9.00px;fill: #2D3748; font-family: "Arial";' textLength='57.00px' lengthAdjust='spacingAndGlyphs'>Arellano-Bond</text>
+<text x='216.53' y='61.62' style='font-size: 9.00px;fill: #2D3748; font-family: "Arial";' textLength='82.75px' lengthAdjust='spacingAndGlyphs'>Nickell -(1+rho)/(T-1)</text>
+<text x='328.51' y='61.62' style='font-size: 9.00px;fill: #2D3748; font-family: "Arial";' textLength='42.00px' lengthAdjust='spacingAndGlyphs'>within / FE</text>
+<text x='49.71' y='35.81' style='font-size: 9.50px;fill: #718096; font-family: "Arial";' textLength='234.03px' lengthAdjust='spacingAndGlyphs'>FE attenuates rho at short T and creeps up; GMM is flat</text>
+<text x='49.71' y='20.41' style='font-size: 12.50px; font-weight: bold;fill: #1A365D; font-family: "Arial";' textLength='171.61px' lengthAdjust='spacingAndGlyphs'>Nickell bias vanishes like 1/T</text>
+</g>
+<defs>
+  <clipPath id='g2_cpNDc4LjA0fDc4MC41NHw4NC45N3wyNzYuOTc='>
+    <rect x='478.04' y='84.97' width='302.50' height='192.00' />
+  </clipPath>
+</defs>
+<g clip-path='url(#g2_cpNDc4LjA0fDc4MC41NHw4NC45N3wyNzYuOTc=)'>
+<rect x='478.04' y='84.97' width='302.50' height='192.00' style='stroke-width: 1.16; stroke: none; fill: #FAFAF9;' />
+<polyline points='478.04,259.65 780.54,259.65 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<polyline points='478.04,222.07 780.54,222.07 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<polyline points='478.04,184.49 780.54,184.49 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<polyline points='478.04,146.92 780.54,146.92 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<polyline points='478.04,109.34 780.54,109.34 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<polyline points='560.54,276.97 560.54,84.97 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<polyline points='698.04,276.97 698.04,84.97 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<line x1='478.04' y1='146.92' x2='780.54' y2='146.92' style='stroke-width: 1.28; stroke: #C53030; stroke-dasharray: 6.83,6.83; stroke-linecap: butt;' />
+<polyline points='549.54,93.70 571.54,93.70 ' style='stroke-width: 2.13; stroke: #B7791F; stroke-linecap: butt;' />
+<polyline points='560.54,93.70 560.54,268.25 ' style='stroke-width: 2.13; stroke: #B7791F; stroke-linecap: butt;' />
+<polyline points='549.54,268.25 571.54,268.25 ' style='stroke-width: 2.13; stroke: #B7791F; stroke-linecap: butt;' />
+<polyline points='687.04,130.22 709.04,130.22 ' style='stroke-width: 2.13; stroke: #1A365D; stroke-linecap: butt;' />
+<polyline points='698.04,130.22 698.04,155.14 ' style='stroke-width: 2.13; stroke: #1A365D; stroke-linecap: butt;' />
+<polyline points='687.04,155.14 709.04,155.14 ' style='stroke-width: 2.13; stroke: #1A365D; stroke-linecap: butt;' />
+<circle cx='560.54' cy='180.97' r='3.16' style='stroke-width: 0.77; stroke: #B7791F; fill: #B7791F;' />
+<circle cx='698.04' cy='142.68' r='3.16' style='stroke-width: 0.77; stroke: #1A365D; fill: #1A365D;' />
+<text x='566.74' y='184.23' style='font-size: 9.10px;fill: #2D3748; font-family: "Arial";' textLength='17.72px' lengthAdjust='spacingAndGlyphs'>0.81</text>
+<text x='704.24' y='145.94' style='font-size: 9.10px;fill: #2D3748; font-family: "Arial";' textLength='17.72px' lengthAdjust='spacingAndGlyphs'>0.91</text>
+<text x='505.54' y='144.34' style='font-size: 8.54px;fill: #C53030; font-family: "Arial";' textLength='36.09px' lengthAdjust='spacingAndGlyphs'>truth 0.90</text>
+</g>
+<g clip-path='url(#g2_cpMC4wMHw3OTIuMDB8MC4wMHwzMTYuODA=)'>
+<text x='472.66' y='263.08' text-anchor='end' style='font-size: 9.60px;fill: #2D3748; font-family: "Arial";' textLength='13.33px' lengthAdjust='spacingAndGlyphs'>0.6</text>
+<text x='472.66' y='225.50' text-anchor='end' style='font-size: 9.60px;fill: #2D3748; font-family: "Arial";' textLength='13.33px' lengthAdjust='spacingAndGlyphs'>0.7</text>
+<text x='472.66' y='187.93' text-anchor='end' style='font-size: 9.60px;fill: #2D3748; font-family: "Arial";' textLength='13.33px' lengthAdjust='spacingAndGlyphs'>0.8</text>
+<text x='472.66' y='150.35' text-anchor='end' style='font-size: 9.60px;fill: #2D3748; font-family: "Arial";' textLength='13.33px' lengthAdjust='spacingAndGlyphs'>0.9</text>
+<text x='472.66' y='112.78' text-anchor='end' style='font-size: 9.60px;fill: #2D3748; font-family: "Arial";' textLength='13.33px' lengthAdjust='spacingAndGlyphs'>1.0</text>
+<text x='560.54' y='288.44' text-anchor='middle' style='font-size: 8.50px;fill: #2D3748; font-family: "Arial";' textLength='60.33px' lengthAdjust='spacingAndGlyphs'>difference GMM</text>
+<text x='698.04' y='288.44' text-anchor='middle' style='font-size: 8.50px;fill: #2D3748; font-family: "Arial";' textLength='50.05px' lengthAdjust='spacingAndGlyphs'>system GMM</text>
+<text transform='translate(451.16,210.96) rotate(-90)' style='font-size: 12.00px;fill: #2D3748; font-family: "Symbol";' textLength='6.59px' lengthAdjust='spacingAndGlyphs'>ρ</text>
+<text transform='translate(448.53,210.48) rotate(-90)' style='font-size: 12.00px;fill: #2D3748; font-family: "Arial";' textLength='5.62px' lengthAdjust='spacingAndGlyphs'>^</text>
+<text transform='translate(451.16,202.15) rotate(-90)' style='font-size: 12.00px;fill: #2D3748; font-family: "Symbol";' textLength='6.59px' lengthAdjust='spacingAndGlyphs'>±</text>
+<text transform='translate(451.16,193.34) rotate(-90)' style='font-size: 12.00px;fill: #2D3748; font-family: "Arial";' textLength='23.34px' lengthAdjust='spacingAndGlyphs'>1.96</text>
+<text transform='translate(451.16,170.00) rotate(-90)' style='font-size: 12.00px;fill: #2D3748; font-family: "Symbol";' textLength='3.00px' lengthAdjust='spacingAndGlyphs'> </text>
+<text transform='translate(451.16,166.99) rotate(-90)' style='font-size: 12.00px;fill: #2D3748; font-family: "Arial";' textLength='8.00px' lengthAdjust='spacingAndGlyphs'>S</text>
+<text transform='translate(451.16,158.99) rotate(-90)' style='font-size: 12.00px;fill: #2D3748; font-family: "Arial";' textLength='8.00px' lengthAdjust='spacingAndGlyphs'>E</text>
+<text x='478.04' y='35.81' style='font-size: 9.50px;fill: #718096; font-family: "Arial";' textLength='199.17px' lengthAdjust='spacingAndGlyphs'>system GMM's level moments restore precision</text>
+<text x='478.04' y='20.41' style='font-size: 12.50px; font-weight: bold;fill: #1A365D; font-family: "Arial";' textLength='291.05px' lengthAdjust='spacingAndGlyphs'>As rho approaches 1, difference GMM goes weak</text>
+</g>
+</g>
+</svg>
+<figcaption aria-hidden="true">Left: Nickell bias fading with panel
+length <span class="math inline">T</span>. Fixed effects (blue) badly
+understate persistence at short <span class="math inline">T</span> and
+climb toward the truth of 0.70 as <span class="math inline">T</span>
+grows, with the <span class="math inline">-(1+\rho)/(T-1)</span> leading
+term (grey dashed) tracing the path; Arellano-Bond (navy) holds steady
+at 0.70 across all <span class="math inline">T</span> with no <span
+class="math inline">1/T</span> drift. Right: when persistence approaches
+1 (truth 0.90), difference GMM (gold) is biased with an extremely wide
+confidence interval because the lagged levels degenerate into weak
+instruments, while system GMM (navy) rescues precision through the extra
+moment conditions of the levels equation.</figcaption>
+</figure>
+<h3 id="the-full-reconciliation">6.5 The Full Reconciliation</h3>
+<p>Putting the key numbers side by side:</p>
+<div class="table-scroll">
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr>
+<th>Quantity</th>
+<th>Estimator</th>
+<th>Result</th>
+<th>Target</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Promotion effect <span class="math inline">\beta</span></td>
+<td>pooled OLS / RE / FE</td>
+<td>0.951 / 0.739 / 0.506</td>
+<td>truth 0.50, only FE correct</td>
+</tr>
+<tr>
+<td>Hausman</td>
+<td>FE vs RE</td>
+<td><span class="math inline">\chi^2 = 3362</span>, <span
+class="math inline">p \approx 0</span></td>
+<td>reject RE, use FE</td>
+</tr>
+<tr>
+<td>Persistence <span class="math inline">\rho</span></td>
+<td>pooled OLS / FE</td>
+<td>0.946 / 0.425</td>
+<td>truth 0.70 straddled</td>
+</tr>
+<tr>
+<td>Persistence <span class="math inline">\rho</span></td>
+<td>difference GMM / system GMM</td>
+<td>0.705 / 0.701</td>
+<td>truth 0.70, both recovered</td>
+</tr>
+<tr>
+<td>AB diagnostics</td>
+<td>Sargan / AR(1) / AR(2)</td>
+<td>0.29 / 0.000 / 0.33</td>
+<td>instruments valid</td>
+</tr>
+<tr>
+<td><span class="math inline">\rho \to 1</span></td>
+<td>difference / system GMM</td>
+<td>0.809 (SE 0.119) / 0.911 (SE 0.017)</td>
+<td>truth 0.90</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The reconciliation of this section can be summed up as follows: in
+the static panel, fixed effects are the only estimator to recover the
+true promotion effect, and Hausman decisively rejects random effects;
+the same fixed effects, in the dynamic panel, are pressed down by
+Nickell bias and, together with the inflated pooled OLS, straddle the
+true persistence; Nickell bias fades with <span
+class="math inline">T</span> at rate <span
+class="math inline">1/T</span> and the leading term predicts it well,
+while Arellano-Bond is consistent at every <span
+class="math inline">T</span>; both difference and system GMM recover
+persistence to 0.70 and pass the Sargan and AR(2) diagnostics; when
+persistence approaches 1 the lagged level instruments of difference GMM
+become weak, and system GMM rescues precision through the level moment
+conditions.</p>
+<h2 id="failure-modes-and-robustness">7 Failure Modes and
+Robustness</h2>
+<p>The setups in the simulation are manufactured, and in real panels
+they hide deeper. This section lays out the most common failure modes
+and the responses to them.</p>
+<p>Fixed or random effects is the first choice to answer head-on. Random
+effects are more efficient and can also estimate time-invariant
+covariates, but they wager on the strong assumption that “the individual
+effect is uncorrelated with the covariates,” which in observational data
+usually does not hold (units that select into a state often differ in
+unobservable dimensions to begin with). The Hausman test gives a
+data-driven criterion, but it is not a cure-all: a failure to reject by
+Hausman does not mean random effects are correct, only perhaps that the
+test lacks power; and the difference of variances that Hausman uses can
+be non-positive-definite in finite samples, making the statistic
+negative and uninterpretable. The safe default is that, unless there is
+strong reason to believe the individual effect is exogenous and
+time-invariant covariates truly need estimating, use fixed effects and
+put robustness ahead of efficiency.</p>
+<p>Strict exogeneity is the most easily overlooked weak spot of fixed
+effects. It is violated not only by a lagged dependent variable but by
+any covariate that “responds to past shocks”: promotion adjusted to last
+period’s performance, price adjusted to last period’s demand, investment
+adjusted to last period’s profit; these feedbacks all make the covariate
+correlate with past errors, breaking strict exogeneity and biasing fixed
+effects. The key to judging is to ask: could the value of this covariate
+be influenced by past outcomes. If so, treat it as a predetermined
+variable and use an instrument under sequential exogeneity (a lagged
+value) rather than putting it straight into a fixed effects
+regression.</p>
+<p>Nickell bias lurks in any short panel with a lagged dependent
+variable, and large sample size is no help. Any setup with a lagged
+outcome on the right-hand side and a not-large <span
+class="math inline">T</span> cannot trust the fixed effects estimate of
+persistence directly and should use dynamic panel GMM. A hidden variant
+is that even if what you care about is not persistence itself but the
+effect of some covariate, as long as a lagged dependent variable is
+included in the model to control for dynamics, Nickell bias will seep
+along the correlation into that covariate’s coefficient, so the
+seemingly harmless move of “adding a lagged dependent variable to
+control for dynamics a bit” biases the entire fixed effects
+regression.</p>
+<p>Dynamic panel GMM has a few things of its own to watch. Too many
+instruments is the most common pit: the instrument count grows
+quadratically with <span class="math inline">T</span>, and too many make
+GMM lean toward fixed effects and rob the Sargan test of power; a model
+with thousands of instruments will almost surely fail to be rejected by
+Sargan, and that is not reassurance but an alarm of overfitting. The
+response is to limit the lag depth or collapse the instruments, and
+report the instrument count and run robustness checks on it. When
+persistence approaches 1 difference GMM has weak instruments and must
+rely on system GMM, but the extra moment conditions of system GMM depend
+on initial-condition stationarity, and when that assumption fails system
+GMM is instead worse, so reporting both GMMs and seeing whether they
+agree is a basic robustness exercise. Serial correlation in the error
+makes the lagged instruments fail, and the AR(2) test is the gatekeeper;
+once it rejects, one must use more distant lags as instruments or
+reexamine the specification.</p>
+<p>Stringing these failure modes together, the robustness of panel
+methods rests at bottom on two judgments: first, whether your
+unobservable heterogeneity really is time-invariant and your covariates
+really are strictly exogenous, which decides whether fixed effects can
+be used; second, whether your model is dynamic and whether <span
+class="math inline">T</span> is long enough, which decides whether
+Nickell bias matters and whether dynamic panel GMM should be brought in.
+Once these two judgments are thought through clearly, the panel’s gift
+of differencing out heterogeneity is truly in hand; if they are not,
+demeaning is a double-edged sword that may scrub out contamination for
+you or quietly carve a <span class="math inline">1/T</span> scar into
+your dynamic parameter.</p>
+<h2 id="further-reading">8 Further Reading</h2>
+<div class="readings">
+<p>Required reading, in suggested order:</p>
+<ul>
+<li>Wooldridge (2010, <em>Econometric Analysis of Cross Section and
+Panel Data</em>, 2nd ed.), Chapters 10 to 11. The clearest textbook
+treatment of fixed effects, random effects, and strict versus sequential
+exogeneity, the source of the framework for the static panel part of
+this chapter.</li>
+<li>Nickell (1981, <em>Econometrica</em>). The original derivation of
+the dynamic fixed effects bias, the source of that <span
+class="math inline">-(1+\rho)/(T-1)</span> in Section 3.4 of this
+chapter, short and essential.</li>
+<li>Arellano and Bond (1991, <em>Review of Economic Studies</em>). The
+founding work of difference GMM and the AR(2) and Sargan diagnostics,
+the starting point of dynamic panel empirical work.</li>
+<li>Blundell and Bond (1998, <em>Journal of Econometrics</em>). System
+GMM, to understand why nothing else will do when persistence approaches
+1, read together with Arellano-Bond.</li>
+</ul>
+<p>Further reading:</p>
+<ul>
+<li>Anderson and Hsiao (1981, <em>JASA</em>). The original idea of using
+lagged levels as instruments, the direct forerunner of Arellano-Bond,
+read it to see where the instruments come from.</li>
+<li>Hausman (1978, <em>Econometrica</em>). The original source of
+specification testing, the origin of this chapter’s Hausman test, of a
+piece with the QMLE tests of Chapter 5.</li>
+<li>Mundlak (1978, <em>Econometrica</em>). Writing the individual effect
+as a function of the within means of the covariates, building a bridge
+between fixed and random effects (correlated random effects), another
+angle for understanding what the Hausman test tests.</li>
+<li>Arellano and Bover (1995, <em>Journal of Econometrics</em>). The
+other half of the theoretical foundation for the level moment conditions
+of system GMM, read together with Blundell-Bond.</li>
+<li>Roodman (2009, <em>Stata Journal</em>). The most practical operating
+guide to dynamic panel GMM, giving the clearest account of too many
+instruments, collapsing instruments, and reporting both GMMs, an
+essential checklist before getting your hands dirty.</li>
+<li>Baltagi (<em>Econometric Analysis of Panel Data</em>). The
+authoritative monograph on panel econometrics, covering static to
+dynamic and linear to nonlinear in full, a desk reference.</li>
+</ul>
+</div>
+<div class="apa-refs">
+<ul>
+<li>Anderson, T. W., &amp; Hsiao, C. (1981). Estimation of dynamic
+models with error components. <em>Journal of the American Statistical
+Association, 76</em>(375), 598-606. <a
+href="https://doi.org/10.1080/01621459.1981.10477691"
+class="uri">https://doi.org/10.1080/01621459.1981.10477691</a></li>
+<li>Arellano, M., &amp; Bond, S. (1991). Some tests of specification for
+panel data: Monte Carlo evidence and an application to employment
+equations. <em>The Review of Economic Studies, 58</em>(2), 277-297. <a
+href="https://doi.org/10.2307/2297968"
+class="uri">https://doi.org/10.2307/2297968</a></li>
+<li>Arellano, M., &amp; Bover, O. (1995). Another look at the
+instrumental variable estimation of error-components models. <em>Journal
+of Econometrics, 68</em>(1), 29-51. <a
+href="https://doi.org/10.1016/0304-4076(94)01642-D"
+class="uri">https://doi.org/10.1016/0304-4076(94)01642-D</a></li>
+<li>Baltagi, B. H. (2021). <em>Econometric analysis of panel data</em>
+(6th ed.). Springer. <a href="https://doi.org/10.1007/978-3-030-53953-5"
+class="uri">https://doi.org/10.1007/978-3-030-53953-5</a></li>
+<li>Blundell, R., &amp; Bond, S. (1998). Initial conditions and moment
+restrictions in dynamic panel data models. <em>Journal of Econometrics,
+87</em>(1), 115-143. <a
+href="https://doi.org/10.1016/S0304-4076(98)00009-8"
+class="uri">https://doi.org/10.1016/S0304-4076(98)00009-8</a></li>
+<li>Hausman, J. A. (1978). Specification tests in econometrics.
+<em>Econometrica, 46</em>(6), 1251-1271. <a
+href="https://doi.org/10.2307/1913827"
+class="uri">https://doi.org/10.2307/1913827</a></li>
+<li>Mundlak, Y. (1978). On the pooling of time series and cross section
+data. <em>Econometrica, 46</em>(1), 69-85. <a
+href="https://doi.org/10.2307/1913646"
+class="uri">https://doi.org/10.2307/1913646</a></li>
+<li>Nickell, S. (1981). Biases in dynamic models with fixed effects.
+<em>Econometrica, 49</em>(6), 1417-1426. <a
+href="https://doi.org/10.2307/1911408"
+class="uri">https://doi.org/10.2307/1911408</a></li>
+<li>Roodman, D. (2009). How to do xtabond2: An introduction to
+difference and system GMM in Stata. <em>The Stata Journal, 9</em>(1),
+86-136. <a href="https://doi.org/10.1177/1536867X0900900106"
+class="uri">https://doi.org/10.1177/1536867X0900900106</a></li>
+<li>Tambe, P., &amp; Hitt, L. M. (2012). The productivity of information
+technology investments: New evidence from IT labor data. <em>Information
+Systems Research, 23</em>(3, Part 1 of 2), 599-617. <a
+href="https://doi.org/10.1287/isre.1110.0398"
+class="uri">https://doi.org/10.1287/isre.1110.0398</a></li>
+<li>Wooldridge, J. M. (2010). <em>Econometric analysis of cross section
+and panel data</em> (2nd ed.). MIT Press.</li>
+</ul>
+</div>
+    <footer class="page-footer">
+<span>Foundations of Information Systems Economics: Empirical Methods for Information Systems Economics</span>
+    </footer>
+  </main>
+</div>
+<script>
+(function(){var p=(location.pathname.split('/').pop()||'index.html');document.querySelectorAll('.file-nav a').forEach(function(a){if(a.getAttribute('href')===p)a.classList.add('current');});})();
+
+/* Preserve complete formulas without internal scrollbars. Only formulas whose
+   natural width exceeds their text column are reduced, and resize restores the
+   largest size that fits. */
+(function () {
+  function fitMath() {
+    document.querySelectorAll('span.math').forEach(function (host) {
+      var katex = host.querySelector('.katex');
+      if (!katex) return;
+      katex.style.fontSize = '';
+      var parent = host.classList.contains('display') ? host : host.parentElement;
+      var available = Math.max(1, parent.clientWidth);
+      /* KaTeX's box can be clipped to the host before measurement; scrollWidth
+         retains the full typeset width and is therefore the correct basis. */
+      var needed = Math.max(katex.scrollWidth, katex.getBoundingClientRect().width);
+      /* Keep a small safety margin for KaTeX glyph overhangs and browser
+         sub-pixel rounding, so the last radical/bar is never clipped. */
+      var target = available * 0.98;
+      if (needed > target) {
+        katex.style.fontSize = Math.max(0.34, target / needed) + 'em';
+      }
+    });
+  }
+  document.addEventListener('DOMContentLoaded', function () {
+    requestAnimationFrame(fitMath);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitMath);
+  });
+  window.addEventListener('resize', fitMath);
+}());
+</script>
+<script defer src="assets/notes.js"></script>
+</body>
+</html>

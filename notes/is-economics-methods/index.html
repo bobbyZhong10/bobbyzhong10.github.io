@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Foundations of Information Systems Economics</title>
+  <link rel="stylesheet" href="assets/style.css" />
+  <style>
+    .cover-wrapper { max-width: 1040px; margin: 0 auto; padding: 64px 36px 80px; }
+    .cover-header { text-align: center; margin-bottom: 20px; }
+    .cover-header h1 {
+      font-family: Georgia, "Noto Serif SC", serif;
+      font-size: 2.2rem; color: var(--primary);
+      font-weight: 800; letter-spacing: 1px; margin-bottom: 14px;
+      white-space: nowrap;
+    }
+    .cover-header .cover-sub { font-size: 18px; color: var(--text); margin-bottom: 8px; font-weight: 600; }
+    .cover-rule { width: 72px; height: 4px; background: var(--accent); margin: 26px auto 34px; border-radius: 2px; }
+    .cover-intro { max-width: 760px; margin: 0 auto 40px; font-size: 15.5px; color: var(--text); }
+    .part-label {
+      font-family: Georgia, "Noto Serif SC", serif;
+      font-size: 1.15rem; font-weight: 700; color: var(--primary);
+      margin: 34px 0 14px; padding-bottom: 6px; border-bottom: 2px solid var(--border);
+    }
+    .chapter-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .chapter-card {
+      display: block; background: var(--bg-card); border: 1px solid var(--border);
+      border-radius: var(--radius-lg); padding: 16px 20px;
+      text-decoration: none; color: var(--text);
+      transition: border-color .15s, transform .15s, box-shadow .15s;
+    }
+    .chapter-card:hover {
+      text-decoration: none; border-color: var(--primary);
+      transform: translateY(-2px); box-shadow: 0 4px 14px rgba(26,54,93,0.08);
+    }
+    .chapter-card .ch-no {
+      font-family: Georgia, serif; font-size: 12px; font-weight: 700;
+      color: var(--accent); letter-spacing: 1.5px;
+    }
+    .chapter-card .ch-title { font-size: 15.5px; font-weight: 700; color: var(--primary); margin: 4px 0 6px; }
+    .chapter-card .ch-desc { font-size: 13px; color: var(--text-light); line-height: 1.7; }
+    .cover-footer { margin-top: 54px; text-align: center; font-size: 12px; color: var(--text-light); }
+    @media (max-width: 700px) {
+      .chapter-grid { grid-template-columns: 1fr; }
+      .cover-header h1 { font-size: 1.9rem; white-space: normal; }
+    }
+  </style>
+</head>
+<body>
+<div class="cover-wrapper">
+  <header class="cover-header">
+    <h1>Foundations of Information Systems Economics</h1>
+    <div class="cover-sub">Empirical Methods for Information Systems Economics</div>
+  </header>
+  <div class="cover-rule"></div>
+
+  <div class="cover-intro">
+    <p>When you study digital platforms and artificial intelligence, the hard part is rarely a shortage of methods. It is that the theory, the identification strategy, and the institutional mechanism all have to make sense at once. These notes are written for researchers in information systems economics and empirical operations management, with an emphasis on the business uses of AI, digital platforms, information environments, technology adoption, and the market behavior of consumers and firms. The whole book proceeds from research questions. We first use graduate microeconomic theory to write a real-world puzzle as a problem of choice, equilibrium, and incentives; then use microeconometrics and causal inference to judge what the data can actually identify; then bring in empirical industrial organization and structural econometrics to analyze substitution, competitive conduct, and counterfactual policy; and finally carry these tools back into the concrete institutions of information, technology, and platform economics. The goal is not to make you an expert in one method, but to build a research capability with both depth and horizontal reach: substantive expertise in information, AI, platforms, and technology economics, together with the theoretical, econometric, and computational language to work alongside economists, marketing scholars, and operations researchers.</p>
+  </div>
+
+  <div class="part-label">Front Matter</div>
+  <div class="chapter-grid">
+    <a class="chapter-card" href="introduction.html"><div class="ch-title">Introduction &amp; How to Use These Notes</div><div class="ch-desc">The T-shaped skill map, research workflow, prerequisites, module dependencies, and reading paths</div></a>
+  </div>
+
+  <div class="part-label">Part I · Micro Theory Foundations</div>
+  <div class="chapter-grid">
+    <a class="chapter-card" href="01_consumer_producer_welfare.html"><div class="ch-no">01</div><div class="ch-title">Consumer, Producer &amp; Welfare Theory</div><div class="ch-desc">UMP/EMP duality, Slutsky, CV/EV and consumer surplus, cost-production duality, choice under uncertainty</div></a>
+    <a class="chapter-card" href="02_game_theory.html"><div class="ch-no">02</div><div class="ch-title">Game Theory</div><div class="ch-desc">Normal and extensive form, Nash equilibrium, Bayesian games, subgame perfection, repeated games and the folk theorem</div></a>
+    <a class="chapter-card" href="03_information_mechanism_design.html"><div class="ch-no">03</div><div class="ch-title">Information Economics, Contracts &amp; Mechanism Design</div><div class="ch-desc">Adverse selection, signaling, screening, moral hazard, the revelation principle, VCG and auction theory</div></a>
+    <a class="chapter-card" href="04_pricing_imperfect_competition.html"><div class="ch-no">04</div><div class="ch-title">Pricing, Monopoly &amp; Imperfect Competition</div><div class="ch-desc">Price discrimination, the Coase conjecture, Cournot/Bertrand/Hotelling, collusion and entry deterrence</div></a>
+  </div>
+
+  <div class="part-label">Part II · Econometric Core</div>
+  <div class="chapter-grid">
+    <a class="chapter-card" href="05_estimation_mle_gmm.html"><div class="ch-no">05</div><div class="ch-title">Estimation: MLE, M-Estimation &amp; GMM</div><div class="ch-desc">The extremum-estimator framework, consistency and asymptotic normality, sandwich variance, QMLE and weak identification</div></a>
+    <a class="chapter-card" href="06_inference.html"><div class="ch-no">06</div><div class="ch-title">Inference: Delta Method, Bootstrap, Clustering &amp; Testing</div><div class="ch-desc">Bootstrap refinements, HAC, two-step inference, randomization inference, W/LR/LM tests</div></a>
+    <a class="chapter-card" href="07_panel_dynamic_panel.html"><div class="ch-no">07</div><div class="ch-title">Panel Data &amp; Dynamic Panels</div><div class="ch-desc">FE/RE, strict vs sequential exogeneity, Nickell bias, Arellano-Bond and Blundell-Bond</div></a>
+    <a class="chapter-card" href="08_nonparametrics.html"><div class="ch-no">08</div><div class="ch-title">Nonparametric &amp; Semiparametric Methods</div><div class="ch-desc">Kernels, local polynomials, series/sieve, Robinson, and the bias-variance tradeoff</div></a>
+  </div>
+
+  <div class="part-label">Part III · Causal Identification Toolkit</div>
+  <div class="chapter-grid">
+    <a class="chapter-card" href="09_potential_outcomes.html"><div class="ch-no">09</div><div class="ch-title">Potential Outcomes, Experiments &amp; Selection-on-Observables</div><div class="ch-desc">The Rubin framework, RCTs and randomization inference, matching, IPW/AIPW, Roy selection</div></a>
+    <a class="chapter-card" href="10_research_design_architecture.html"><div class="ch-no">10</div><div class="ch-title">From an Economic Question to a Research Design</div><div class="ch-desc">Unit, treatment, timing, exposure, estimand, assignment mechanism, and bad controls</div></a>
+    <a class="chapter-card" href="11_measurement_digital_traces.html"><div class="ch-no">11</div><div class="ch-title">Measurement, Digital Traces &amp; Algorithm-Generated Data</div><div class="ch-desc">Construct validity, logging, selective labels, the validation sample, and prediction-powered inference</div></a>
+    <a class="chapter-card" href="12_iv_late_mte.html"><div class="ch-no">12</div><div class="ch-title">IV: LATE, MTE &amp; Control Functions</div><div class="ch-desc">The LATE theorem, compliers, modern weak-IV practice, MTE as the master object, control functions</div></a>
+    <a class="chapter-card" href="13_did_event_studies.html"><div class="ch-no">13</div><div class="ch-title">Difference-in-Differences &amp; Event Studies</div><div class="ch-desc">2x2 to staggered, the Goodman-Bacon decomposition, Callaway-Sant'Anna / Sun-Abraham / imputation</div></a>
+    <a class="chapter-card" href="14_rdd_synthetic_control.html"><div class="ch-no">14</div><div class="ch-title">RDD &amp; Synthetic Control</div><div class="ch-desc">Continuity-based identification, rdrobust bias correction, fuzzy RD, synthetic control and augmented SC/SDID</div></a>
+    <a class="chapter-card" href="15_sensitivity_partial_identification.html"><div class="ch-no">15</div><div class="ch-title">Sensitivity, Negative Controls &amp; Partial Identification</div><div class="ch-desc">OVB sensitivity, the robustness value, negative controls, bounds and the breakdown frontier</div></a>
+    <a class="chapter-card" href="16_causal_ml_dml.html"><div class="ch-no">16</div><div class="ch-title">Causal ML: DML, Causal Forests &amp; Policy Learning</div><div class="ch-desc">Regularization and post-selection inference, Neyman orthogonality, cross-fitting, GATES/CLAN, policy learning</div></a>
+    <a class="chapter-card" href="17_digital_experimentation.html"><div class="ch-no">17</div><div class="ch-title">Digital Experimentation</div><div class="ch-desc">Power/MDE, CUPED, sequential testing, multiple testing, and experiment governance</div></a>
+    <a class="chapter-card" href="18_interference_marketplace_experiments.html"><div class="ch-no">18</div><div class="ch-title">Interference, Marketplace Experiments &amp; Equilibrium Effects</div><div class="ch-desc">Exposure mappings, two-stage, cluster, switchback, and rollout effects</div></a>
+  </div>
+
+  <div class="part-label">Part IV · Structural Methods</div>
+  <div class="chapter-grid">
+    <a class="chapter-card" href="19_discrete_choice.html"><div class="ch-no">19</div><div class="ch-title">Discrete Choice: From RUM to Mixed Logit</div><div class="ch-desc">Gumbel to logit, identification, IIA, nested/GEV, mixed logit, endogeneity and control functions</div></a>
+    <a class="chapter-card" href="20_demand_blp.html"><div class="ch-no">20</div><div class="ch-title">Demand Estimation: Berry Inversion &amp; BLP</div><div class="ch-desc">Berry inversion, the contraction, NFXP vs MPEC, instruments, micro-BLP, identification and zero shares</div></a>
+    <a class="chapter-card" href="21_supply_markups_mergers.html"><div class="ch-no">21</div><div class="ch-title">Supply Side: Markups, Conduct, Mergers &amp; Welfare</div><div class="ch-desc">Multiproduct Bertrand FOCs, markup recovery, GUPPI/UPP, merger simulation, conduct testing</div></a>
+    <a class="chapter-card" href="22_entry_partial_id.html"><div class="ch-no">22</div><div class="ch-title">Entry, Market Structure &amp; Partial Identification</div><div class="ch-desc">Bresnahan-Reiss thresholds, Berry 1992, Seim, Ciliberto-Tamer, moment inequalities</div></a>
+    <a class="chapter-card" href="23_dynamic_structural.html"><div class="ch-no">23</div><div class="ch-title">Dynamic Structural Models</div><div class="ch-desc">Bellman, Rust NFXP, Hotz-Miller CCP, dynamic demand, an introduction to dynamic games</div></a>
+  </div>
+
+  <div class="part-label">Part V · Digital Economics</div>
+  <div class="chapter-grid">
+    <a class="chapter-card" href="24_platforms_networks.html"><div class="ch-no">24</div><div class="ch-title">Platforms, Network Effects &amp; Switching Costs</div><div class="ch-desc">Two-sided pricing, multihoming, the competitive bottleneck, compatibility, P2P and commons governance</div></a>
+    <a class="chapter-card" href="25_search_advertising.html"><div class="ch-no">25</div><div class="ch-title">Consumer Search, Advertising &amp; Information Goods</div><div class="ch-desc">Search costs, experience-good learning, reviews, reputation and recommender feedback</div></a>
+    <a class="chapter-card" href="26_ai_algorithms_data.html"><div class="ch-no">26</div><div class="ch-title">AI, Algorithms, Technology Adoption &amp; Data Economics</div><div class="ch-desc">Algorithmic pricing, AI adoption, task exposure, deskilling, organizational complements and generated variables</div></a>
+    <a class="chapter-card" href="27_quick_reference.html"><div class="ch-no">27</div><div class="ch-title">Quick Reference &amp; Tools</div><div class="ch-desc">Formula cards, a method decision tree, a cross-software command map, and a common-referee-question checklist</div></a>
+  </div>
+
+  <footer class="cover-footer">Foundations of Information Systems Economics: Empirical Methods for Information Systems Economics</footer>
+</div>
+</body>
+</html>

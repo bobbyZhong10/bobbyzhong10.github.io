@@ -1,0 +1,20 @@
+<svg viewBox="0 0 830 340" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, 'Noto Sans SC', sans-serif">
+  <line x1="70" y1="40" x2="70" y2="300" stroke="#94a1b2" stroke-width="1.5"/>
+  <line x1="70" y1="300" x2="690" y2="300" stroke="#94a1b2" stroke-width="1.5"/>
+  <text x="70" y="30" text-anchor="start" font-size="13" fill="#64748b">x2 (outside good)</text>
+  <text x="690" y="320" text-anchor="end" font-size="13" fill="#64748b">x1 (premium content) →</text>
+
+  <line x1="70" y1="72.7" x2="633.6" y2="300" stroke="#2b6cb0" stroke-width="2.5"/>
+  <text x="640" y="296" text-anchor="start" font-size="12.5" fill="#2b6cb0">budget line, slope -p1/p2</text>
+
+  <polyline fill="none" stroke="#c53030" stroke-width="2.5"
+    points="160.2,48.8 172.9,70.0 185.6,87.2 198.3,101.5 211.1,113.6 223.8,124.0 236.5,133.1 249.2,141.1 261.9,148.2 274.6,154.5 287.4,160.3 300.1,165.5 312.8,170.2 325.5,174.6 338.2,178.6 351.0,182.2 363.7,185.7 376.4,188.9 389.1,191.8 401.8,194.6 414.5,197.2 427.3,199.7 440.0,202.0 452.7,204.2 465.4,206.2 478.1,208.2 490.8,210.1 503.6,211.8 516.3,213.5 529.0,215.1 541.7,216.6 554.4,218.1 567.2,219.5 579.9,220.9 592.6,222.1 605.3,223.4 618.0,224.6 630.7,225.7 643.5,226.8 656.2,227.9"/>
+  <text x="176" y="60" text-anchor="start" font-size="12.5" fill="#c53030">indifference curve u(x) = u0</text>
+
+  <line x1="295.5" y1="163.6" x2="295.5" y2="300" stroke="#cfccc4" stroke-width="1.3" stroke-dasharray="4 4"/>
+  <line x1="70" y1="163.6" x2="295.5" y2="163.6" stroke="#cfccc4" stroke-width="1.3" stroke-dasharray="4 4"/>
+  <circle cx="295.5" cy="163.6" r="4.5" fill="#1a365d"/>
+  <text x="305" y="150" text-anchor="start" font-size="13" fill="#1a365d">x(p, w): MRS = p1/p2</text>
+  <text x="295.5" y="318" text-anchor="middle" font-size="12" fill="#2d3748">x1 = 20</text>
+  <text x="62" y="167" text-anchor="end" font-size="12" fill="#2d3748">60</text>
+</svg>

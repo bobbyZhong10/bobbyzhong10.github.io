@@ -1,0 +1,6 @@
+True SATE                        = 0.1372
+True overlap-weighted (PLR) eff. = 0.1441
+orthogonal, NO cross-fit         = 0.1403
+orthogonal, 5-fold cross-fit     = 0.1473 (SE 0.0071)
+DoubleML PLR                     = 0.1490 (SE 0.0071)
+DoubleML IRM (AIPW, ATE)         = 0.1594 (SE 0.0089)

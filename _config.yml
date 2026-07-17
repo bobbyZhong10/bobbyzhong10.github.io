@@ -10,6 +10,7 @@ title                    : "Yunzhou (Bobby) Zhong"
 description              : "Economics of Information Systems"
 url                      : "https://bobbyzhong10.github.io"
 repository               : "bobbyzhong10/bobbyzhong10.github.io"
+google_scholar_stats_enabled : false
 google_scholar_stats_use_cdn : true
 
 # google analytics
@@ -88,6 +89,11 @@ exclude:
   - config
   - gulpfile.js
   - log
+  - notes/is-economics-methods/assets/template.html
+  - notes/is-economics-methods/assets/wrap-tables.lua
+  - notes/is-economics-methods/inline_figures.py
+  - notes/is-economics-methods/src
+  - notes/is-economics-methods/validate_book.py
   - node_modules
   - package.json
   - tmp

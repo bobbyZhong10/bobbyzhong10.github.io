@@ -2,7 +2,7 @@
   <div class="masthead__inner-wrap">
     <div class="masthead__menu">
       <nav id="site-nav" class="greedy-nav">
-        <button><div class="navicon"></div></button>
+        <button type="button" aria-label="Toggle navigation" aria-controls="site-nav-hidden-links" aria-expanded="false"><div class="navicon" aria-hidden="true"></div></button>
         <ul class="visible-links">
           {% for link in site.data.navigation.main %}
             {% assign current_url = page.url | replace: "index.html", "" %}
@@ -15,7 +15,7 @@
             </li>
           {% endfor %}
         </ul>
-        <ul class="hidden-links hidden"></ul>
+        <ul id="site-nav-hidden-links" class="hidden-links hidden"></ul>
       </nav>
       <button id="theme-toggle" class="theme-toggle-btn masthead-theme-toggle" type="button" aria-label="Toggle theme">
         <span id="theme-toggle-icon" aria-hidden="true"></span>

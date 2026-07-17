@@ -1,0 +1,1962 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>IV: LATE, MTE &amp; Control Functions | IS Economics ·
+Empirical Methods</title>
+  <link rel="stylesheet" href="assets/style.css" />
+  <script defer="" src="assets/katex/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <link rel="stylesheet" href="assets/katex/katex.min.css" />
+</head>
+<body>
+<div class="page-wrapper">
+  <nav class="sidebar">
+    <div class="sidebar-title">Foundations of Information Systems Economics</div>
+    <div class="sidebar-subtitle">Theory · Methods · Applications</div>
+    <div class="toc-section-label">On this page</div>
+    <div class="toc">
+<ul>
+<li><a href="#introduction" id="toc-introduction">Introduction</a></li>
+<li><a href="#an-absurdly-large-number"
+id="toc-an-absurdly-large-number">1 An Absurdly Large Number</a></li>
+<li><a href="#the-economic-model-and-the-estimand"
+id="toc-the-economic-model-and-the-estimand">2 The Economic Model and
+the Estimand</a></li>
+<li><a href="#identification" id="toc-identification">3
+Identification</a></li>
+<li><a href="#estimation" id="toc-estimation">4 Estimation</a></li>
+<li><a href="#anchoring-papers" id="toc-anchoring-papers">5 Anchoring
+Papers</a></li>
+<li><a href="#a-complete-walkthrough-on-the-meridian-data"
+id="toc-a-complete-walkthrough-on-the-meridian-data">6 A Complete
+Walkthrough on the Meridian Data</a></li>
+<li><a href="#failure-modes-and-robustness"
+id="toc-failure-modes-and-robustness">7 Failure Modes and
+Robustness</a></li>
+<li><a href="#further-reading" id="toc-further-reading">8 Further
+Reading</a></li>
+</ul>
+    </div>
+    <div class="file-nav">
+      <div class="nav-label">This series</div>
+      <a href="index.html">Home · Overview</a>
+      <a href="introduction.html">Introduction · How to Use</a>
+      <a href="01_consumer_producer_welfare.html">01 Consumer, Producer &amp; Welfare</a>
+      <a href="02_game_theory.html">02 Game Theory</a>
+      <a href="03_information_mechanism_design.html">03 Information &amp; Mechanism Design</a>
+      <a href="04_pricing_imperfect_competition.html">04 Pricing &amp; Imperfect Competition</a>
+      <a href="05_estimation_mle_gmm.html">05 Estimation: MLE &amp; GMM</a>
+      <a href="06_inference.html">06 Inference: Bootstrap &amp; Clustering</a>
+      <a href="07_panel_dynamic_panel.html">07 Panel &amp; Dynamic Panel</a>
+      <a href="08_nonparametrics.html">08 Nonparametrics &amp; Semiparametrics</a>
+      <a href="09_potential_outcomes.html">09 Potential Outcomes &amp; Selection</a>
+      <a href="10_research_design_architecture.html">10 Research Design</a>
+      <a href="11_measurement_digital_traces.html">11 Measurement &amp; Digital Traces</a>
+      <a href="12_iv_late_mte.html">12 IV: LATE &amp; MTE</a>
+      <a href="13_did_event_studies.html">13 DiD &amp; Event Studies</a>
+      <a href="14_rdd_synthetic_control.html">14 RDD &amp; Synthetic Control</a>
+      <a href="15_sensitivity_partial_identification.html">15 Sensitivity &amp; Partial Identification</a>
+      <a href="16_causal_ml_dml.html">16 Causal ML &amp; DML</a>
+      <a href="17_digital_experimentation.html">17 Digital Experimentation</a>
+      <a href="18_interference_marketplace_experiments.html">18 Interference &amp; Marketplace Experiments</a>
+      <a href="19_discrete_choice.html">19 Discrete Choice &amp; Mixed Logit</a>
+      <a href="20_demand_blp.html">20 Demand Estimation &amp; BLP</a>
+      <a href="21_supply_markups_mergers.html">21 Supply, Markups &amp; Mergers</a>
+      <a href="22_entry_partial_id.html">22 Entry &amp; Partial Identification</a>
+      <a href="23_dynamic_structural.html">23 Dynamic Structural Models</a>
+      <a href="24_platforms_networks.html">24 Platforms &amp; Network Effects</a>
+      <a href="25_search_advertising.html">25 Search, Advertising &amp; Information Goods</a>
+      <a href="26_ai_algorithms_data.html">26 AI, Adoption &amp; Data Economics</a>
+      <a href="27_quick_reference.html">27 Quick Reference &amp; Tools</a>
+    </div>
+  </nav>
+  <main class="main-content" id="top">
+    <header class="page-header">
+      <h1>IV: LATE, MTE &amp; Control Functions</h1>
+      <div class="subtitle">From Encouragement to the Marginal Treatment
+Effect</div>
+      <div class="meta">Foundations of Information Systems Economics · Chapter 12</div>
+    </header>
+<h2 id="introduction">Introduction</h2>
+<p>Meridian’s data hand us a pleasant answer: merchants who adopt the
+new tool do far better than those who do not, and the gap stays large
+even after we throw in a long list of observable characteristics. What
+is genuinely unsettling is that the most capable merchants are also the
+most eager to adopt. If managerial ability goes unrecorded, no list of
+controls, however long, can coax it out of the error term. OLS does its
+arithmetic diligently, yet it very likely mistakes “who adopts” for
+“what adoption does.”</p>
+<p>Instrumental variables switch the question. Rather than compare
+adopters with non-adopters directly, we look for an exogenous nudge:
+something that changes the probability of adoption but that should not
+change the outcome through any other channel. Randomized encouragement
+supplies exactly this kind of variation. The change in the outcome per
+unit change in the encouragement, divided by the change in the adoption
+rate per unit change in the encouragement, gives us not some magically
+cleansed population average effect, but the effect on those whom this
+particular encouragement pushes toward adoption.</p>
+<p>This distinction is the crux of the whole chapter. IV trades
+endogeneity away for less but cleaner variation, usually at the price of
+a larger standard error; and the LATE it identifies belongs to the
+compliers, not automatically to every merchant. Who gets moved by the
+instrument is who enters the answer. MTE will go further and show that
+different instruments, OLS, ATE, ATT, and LATE are all just weighting
+different marginal populations. So every time you see an IV coefficient,
+you should ask twice: does this instrument really act only through the
+treatment? And even if the answer is yes, whose effect exactly is it
+reporting?</p>
+<h2 id="an-absurdly-large-number">1 An Absurdly Large Number</h2>
+<div class="case">
+<p>Meridian is a fictional B2B SaaS platform that sells an analytics
+dashboard to a large base of client firms. We tell the story with
+simulated data, and the payoff is that the data-generating process is
+fully known, so every estimator can be reconciled against the truth, a
+teaching luxury that real data can never offer. The outcome <span
+class="math inline">Y</span> is a client firm’s monthly engagement (a
+0-to-100 activity index). The treatment <span
+class="math inline">D</span> is whether the firm has adopted the
+analytics dashboard. Adoption is voluntary: the sharper, faster-growing
+firms are the ones that adopt on their own, and “sharpness” is precisely
+the thing the platform cannot observe. Management’s question is direct:
+how much more engaged does adopting the dashboard actually make a
+client?</p>
+<p>Start with the most natural calculation: subtract the average
+engagement of firms that did not adopt from the average engagement of
+firms that did. That difference is 12.104 (SE 0.102). Laid out on a
+growth-review slide, it says that clients who adopt the dashboard are 12
+points more engaged, a number juicy enough for the product team to take
+credit for.</p>
+<p>The platform’s data scientist did not take it at face value. She
+worried that adopters were simply a more engaged bunch to begin with, so
+she threw every observable firm characteristic she had into the
+regression, the most important being firm size <span
+class="math inline">W</span> (larger firms are both sharper and keener
+to try new things). After the adjustment, the coefficient on <span
+class="math inline">D</span> fell from 12.104 to 5.285 (SE 0.063). A big
+drop, but still high.</p>
+</div>
+<p>Neither number is credible, and Chapter 9 has already told us why.
+The naive comparison, 12.104, equals the true treatment effect plus a
+selection bias: firms that adopt the dashboard would have been more
+engaged even without it. Controlling for firm size shaves off the part
+of that bias proxied by size, which is why the number falls from 12.104
+to 5.285. The trouble is that the “sharpness” driving adoption is
+unobserved, and firm size is only an imperfect shadow of it. Once size
+is held fixed, the part of sharpness that size fails to proxy stays in
+the residual and keeps propping up adopters’ engagement. This is exactly
+the ineradicable remainder from Chapter 9: selection lands on the
+unobservables, and no amount of clever covariate adjustment leaves no
+tail behind.</p>
+<p>So what is the truth? Because this is a simulation, we know it. The
+average effect of adopting the dashboard on firms that did adopt (the
+ATT) is 3.056, and the average effect on a randomly drawn firm from the
+whole population (the ATE) is 2.018. The naive comparison 12.104 minus
+the ATT 3.056 leaves 9.048, all of it selection bias, nearly
+three-quarters of the reported number. The adjusted 5.285 still exceeds
+the ATT by 2.230, and that 2.230 is the residual bias that size cannot
+proxy away, attached to the unobserved sharpness.</p>
+<div class="intuition">
+<p>Meridian’s predicament fits in one sentence: adopters are highly
+engaged half because of the dashboard and half because they were sharp
+to begin with. Covariate adjustment is like taking a not-quite-clean rag
+to wipe off this illusion. It removes what the rag can reach (the
+sharpness that size proxies) and cannot remove what it cannot reach (the
+sharpness that size fails to proxy). The lesson of Chapter 9 is that as
+long as selection still clings to an unobserved factor, this rag will
+never wipe the surface clean. To cure it, we need a completely different
+idea: not to wipe, but to go around.</p>
+</div>
+<p>Going around is something Meridian happened to do once. The
+platform’s customer success team ran a round of randomized
+encouragement: from the client base they drew a random batch and gave
+them an extra push, an onboarding invitation plus a set of
+getting-started tutorials; the rest of the clients carried on as usual.
+Call this randomly assigned encouragement <span
+class="math inline">Z</span>, with <span class="math inline">Z=1</span>
+for firms that got the push and <span class="math inline">Z=0</span> for
+those that did not. The encouragement was decided by a coin flip, so it
+has nothing to do with whether a firm is sharp or not, a fact guaranteed
+by design and requiring no modeling whatsoever.</p>
+<p>Encouragement is not the same as adoption. Only some of the
+encouraged firms actually went on to adopt the dashboard (this batch,
+which moves only when given a push, are the compliers); some firms would
+have adopted on their own even without encouragement (always-takers, the
+die-hard adopters); and some firms would not adopt no matter how hard
+they were pushed (never-takers, the immovable). This imperfect
+compliance is exactly where IV earns its keep, and it is also the root
+of why IV can see only the compliers. What the rest of this chapter sets
+out to make clear is how this random push pulls the causal effect of
+adoption out of the contamination of selection, and whose effect it is
+that gets pulled out.</p>
+<h2 id="the-economic-model-and-the-estimand">2 The Economic Model and
+the Estimand</h2>
+<p>Before doing anything, get two things straight: which causal quantity
+we actually want, and what notation writes down endogeneity and the
+instrument precisely.</p>
+<h3 id="potential-outcomes-plus-potential-treatments">2.1 Potential
+Outcomes Plus Potential Treatments</h3>
+<p>The potential outcomes from Chapter 9 carry over unchanged. Each firm
+has two potential engagement levels, <span
+class="math inline">Y_i(1)</span> being the engagement it would realize
+if it adopted the dashboard and <span class="math inline">Y_i(0)</span>
+the engagement it would realize if it did not, with the individual
+effect <span class="math inline">\tau_i = Y_i(1) - Y_i(0)</span> varying
+from firm to firm (heterogeneous effects). Observed engagement is given
+by the switching equation, <span class="math inline">Y_i = Y_i(0) +
+\tau_i D_i</span>. So far this is all old notation.</p>
+<p>What is new in IV is that we give the treatment itself a set of
+potential outcomes too. Introduce potential treatments <span
+class="math inline">D_i(z)</span>: whether firm <span
+class="math inline">i</span> would adopt when the encouragement takes
+value <span class="math inline">z</span>. Here <span
+class="math inline">D_i(1)</span> is its adoption status when encouraged
+and <span class="math inline">D_i(0)</span> its adoption status when not
+encouraged. Just as with the outcome, we only ever observe one of them,
+because a firm is either encouraged or not, and the realized adoption
+status is</p>
+<p><span class="math display">D_i = D_i(0) + \big(D_i(1) - D_i(0)\big)\,
+Z_i.</span></p>
+<p>Here <span class="math inline">D_i(1) - D_i(0)</span> is the
+individual causal effect of encouragement on this firm’s adoption. It
+takes three values: equal to 1 means this firm adopts only when pushed
+(complier), equal to 0 means adoption is unaffected by encouragement
+(always-taker or never-taker), and equal to <span
+class="math inline">-1</span> means it perversely does the opposite of
+what the encouragement suggests (defier). Because the pair <span
+class="math inline">\big(D_i(0), D_i(1)\big)</span> is never seen in
+full, which compliance type a firm belongs to is not identified at the
+individual level, and this is the starting point for understanding all
+of IV’s subtleties.</p>
+<h3 id="endogeneity-why-ols-is-neither-ate-nor-att">2.2 Endogeneity: Why
+OLS Is Neither ATE nor ATT</h3>
+<p>Write the outcome equation in the decomposition form from Chapter 9,
+<span class="math inline">Y_i = \alpha + \tau_i D_i + \eta_i</span>,
+where <span class="math inline">\eta_i = Y_i(0) - \alpha</span> collects
+everything other than adoption that determines baseline engagement (that
+is, the deviation of <span class="math inline">Y_i(0)</span> from its
+mean). The precise meaning of endogeneity is <span
+class="math inline">\mathbb{E}[\eta_i \mid D_i] \neq 0</span>: adopters
+and non-adopters already differ in ways unrelated to adoption. At
+Meridian, sharp firms both adopt more readily and are more engaged to
+begin with (higher <span class="math inline">\eta</span>), so adoption
+is positively correlated with the disturbance, and this is the selection
+problem.</p>
+<p>Once there is endogeneity, the OLS estimate <span
+class="math inline">\hat\beta</span> converges to neither the ATE nor
+the ATT. That skeleton decomposition from Chapter 9 still holds here:
+the naive comparison equals the ATT plus selection bias, <span
+class="math inline">\mathbb{E}[Y\mid D=1] - \mathbb{E}[Y\mid D=0] =
+\text{ATT} + \big(\mathbb{E}[Y(0)\mid D=1] - \mathbb{E}[Y(0)\mid
+D=0]\big)</span>. When the selection-bias term is nonzero, OLS departs
+from the ATT; and even if the selection bias were miraculously zero,
+heterogeneous effects would still make the ATT depart from the ATE.
+Meridian’s 12.104 is this decomposition made flesh: the ATT of 3.056
+plus selection bias of 9.048, exact to the decimal. What OLS converges
+to is a number inflated by selection, corresponding to none of the
+causal quantities we care about.</p>
+<div class="intuition">
+<p>This endogeneity problem has an ancient incarnation, and it is the
+one that forced IV into being. Economics first met it in demand
+estimation (Working 1927). You have a cloud of price-and-quantity data
+points and want to estimate the slope of the demand curve, but price
+never falls from the sky; it is set jointly by supply and demand, and
+<span class="math inline">P</span> carries both demand shocks and supply
+shocks. Regress <span class="math inline">Q</span> on <span
+class="math inline">P</span> directly and the “statistical demand curve”
+you estimate is not the demand curve in any economic sense, because
+price and the demand disturbance are tangled together. To identify the
+demand slope, you need something that moves supply only and does not
+touch demand (weather affecting the catch, say), and you use it to
+manufacture exogenous variation in price. That supply-shifting-only
+thing is the earliest instrument. Meridian’s randomized encouragement
+pushes adoption only and does not touch the engagement disturbance; the
+logic is one and the same.</p>
+</div>
+<p>And so the suspense is set: if OLS estimates neither the ATE nor the
+ATT, then what exactly does IV with randomized encouragement estimate?
+The answer, in the next section, is the LATE, an effect on the
+compliers. To see why it is that, and whether it is worth trusting, we
+have to lay the four assumptions IV rests on out on the table one at a
+time.</p>
+<h2 id="identification">3 Identification</h2>
+<p>Section 1’s randomized encouragement gave us a design that goes
+around selection, but going around is not the same as identifying. We
+will see immediately that dividing the two differences (encouragement on
+adoption, encouragement on engagement) yields a clean and tidy number,
+but by what right is it the causal effect of adoption, and whose causal
+effect is it? Answering these two questions rests not on arithmetic but
+on a set of assumptions about counterfactual worlds. Identification
+logically precedes estimation. Identification asks whether, under a set
+of such assumptions, the causal quantity we want can be written as a
+function of the observed data distribution; that answer depends only on
+the design and the institutional background, and has nothing to do with
+which estimator or how large a sample we use afterward. This is the most
+finely worked section of the whole chapter. We start from the intuition
+of a ratio, to make plain what IV is actually computing, then dissect
+one by one the four assumptions it rests on, then prove the LATE
+theorem, discuss why LATE is not the ATE, and finally set up MTE as the
+master object that unifies everything, giving the control function as a
+parametric equivalent route.</p>
+<h3 id="a-ratio-first-what-iv-is-computing">3.1 A Ratio: First, What IV
+Is Computing</h3>
+<p>Lay out the arithmetic of IV first, because it is simpler than you
+would think. Randomized encouragement is a coin flip, so the encouraged
+group and the non-encouraged group have no systematic difference of any
+kind before the encouragement. Comparing two things across the two
+groups is enough.</p>
+<p>The first thing is the effect of encouragement on adoption, called
+the first stage: the adoption rate of the encouraged group minus the
+adoption rate of the non-encouraged group. At Meridian, about 42.2% of
+firms adopt on their own when not encouraged, and the adoption rate
+rises to 88.8% once encouraged, so the first stage is this rise, about
+0.466. The second thing is the effect of encouragement on the outcome,
+called the reduced form or intent-to-treat (ITT, the intention effect):
+the average engagement of the encouraged group minus the average
+engagement of the non-encouraged group. Note that ITT never once
+mentions adoption; it looks only at the change in engagement brought
+about by the act of “giving a push,” and that change is 0.369.</p>
+<p>The crucial step is to divide the two. Encouragement lifted the
+adoption rate by 0.466 and lifted engagement by 0.369, so for every firm
+that adopts because of the encouragement, how much engagement
+improvement does it bring on average?</p>
+<p><span class="math display">\hat\beta_{IV} =
+\frac{\text{ITT}}{\text{first stage}} = \frac{0.369}{0.466} =
+0.792.</span></p>
+<p>This ratio is the Wald estimator. Its intuition is to undo the
+dilution of the ITT: encouragement makes only 46.6% of people actually
+change their adoption behavior, and the rest either adopt anyway or
+refuse no matter what, so for them encouragement has no effect on
+engagement working through adoption. The ITT spreads everyone’s
+engagement change flat; dividing by the first stage amounts to spreading
+it only across those who were genuinely moved, giving their effect per
+unit change in adoption.</p>
+<p>The value 0.792 is worth stopping to examine. It is far below the OLS
+12.104, below the covariate-adjusted 5.285, and even below the true ATT
+of 3.056 and ATE of 2.018. Why it is credible, and whose effect it is,
+are two questions answered respectively by the assumptions and the
+theorem in the next three subsections. For now, remember the shape of
+this ratio: a clean numerator (the ITT) divided by a clean denominator
+(the first stage), and that is the entire machinery of IV.</p>
+<h3 id="four-identifying-assumptions">3.2 Four Identifying
+Assumptions</h3>
+<p>For the Wald ratio to really equal a meaningful causal quantity, four
+assumptions are needed. Their division of labor is clean; we state each
+in turn, explain each with Meridian, and say clearly for each which can
+be tested and which can only be argued.</p>
+<div class="assumption">
+<p><strong>A1 (relevance)</strong> The instrument really affects the
+treatment: <span class="math inline">\text{Cov}(D_i, Z_i) \neq 0</span>,
+equivalently <span class="math inline">\mathbb{E}[D_i \mid Z_i = 1] -
+\mathbb{E}[D_i \mid Z_i = 0] \neq 0</span>.</p>
+</div>
+<p>Relevance is just the first stage being nonzero. Encouragement has to
+actually push some firms into adopting, otherwise the denominator is
+zero and the ratio is meaningless. This is the only one of the four
+assumptions that can be tested directly, because both <span
+class="math inline">D</span> and <span class="math inline">Z</span> are
+observed, and one just regresses <span class="math inline">D</span> on
+<span class="math inline">Z</span> and checks whether the coefficient is
+significant. Meridian’s first stage is 0.466, encouragement lifted the
+adoption rate by nearly half, and relevance is beyond question. But how
+weak relevance has to get before things go wrong is the theme of the
+weak-instrument discussion in Section 4, where we will see that a
+seemingly significant first stage can still be nowhere near enough.</p>
+<div class="assumption">
+<p><strong>A2 (random assignment /
+as-good-as-randomly-assigned)</strong> The instrument is independent of
+all potential outcomes and potential treatments. To let random
+assignment and the exclusion below each mind its own business, we index
+the potential outcomes here doubly by the encouragement value <span
+class="math inline">z</span> and the adoption value <span
+class="math inline">d</span>:</p>
+<p><span class="math display">Z_i \perp \big(\{Y_i(z,d)\}_{z,d \in
+\{0,1\}},\, D_i(0), D_i(1)\big).</span></p>
+</div>
+<p>A2 says the instrument is as good as randomly assigned. It requires
+that the assignment of encouragement be unrelated to any of a firm’s
+potential outcomes or any compliance type: the platform cannot have
+singled out firms that were going to take off anyway for the push. At
+Meridian this is designed in, since encouragement rests on a coin flip
+and is independent by construction. In real research, instruments are
+rarely handed out by a coin flip, and this condition then has to be
+argued from institutional detail; and it is itself untestable, because
+what it constrains is the relationship between the instrument and
+potential outcomes that are never observed.</p>
+<div class="assumption">
+<p><strong>A3 (exclusion restriction)</strong> The instrument affects
+the outcome only through the treatment: for all <span
+class="math inline">z, z&#39;, d</span>, <span
+class="math inline">Y_i(z, d) = Y_i(z&#39;, d)</span>, so that the
+outcome can be written as a function of the treatment alone, <span
+class="math inline">Y_i(d)</span>.</p>
+</div>
+<p>Exclusion is the soul of IV, and also the one most easily talked
+past. It requires that the entire effect of encouragement on engagement
+run through the single channel of “bringing about adoption,” with no
+other channel at all. At Meridian the threat is concrete: could that
+onboarding invitation and the tutorials themselves make a firm run its
+business more attentively, even if it ends up not adopting the
+dashboard? Could the extra few calls the customer success team placed
+themselves improve the client relationship and engagement? As long as
+encouragement retains such a direct channel that bypasses adoption,
+exclusion is broken, the ITT gets mixed with effects not running through
+adoption, and the Wald ratio is no longer the effect of adoption.</p>
+<p>Here it is worth spelling out the division of labor between A2
+(random assignment) and A3 (exclusion), because many textbooks blur them
+into a single word, “exogeneity,” when in fact they are two different
+things. Random assignment is about whether the instrument is cleanly
+tossed. Exclusion is about the channel: whether the instrument has only
+the one path, adoption, to the outcome. An instrument can perfectly well
+be randomly assigned (A2 holds) yet still have a side door straight to
+the outcome (A3 fails). The most typical vulnerability of randomized
+encouragement is exactly this: the coin flip is beyond reproach, yet the
+act of encouragement itself may carry a placebo-like direct effect. A2
+and A3 together are what we usually call instrument exogeneity, and it
+is exactly the kind of independence the LATE proof later actually uses.
+Exclusion, like random assignment, is untestable; it is an economic
+claim about mechanism, one you can only reason about, never let the data
+prove for you.</p>
+<div class="assumption">
+<p><strong>A4 (monotonicity)</strong> The instrument works in a
+consistent direction for everyone; there are no defiers: <span
+class="math inline">D_i(1) \geq D_i(0)</span> holds for all <span
+class="math inline">i</span>.</p>
+</div>
+<p>Monotonicity requires that the push of encouragement point the same
+way for every firm, and that nobody perversely refuses to adopt because
+they were encouraged. What it rules out are the defiers. This condition
+too is untestable, because it requires knowing at once a firm’s adoption
+status both when encouraged and when not, and we see only one of the
+two. It is usually secured by a latent-index model: a firm adopts when
+its adoption propensity crosses a threshold, <span
+class="math inline">D_i(z) = \mathbf{1}\{\pi_0 + \pi_{1,i} z +
+\varepsilon_i &gt; 0\}</span>, and as long as the sign of <span
+class="math inline">\pi_{1,i}</span> does not vary from person to person
+(encouragement pushes everyone toward adoption, or at most fails to move
+them), monotonicity holds. At Meridian this is natural: one more
+onboarding invitation will not make any firm dig in and refuse out of
+spite. But it can fail in other settings, and Section 7 gives a
+counterexample.</p>
+<div class="warning">
+<p>Of the four assumptions, only relevance can be tested directly.
+Random assignment, exclusion, and monotonicity are all untestable; what
+they constrain are counterfactuals that are never observed. This means
+the credibility of an IV paper rests almost entirely on the argument for
+these three, and not on any statistical test. Exclusion especially so:
+it is often waved through with a “of course this instrument works only
+through the treatment,” and that very sentence is the one most in need
+of being broken down and argued out. In Angrist and Pischke’s words, the
+reason the instrument is excluded “is just a story,” and you have to
+tell the story convincingly enough.</p>
+</div>
+<h3
+id="the-four-compliance-types-and-how-monotonicity-erases-the-defiers">3.3
+The Four Compliance Types and How Monotonicity Erases the Defiers</h3>
+<p>With potential treatments in hand, we can sort firms into four types
+by <span class="math inline">\big(D_i(0), D_i(1)\big)</span>.</p>
+<div class="table-scroll">
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th></th>
+<th><span class="math inline">D_i(0) = 0</span></th>
+<th><span class="math inline">D_i(0) = 1</span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="math inline">D_i(1) = 0</span></td>
+<td>never-taker (does not adopt even when pushed)</td>
+<td><strong>defier</strong> (does the opposite)</td>
+</tr>
+<tr>
+<td><span class="math inline">D_i(1) = 1</span></td>
+<td><strong>complier</strong> (adopts only when pushed)</td>
+<td>always-taker (adopts even without a push)</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>A never-taker is <span class="math inline">(0,0)</span>, not adopting
+whether pushed or not. An always-taker is <span
+class="math inline">(1,1)</span>, adopting whether pushed or not. A
+complier is <span class="math inline">(0,1)</span>, not adopting without
+a push and adopting once pushed, the only group the instrument genuinely
+moves. A defier is <span class="math inline">(1,0)</span>, going out of
+its way to do the opposite of the encouragement.</p>
+<p>The role of monotonicity (A4) is to strike the defier cell from this
+table. Why it must be struck is something the proof in the next
+subsection makes very clear: the defiers’ effect enters the Wald ratio
+with a negative sign and cancels against the compliers’ effect, and once
+you allow them to exist, the ratio becomes an uninterpretable soup.
+After striking the defiers, the two observed groups each mix only two
+types: those who adopt in the encouraged group (<span
+class="math inline">D=1, Z=1</span>) are always-takers plus the moved
+compliers, and those who adopt in the non-encouraged group (<span
+class="math inline">D=1, Z=0</span>) are pure always-takers. This “only
+two types left per group” structure is the key that lets the LATE
+theorem go through.</p>
+<p>Here you can already see IV’s fundamental limitation, and the line
+this chapter returns to again and again: IV can learn only about the
+compliers. The adoption status of always-takers and never-takers does
+not vary with the instrument at all, so the instrument manufactures no
+contrast on them, and IV knows nothing of their effects. Whichever
+compliers this instrument of yours pushes, that is the group you get to
+learn about. Switch to another instrument, it pushes another group, and
+what you learn is another effect.</p>
+<h3 id="the-late-theorem">3.4 The LATE Theorem</h3>
+<p>Now connect the ratio of 3.1 with the type classification of 3.3, and
+prove that the Wald ratio equals precisely the average treatment effect
+on the compliers. This is the LATE theorem of Imbens and Angrist (1994)
+and Angrist, Imbens, and Rubin (1996).</p>
+<div class="theorem">
+<p><strong>(LATE theorem)</strong> Under the four assumptions of
+relevance, random assignment (independence), exclusion, and
+monotonicity,</p>
+<p><span class="math display">\beta_{IV} = \frac{\mathbb{E}[Y_i \mid Z_i
+= 1] - \mathbb{E}[Y_i \mid Z_i = 0]}{\mathbb{E}[D_i \mid Z_i = 1] -
+\mathbb{E}[D_i \mid Z_i = 0]} = \mathbb{E}\big[Y_i(1) - Y_i(0) \mid
+\text{complier}\big].</span></p>
+<p>The numerator is the ITT (reduced form), the denominator is the first
+stage, and the ratio equals the average treatment effect on the
+compliers, that is, the LATE.</p>
+</div>
+<p>The derivation goes step by step, and each step uses up one
+assumption. Start from the numerator. Exclusion lets us write the
+outcome as <span class="math inline">Y_i = Y_i(0) + \tau_i D_i</span>
+(depending only on adoption, not directly on encouragement).
+Substituting into the ITT leaves an extra term <span
+class="math inline">\mathbb{E}[Y_i(0)\mid Z_i=1]-\mathbb{E}[Y_i(0)\mid
+Z_i=0]</span>, and random assignment guarantees that encouragement is
+unrelated to <span class="math inline">Y_i(0)</span>, so this term is
+zero, leaving only:</p>
+<p><span class="math display">\mathbb{E}[Y_i \mid Z_i = 1] -
+\mathbb{E}[Y_i \mid Z_i = 0] = \mathbb{E}[\tau_i D_i \mid Z_i = 1] -
+\mathbb{E}[\tau_i D_i \mid Z_i = 0].</span></p>
+<p>Independence guarantees that the joint distribution of <span
+class="math inline">\tau_i</span> with the potential treatments does not
+vary with <span class="math inline">Z</span>, so we can replace <span
+class="math inline">D_i</span> with the corresponding potential
+treatment, and the right-hand side becomes <span
+class="math inline">\mathbb{E}\big[\tau_i \big(D_i(1) -
+D_i(0)\big)\big]</span>. Now split by the three values of <span
+class="math inline">D_i(1) - D_i(0)</span>:</p>
+<p><span class="math display">\mathbb{E}\big[\tau_i (D_i(1) -
+D_i(0))\big] = \underbrace{\Pr(\cdot = 1)\, \mathbb{E}[\tau_i \mid \cdot
+= 1]}_{\text{compliers}} + \underbrace{\Pr(\cdot = 0)\cdot
+0}_{\text{always/never}} + \underbrace{\Pr(\cdot = -1)\,
+\mathbb{E}[-\tau_i \mid \cdot = -1]}_{\text{defiers}}.</span></p>
+<p>The middle term is mechanically zero, because for always-takers and
+never-takers <span class="math inline">D_i(1) - D_i(0) = 0</span>, and
+the instrument manufactures no adoption change on them. The third term
+is the defiers, carrying a negative sign. Enter monotonicity: it sets
+<span class="math inline">\Pr(D_i(1) - D_i(0) = -1) = 0</span>, and the
+defier term vanishes entirely. This is why the defiers must be ruled
+out, otherwise they would contaminate the numerator with a negative
+sign. What is left is only the compliers:</p>
+<p><span class="math display">\mathbb{E}[Y_i \mid Z_i = 1] -
+\mathbb{E}[Y_i \mid Z_i = 0] = \Pr(\text{complier})\, \mathbb{E}[\tau_i
+\mid \text{complier}].</span></p>
+<p>Finally look at the denominator. The first stage equals exactly the
+share of compliers, <span class="math inline">\mathbb{E}[D_i \mid Z_i =
+1] - \mathbb{E}[D_i \mid Z_i = 0] = \Pr(\text{complier})</span>, because
+the extra people who adopt in the encouraged group relative to the
+non-encouraged group are precisely the compliers who adopt only when
+pushed. Dividing numerator by denominator, the complier share cancels,
+leaving <span class="math inline">\mathbb{E}[\tau_i \mid
+\text{complier}]</span>, the LATE. QED.</p>
+<div class="intuition">
+<p>The intuition of the LATE theorem can be remembered this way. The ITT
+is “how much engagement one push brings,” the first stage is “how much
+adoption one push brings,” and both are clean contrasts at the level of
+the full sample, because encouragement is random. But in the full sample
+only the compliers’ adoption is genuinely moved; the always-takers’ and
+never-takers’ adoption does not budge, and their contribution to both
+numerator and denominator is zero. So this ratio automatically, and only
+on the compliers, does its division, computing “one push brings about
+one adoption, and this adoption brings how much engagement,” precisely
+the compliers’ average effect. The instrument is like a spotlight,
+illuminating only the group it can move, and those it cannot reach have
+no bearing on the estimate.</p>
+</div>
+<h3 id="late-is-not-the-ate">3.5 LATE Is Not the ATE</h3>
+<p>LATE is the effect on the compliers, not the effect on everyone. This
+is no wordplay; it has precise algebra. Denote the individual
+first-stage strength <span class="math inline">\Delta_i = D_i(1) -
+D_i(0)</span> (which under monotonicity takes 0 or 1). One can show that
+the probability limit of 2SLS is an effect average weighted by
+first-stage strength:</p>
+<p><span class="math display">\hat\beta_{IV} \xrightarrow{p}
+\frac{\mathbb{E}[\tau_i\, \Delta_i]}{\mathbb{E}[\Delta_i]} = \text{ATE}
++ \frac{\text{Cov}(\tau_i, \Delta_i)}{\mathbb{E}[\Delta_i]}.</span></p>
+<p>The first equality says LATE weights each person’s effect by “how
+much the instrument moves them,” with people whose adoption propensity
+is untouched by the instrument (<span class="math inline">\Delta_i =
+0</span>, the always/never-takers) getting weight zero and dropping
+straight out of the estimate. The second equality writes it as the ATE
+plus a covariance term, making it plain at a glance when LATE equals the
+ATE: if and only if the individual effect <span
+class="math inline">\tau_i</span> is uncorrelated with the individual
+instrument responsiveness <span class="math inline">\Delta_i</span>, the
+covariance term is zero and LATE equals the ATE.</p>
+<p>At Meridian these two numbers are far apart: LATE is 0.784, ATE is
+2.018. The covariance term is <span class="math inline">0.784 - 2.018 =
+-1.234</span>, significantly negative. Why negative? Because in this
+DGP, the sharpest firms with the lowest resistance to adoption are both
+die-hard always-takers and the group that gains the most from the
+dashboard; whereas the compliers genuinely moved by randomized
+encouragement are exactly the firms with moderate-to-high resistance and
+modest gains to begin with. The instrument moves the low-gain people, so
+the compliers’ average effect is below the population average. This is
+not an estimation error; it is the setting speaking: what randomized
+encouragement can pry loose is by nature not the die-hards who should
+adopt most and gain most (they adopt without a push), but the
+fence-sitters who were undecided in the first place.</p>
+<p>This leads straight to a consequence that is deadly in practice: two
+valid instruments will trace out different complier populations, give
+different LATEs, and both are right. The classic example is raising
+college enrollment: use a need-based grant as the instrument, and you
+pry loose poor students who would not have enrolled only because their
+pockets were empty (the compliers are the liquidity-constrained, whose
+returns are not necessarily the highest); use a merit scholarship as the
+instrument, and you pry loose top students who were just shy of
+qualifying (the compliers are the high-ability, whose returns may be
+higher). Both instruments are clean, yet they give different LATEs
+because they move different people. This is also why we will later see
+that an over-identification test can reject even when both instruments
+are perfectly valid: what it rejects is not validity but “the two LATEs
+are equal,” an assumption that under heterogeneous effects should not
+hold in the first place.</p>
+<h3 id="mte-the-master-object-that-unifies-everything">3.6 MTE: The
+Master Object That Unifies Everything</h3>
+<p>LATE is the effect on the compliers, but who the compliers are
+depends in turn on the instrument. Is there a more fundamental object of
+which ATE, ATT, LATE, and even OLS are all different weightings? There
+is: the marginal treatment effect (MTE), first proposed by Björklund and
+Moffitt (1987) in a parametric selection model, then systematized
+through a line of work by Heckman and Vytlacil as its core.</p>
+<p>Write the latent-index selection model of 3.2 in tidy form. A firm
+adopts when its adoption propensity crosses a threshold, which after
+standardization reads</p>
+<p><span class="math display">D_i = \mathbf{1}\{U_{D,i} \leq P(Z_i)\},
+\qquad P(Z_i) = \Pr(D_i = 1 \mid Z_i),</span></p>
+<p>where <span class="math inline">U_{D,i}</span> is an unobserved
+adoption resistance standardized to a uniform distribution on <span
+class="math inline">[0,1]</span>: firms with smaller <span
+class="math inline">U_D</span> are more easily pushed into adopting (the
+sharpest, the keenest to try new things), and larger <span
+class="math inline">U_D</span> marks the immovable die-hard hold-outs.
+Here <span class="math inline">P(Z)</span> is the propensity score, the
+adoption probability given the instrument value. The beauty of this
+formulation is that it organizes “who adopts” into a clean line:
+everyone with resistance below the threshold <span
+class="math inline">P(Z)</span> adopts, and the instrument’s role is to
+move this threshold. Encouragement pushes the threshold from <span
+class="math inline">P(0) = 0.421</span> up to <span
+class="math inline">P(1) = 0.885</span>, and the firms swept over by
+this stretch of threshold movement (<span class="math inline">0.421 \leq
+U_D &lt; 0.885</span>) are the compliers.</p>
+<p>The MTE is defined as the marginal effect taken along this resistance
+dimension: the average treatment effect of the group of firms standing
+exactly on the edge of adopting or not (<span class="math inline">U_D =
+u</span>, that is, indifferent exactly when <span
+class="math inline">P(Z) = u</span>),</p>
+<p><span class="math display">\Delta^{MTE}(u) = \mathbb{E}\big[Y_i(1) -
+Y_i(0) \mid U_{D,i} = u\big].</span></p>
+<p>It is a function of resistance <span class="math inline">u</span>,
+drawing the treatment effect as a curve along the spectrum “from most
+willing to adopt to least willing to adopt.” In Meridian’s DGP this
+curve is <span class="math inline">\Delta^{MTE}(u) = 6 - 8u</span>: the
+least-resistant firms (<span class="math inline">u \to 0</span>) gain 6
+points from adopting the dashboard, the effect hits zero at resistance
+<span class="math inline">u = 0.75</span>, and beyond that (the most
+stubborn firms) adoption is even slightly harmful. That the MTE slopes
+downward is itself the signature of selection on gains: the more a firm
+resists adoption, the smaller its return to adopting, which is why it
+resists in the first place.</p>
+<p>The MTE has three equivalent characterizations, each giving one kind
+of intuition. The first is as a limit of LATE (for the formal result see
+Heckman and Vytlacil 1999, 2005, and also Heckman 1997): do a Wald
+between two infinitesimally close instrument values, <span
+class="math inline">\Delta^{MTE}(P(z)) = \lim_{z&#39; \to z}
+\text{Wald}(z, z&#39;)</span>, so that at the threshold <span
+class="math inline">u = P(z)</span>, MTE is a LATE that is as local as
+it can possibly get, prying loose the thin layer of compliers at the
+threshold. The second is local IV: <span
+class="math inline">\Delta^{MTE}(p) = \partial\, \mathbb{E}[Y \mid P(Z)
+= p] / \partial p</span>, differentiating the conditional mean of the
+outcome in the propensity. The third comes from direct derivation. Split
+the adoption gain into <span class="math inline">Y_i(1) - Y_i(0) =
+\text{ATE} + (U_{1i} - U_{0i})</span>, where <span
+class="math inline">U_{1i} - U_{0i}</span> is the unobserved
+heterogeneous part of the gain (the amount by which the individual gain
+deviates from the ATE). Inside <span class="math inline">\mathbb{E}[Y
+\mid P(Z) = p]</span> sits a term <span
+class="math inline">\mathbb{E}[D\,(U_1 - U_0) \mid P(Z) = p]</span> (the
+average unobserved gain of adopters at the threshold), and
+differentiating it in <span class="math inline">p</span> gives exactly
+<span class="math inline">\Delta^{MTE}(p) = \text{ATE} + \mathbb{E}[U_1
+- U_0 \mid U_D = p]</span>, the latter term being the
+deviation-from-average unobserved gain of the group at the
+threshold.</p>
+<p>Vytlacil’s (2002) equivalence theorem endorses this framework: the
+four LATE assumptions (essentially independence plus monotonicity) are
+completely equivalent to the constraints that this nonparametric
+latent-index selection model imposes on counterfactual data. That is,
+whether you use the language of LATE or the language of the selection
+model, the identifying power is the same, and LATE is no more general
+than a Heckman-style selection model. The difference is only in the
+framing.</p>
+<p>The most elegant conclusion is that every treatment-effect parameter
+we know is a weighted integral of this one MTE curve, only the weights
+differing:</p>
+<p><span class="math display">\text{ATE} = \int_0^1 \Delta^{MTE}(u)\,
+du,</span></p>
+<p><span class="math display">\text{LATE}(z, z&#39;) = \frac{1}{P(z) -
+P(z&#39;)} \int_{P(z&#39;)}^{P(z)} \Delta^{MTE}(u)\, du,</span></p>
+<p><span class="math display">\text{ATT} = \int_0^1 \Delta^{MTE}(u)\,
+\omega_{ATT}(u)\, du, \qquad \omega_{ATT}(u) = \frac{\Pr(P(Z) &gt;
+u)}{\mathbb{E}[P(Z)]}.</span></p>
+<p>The ATE averages the whole curve evenhandedly. The LATE averages
+uniformly only over the threshold interval <span
+class="math inline">[P(z&#39;), P(z)]</span> of the compliers. The ATT
+gives more weight to the low-resistance end, because adopters are
+concentrated at the easy-to-adopt end to begin with. OLS is a weighted
+integral too, only that its weights carry an extra selection term <span
+class="math inline">\mathbb{E}[U_1 \mid U_D = u]</span> and <span
+class="math inline">\mathbb{E}[U_0 \mid U_D = u]</span>, and this is
+exactly the algebraic root of why OLS, under selection on gains, is
+neither the ATE nor the ATT. A picture is worth a thousand words: ATE,
+ATT, and LATE are three ways of weighing the same MTE curve, measuring
+out three different numbers. At Meridian these three numbers are ATE
+2.018, ATT 3.056, LATE 0.784, and Section 6 will reduce them all to
+weighted integrals of this one curve.</p>
+<p>To identify the entire MTE curve, the price is not small: it requires
+the propensity <span class="math inline">P(Z)</span> to sweep the whole
+<span class="math inline">(0,1)</span> interval (full support), that is,
+an instrument strong enough to push the adoption threshold all the way
+from near 0 to near 1. This is far stronger than the relevance of
+ordinary IV. In real data instruments are rarely this powerful, and what
+can be identified is often only a segment of the curve, which is also
+why MTE estimation is data-hungry by birth.</p>
+<h3 id="the-control-function-and-the-forbidden-regression">3.7 The
+Control Function and the Forbidden Regression</h3>
+<p>That residual term inside the propensity score of the MTE machinery
+is in fact the idea of the control function, a parametric equivalent
+route to IV. The thought is to grab the first-stage residual and stuff
+it into the outcome equation as a control variable. Written out it is
+two steps:</p>
+<p><span class="math display">D_i = \pi_0 + \pi_1&#39; Z_i + v_i, \qquad
+Y_i = \beta_0 + \beta_1 D_i + \rho\, \hat v_i + e_i,</span></p>
+<p>where <span class="math inline">\hat v_i</span> is the first-stage
+residual. The intuition is this: adoption is endogenous because the part
+of <span class="math inline">D_i</span> not explained by the instrument
+(<span class="math inline">v_i</span>) is correlated with the outcome
+disturbance; put <span class="math inline">v_i</span> explicitly into
+the outcome equation and control it, and the remaining variation in
+<span class="math inline">D_i</span> is clean. Under joint normality or
+linear-projection assumptions, conditioning on <span
+class="math inline">\hat v_i</span> washes out the endogeneity and <span
+class="math inline">\hat\beta_1</span> is consistent. Moreover the
+coefficient <span class="math inline">\rho</span> is itself an
+endogeneity test: <span class="math inline">\rho = 0</span> says
+adoption is in fact exogenous and OLS suffices; <span
+class="math inline">\rho \neq 0</span> says there is indeed endogeneity,
+and this is exactly the same intuition behind the Hausman test and the
+Heckman selection correction. In the parametric MTE model, the control
+function and the MTE machinery are one and the same: that term <span
+class="math inline">\mathbb{E}[D\,(U_1 - U_0) \mid P(Z) = p]</span>
+inside <span class="math inline">\mathbb{E}[Y \mid P(Z) = p]</span> is a
+control function written into the propensity, and differentiating it
+gives the MTE. The virtue of the control function is that it generalizes
+cleanly to nonlinear, discrete-dependent-variable outcomes that 2SLS
+cannot handle, where there is no ready two-stage least squares.</p>
+<div class="warning">
+<p>Buried near the control function is a classic trap, the forbidden
+regression. When the first stage is nonlinear (say a probit fit to a
+binary adoption), some people will stuff the probit’s fitted value <span
+class="math inline">\hat D_i</span> straight into the second stage, or
+worse, take a nonlinear transform of the fitted value <span
+class="math inline">g(\hat D_i)</span> in place of <span
+class="math inline">\widehat{g(D_i)}</span>. This is inconsistent,
+because projection does not pass through a nonlinear function, <span
+class="math inline">\mathbb{E}[g(D) \mid Z] \neq g(\mathbb{E}[D \mid
+Z])</span>. There are only two safe roads: either honestly use the
+fitted value of a linear first stage in linear 2SLS, or use an explicit
+control function, but never substitute a nonlinear fitted value. The
+same trap has a smaller version: even if the first stage is linear, do
+not manually run two regressions yourself, because then the second
+stage’s standard errors are wrong (they do not account for the
+uncertainty of the first-stage estimate). The correct practice is to use
+an integrated IV command (such as <code>feols(Y ~ 1 | D ~ Z)</code>),
+letting the software construct the residual from the true <span
+class="math inline">D</span> and correct the variance.</p>
+</div>
+<p>The main points of this section summarize as follows: the Wald ratio
+is the ITT divided by the first stage; under relevance, random
+assignment, exclusion, and monotonicity it equals the compliers’ LATE,
+of which only relevance is testable; LATE is generally not the ATE, but
+the ATE plus a covariance term between the effect and instrument
+responsiveness, and different instruments trace different compliers; MTE
+is the marginal effect along the unobserved-resistance dimension, and
+ATE, ATT, LATE, and OLS are all its weighted integrals; the control
+function is IV’s parametric equivalent route, to be used while steering
+clear of the forbidden regression.</p>
+<h2 id="estimation">4 Estimation</h2>
+<p>Identification made clear what IV estimates; this section covers how
+to estimate it, and under what circumstances it cannot be estimated at
+all. The through-line remains “where the last method fails is what gives
+birth to the next.”</p>
+<h3 id="from-wald-to-2sls">4.1 From Wald to 2SLS</h3>
+<p>With only a single binary instrument, estimation is just the Wald
+ratio of 3.1, using sample means in place of population means. When the
+instrument is continuous, or there are multiple instruments, or there
+are exogenous covariates along for the ride, we need the more general
+machine of two-stage least squares (2SLS). It is just two steps: the
+first stage regresses the endogenous adoption <span
+class="math inline">D</span> on the instrument <span
+class="math inline">Z</span> (together with the exogenous covariates)
+and takes the fitted value <span class="math inline">\hat D</span>; the
+second stage regresses the outcome <span class="math inline">Y</span> on
+<span class="math inline">\hat D</span>, and the coefficient is the IV
+estimate. In matrix form, <span class="math inline">\mathbf{b}_{2SLS} =
+(\hat{\mathbf{X}}&#39;\hat{\mathbf{X}})^{-1}\hat{\mathbf{X}}&#39;\mathbf{y}</span>,
+where <span class="math inline">\hat{\mathbf{X}} =
+\mathbf{Z}(\mathbf{Z}&#39;\mathbf{Z})^{-1}\mathbf{Z}&#39;\mathbf{X}</span>
+is the fitted value of the endogenous variable projected onto the
+instrument space. When just-identified (the number of instruments equals
+the number of endogenous variables), 2SLS collapses to <span
+class="math inline">\mathbf{b}_{IV} =
+(\mathbf{Z}&#39;\mathbf{X})^{-1}\mathbf{Z}&#39;\mathbf{y}</span>, and
+with a single binary instrument it is the Wald ratio, numerically
+identical.</p>
+<p>The intuition for using the fitted value is to pull out the clean
+piece of the endogenous variable on its own. <span
+class="math inline">D</span> contains both the exogenous variation
+pushed by the instrument and the endogenous variation tangled with the
+disturbance, and <span class="math inline">\hat D</span> keeps only the
+former, so using it to explain <span class="math inline">Y</span> goes
+around the endogeneity. This also explains why the second stage’s
+standard error cannot use what OLS spits out directly: <span
+class="math inline">\hat D</span> is estimated, and ordinary OLS
+standard errors treat it as known data and get it wrong. The IV
+residuals satisfy <span
+class="math inline">\mathbf{Z}&#39;\mathbf{e}_{IV} = 0</span> (the
+moment condition <span class="math inline">\mathbb{E}[z_i e_i] =
+0</span>, which is the GMM viewpoint, with OLS corresponding to <span
+class="math inline">\mathbb{E}[x_i e_i] = 0</span>), and an integrated
+IV command uses it to get the variance right.</p>
+<h3 id="the-price-of-iv-precision">4.2 The Price of IV: Precision</h3>
+<p>IV buys consistency and sells precision. Under homoskedasticity the
+two variances compare directly:</p>
+<p><span class="math display">\text{Var}(\hat\beta_{2SLS}) =
+\frac{1}{N}\frac{\sigma_\varepsilon^2}{\sigma_X^2\, R^2_{XZ}}, \qquad
+\text{Var}(\hat\beta_{OLS}) =
+\frac{1}{N}\frac{\sigma_\varepsilon^2}{\sigma_X^2}.</span></p>
+<p>The two differ only by an <span class="math inline">R^2_{XZ}</span>,
+the fraction of the endogenous variable explained by the instrument.
+Because <span class="math inline">R^2_{XZ} \leq 1</span>, the variance
+of IV is never smaller than that of OLS, and the weaker the instrument
+(<span class="math inline">R^2_{XZ} \to 0</span>) the more the variance
+explodes. The reason echoes 3.5: IV uses only the piece of treatment
+variation pushed by the instrument and throws away the rest, so with
+less information, larger standard errors follow naturally. At Meridian
+the instrument is extremely strong, and the SE of 2SLS (0.247) is still
+in the acceptable range; let the instrument weaken and the price shows
+itself at once, which is the theme of the next subsection.</p>
+<h3 id="over-identification-and-optimal-weighting">4.3
+Over-identification and Optimal Weighting</h3>
+<p>When the number of instruments exceeds the number of endogenous
+variables (over-identified), there are multiple moment conditions
+available, and combining them with optimal weighting is GMM (generalized
+method of moments), of which 2SLS is the special case under
+homoskedasticity. The extra instruments allow an over-identification
+test, the Sargan <span class="math inline">J</span> statistic: if all
+instruments are valid, the coefficients estimated using different
+subsets of instruments should agree, and the <span
+class="math inline">J</span> test checks whether their differences are
+large enough to be more than sampling noise.</p>
+<p>But the Sargan <span class="math inline">J</span> has already fallen
+out of favor under heterogeneous effects, for exactly the reason
+discussed in 3.5: different instruments trace different compliers and
+give different LATEs, and <span class="math inline">J</span> will reject
+because two LATEs are unequal, even when both instruments are perfectly
+valid. So a <span class="math inline">J</span> rejection cannot be read
+simply as “some instrument is invalid”; it may only be “two instruments
+illuminate different populations.” By the same token, the
+Durbin-Wu-Hausman test used to check endogeneity (comparing whether OLS
+and 2SLS agree) will also reject because OLS estimates some other
+quantity and 2SLS estimates the LATE, and what it rejects is “the two
+are equal,” not “endogeneity exists.” Both of these tests must be read
+with care.</p>
+<h3 id="weak-instruments-modern-practice">4.4 Weak Instruments: Modern
+Practice</h3>
+<p>Weak instruments are IV’s most treacherous failure mode, and it is
+not as simple as “estimated imprecisely,” but rather “the estimate
+cannot be inferred from by conventional methods.” When the first stage
+is near zero, three bad things happen, and they must be told apart. The
+first is a finite-sample bias toward OLS: even if the instrument is
+perfectly clean, 2SLS in finite samples biases toward OLS, with the bias
+approximately equal to the OLS bias times <span
+class="math inline">1/(F+1)</span> (<span class="math inline">F</span>
+being the first-stage F statistic, see Angrist-Pischke), and the smaller
+<span class="math inline">F</span>, the more it biases. The second is
+amplification of any uncleanliness: if the instrument is even a touch
+unclean (<span class="math inline">\text{Cov}(Z,\varepsilon)</span>
+slightly nonzero), the ever-smaller denominator in the probability limit
+<span class="math inline">\hat\beta^{IV} \xrightarrow{p} \beta_1 +
+\frac{\text{Cov}(Z, \varepsilon)}{\text{Cov}(Z, D)}</span> blows this
+bit of contamination up out of control, even flipping the sign, and this
+is an asymptotic malady, different from the previous one. The third is
+that <span class="math inline">\hat\beta^{IV}</span> becomes the ratio
+of two correlated normals, the normal approximation of the central limit
+theorem fails, and the conventional <span class="math inline">t</span>
+test and confidence interval are badly distorted.</p>
+<p>Meridian builds a weak-instrument variant to act out this malady:
+turn the push of encouragement on adoption down to almost zero, and the
+first stage is left at just 0.011. A single estimate of 2SLS is 2.817,
+with an SE as high as 9.480 and a confidence interval so wide as to
+carry no information. More telling is repeated sampling: rerun this weak
+design 1000 times, and the median of 2SLS is pushed from the true value
+0.784 to 3.382, so the direction does bias toward OLS (consistent with
+weak-instrument theory), but what is truly lethal is not this bit of
+shift, rather that the mean reaches 29.133 with tails so heavy as to
+have almost no finite moments, and the whole sampling distribution has
+already rotted. The coverage of the conventional 95% confidence interval
+for the true value is only 0.931, short of the nominal 0.95; at times
+like this one should switch to weak-instrument-robust inference such as
+Anderson-Rubin. This is a weak instrument: a single estimate looks
+respectable, yet the distribution is already unusable. It has a
+finite-sample side (bias toward OLS, easing as the sample grows) and an
+asymptotic side (amplifying the instrument’s uncleanliness), and “how
+strong is strong enough” depends on <span class="math inline">F</span>,
+not on whether the first stage is significant.</p>
+<p>Diagnosis and remedy have a set of modern tools, far more discerning
+than the antiquated “F greater than 10.”</p>
+<div class="table-scroll">
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th>Tool</th>
+<th>What it does</th>
+<th>When to use</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>first-stage F</td>
+<td>Report the first-stage F of the excluded instruments (after removing
+exogenous regressors)</td>
+<td>The basic checkup for relevance; with multiple endogenous variables
+each first stage must pass</td>
+</tr>
+<tr>
+<td>effective F (Montiel-Olea-Pflueger 2013)</td>
+<td>A robust substitute when the first-stage F fails under
+heteroskedasticity/clustering, compared against MOP critical values</td>
+<td>When errors are non-homoskedastic, replacing the mechanical
+“10”</td>
+</tr>
+<tr>
+<td>tF correction (Lee et al. 2022)</td>
+<td>Inflate the critical value of the <span class="math inline">t</span>
+test by the observed first-stage F</td>
+<td>When you want an honest confidence interval without setting a hard
+threshold</td>
+</tr>
+<tr>
+<td>Anderson-Rubin</td>
+<td>Test <span class="math inline">H_0: \beta = \beta_0</span> by
+regressing <span class="math inline">Y - \beta_0 D</span> on <span
+class="math inline">Z</span> and checking whether the instruments are
+jointly significant</td>
+<td>When the instrument may be weak, for size-correct robust
+inference</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Traditionally, for a single endogenous variable one checks whether
+the first-stage F exceeds 10 (the Staiger-Stock rule of thumb). This
+threshold is now considered “large enough in practice, but probably not
+enough in theory”: Lee, McCrary, Moreira, and Porter point out that for
+the conventional <span class="math inline">|t| &gt; 1.96</span> to truly
+correspond to a 5% test level, the first-stage F must be far greater
+than 10 (roughly above 100). Their tF procedure writes the critical
+value of <span class="math inline">t</span> as a smooth function of F,
+with a smaller F giving a larger critical value and a wider interval, so
+that an honest confidence interval is delivered without setting a hard
+threshold. Under heteroskedasticity or clustering, Staiger-Stock’s F
+does not itself hold, and one should switch to Montiel-Olea and
+Pflueger’s effective F, comparing against their critical values computed
+for a target worst-case bias. The most robust move is the Anderson-Rubin
+test: it tests a specific value <span
+class="math inline">\beta_0</span>, its size is correct whether the
+instrument is strong or weak, and inverting it gives a
+weak-instrument-robust confidence set (which may be unbounded or even
+empty, and that itself is honest information). In Meridian’s weak
+variant, the conventional interval is <span
+class="math inline">[-15.764, 21.398]</span>, while the Anderson-Rubin
+interval is <span class="math inline">[-\infty, 1317.636]</span>; the
+latter honestly admits with an unbounded interval that “this instrument
+simply cannot pin down <span class="math inline">\beta</span>,” while
+the former hands you a range that looks finite but deceives.</p>
+<p>There is a neighboring class of problem, many-instrument bias: once
+the number of instruments is large relative to the sample size, the
+fitted value <span class="math inline">\hat D</span> of 2SLS overfits
+the disturbance, and the estimate biases toward OLS. Here LIML
+(limited-information maximum likelihood) is approximately
+median-unbiased with better weak-instrument properties (at the cost of
+fatter tails), while JIVE (jackknife IV) removes the overfitting of a
+unit’s own observation via a leave-one-out approach. These few will come
+up again in Section 7.</p>
+<h3 id="the-control-function-two-step">4.5 The Control Function
+Two-Step</h3>
+<p>The control function of 3.7 lands on estimation as two steps: first
+run the first stage and store the residual <span
+class="math inline">\hat v</span>, then put <span
+class="math inline">\hat v</span> into the outcome equation as an extra
+regressor. Because the second step uses the residual estimated in the
+first, using the second step’s OLS standard errors directly understates
+the uncertainty, and the correct practice is to bootstrap the whole
+two-step procedure, or use an analytic variance that folds in the
+estimation uncertainty of both steps. Its extra benefit relative to 2SLS
+is that it can handle nonlinear outcomes and test endogeneity along the
+way with <span class="math inline">\rho</span>, at the cost of having to
+posit one more functional-form assumption about how <span
+class="math inline">v</span> enters the outcome, which 2SLS does not
+need.</p>
+<h2 id="anchoring-papers">5 Anchoring Papers</h2>
+<p>A method only stands firm when it lands in real research. Three
+anchoring papers: one a classic vehicle for LATE, one a cautionary cause
+célèbre for weak instruments, and one a representative work in the IS
+field that treats randomized encouragement as an instrument. Each is
+combed through along the five elements of paper, method, data, results,
+and limitations, with a focus on how the assumptions are defended.</p>
+<h3 id="angrist-1990">5.1 Angrist (1990)</h3>
+<div class="case">
+<p>Paper: “Lifetime Earnings and the Vietnam Era Draft Lottery: Evidence
+from Social Security Administrative Records,” American Economic Review.
+It is the most classic empirical vehicle for the LATE theorem, turning
+instrumental variables from an old trick of demand estimation into a
+tool for identifying treatment effects.</p>
+<p>Method: to estimate the causal effect of military service on later
+earnings, but who serves is not random, and whether one enlists is
+tangled with family background, ability, and employment prospects, so
+comparing veterans with non-veterans directly is contaminated by
+selection. Angrist uses the Vietnam-era draft lottery as the instrument:
+lottery numbers are randomly assigned by birth date, and lower numbers
+are more likely to be drafted. The lottery number is <span
+class="math inline">Z</span>, service is the endogenous <span
+class="math inline">D</span>, and earnings are <span
+class="math inline">Y</span>. The exclusion story is that the lottery
+number can affect earnings only by affecting whether one serves, and the
+number itself does not enter the wage equation; monotonicity is that a
+lower number only increases, never decreases, the probability of
+service.</p>
+<p>Data: administrative earnings records from the Social Security
+Administration, matched to lottery numbers defined by birth date.</p>
+<p>Results: the lottery number has a strong first stage on service and a
+measurable reduced form on earnings, and the Wald ratio shows that white
+veterans earned about 15% less per year than non-veterans in the early
+1980s. The compliers here are those who “served only because they drew a
+low number and would not have served otherwise,” and what is estimated
+is the LATE on them, not the effect on all veterans, and certainly not
+the effect on voluntary enlistees.</p>
+<p>Limitations: LATE’s external validity is the core limitation. The
+compliers the lottery pries loose need not represent all veterans, and
+voluntary enlistees (always-takers) and those who would never serve no
+matter what (never-takers) are not in this number. Exclusion also has
+debatable points, for instance a low number might make people stay in
+school longer to dodge the draft, thereby affecting earnings while
+bypassing service.</p>
+</div>
+<p>This paper’s defense strategy is the model for IV: the randomness of
+the instrument comes from an institution (the lottery), exclusion is
+argued from mechanism rather than statistical test, and the estimate’s
+scope is honestly confined to the compliers, without overreaching to
+speak of everyone.</p>
+<h3
+id="angrist-and-krueger-1991-and-the-weak-instrument-cause-célèbre">5.2
+Angrist and Krueger (1991) and the Weak-Instrument Cause Célèbre</h3>
+<div class="case">
+<p>Paper: “Does Compulsory School Attendance Affect Schooling and
+Earnings?”, Quarterly Journal of Economics. It is both an ingenious
+natural experiment and the number-one cautionary case for the
+weak-instrument problem.</p>
+<p>Method: to estimate the return to one more year of schooling, and
+schooling is endogenous (ability affects both years of schooling and
+earnings). The authors use quarter of birth (QOB) as the instrument:
+compulsory schooling laws permit dropping out by age, while the age of
+school entry is drawn by birth date, so children born early in the year
+have already read a few months more than those born late by the time
+they reach the legal dropout age, and are forced to attend a bit more
+school. Quarter of birth thus becomes an instrument for schooling, the
+rationale being that it is nearly random yet affects earnings only
+through years of schooling.</p>
+<p>Data: a large sample from the US Census, with quarter of birth, years
+of schooling, and earnings.</p>
+<p>Results: the main specification estimates a return to schooling of
+about 7% to 8%, close to OLS. The authors also interact quarter of birth
+with year of birth and state of birth, creating hundreds of instruments
+to improve precision.</p>
+<p>Limitations: it is precisely those hundreds of instruments that laid
+the mine. Bound, Jaeger, and Baker (1995) point out that quarter of
+birth is a very weak instrument, with a feeble first stage, and combined
+with the many-instrument bias of over-identification, 2SLS biases toward
+OLS, so a seemingly precise estimate is in fact unreliable. They ran a
+beautiful and cruel demonstration: replace the real quarter of birth
+with computer-generated random fake instruments (with no causal effect
+on schooling whatsoever), and one can still “reproduce” comparable
+estimates and significance. This shows that much of the original
+estimate’s apparent solidity comes from a mechanical illusion of weak
+plus many instruments, not from genuine identification.</p>
+</div>
+<p>This cause célèbre is the real-world version of Section 4.4 of this
+chapter: a first stage that looks significant does not mean the
+instrument is strong enough, many instruments aggravate the bias toward
+OLS, and random fake instruments reproducing the result is the most
+glaring diagnostic of weak instruments. It also pushed the whole field
+toward tools like the effective F and Anderson-Rubin.</p>
+<h3 id="bapna-and-umyarov-2015">5.3 Bapna and Umyarov (2015)</h3>
+<div class="case">
+<p>Paper: “Do Your Online Friends Make You Pay? A Randomized Field
+Experiment on Peer Influence in Online Social Networks,” Management
+Science 61(8):1902-1920. It is a representative work in the IS field of
+using randomized gifting as exogenous variation to identify causality,
+sharing a core with Meridian: relying on a randomly assigned
+encouragement to render the endogenous paying status exogenous.</p>
+<p>Method: to estimate peer influence in online social networks, that
+is, whether a friend becoming a paying member really makes one upgrade
+to paying oneself, rather than mere correlation. The difficulty is that
+a friend’s paying is highly positively correlated with one’s own paying,
+but this could be genuine influence or just birds of a feather
+(homophily) and common shocks, and observational comparison cannot tell
+them apart. The authors worked with the music community Last.fm,
+randomly selecting about 1000 people from roughly 3.8 million users to
+be gifted a stretch of premium membership (the manipulated group), with
+another roughly 1000 as controls. The random gift makes this batch of
+users exogenously become premium (as good as randomly assigned), so one
+can cleanly see whether their friends are more likely to upgrade along
+with them. The random gift is the encouragement that renders the
+friend’s paying status exogenous.</p>
+<p>Data: a panel of about 3.8 million Last.fm users, including the
+random-gift assignment, the friendship network, paying status, and
+social activity.</p>
+<p>Results: at the observational scope, a friend’s paying is highly
+positively correlated with one’s own paying, but the causal peer
+influence given by the randomized experiment is much smaller and still
+significantly positive: the friends of those randomly gifted do have a
+higher probability of upgrading to paying. This confirms that the naive
+correlation mixes in a great deal of homophily, and is not pure peer
+influence.</p>
+<p>Limitations: what is estimated is the effect on the portion of people
+pried loose by the random gift, which need not extrapolate to everyone;
+exclusion requires arguing that receiving the gift does not directly
+affect friends’ behavior through some other channel (say being specially
+favored by the platform); the external validity of a single platform is
+the usual reservation.</p>
+</div>
+<p>Put the three together and the meaning of anchoring becomes clear:
+Angrist shows how a lottery gives a clean LATE and honestly confines its
+scope, Angrist-Krueger and its critique show how weak instruments make a
+seemingly precise estimate collapse, and Bapna and Umyarov show how a
+platform’s random gift pulls peer influence out of homophily. All three
+share one core: find an as-good-as-randomly-assigned piece of variation
+and render the endogenous treatment status exogenous. Meridian puts this
+core to the most direct question of all: randomly encourage adoption,
+then look at the effect of adoption on a firm itself.</p>
+<h2 id="a-complete-walkthrough-on-the-meridian-data">6 A Complete
+Walkthrough on the Meridian Data</h2>
+<p>Now run the earlier tools on Meridian from start to finish. The code
+below uses R 4.5.3 with the random seed fixed at 404, and every number
+cited in the text comes from the actual run output of this code. IV
+estimation uses the IV syntax of <code>fixest::feols</code>.</p>
+<h3 id="the-data-generating-process">6.1 The Data-Generating
+Process</h3>
+<p>The design parameters are as follows: a Heckman-Vytlacil
+threshold-crossing model with <span class="math inline">n = 30000</span>
+firms. One unobserved adoption resistance <span class="math inline">U_D
+\sim \text{Uniform}(0,1)</span> drives adoption, baseline engagement,
+and the adoption gain all at once, and this is the “sharpness” that
+observable covariates cannot fix. The smaller <span
+class="math inline">U_D</span>, the sharper and the quicker to adopt
+when pushed; the larger, the more of a stubborn hold-out.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">404</span>); n <span class="ot">&lt;-</span> <span class="dv">30000</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>U_D <span class="ot">&lt;-</span> <span class="fu">runif</span>(n)                                  <span class="co"># unobserved adoption resistance</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>W   <span class="ot">&lt;-</span> <span class="sc">-</span><span class="fl">0.7</span> <span class="sc">*</span> <span class="fu">qnorm</span>(U_D) <span class="sc">+</span> <span class="fu">sqrt</span>(<span class="fl">0.51</span>) <span class="sc">*</span> <span class="fu">rnorm</span>(n) <span class="co"># firm size, correlated with sophistication</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>Y0  <span class="ot">&lt;-</span> <span class="dv">60</span> <span class="sc">+</span> <span class="dv">5</span> <span class="sc">*</span> W <span class="sc">-</span> <span class="dv">12</span> <span class="sc">*</span> U_D <span class="sc">+</span> <span class="fu">rnorm</span>(n, <span class="dv">0</span>, <span class="dv">3</span>)     <span class="co"># baseline engagement</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>tau <span class="ot">&lt;-</span> <span class="dv">6</span> <span class="sc">-</span> <span class="dv">8</span> <span class="sc">*</span> U_D <span class="sc">+</span> <span class="fu">rnorm</span>(n, <span class="dv">0</span>, <span class="fl">1.5</span>)             <span class="co"># adoption gain, declining in resistance</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>Z   <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(n, <span class="dv">1</span>, <span class="fl">0.5</span>)                          <span class="co"># randomized encouragement (binary instrument)</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>a0 <span class="ot">&lt;-</span> <span class="sc">-</span><span class="fl">0.20</span>; a1 <span class="ot">&lt;-</span> <span class="fl">1.40</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>D   <span class="ot">&lt;-</span> <span class="fu">as.integer</span>(<span class="fu">pnorm</span>(a0 <span class="sc">+</span> a1 <span class="sc">*</span> Z) <span class="sc">&gt;</span> U_D)       <span class="co"># adoption: threshold crossing, monotone in Z</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>Y   <span class="ot">&lt;-</span> Y0 <span class="sc">+</span> D <span class="sc">*</span> tau                               <span class="co"># observed engagement</span></span></code></pre></div>
+<p>A few design intentions need explaining. The gain <span
+class="math inline">\tau = 6 - 8 U_D</span> declines in resistance, and
+the baseline <span class="math inline">Y_0</span> also declines in
+resistance, so adopters (low <span class="math inline">U_D</span>) look
+good for two reasons: high true gain and a high starting point, which is
+why OLS is severely biased upward. The adoption thresholds <span
+class="math inline">P(0) = \Phi(a_0) = 0.421</span> and <span
+class="math inline">P(1) = \Phi(a_0 + a_1) = 0.885</span> mean that the
+medium-to-high-resistance firms swept over by this stretch of threshold
+are the compliers, and their gains are modest to begin with, so the ATT
+exceeds the ATE and the ATE exceeds the LATE, forming a stark ordering.
+Firm size <span class="math inline">W = -0.7\,\Phi^{-1}(U_D) +
+\sqrt{0.51}\,\varepsilon</span> is correlated with sharpness, so
+covariate adjustment can shave off part of the bias but cannot shave it
+clean, because <span class="math inline">W</span> is only an imperfect
+shadow of <span class="math inline">U_D</span>. The threshold is
+monotone in <span class="math inline">Z</span> by construction, and
+there are no defiers.</p>
+<p>The true values computed from the individual gains: the ATE is 2.018,
+the ATT is 3.056, the LATE on the compliers is 0.784, and the MTE curve
+is <span class="math inline">6.000 - 8.000\, u</span>. These few numbers
+are the target every estimator that follows is reconciled against.</p>
+<h3 id="olss-two-bad-answers">6.2 OLS’s Two Bad Answers</h3>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>b_ols <span class="ot">&lt;-</span> <span class="fu">coef</span>(<span class="fu">lm</span>(Y <span class="sc">~</span> D))[<span class="st">&quot;D&quot;</span>]                    <span class="co"># naive</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>b_adj <span class="ot">&lt;-</span> <span class="fu">coef</span>(<span class="fu">lm</span>(Y <span class="sc">~</span> D <span class="sc">+</span> W))[<span class="st">&quot;D&quot;</span>]                <span class="co"># control for firm size</span></span></code></pre></div>
+<p>Naive OLS gives 12.104 (SE 0.102), and controlling for firm size
+drops it to 5.285 (SE 0.063). The true ATT is 3.056, the selection bias
+is <span class="math inline">12.104 - 3.056 = 9.048</span>, and the
+absurdly large number of Section 1 is confirmed here. Controlling for
+size shaves off the part of the bias size can proxy, yet it still
+exceeds the ATT by 2.230, and that 2.230 is the residual attached to the
+unobserved resistance <span class="math inline">U_D</span> that size
+cannot reach. This is exactly the suspense of Chapter 9: selection lands
+on the unobservables, and covariate adjustment cannot save it.</p>
+<h3 id="iv-first-stage-itt-wald-and-2sls">6.3 IV: First Stage, ITT,
+Wald, and 2SLS</h3>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>fs  <span class="ot">&lt;-</span> <span class="fu">feols</span>(D <span class="sc">~</span> Z)                              <span class="co"># first stage</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>itt <span class="ot">&lt;-</span> <span class="fu">feols</span>(Y <span class="sc">~</span> Z)                             <span class="co"># reduced form / ITT</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>iv  <span class="ot">&lt;-</span> <span class="fu">feols</span>(Y <span class="sc">~</span> <span class="dv">1</span> <span class="sc">|</span> D <span class="sc">~</span> Z)                     <span class="co"># just-identified 2SLS</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>F_iid <span class="ot">&lt;-</span> <span class="fu">fitstat</span>(fs, <span class="st">&quot;wald&quot;</span>, <span class="at">vcov =</span> <span class="st">&quot;iid&quot;</span>)<span class="sc">$</span>wald<span class="sc">$</span>stat</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>F_eff <span class="ot">&lt;-</span> <span class="fu">fitstat</span>(fs, <span class="st">&quot;wald&quot;</span>, <span class="at">vcov =</span> <span class="st">&quot;hetero&quot;</span>)<span class="sc">$</span>wald<span class="sc">$</span>stat</span></code></pre></div>
+<p>The first stage is 0.466 (SE 0.005), and encouragement lifts the
+adoption rate from 42.2% to 88.8%. The first-stage F reaches about 9483
+(effective F about 9486), and the instrument is strong beyond dispute.
+The ITT is 0.369 (SE 0.117), that is, a random push brings on average a
+0.369-point lift in engagement. The Wald ratio, ITT divided by first
+stage, is <span class="math inline">0.369 / 0.466 = 0.792</span> (SE
+0.252), and the integrated 2SLS gives 0.792 (SE 0.247), the two agreeing
+and both hugging the true LATE of 0.784 (off by 0.008).</p>
+<p>Worth savoring is the drop across this string of numbers: OLS says
+12.104, controlling for size says 5.285, and clean IV says 0.792. IV
+pulls the adoption effect out of the mire of selection, and what it
+pulls out is a far smaller number, because the compliers randomized
+encouragement pries loose are exactly the least-gaining
+fence-sitters.</p>
+<h3 id="who-the-compliers-are">6.4 Who the Compliers Are</h3>
+<p>The first stage of 0.466 is the estimate of the complier share: about
+42.2% adopt on their own before encouragement (always-takers),
+encouragement lifts the adoption rate to about 88.8%, and the roughly
+46.6 percentage points lifted are the compliers, with the remaining
+roughly 11.2% being never-takers. To describe what the compliers look
+like, one can use Abadie’s <span class="math inline">\kappa</span>
+weighting, taking the mean of any observable characteristic over the
+complier subpopulation.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>pz <span class="ot">&lt;-</span> <span class="fu">mean</span>(Z)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>kappa <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">-</span> D <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> Z) <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">-</span> pz) <span class="sc">-</span> (<span class="dv">1</span> <span class="sc">-</span> D) <span class="sc">*</span> Z <span class="sc">/</span> pz</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>w_complier <span class="ot">&lt;-</span> <span class="fu">sum</span>(kappa <span class="sc">*</span> W) <span class="sc">/</span> <span class="fu">sum</span>(kappa)        <span class="co"># E[W | complier]</span></span></code></pre></div>
+<p>The estimate is <span class="math inline">\mathbb{E}[W \mid
+\text{complier}] = -0.299</span> (oracle true value <span
+class="math inline">-0.296</span>), while the mean <span
+class="math inline">W</span> over all firms is about 0.006. Compliers
+are smaller-than-average firms, which matches intuition: large firms
+tend to be always-takers who adopt without a push, and what randomized
+encouragement pries loose are the small firms that were originally
+hesitant. Being able to characterize the compliers’ features is a
+practical way to ease the extrapolation anxiety of LATE: at least one
+can say clearly whom this local effect is local to.</p>
+<figure>
+<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' viewBox='0 0 756.00 302.40' role="img" aria-label="Left: randomized encouragement lifts the adoption rate from about 42.2% (Z=0) to about 88.8% (Z=1), and the lifted 0.466 is the first stage, also the estimate of the complier share. Right: cut the line of unobserved adoption resistance U_D into three segments by adoption propensity, with always-takers about 42.2%, compliers about 46.6%, and never-takers about 11.2%, and IV sees only the middle segment of compliers." style="max-width:100%;height:auto;display:block;margin:0 auto">
+<g class='svglite'>
+<defs>
+  <style type='text/css'><![CDATA[
+    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {
+      fill: none;
+      stroke: #000000;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-miterlimit: 10.00;
+    }
+    .svglite text {
+      white-space: pre;
+    }
+    .svglite g.glyphgroup path {
+      fill: inherit;
+      stroke: none;
+    }
+  ]]></style>
+</defs>
+<rect width='100%' height='100%' style='stroke: none; fill: #FAFAF9;'/>
+<defs>
+  <clipPath id='g1_cpMC4wMHw3NTYuMDB8MC4wMHwzMDIuNDA='>
+    <rect x='0.00' y='0.00' width='756.00' height='302.40' />
+  </clipPath>
+</defs>
+<g clip-path='url(#g1_cpMC4wMHw3NTYuMDB8MC4wMHwzMDIuNDA=)'>
+<rect x='0.00' y='0.000000000000057' width='756.00' height='302.40' style='stroke-width: 1.07; stroke: #FFFFFF; fill: #FFFFFF;' />
+</g>
+<defs>
+  <clipPath id='g1_cpNDkuNjB8NzQ0LjU0fDQ2Ljk1fDI2MC4wNQ=='>
+    <rect x='49.60' y='46.95' width='694.94' height='213.09' />
+  </clipPath>
+</defs>
+<g clip-path='url(#g1_cpNDkuNjB8NzQ0LjU0fDQ2Ljk1fDI2MC4wNQ==)'>
+</g>
+<g clip-path='url(#g1_cpMC4wMHw3NTYuMDB8MC4wMHwzMDIuNDA=)'>
+</g>
+<defs>
+  <clipPath id='g1_cpNS40OHwzMTguMjZ8NS40OHwyOTYuOTI='>
+    <rect x='5.48' y='5.48' width='312.78' height='291.44' />
+  </clipPath>
+</defs>
+<g clip-path='url(#g1_cpNS40OHwzMTguMjZ8NS40OHwyOTYuOTI=)'>
+<rect x='5.48' y='5.48' width='312.78' height='291.44' style='stroke-width: 1.16; stroke: none; fill: #FAFAF9;' />
+</g>
+<g clip-path='url(#g1_cpMC4wMHw3NTYuMDB8MC4wMHwzMDIuNDA=)'>
+</g>
+<defs>
+  <clipPath id='g1_cpMzE4LjI2fDc1MC41Mnw1LjQ4fDI5Ni45Mg=='>
+    <rect x='318.26' y='5.48' width='432.26' height='291.44' />
+  </clipPath>
+</defs>
+<g clip-path='url(#g1_cpMzE4LjI2fDc1MC41Mnw1LjQ4fDI5Ni45Mg==)'>
+<rect x='318.26' y='5.48' width='432.26' height='291.44' style='stroke-width: 1.16; stroke: none; fill: #FAFAF9;' />
+</g>
+<g clip-path='url(#g1_cpMC4wMHw3NTYuMDB8MC4wMHwzMDIuNDA=)'>
+</g>
+<defs>
+  <clipPath id='g1_cpNDkuNjB8MzEyLjI5fDQ2Ljk1fDI2MC4wNQ=='>
+    <rect x='49.60' y='46.95' width='262.69' height='213.09' />
+  </clipPath>
+</defs>
+<g clip-path='url(#g1_cpNDkuNjB8MzEyLjI5fDQ2Ljk1fDI2MC4wNQ==)'>
+<rect x='49.60' y='46.95' width='262.69' height='213.09' style='stroke-width: 1.16; stroke: none; fill: #FAFAF9;' />
+<polyline points='49.60,260.05 312.29,260.05 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<polyline points='49.60,207.82 312.29,207.82 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<polyline points='49.60,155.59 312.29,155.59 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<polyline points='49.60,103.36 312.29,103.36 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<polyline points='49.60,51.13 312.29,51.13 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<polyline points='121.24,260.05 121.24,46.95 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<polyline points='240.64,260.05 240.64,46.95 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<rect x='88.40' y='171.93' width='65.67' height='88.12' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #1A365D;' />
+<rect x='207.81' y='74.57' width='65.67' height='185.48' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #2B6CB0;' />
+<text x='121.24' y='167.04' text-anchor='middle' style='font-size: 11.38px;fill: #2D3748; font-family: "Arial";' textLength='28.47px' lengthAdjust='spacingAndGlyphs'>0.422</text>
+<text x='240.64' y='69.68' text-anchor='middle' style='font-size: 11.38px;fill: #2D3748; font-family: "Arial";' textLength='28.47px' lengthAdjust='spacingAndGlyphs'>0.888</text>
+<line x1='240.64' y1='171.93' x2='240.64' y2='74.57' style='stroke-width: 1.71; stroke: #C53030; stroke-linecap: butt;' />
+<polyline points='238.52,168.25 240.64,171.93 242.77,168.25 ' style='stroke-width: 1.71; stroke: #C53030; stroke-linecap: butt;' />
+<polyline points='242.77,78.25 240.64,74.57 238.52,78.25 ' style='stroke-width: 1.71; stroke: #C53030; stroke-linecap: butt;' />
+<text x='195.27' y='115.68' text-anchor='end' style='font-size: 9.67px;fill: #C53030; font-family: "Arial";' textLength='41.94px' lengthAdjust='spacingAndGlyphs'>first stage</text>
+<text x='195.27' y='126.71' text-anchor='end' style='font-size: 9.67px;fill: #C53030; font-family: "Arial";' textLength='71.77px' lengthAdjust='spacingAndGlyphs'>= complier share</text>
+<text x='195.27' y='137.74' text-anchor='end' style='font-size: 9.67px;fill: #C53030; font-family: "Arial";' textLength='32.52px' lengthAdjust='spacingAndGlyphs'>= 0.466</text>
+</g>
+<g clip-path='url(#g1_cpMC4wMHw3NTYuMDB8MC4wMHwzMDIuNDA=)'>
+<text x='44.22' y='263.48' text-anchor='end' style='font-size: 9.60px;fill: #2D3748; font-family: "Arial";' textLength='18.66px' lengthAdjust='spacingAndGlyphs'>0.00</text>
+<text x='44.22' y='211.25' text-anchor='end' style='font-size: 9.60px;fill: #2D3748; font-family: "Arial";' textLength='18.66px' lengthAdjust='spacingAndGlyphs'>0.25</text>
+<text x='44.22' y='159.02' text-anchor='end' style='font-size: 9.60px;fill: #2D3748; font-family: "Arial";' textLength='18.66px' lengthAdjust='spacingAndGlyphs'>0.50</text>
+<text x='44.22' y='106.80' text-anchor='end' style='font-size: 9.60px;fill: #2D3748; font-family: "Arial";' textLength='18.66px' lengthAdjust='spacingAndGlyphs'>0.75</text>
+<text x='44.22' y='54.57' text-anchor='end' style='font-size: 9.60px;fill: #2D3748; font-family: "Arial";' textLength='18.66px' lengthAdjust='spacingAndGlyphs'>1.00</text>
+<text x='121.24' y='272.30' text-anchor='middle' style='font-size: 9.60px;fill: #2D3748; font-family: "Arial";' textLength='61.55px' lengthAdjust='spacingAndGlyphs'>No push (Z=0)</text>
+<text x='240.64' y='272.30' text-anchor='middle' style='font-size: 9.60px;fill: #2D3748; font-family: "Arial";' textLength='47.70px' lengthAdjust='spacingAndGlyphs'>Push (Z=1)</text>
+<text transform='translate(20.05,153.50) rotate(-90)' text-anchor='middle' style='font-size: 12.00px;fill: #2D3748; font-family: "Arial";' textLength='117.12px' lengthAdjust='spacingAndGlyphs'>adoption rate  E[D | Z]</text>
+<text x='49.60' y='36.64' style='font-size: 10.00px;fill: #718096; font-family: "Arial";' textLength='248.14px' lengthAdjust='spacingAndGlyphs'>Encouragement lifts adoption from E[D|Z=0] to E[D|Z=1]</text>
+<text x='49.60' y='20.77' style='font-size: 13.00px; font-weight: bold;fill: #1A365D; font-family: "Arial";' textLength='88.86px' lengthAdjust='spacingAndGlyphs'>The first stage</text>
+</g>
+<defs>
+  <clipPath id='g1_cpMzI0LjI0fDc0NC41NHw0Ni45NXwyNjAuMDU='>
+    <rect x='324.24' y='46.95' width='420.30' height='213.09' />
+  </clipPath>
+</defs>
+<g clip-path='url(#g1_cpMzI0LjI0fDc0NC41NHw0Ni45NXwyNjAuMDU=)'>
+<rect x='324.24' y='46.95' width='420.30' height='213.09' style='stroke-width: 1.16; stroke: none; fill: #FAFAF9;' />
+<polyline points='324.24,260.05 744.54,260.05 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<polyline points='324.24,206.77 744.54,206.77 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<polyline points='324.24,153.50 744.54,153.50 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<polyline points='324.24,100.23 744.54,100.23 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<polyline points='324.24,46.95 744.54,46.95 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<polyline points='324.24,260.05 324.24,46.95 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<polyline points='500.77,260.05 500.77,46.95 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<polyline points='698.31,260.05 698.31,46.95 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<polyline points='744.54,260.05 744.54,46.95 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<rect x='324.24' y='46.95' width='177.28' height='213.09' style='stroke-width: 1.28; stroke: #FFFFFF; stroke-linecap: butt; stroke-linejoin: miter; fill: #1A365D;' />
+<rect x='501.52' y='46.95' width='195.88' height='213.09' style='stroke-width: 1.28; stroke: #FFFFFF; stroke-linecap: butt; stroke-linejoin: miter; fill: #C53030;' />
+<rect x='697.40' y='46.95' width='47.15' height='213.09' style='stroke-width: 1.28; stroke: #FFFFFF; stroke-linecap: butt; stroke-linejoin: miter; fill: #718096;' />
+<text x='412.88' y='130.53' text-anchor='middle' style='font-size: 9.10px; font-weight: bold;fill: #FFFFFF; font-family: "Arial";' textLength='32.89px' lengthAdjust='spacingAndGlyphs'>always-</text>
+<text x='412.88' y='140.36' text-anchor='middle' style='font-size: 9.10px; font-weight: bold;fill: #FFFFFF; font-family: "Arial";' textLength='26.81px' lengthAdjust='spacingAndGlyphs'>takers</text>
+<text x='599.46' y='135.45' text-anchor='middle' style='font-size: 9.10px; font-weight: bold;fill: #FFFFFF; font-family: "Arial";' textLength='42.98px' lengthAdjust='spacingAndGlyphs'>compliers</text>
+<text x='720.97' y='130.53' text-anchor='middle' style='font-size: 9.10px; font-weight: bold;fill: #FFFFFF; font-family: "Arial";' textLength='27.31px' lengthAdjust='spacingAndGlyphs'>never-</text>
+<text x='720.97' y='140.36' text-anchor='middle' style='font-size: 9.10px; font-weight: bold;fill: #FFFFFF; font-family: "Arial";' textLength='26.81px' lengthAdjust='spacingAndGlyphs'>takers</text>
+<text x='412.88' y='190.75' text-anchor='middle' style='font-size: 8.82px;fill: #FFFFFF; font-family: "Arial";' textLength='25.00px' lengthAdjust='spacingAndGlyphs'>42.2%</text>
+<text x='599.46' y='190.75' text-anchor='middle' style='font-size: 8.82px;fill: #FFFFFF; font-family: "Arial";' textLength='25.00px' lengthAdjust='spacingAndGlyphs'>46.6%</text>
+<text x='720.97' y='190.75' text-anchor='middle' style='font-size: 8.82px;fill: #FFFFFF; font-family: "Arial";' textLength='24.34px' lengthAdjust='spacingAndGlyphs'>11.2%</text>
+</g>
+<g clip-path='url(#g1_cpMC4wMHw3NTYuMDB8MC4wMHwzMDIuNDA=)'>
+<text x='324.24' y='272.30' text-anchor='middle' style='font-size: 9.60px;fill: #2D3748; font-family: "Arial";' textLength='18.66px' lengthAdjust='spacingAndGlyphs'>0.00</text>
+<text x='500.77' y='272.30' text-anchor='middle' style='font-size: 9.60px;fill: #2D3748; font-family: "Arial";' textLength='18.66px' lengthAdjust='spacingAndGlyphs'>0.42</text>
+<text x='698.31' y='272.30' text-anchor='middle' style='font-size: 9.60px;fill: #2D3748; font-family: "Arial";' textLength='18.66px' lengthAdjust='spacingAndGlyphs'>0.89</text>
+<text x='744.54' y='272.30' text-anchor='middle' style='font-size: 9.60px;fill: #2D3748; font-family: "Arial";' textLength='18.66px' lengthAdjust='spacingAndGlyphs'>1.00</text>
+<text x='463.34' y='285.90' style='font-size: 12.00px;fill: #2D3748; font-family: "Arial";' textLength='127.38px' lengthAdjust='spacingAndGlyphs'>unobserved resistance  </text>
+<text x='590.72' y='285.90' style='font-size: 12.00px;fill: #2D3748; font-family: "Arial";' textLength='8.67px' lengthAdjust='spacingAndGlyphs'>U</text>
+<text x='599.39' y='288.42' style='font-size: 8.40px;fill: #2D3748; font-family: "Arial";' textLength='6.06px' lengthAdjust='spacingAndGlyphs'>D</text>
+<text x='324.24' y='36.77' style='font-size: 10.00px;fill: #718096; font-family: "Arial";' textLength='83.95px' lengthAdjust='spacingAndGlyphs'>adopt if resistance </text>
+<text x='408.20' y='36.77' style='font-size: 10.00px;fill: #718096; font-family: "Arial";' textLength='7.22px' lengthAdjust='spacingAndGlyphs'>U</text>
+<text x='415.42' y='38.87' style='font-size: 7.00px;fill: #718096; font-family: "Arial";' textLength='5.06px' lengthAdjust='spacingAndGlyphs'>D</text>
+<text x='420.47' y='36.77' style='font-size: 10.00px;fill: #718096; font-family: "Arial";' textLength='285.84px' lengthAdjust='spacingAndGlyphs'> &lt; propensity;  encouragement raises the cutoff from P(0) to P(1)</text>
+<text x='324.24' y='20.77' style='font-size: 13.00px; font-weight: bold;fill: #1A365D; font-family: "Arial";' textLength='309.91px' lengthAdjust='spacingAndGlyphs'>Who gets moved? The unobserved resistance line</text>
+</g>
+</g>
+</svg>
+<figcaption aria-hidden="true">Left: randomized encouragement lifts the
+adoption rate from about 42.2% (Z=0) to about 88.8% (Z=1), and the
+lifted 0.466 is the first stage, also the estimate of the complier
+share. Right: cut the line of unobserved adoption resistance U_D into
+three segments by adoption propensity, with always-takers about 42.2%,
+compliers about 46.6%, and never-takers about 11.2%, and IV sees only
+the middle segment of compliers.</figcaption>
+</figure>
+<h3 id="the-weak-instrument-variant">6.5 The Weak-Instrument
+Variant</h3>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>a1_weak <span class="ot">&lt;-</span> <span class="fl">0.028</span>                                 <span class="co"># turn the push down to almost zero</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>D_weak  <span class="ot">&lt;-</span> <span class="fu">as.integer</span>(<span class="fu">pnorm</span>(a0 <span class="sc">+</span> a1_weak <span class="sc">*</span> Z) <span class="sc">&gt;</span> U_D)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>iv_weak <span class="ot">&lt;-</span> <span class="fu">feols</span>(Y <span class="sc">~</span> <span class="dv">1</span> <span class="sc">|</span> D_weak <span class="sc">~</span> Z)</span></code></pre></div>
+<p>After turning the push weak, the first stage is left at just 0.011,
+and the first-stage F is 3.77 (effective F 3.77), far below any
+reasonable threshold. A single 2SLS is 2.817 with an SE as high as 9.480
+and a conventional 95% interval of <span class="math inline">[-15.764,
+21.398]</span>; the Anderson-Rubin interval is <span
+class="math inline">[-\infty, 1317.636]</span>, honestly admitting with
+unboundedness that it cannot be pinned down. Repeated sampling 1000
+times gives a 2SLS median of 3.382 and mean of 29.133 (tails so heavy as
+to have almost no finite moments), with the median biased toward OLS
+(about 15.9) rather than the true value 0.784, and the conventional
+interval’s coverage of the true value only 0.931. This confirms Section
+4.4: under weak instruments a single estimate looks respectable, but the
+sampling distribution has in fact rotted, and robust inference must rest
+on Anderson-Rubin rather than the conventional interval.</p>
+<h3 id="mte-one-curve-three-weightings">6.6 MTE: One Curve, Three
+Weightings</h3>
+<p>To draw the entire MTE curve, one needs an instrument that can sweep
+the full range of adoption propensity, so we switch to a continuous
+instrument (think of it as a randomly assigned tier of onboarding-push
+strength), whose propensity sweeps from near 0 to near 1, achieving full
+support.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>Zc  <span class="ot">&lt;-</span> <span class="fu">runif</span>(n)                                            <span class="co"># continuous instrument</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>D_c <span class="ot">&lt;-</span> <span class="fu">as.integer</span>(<span class="fu">pnorm</span>(<span class="sc">-</span><span class="fl">2.40</span> <span class="sc">+</span> <span class="fl">4.80</span> <span class="sc">*</span> Zc) <span class="sc">&gt;</span> U_D)         <span class="co"># propensity covers (0,1)</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>P   <span class="ot">&lt;-</span> <span class="fu">pnorm</span>(<span class="sc">-</span><span class="fl">2.40</span> <span class="sc">+</span> <span class="fl">4.80</span> <span class="sc">*</span> Zc)                            <span class="co"># estimated propensity</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co"># local IV: differentiate the conditional mean of Y in P (slope of a quadratic)</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>liv <span class="ot">&lt;-</span> <span class="fu">lm</span>(Y <span class="sc">~</span> <span class="fu">poly</span>(P, <span class="dv">2</span>), <span class="at">subset =</span> (D_c <span class="sc">==</span> <span class="dv">1</span> <span class="sc">|</span> D_c <span class="sc">==</span> <span class="dv">0</span>))</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="co"># control function two-step: residual into the outcome equation, recover MTE intercept and slope</span></span></code></pre></div>
+<p>The MTE estimated by local IV is <span class="math inline">5.661 -
+7.098\, u</span> (slope SE 1.346), right in direction and magnitude but
+noisy, because the propensity piles up near 0 and 1 and is sparse in the
+middle, and nonparametric differentiation is data-hungry by birth (at
+<span class="math inline">n = 3{,}000{,}000</span> the same estimator’s
+slope converges to <span class="math inline">-8.03</span>, proving it
+consistent, only with large variance at this sample size). The control
+function two-step gives a more precise curve, <span
+class="math inline">6.135 - 8.184\,u</span> (implied ATE 2.043)
+(bootstrap SE 0.079), hugging the true value.</p>
+<p>The most elegant step is to integrate this curve under three
+weightings, recovering three familiar quantities: uniform weight (the
+full interval) gives ATE 2.037 (the result of numerical grid integration
+of the line above, with the small difference from its analytic value
+2.043 coming only from grid discretization; true value 2.018); averaging
+uniformly only over the complier threshold interval <span
+class="math inline">[0.421, 0.885]</span> gives LATE 0.794 (2SLS 0.792,
+true value 0.784); and using the low-resistance-weighted ATT weights
+gives 2.954 (the corresponding continuous-design oracle ATT is 2.922).
+The same MTE, weighed differently, measures out three different numbers,
+and this is the literal redemption of “everything is a weighted
+MTE.”</p>
+<figure>
+<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' viewBox='0 0 684.00 403.20' role="img" aria-label="The MTE curve drawn along unobserved adoption resistance U_D (true value 6-8u, the control-function estimate, and the noisy local-IV dashed line). The low-resistance sharp firms gain the most, and the stubborn firms with resistance above about 0.75 are harmed by adopting. The ATE (uniform over the full interval, 2.04), LATE (averaged over the complier threshold window [0.42,0.88], 0.79), and ATT (weighted toward the low-resistance end, 2.95) are all weighted integrals of this same curve." style="max-width:100%;height:auto;display:block;margin:0 auto">
+<g class='svglite'>
+<defs>
+  <style type='text/css'><![CDATA[
+    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {
+      fill: none;
+      stroke: #000000;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-miterlimit: 10.00;
+    }
+    .svglite text {
+      white-space: pre;
+    }
+    .svglite g.glyphgroup path {
+      fill: inherit;
+      stroke: none;
+    }
+  ]]></style>
+</defs>
+<rect width='100%' height='100%' style='stroke: none; fill: #FAFAF9;'/>
+<defs>
+  <clipPath id='g2_cpMC4wMHw2ODQuMDB8MC4wMHw0MDMuMjA='>
+    <rect x='0.00' y='0.00' width='684.00' height='403.20' />
+  </clipPath>
+</defs>
+<g clip-path='url(#g2_cpMC4wMHw2ODQuMDB8MC4wMHw0MDMuMjA=)'>
+<rect x='-0.000000000000064' y='0.000000000000057' width='684.00' height='403.20' style='stroke-width: 1.16; stroke: none; fill: #FAFAF9;' />
+</g>
+<defs>
+  <clipPath id='g2_cpMzMuOTh8Njc4LjAyfDM5LjI0fDM2Ni4zMw=='>
+    <rect x='33.98' y='39.24' width='644.04' height='327.08' />
+  </clipPath>
+</defs>
+<g clip-path='url(#g2_cpMzMuOTh8Njc4LjAyfDM5LjI0fDM2Ni4zMw==)'>
+<rect x='33.98' y='39.24' width='644.04' height='327.08' style='stroke-width: 1.16; stroke: none; fill: #FAFAF9;' />
+<polyline points='33.98,350.40 678.02,350.40 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<polyline points='33.98,277.37 678.02,277.37 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<polyline points='33.98,204.34 678.02,204.34 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<polyline points='33.98,131.31 678.02,131.31 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<polyline points='33.98,58.28 678.02,58.28 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<polyline points='37.15,366.33 37.15,39.24 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<polyline points='303.65,366.33 303.65,39.24 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<polyline points='354.41,366.33 354.41,39.24 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<polyline points='595.53,366.33 595.53,39.24 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<polyline points='671.68,366.33 671.68,39.24 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<rect x='304.12' y='39.24' width='294.54' height='327.08' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #C53030; fill-opacity: 0.059;' />
+<line x1='33.98' y1='277.37' x2='678.02' y2='277.37' style='stroke-width: 0.64; stroke: #718096; stroke-linecap: butt;' />
+<polyline points='38.74,59.01 40.32,59.74 41.91,60.47 43.50,61.20 45.08,61.93 46.67,62.66 48.26,63.39 49.84,64.12 51.43,64.85 53.01,65.58 54.60,66.31 56.19,67.04 57.77,67.77 59.36,68.51 60.95,69.24 62.53,69.97 64.12,70.70 65.70,71.43 67.29,72.16 68.88,72.89 70.46,73.62 72.05,74.35 73.64,75.08 75.22,75.81 76.81,76.54 78.40,77.27 79.98,78.00 81.57,78.73 83.15,79.46 84.74,80.19 86.33,80.92 87.91,81.65 89.50,82.38 91.09,83.11 92.67,83.84 94.26,84.57 95.84,85.30 97.43,86.03 99.02,86.76 100.60,87.49 102.19,88.22 103.78,88.95 105.36,89.68 106.95,90.41 108.54,91.14 110.12,91.87 111.71,92.60 113.29,93.33 114.88,94.07 116.47,94.80 118.05,95.53 119.64,96.26 121.23,96.99 122.81,97.72 124.40,98.45 125.98,99.18 127.57,99.91 129.16,100.64 130.74,101.37 132.33,102.10 133.92,102.83 135.50,103.56 137.09,104.29 138.68,105.02 140.26,105.75 141.85,106.48 143.43,107.21 145.02,107.94 146.61,108.67 148.19,109.40 149.78,110.13 151.37,110.86 152.95,111.59 154.54,112.32 156.12,113.05 157.71,113.78 159.30,114.51 160.88,115.24 162.47,115.97 164.06,116.70 165.64,117.43 167.23,118.16 168.82,118.89 170.40,119.63 171.99,120.36 173.57,121.09 175.16,121.82 176.75,122.55 178.33,123.28 179.92,124.01 181.51,124.74 183.09,125.47 184.68,126.20 186.26,126.93 187.85,127.66 189.44,128.39 191.02,129.12 192.61,129.85 194.20,130.58 195.78,131.31 197.37,132.04 198.96,132.77 200.54,133.50 202.13,134.23 203.71,134.96 205.30,135.69 206.89,136.42 208.47,137.15 210.06,137.88 211.65,138.61 213.23,139.34 214.82,140.07 216.40,140.80 217.99,141.53 219.58,142.26 221.16,142.99 222.75,143.72 224.34,144.45 225.92,145.19 227.51,145.92 229.10,146.65 230.68,147.38 232.27,148.11 233.85,148.84 235.44,149.57 237.03,150.30 238.61,151.03 240.20,151.76 241.79,152.49 243.37,153.22 244.96,153.95 246.54,154.68 248.13,155.41 249.72,156.14 251.30,156.87 252.89,157.60 254.48,158.33 256.06,159.06 257.65,159.79 259.24,160.52 260.82,161.25 262.41,161.98 263.99,162.71 265.58,163.44 267.17,164.17 268.75,164.90 270.34,165.63 271.93,166.36 273.51,167.09 275.10,167.82 276.68,168.55 278.27,169.28 279.86,170.01 281.44,170.75 283.03,171.48 284.62,172.21 286.20,172.94 287.79,173.67 289.38,174.40 290.96,175.13 292.55,175.86 294.13,176.59 295.72,177.32 297.31,178.05 298.89,178.78 300.48,179.51 302.07,180.24 303.65,180.97 305.24,181.70 306.82,182.43 308.41,183.16 310.00,183.89 311.58,184.62 313.17,185.35 314.76,186.08 316.34,186.81 317.93,187.54 319.52,188.27 321.10,189.00 322.69,189.73 324.27,190.46 325.86,191.19 327.45,191.92 329.03,192.65 330.62,193.38 332.21,194.11 333.79,194.84 335.38,195.57 336.96,196.31 338.55,197.04 340.14,197.77 341.72,198.50 343.31,199.23 344.90,199.96 346.48,200.69 348.07,201.42 349.66,202.15 351.24,202.88 352.83,203.61 354.41,204.34 356.00,205.07 357.59,205.80 359.17,206.53 360.76,207.26 362.35,207.99 363.93,208.72 365.52,209.45 367.10,210.18 368.69,210.91 370.28,211.64 371.86,212.37 373.45,213.10 375.04,213.83 376.62,214.56 378.21,215.29 379.80,216.02 381.38,216.75 382.97,217.48 384.55,218.21 386.14,218.94 387.73,219.67 389.31,220.40 390.90,221.13 392.49,221.87 394.07,222.60 395.66,223.33 397.24,224.06 398.83,224.79 400.42,225.52 402.00,226.25 403.59,226.98 405.18,227.71 406.76,228.44 408.35,229.17 409.94,229.90 411.52,230.63 413.11,231.36 414.69,232.09 416.28,232.82 417.87,233.55 419.45,234.28 421.04,235.01 422.63,235.74 424.21,236.47 425.80,237.20 427.38,237.93 428.97,238.66 430.56,239.39 432.14,240.12 433.73,240.85 435.32,241.58 436.90,242.31 438.49,243.04 440.08,243.77 441.66,244.50 443.25,245.23 444.83,245.96 446.42,246.69 448.01,247.43 449.59,248.16 451.18,248.89 452.77,249.62 454.35,250.35 455.94,251.08 457.52,251.81 459.11,252.54 460.70,253.27 462.28,254.00 463.87,254.73 465.46,255.46 467.04,256.19 468.63,256.92 470.22,257.65 471.80,258.38 473.39,259.11 474.97,259.84 476.56,260.57 478.15,261.30 479.73,262.03 481.32,262.76 482.91,263.49 484.49,264.22 486.08,264.95 487.66,265.68 489.25,266.41 490.84,267.14 492.42,267.87 494.01,268.60 495.60,269.33 497.18,270.06 498.77,270.79 500.36,271.52 501.94,272.25 503.53,272.99 505.11,273.72 506.70,274.45 508.29,275.18 509.87,275.91 511.46,276.64 513.05,277.37 514.63,278.10 516.22,278.83 517.80,279.56 519.39,280.29 520.98,281.02 522.56,281.75 524.15,282.48 525.74,283.21 527.32,283.94 528.91,284.67 530.50,285.40 532.08,286.13 533.67,286.86 535.25,287.59 536.84,288.32 538.43,289.05 540.01,289.78 541.60,290.51 543.19,291.24 544.77,291.97 546.36,292.70 547.94,293.43 549.53,294.16 551.12,294.89 552.70,295.62 554.29,296.35 555.88,297.08 557.46,297.81 559.05,298.55 560.64,299.28 562.22,300.01 563.81,300.74 565.39,301.47 566.98,302.20 568.57,302.93 570.15,303.66 571.74,304.39 573.33,305.12 574.91,305.85 576.50,306.58 578.08,307.31 579.67,308.04 581.26,308.77 582.84,309.50 584.43,310.23 586.02,310.96 587.60,311.69 589.19,312.42 590.78,313.15 592.36,313.88 593.95,314.61 595.53,315.34 597.12,316.07 598.71,316.80 600.29,317.53 601.88,318.26 603.47,318.99 605.05,319.72 606.64,320.45 608.22,321.18 609.81,321.91 611.40,322.64 612.98,323.37 614.57,324.10 616.16,324.84 617.74,325.57 619.33,326.30 620.92,327.03 622.50,327.76 624.09,328.49 625.67,329.22 627.26,329.95 628.85,330.68 630.43,331.41 632.02,332.14 633.61,332.87 635.19,333.60 636.78,334.33 638.36,335.06 639.95,335.79 641.54,336.52 643.12,337.25 644.71,337.98 646.30,338.71 647.88,339.44 649.47,340.17 651.06,340.90 652.64,341.63 654.23,342.36 655.81,343.09 657.40,343.82 658.99,344.55 660.57,345.28 662.16,346.01 663.75,346.74 665.33,347.47 666.92,348.20 668.50,348.93 670.09,349.66 ' style='stroke-width: 3.20; stroke: #1A365D; stroke-linecap: butt;' />
+<polyline points='38.74,54.11 40.32,54.86 41.91,55.61 43.50,56.35 45.08,57.10 46.67,57.85 48.26,58.59 49.84,59.34 51.43,60.09 53.01,60.84 54.60,61.58 56.19,62.33 57.77,63.08 59.36,63.82 60.95,64.57 62.53,65.32 64.12,66.07 65.70,66.81 67.29,67.56 68.88,68.31 70.46,69.05 72.05,69.80 73.64,70.55 75.22,71.30 76.81,72.04 78.40,72.79 79.98,73.54 81.57,74.28 83.15,75.03 84.74,75.78 86.33,76.53 87.91,77.27 89.50,78.02 91.09,78.77 92.67,79.51 94.26,80.26 95.84,81.01 97.43,81.75 99.02,82.50 100.60,83.25 102.19,84.00 103.78,84.74 105.36,85.49 106.95,86.24 108.54,86.98 110.12,87.73 111.71,88.48 113.29,89.23 114.88,89.97 116.47,90.72 118.05,91.47 119.64,92.21 121.23,92.96 122.81,93.71 124.40,94.46 125.98,95.20 127.57,95.95 129.16,96.70 130.74,97.44 132.33,98.19 133.92,98.94 135.50,99.69 137.09,100.43 138.68,101.18 140.26,101.93 141.85,102.67 143.43,103.42 145.02,104.17 146.61,104.92 148.19,105.66 149.78,106.41 151.37,107.16 152.95,107.90 154.54,108.65 156.12,109.40 157.71,110.14 159.30,110.89 160.88,111.64 162.47,112.39 164.06,113.13 165.64,113.88 167.23,114.63 168.82,115.37 170.40,116.12 171.99,116.87 173.57,117.62 175.16,118.36 176.75,119.11 178.33,119.86 179.92,120.60 181.51,121.35 183.09,122.10 184.68,122.85 186.26,123.59 187.85,124.34 189.44,125.09 191.02,125.83 192.61,126.58 194.20,127.33 195.78,128.08 197.37,128.82 198.96,129.57 200.54,130.32 202.13,131.06 203.71,131.81 205.30,132.56 206.89,133.31 208.47,134.05 210.06,134.80 211.65,135.55 213.23,136.29 214.82,137.04 216.40,137.79 217.99,138.53 219.58,139.28 221.16,140.03 222.75,140.78 224.34,141.52 225.92,142.27 227.51,143.02 229.10,143.76 230.68,144.51 232.27,145.26 233.85,146.01 235.44,146.75 237.03,147.50 238.61,148.25 240.20,148.99 241.79,149.74 243.37,150.49 244.96,151.24 246.54,151.98 248.13,152.73 249.72,153.48 251.30,154.22 252.89,154.97 254.48,155.72 256.06,156.47 257.65,157.21 259.24,157.96 260.82,158.71 262.41,159.45 263.99,160.20 265.58,160.95 267.17,161.69 268.75,162.44 270.34,163.19 271.93,163.94 273.51,164.68 275.10,165.43 276.68,166.18 278.27,166.92 279.86,167.67 281.44,168.42 283.03,169.17 284.62,169.91 286.20,170.66 287.79,171.41 289.38,172.15 290.96,172.90 292.55,173.65 294.13,174.40 295.72,175.14 297.31,175.89 298.89,176.64 300.48,177.38 302.07,178.13 303.65,178.88 305.24,179.63 306.82,180.37 308.41,181.12 310.00,181.87 311.58,182.61 313.17,183.36 314.76,184.11 316.34,184.86 317.93,185.60 319.52,186.35 321.10,187.10 322.69,187.84 324.27,188.59 325.86,189.34 327.45,190.08 329.03,190.83 330.62,191.58 332.21,192.33 333.79,193.07 335.38,193.82 336.96,194.57 338.55,195.31 340.14,196.06 341.72,196.81 343.31,197.56 344.90,198.30 346.48,199.05 348.07,199.80 349.66,200.54 351.24,201.29 352.83,202.04 354.41,202.79 356.00,203.53 357.59,204.28 359.17,205.03 360.76,205.77 362.35,206.52 363.93,207.27 365.52,208.02 367.10,208.76 368.69,209.51 370.28,210.26 371.86,211.00 373.45,211.75 375.04,212.50 376.62,213.25 378.21,213.99 379.80,214.74 381.38,215.49 382.97,216.23 384.55,216.98 386.14,217.73 387.73,218.47 389.31,219.22 390.90,219.97 392.49,220.72 394.07,221.46 395.66,222.21 397.24,222.96 398.83,223.70 400.42,224.45 402.00,225.20 403.59,225.95 405.18,226.69 406.76,227.44 408.35,228.19 409.94,228.93 411.52,229.68 413.11,230.43 414.69,231.18 416.28,231.92 417.87,232.67 419.45,233.42 421.04,234.16 422.63,234.91 424.21,235.66 425.80,236.41 427.38,237.15 428.97,237.90 430.56,238.65 432.14,239.39 433.73,240.14 435.32,240.89 436.90,241.63 438.49,242.38 440.08,243.13 441.66,243.88 443.25,244.62 444.83,245.37 446.42,246.12 448.01,246.86 449.59,247.61 451.18,248.36 452.77,249.11 454.35,249.85 455.94,250.60 457.52,251.35 459.11,252.09 460.70,252.84 462.28,253.59 463.87,254.34 465.46,255.08 467.04,255.83 468.63,256.58 470.22,257.32 471.80,258.07 473.39,258.82 474.97,259.57 476.56,260.31 478.15,261.06 479.73,261.81 481.32,262.55 482.91,263.30 484.49,264.05 486.08,264.80 487.66,265.54 489.25,266.29 490.84,267.04 492.42,267.78 494.01,268.53 495.60,269.28 497.18,270.02 498.77,270.77 500.36,271.52 501.94,272.27 503.53,273.01 505.11,273.76 506.70,274.51 508.29,275.25 509.87,276.00 511.46,276.75 513.05,277.50 514.63,278.24 516.22,278.99 517.80,279.74 519.39,280.48 520.98,281.23 522.56,281.98 524.15,282.73 525.74,283.47 527.32,284.22 528.91,284.97 530.50,285.71 532.08,286.46 533.67,287.21 535.25,287.96 536.84,288.70 538.43,289.45 540.01,290.20 541.60,290.94 543.19,291.69 544.77,292.44 546.36,293.19 547.94,293.93 549.53,294.68 551.12,295.43 552.70,296.17 554.29,296.92 555.88,297.67 557.46,298.41 559.05,299.16 560.64,299.91 562.22,300.66 563.81,301.40 565.39,302.15 566.98,302.90 568.57,303.64 570.15,304.39 571.74,305.14 573.33,305.89 574.91,306.63 576.50,307.38 578.08,308.13 579.67,308.87 581.26,309.62 582.84,310.37 584.43,311.12 586.02,311.86 587.60,312.61 589.19,313.36 590.78,314.10 592.36,314.85 593.95,315.60 595.53,316.35 597.12,317.09 598.71,317.84 600.29,318.59 601.88,319.33 603.47,320.08 605.05,320.83 606.64,321.57 608.22,322.32 609.81,323.07 611.40,323.82 612.98,324.56 614.57,325.31 616.16,326.06 617.74,326.80 619.33,327.55 620.92,328.30 622.50,329.05 624.09,329.79 625.67,330.54 627.26,331.29 628.85,332.03 630.43,332.78 632.02,333.53 633.61,334.28 635.19,335.02 636.78,335.77 638.36,336.52 639.95,337.26 641.54,338.01 643.12,338.76 644.71,339.51 646.30,340.25 647.88,341.00 649.47,341.75 651.06,342.49 652.64,343.24 654.23,343.99 655.81,344.74 657.40,345.48 658.99,346.23 660.57,346.98 662.16,347.72 663.75,348.47 665.33,349.22 666.92,349.96 668.50,350.71 670.09,351.46 ' style='stroke-width: 1.92; stroke: #2B6CB0; stroke-linecap: butt;' />
+<polyline points='38.74,71.31 40.32,71.96 41.91,72.61 43.50,73.26 45.08,73.90 46.67,74.55 48.26,75.20 49.84,75.85 51.43,76.50 53.01,77.14 54.60,77.79 56.19,78.44 57.77,79.09 59.36,79.74 60.95,80.38 62.53,81.03 64.12,81.68 65.70,82.33 67.29,82.98 68.88,83.62 70.46,84.27 72.05,84.92 73.64,85.57 75.22,86.22 76.81,86.86 78.40,87.51 79.98,88.16 81.57,88.81 83.15,89.46 84.74,90.10 86.33,90.75 87.91,91.40 89.50,92.05 91.09,92.70 92.67,93.34 94.26,93.99 95.84,94.64 97.43,95.29 99.02,95.94 100.60,96.58 102.19,97.23 103.78,97.88 105.36,98.53 106.95,99.18 108.54,99.82 110.12,100.47 111.71,101.12 113.29,101.77 114.88,102.41 116.47,103.06 118.05,103.71 119.64,104.36 121.23,105.01 122.81,105.65 124.40,106.30 125.98,106.95 127.57,107.60 129.16,108.25 130.74,108.89 132.33,109.54 133.92,110.19 135.50,110.84 137.09,111.49 138.68,112.13 140.26,112.78 141.85,113.43 143.43,114.08 145.02,114.73 146.61,115.37 148.19,116.02 149.78,116.67 151.37,117.32 152.95,117.97 154.54,118.61 156.12,119.26 157.71,119.91 159.30,120.56 160.88,121.21 162.47,121.85 164.06,122.50 165.64,123.15 167.23,123.80 168.82,124.45 170.40,125.09 171.99,125.74 173.57,126.39 175.16,127.04 176.75,127.69 178.33,128.33 179.92,128.98 181.51,129.63 183.09,130.28 184.68,130.93 186.26,131.57 187.85,132.22 189.44,132.87 191.02,133.52 192.61,134.17 194.20,134.81 195.78,135.46 197.37,136.11 198.96,136.76 200.54,137.41 202.13,138.05 203.71,138.70 205.30,139.35 206.89,140.00 208.47,140.64 210.06,141.29 211.65,141.94 213.23,142.59 214.82,143.24 216.40,143.88 217.99,144.53 219.58,145.18 221.16,145.83 222.75,146.48 224.34,147.12 225.92,147.77 227.51,148.42 229.10,149.07 230.68,149.72 232.27,150.36 233.85,151.01 235.44,151.66 237.03,152.31 238.61,152.96 240.20,153.60 241.79,154.25 243.37,154.90 244.96,155.55 246.54,156.20 248.13,156.84 249.72,157.49 251.30,158.14 252.89,158.79 254.48,159.44 256.06,160.08 257.65,160.73 259.24,161.38 260.82,162.03 262.41,162.68 263.99,163.32 265.58,163.97 267.17,164.62 268.75,165.27 270.34,165.92 271.93,166.56 273.51,167.21 275.10,167.86 276.68,168.51 278.27,169.16 279.86,169.80 281.44,170.45 283.03,171.10 284.62,171.75 286.20,172.40 287.79,173.04 289.38,173.69 290.96,174.34 292.55,174.99 294.13,175.64 295.72,176.28 297.31,176.93 298.89,177.58 300.48,178.23 302.07,178.87 303.65,179.52 305.24,180.17 306.82,180.82 308.41,181.47 310.00,182.11 311.58,182.76 313.17,183.41 314.76,184.06 316.34,184.71 317.93,185.35 319.52,186.00 321.10,186.65 322.69,187.30 324.27,187.95 325.86,188.59 327.45,189.24 329.03,189.89 330.62,190.54 332.21,191.19 333.79,191.83 335.38,192.48 336.96,193.13 338.55,193.78 340.14,194.43 341.72,195.07 343.31,195.72 344.90,196.37 346.48,197.02 348.07,197.67 349.66,198.31 351.24,198.96 352.83,199.61 354.41,200.26 356.00,200.91 357.59,201.55 359.17,202.20 360.76,202.85 362.35,203.50 363.93,204.15 365.52,204.79 367.10,205.44 368.69,206.09 370.28,206.74 371.86,207.39 373.45,208.03 375.04,208.68 376.62,209.33 378.21,209.98 379.80,210.63 381.38,211.27 382.97,211.92 384.55,212.57 386.14,213.22 387.73,213.86 389.31,214.51 390.90,215.16 392.49,215.81 394.07,216.46 395.66,217.10 397.24,217.75 398.83,218.40 400.42,219.05 402.00,219.70 403.59,220.34 405.18,220.99 406.76,221.64 408.35,222.29 409.94,222.94 411.52,223.58 413.11,224.23 414.69,224.88 416.28,225.53 417.87,226.18 419.45,226.82 421.04,227.47 422.63,228.12 424.21,228.77 425.80,229.42 427.38,230.06 428.97,230.71 430.56,231.36 432.14,232.01 433.73,232.66 435.32,233.30 436.90,233.95 438.49,234.60 440.08,235.25 441.66,235.90 443.25,236.54 444.83,237.19 446.42,237.84 448.01,238.49 449.59,239.14 451.18,239.78 452.77,240.43 454.35,241.08 455.94,241.73 457.52,242.38 459.11,243.02 460.70,243.67 462.28,244.32 463.87,244.97 465.46,245.62 467.04,246.26 468.63,246.91 470.22,247.56 471.80,248.21 473.39,248.86 474.97,249.50 476.56,250.15 478.15,250.80 479.73,251.45 481.32,252.09 482.91,252.74 484.49,253.39 486.08,254.04 487.66,254.69 489.25,255.33 490.84,255.98 492.42,256.63 494.01,257.28 495.60,257.93 497.18,258.57 498.77,259.22 500.36,259.87 501.94,260.52 503.53,261.17 505.11,261.81 506.70,262.46 508.29,263.11 509.87,263.76 511.46,264.41 513.05,265.05 514.63,265.70 516.22,266.35 517.80,267.00 519.39,267.65 520.98,268.29 522.56,268.94 524.15,269.59 525.74,270.24 527.32,270.89 528.91,271.53 530.50,272.18 532.08,272.83 533.67,273.48 535.25,274.13 536.84,274.77 538.43,275.42 540.01,276.07 541.60,276.72 543.19,277.37 544.77,278.01 546.36,278.66 547.94,279.31 549.53,279.96 551.12,280.61 552.70,281.25 554.29,281.90 555.88,282.55 557.46,283.20 559.05,283.85 560.64,284.49 562.22,285.14 563.81,285.79 565.39,286.44 566.98,287.09 568.57,287.73 570.15,288.38 571.74,289.03 573.33,289.68 574.91,290.32 576.50,290.97 578.08,291.62 579.67,292.27 581.26,292.92 582.84,293.56 584.43,294.21 586.02,294.86 587.60,295.51 589.19,296.16 590.78,296.80 592.36,297.45 593.95,298.10 595.53,298.75 597.12,299.40 598.71,300.04 600.29,300.69 601.88,301.34 603.47,301.99 605.05,302.64 606.64,303.28 608.22,303.93 609.81,304.58 611.40,305.23 612.98,305.88 614.57,306.52 616.16,307.17 617.74,307.82 619.33,308.47 620.92,309.12 622.50,309.76 624.09,310.41 625.67,311.06 627.26,311.71 628.85,312.36 630.43,313.00 632.02,313.65 633.61,314.30 635.19,314.95 636.78,315.60 638.36,316.24 639.95,316.89 641.54,317.54 643.12,318.19 644.71,318.84 646.30,319.48 647.88,320.13 649.47,320.78 651.06,321.43 652.64,322.08 654.23,322.72 655.81,323.37 657.40,324.02 658.99,324.67 660.57,325.32 662.16,325.96 663.75,326.61 665.33,327.26 666.92,327.91 668.50,328.55 670.09,329.20 ' style='stroke-width: 1.49; stroke: #718096; stroke-dasharray: 7.97,7.97; stroke-linecap: butt;' />
+<line x1='37.15' y1='202.97' x2='671.68' y2='202.97' style='stroke-width: 1.49; stroke: #B7791F; stroke-dasharray: 7.97,7.97; stroke-linecap: butt;' />
+<text x='49.84' y='190.10' style='font-size: 9.96px;fill: #B7791F; font-family: "Arial";' textLength='133.39px' lengthAdjust='spacingAndGlyphs'>ATE = 2.04  (uniform average)</text>
+<line x1='304.12' y1='248.36' x2='598.66' y2='248.36' style='stroke-width: 2.77; stroke: #C53030; stroke-linecap: butt;' />
+<text x='451.39' y='234.40' text-anchor='middle' style='font-size: 9.96px;fill: #C53030; font-family: "Arial";' textLength='140.59px' lengthAdjust='spacingAndGlyphs'>LATE = 0.79  (complier window)</text>
+<circle cx='283.72' cy='169.49' r='3.16' style='stroke-width: 0.77; stroke: #1A365D; fill: #1A365D;' />
+<line x1='221.16' y1='118.53' x2='277.37' y2='167.30' style='stroke-width: 0.64; stroke: #1A365D; stroke-linecap: butt;' />
+<text x='49.84' y='122.09' style='font-size: 9.96px;fill: #1A365D; font-family: "Arial";' textLength='134.86px' lengthAdjust='spacingAndGlyphs'>ATT = 2.95  (weights low U_D)</text>
+</g>
+<g clip-path='url(#g2_cpMC4wMHw2ODQuMDB8MC4wMHw0MDMuMjA=)'>
+<text x='28.60' y='353.83' text-anchor='end' style='font-size: 9.60px;fill: #2D3748; font-family: "Arial";' textLength='8.52px' lengthAdjust='spacingAndGlyphs'>-2</text>
+<text x='28.60' y='280.80' text-anchor='end' style='font-size: 9.60px;fill: #2D3748; font-family: "Arial";' textLength='5.33px' lengthAdjust='spacingAndGlyphs'>0</text>
+<text x='28.60' y='207.77' text-anchor='end' style='font-size: 9.60px;fill: #2D3748; font-family: "Arial";' textLength='5.33px' lengthAdjust='spacingAndGlyphs'>2</text>
+<text x='28.60' y='134.74' text-anchor='end' style='font-size: 9.60px;fill: #2D3748; font-family: "Arial";' textLength='5.33px' lengthAdjust='spacingAndGlyphs'>4</text>
+<text x='28.60' y='61.72' text-anchor='end' style='font-size: 9.60px;fill: #2D3748; font-family: "Arial";' textLength='5.33px' lengthAdjust='spacingAndGlyphs'>6</text>
+<text x='37.15' y='378.58' text-anchor='middle' style='font-size: 9.60px;fill: #2D3748; font-family: "Arial";' textLength='18.66px' lengthAdjust='spacingAndGlyphs'>0.00</text>
+<text x='303.65' y='378.58' text-anchor='middle' style='font-size: 9.60px;fill: #2D3748; font-family: "Arial";' textLength='18.66px' lengthAdjust='spacingAndGlyphs'>0.42</text>
+<text x='354.41' y='378.58' text-anchor='middle' style='font-size: 9.60px;fill: #2D3748; font-family: "Arial";' textLength='18.66px' lengthAdjust='spacingAndGlyphs'>0.50</text>
+<text x='595.53' y='378.58' text-anchor='middle' style='font-size: 9.60px;fill: #2D3748; font-family: "Arial";' textLength='18.66px' lengthAdjust='spacingAndGlyphs'>0.88</text>
+<text x='671.68' y='378.58' text-anchor='middle' style='font-size: 9.60px;fill: #2D3748; font-family: "Arial";' textLength='18.66px' lengthAdjust='spacingAndGlyphs'>1.00</text>
+<text x='253.61' y='392.18' style='font-size: 12.00px;fill: #2D3748; font-family: "Arial";' textLength='190.06px' lengthAdjust='spacingAndGlyphs'>unobserved resistance to adoption  </text>
+<text x='443.67' y='392.18' style='font-size: 12.00px;fill: #2D3748; font-family: "Arial";' textLength='8.67px' lengthAdjust='spacingAndGlyphs'>U</text>
+<text x='452.34' y='394.70' style='font-size: 8.40px;fill: #2D3748; font-family: "Arial";' textLength='6.06px' lengthAdjust='spacingAndGlyphs'>D</text>
+<text transform='translate(14.57,202.79) rotate(-90)' text-anchor='middle' style='font-size: 12.00px;fill: #2D3748; font-family: "Arial";' textLength='162.47px' lengthAdjust='spacingAndGlyphs'>effect on engagement  MTE(u)</text>
+<rect x='477.13' y='40.06' width='144.17' height='63.80' style='stroke-width: 1.16; stroke: #E6E3DD; fill: #FAFAF9;' />
+<line x1='484.84' y1='54.67' x2='498.66' y2='54.67' style='stroke-width: 3.20; stroke: #1A365D; stroke-linecap: butt;' />
+<line x1='484.84' y1='71.95' x2='498.66' y2='71.95' style='stroke-width: 1.92; stroke: #2B6CB0; stroke-linecap: butt;' />
+<line x1='484.84' y1='89.23' x2='498.66' y2='89.23' style='stroke-width: 1.49; stroke: #718096; stroke-dasharray: 7.97,7.97; stroke-linecap: butt;' />
+<text x='506.37' y='58.25' style='font-size: 10.00px;fill: #2D3748; font-family: "Arial";' textLength='78.11px' lengthAdjust='spacingAndGlyphs'>true MTE = 6 - 8u</text>
+<text x='506.37' y='75.53' style='font-size: 10.00px;fill: #2D3748; font-family: "Arial";' textLength='108.95px' lengthAdjust='spacingAndGlyphs'>control-function estimate</text>
+<text x='506.37' y='92.81' style='font-size: 10.00px;fill: #2D3748; font-family: "Arial";' textLength='106.70px' lengthAdjust='spacingAndGlyphs'>local-IV estimate (noisy)</text>
+<text x='33.98' y='31.16' style='font-size: 10.00px;fill: #718096; font-family: "Arial";' textLength='602.92px' lengthAdjust='spacingAndGlyphs'>sophisticated firms (low resistance) gain most; reluctant firms beyond u ~ 0.75 lose. ATE, ATT, LATE are weighted integrals of one curve.</text>
+<text x='33.98' y='15.29' style='font-size: 13.00px; font-weight: bold;fill: #1A365D; font-family: "Arial";' textLength='330.94px' lengthAdjust='spacingAndGlyphs'>Marginal treatment effect over unobserved resistance</text>
+</g>
+</g>
+</svg>
+<figcaption aria-hidden="true">The MTE curve drawn along unobserved
+adoption resistance U_D (true value 6-8u, the control-function estimate,
+and the noisy local-IV dashed line). The low-resistance sharp firms gain
+the most, and the stubborn firms with resistance above about 0.75 are
+harmed by adopting. The ATE (uniform over the full interval, 2.04), LATE
+(averaged over the complier threshold window [0.42,0.88], 0.79), and ATT
+(weighted toward the low-resistance end, 2.95) are all weighted
+integrals of this same curve.</figcaption>
+</figure>
+<h3 id="the-full-reconciliation">6.7 The Full Reconciliation</h3>
+<p>Put all the estimators together, with the target being the true LATE
+0.784 (and, as reference, the ATE 2.018 and ATT 3.056):</p>
+<div class="table-scroll">
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr>
+<th>Estimator</th>
+<th>Estimate</th>
+<th>SE</th>
+<th>Target</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Naive OLS</td>
+<td>12.104</td>
+<td>0.102</td>
+<td>none (biased by 9.048)</td>
+</tr>
+<tr>
+<td>OLS controlling for firm size</td>
+<td>5.285</td>
+<td>0.063</td>
+<td>none (still exceeds ATT by 2.230)</td>
+</tr>
+<tr>
+<td>ITT (reduced form)</td>
+<td>0.369</td>
+<td>0.117</td>
+<td>a diluted version of complier LATE</td>
+</tr>
+<tr>
+<td>Wald = ITT / first stage</td>
+<td>0.792</td>
+<td>0.252</td>
+<td>LATE</td>
+</tr>
+<tr>
+<td>2SLS (feols IV)</td>
+<td>0.792</td>
+<td>0.247</td>
+<td>LATE (true value 0.784)</td>
+</tr>
+<tr>
+<td>Weak-instrument 2SLS (single)</td>
+<td>2.817</td>
+<td>9.480</td>
+<td>broken, cannot infer</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The reconciliation of this section summarizes as follows: naive OLS
+is propped up by selection to 12.104, controlling for the observable
+firm size can only press it down to 5.285, still unable to remove the
+residual attached to the unobserved resistance; IV with randomized
+encouragement, first stage 0.466, ITT 0.369, divided gives 0.792,
+hugging the true complier-LATE 0.784; this number is far below the ATE
+and ATT, because what encouragement pries loose are the least-gaining
+fence-sitters; switch the instrument to a continuous version that can
+sweep full support, and the entire MTE curve can be drawn, with ATE,
+ATT, and LATE all becoming its weighted integrals; and turn the
+instrument weak, and the whole inference machinery breaks at once, with
+only Anderson-Rubin still standing.</p>
+<h2 id="failure-modes-and-robustness">7 Failure Modes and
+Robustness</h2>
+<p>In a simulation the assumptions are built in, and in real research
+they can fail at any moment. This section combs through the most common
+ways of failing and the actionable responses.</p>
+<p>Weak instruments are the number-one threat, and their destructive
+power has already been quantified above. There are three points of
+practical discipline. First, report the strength of the first stage, and
+report it right: the first-stage F of the excluded instruments (after
+removing the exogenous regressors), switched to the effective F under
+heteroskedasticity or clustering, and stop worshiping the “F greater
+than 10” old threshold that is theoretically not up to standard. Second,
+when the instrument may be weak, base the main inference on
+weak-instrument-robust methods like Anderson-Rubin rather than the
+conventional <span class="math inline">t</span> interval; the interval
+Anderson-Rubin gives, even if unbounded, is more honest than a
+conventional interval that looks finite but is in fact distorted. Third,
+avoid manufacturing a big pile of instruments for the sake of precision,
+since many instruments aggravate the bias toward OLS, and this is
+exactly the lesson of the Angrist-Krueger cause célèbre: better one
+strong instrument than a hundred weak ones.</p>
+<p>Exclusion violation is the most insidious threat, because it is
+untestable and can only be argued. At Meridian the threat is concrete:
+that onboarding invitation and the tutorials themselves may raise
+engagement, even if the firm ends up not adopting the dashboard; the
+extra calls the customer success team placed themselves improve the
+client relationship. As long as encouragement retains such a direct
+channel bypassing adoption, the ITT gets mixed with effects not running
+through adoption, and the Wald ratio is no longer the effect of
+adoption. The response can only be design and argument: design the
+encouragement to be as “pure” as possible (doing only actions directly
+related to adoption, carrying no other kind of care alongside), argue
+institutionally that no side channel exists, and if necessary find a
+cleaner instrument with no suspicion of a direct effect. No statistical
+test can prove exclusion for you, and this point must be faced head-on
+in the paper, with a whole paragraph making clear by what right this
+instrument is excluded.</p>
+<p>Monotonicity failure means defiers exist, and the Wald ratio loses
+its LATE reading. It is reasonable in many settings (one more push will
+not make anyone dig in and refuse out of spite), but it can also fail
+(de Chaisemartin 2017 discusses the “tolerating defiers” case). The
+classic hazard appears when the instrument itself has a heterogeneous
+direction: an encouragement design that is an incentive for some clients
+but an annoyance for others (frequently pestered clients simply churn
+and refuse to adopt) manufactures defiers. Judging monotonicity rests on
+a substantive understanding of the instrument’s mechanism, not on a
+statistical test.</p>
+<p>LATE’s extrapolation limitation is the property most in need of an
+honest reckoning, and it is the through-line of this chapter. IV
+estimates the effect on the compliers, and the compliers are in turn
+determined by the instrument. At Meridian LATE 0.784 is far below the
+ATE 2.018, because what randomized encouragement pries loose are the
+least-gaining fence-sitters; if management took this 0.784 to argue “the
+dashboard is useless and not worth promoting,” it would be badly wrong,
+because the firms that should adopt most and gain most (the
+always-takers) are not in this number at all. Conversely, if the policy
+question is exactly “should we give the hesitant fence-sitters one more
+push,” then LATE is precisely the most fitting answer. Before using
+LATE, ask clearly: is the population your policy targets the same batch
+as the compliers this instrument pries loose? Characterizing the
+compliers’ observable features (like the Abadie <span
+class="math inline">\kappa</span> of Section 6.4) and seeing, within the
+MTE framework, which segment of the resistance spectrum LATE falls on,
+are both means of easing this extrapolation anxiety.</p>
+<p>The forbidden regression is a purely technical but extremely common
+trap, warned about earlier: the fitted value of a nonlinear first stage
+cannot be stuffed straight into the second stage, because projection
+does not pass through a nonlinear function. The only safe roads are
+linear 2SLS or an explicit control function. Even with a linear first
+stage, do not manually run two regressions, because then the second
+stage’s standard errors are wrong, and one should use an integrated IV
+command.</p>
+<p>The choice of estimator under heteroskedasticity and many instruments
+is also worth mentioning. Under heteroskedasticity 2SLS is still
+consistent but not optimal, and the effective F is the right ruler for
+judging instrument strength here; when many-instrument bias is severe,
+LIML is approximately median-unbiased with better weak-instrument
+properties (fatter tails being the cost), the Fuller correction can
+bound its moments, and JIVE removes a unit’s own overfitting via
+leave-one-out, all being more robust choices than 2SLS.</p>
+<p>Stringing these failure modes together, the credibility of IV rests
+ultimately not on the mechanics of 2SLS but on two things: whether the
+instrument is really both strong and clean (relevance plus independence
+plus exclusion), and whether you have thought clearly about who the
+compliers it pries loose are, and whether this local effect is on point
+for your policy question. When the instrument does not stand, the right
+reaction is not to switch to a fancier estimator, but to admit that this
+design cannot answer this question, or to look elsewhere for
+identification (say using a panel structure to difference out
+time-invariant unobserved heterogeneity, which this series will take up
+later when discussing Difference-in-Differences). IV’s honest boundary
+is to lay these two things out clearly, rather than papering over them
+with a pretty first-stage F.</p>
+<h2 id="further-reading">8 Further Reading</h2>
+<div class="readings">
+<p>Required reading, in suggested reading order:</p>
+<ul>
+<li>Angrist and Pischke (2009, <em>Mostly Harmless Econometrics</em>),
+Chapter 4. The most readable introduction to IV and LATE, the source of
+the language of complier, as-good-as-randomly-assigned, and exclusion
+restriction, and the tone of this chapter is modeled on it.</li>
+<li>Imbens and Angrist (1994, <em>Econometrica</em>). The original paper
+on the LATE theorem, read for how the four assumptions jointly lock the
+Wald ratio onto the complier effect.</li>
+<li>Angrist, Imbens and Rubin (1996, <em>JASA</em>). Recasts IV in the
+language of potential outcomes, the source of the never-taker /
+always-taker / complier / defier classification, to be read together
+with the discussion of exclusion and monotonicity.</li>
+<li>Heckman and Vytlacil (2005, <em>Econometrica</em>). The magnum opus
+establishing MTE as the unifying master object, and the weighting table
+for ATE/ATT/LATE/OLS is right here, the full version of Section 3.6 of
+this chapter.</li>
+</ul>
+<p>Further reading:</p>
+<ul>
+<li>Vytlacil (2002, <em>Econometrica</em>). Proves that the LATE
+assumptions are equivalent to the nonparametric latent-index selection
+model, and reading it makes clear that LATE and the Heckman selection
+model are two sides of one coin.</li>
+<li>Montiel Olea and Pflueger (2013, <em>JBES</em>). The effective F and
+robust weak-instrument testing, the modern practice that replaces “F
+greater than 10” under heteroskedasticity/clustering.</li>
+<li>Andrews, Stock and Sun (2019, <em>Annual Review of Economics</em>).
+A practical survey of weak instruments, covering the first-stage F,
+Anderson-Rubin, and conditional likelihood ratio in one sweep, a
+self-check list before writing an IV paper.</li>
+<li>Angrist and Krueger (1991, <em>QJE</em>) and Bound, Jaeger and Baker
+(1995, <em>JASA</em>). The quarter-of-birth instrument and its critique,
+the most classic cause célèbre of weak and many-instrument bias, and the
+two must be read together.</li>
+<li>Carneiro, Heckman and Vytlacil (2011, <em>AER</em>). The benchmark
+empirical work on MTE, estimating the marginal return to college
+education with the NLSY79, demonstrating how to draw the entire
+curve.</li>
+</ul>
+</div>
+<div class="apa-refs">
+<ul>
+<li>Abadie, A. (2003). Semiparametric instrumental variable estimation
+of treatment response models. <em>Journal of Econometrics, 113</em>(2),
+231-263. <a href="https://doi.org/10.1016/S0304-4076(02)00201-4"
+class="uri">https://doi.org/10.1016/S0304-4076(02)00201-4</a></li>
+<li>Anderson, T. W., &amp; Rubin, H. (1949). Estimation of the
+parameters of a single equation in a complete system of stochastic
+equations. <em>The Annals of Mathematical Statistics, 20</em>(1), 46-63.
+<a href="https://doi.org/10.1214/aoms/1177730090"
+class="uri">https://doi.org/10.1214/aoms/1177730090</a></li>
+<li>Andrews, I., Stock, J. H., &amp; Sun, L. (2019). Weak instruments in
+instrumental variables regression: Theory and practice. <em>Annual
+Review of Economics, 11</em>(1), 727-753. <a
+href="https://doi.org/10.1146/annurev-economics-080218-025643"
+class="uri">https://doi.org/10.1146/annurev-economics-080218-025643</a></li>
+<li>Angrist, J. D. (1990). Lifetime earnings and the Vietnam era draft
+lottery: Evidence from Social Security administrative records.
+<em>American Economic Review, 80</em>(3), 313-336.</li>
+<li>Angrist, J. D., Imbens, G. W., &amp; Krueger, A. B. (1999).
+Jackknife instrumental variables estimation. <em>Journal of Applied
+Econometrics, 14</em>(1), 57-67. <a
+href="https://doi.org/10.1002/(SICI)1099-1255(199901/02)14:1%3C57::AID-JAE501%3E3.0.CO;2-G"
+class="uri">https://doi.org/10.1002/(SICI)1099-1255(199901/02)14:1%3C57::AID-JAE501%3E3.0.CO;2-G</a></li>
+<li>Angrist, J. D., Imbens, G. W., &amp; Rubin, D. B. (1996).
+Identification of causal effects using instrumental variables.
+<em>Journal of the American Statistical Association, 91</em>(434),
+444-455. <a href="https://doi.org/10.1080/01621459.1996.10476902"
+class="uri">https://doi.org/10.1080/01621459.1996.10476902</a></li>
+<li>Angrist, J. D., &amp; Krueger, A. B. (1991). Does compulsory school
+attendance affect schooling and earnings? <em>The Quarterly Journal of
+Economics, 106</em>(4), 979-1014. <a
+href="https://doi.org/10.2307/2937954"
+class="uri">https://doi.org/10.2307/2937954</a></li>
+<li>Angrist, J. D., &amp; Pischke, J.-S. (2009). <em>Mostly harmless
+econometrics: An empiricist’s companion</em>. Princeton University
+Press. <a href="https://doi.org/10.1515/9781400829828"
+class="uri">https://doi.org/10.1515/9781400829828</a></li>
+<li>Bapna, R., &amp; Umyarov, A. (2015). Do your online friends make you
+pay? A randomized field experiment on peer influence in online social
+networks. <em>Management Science, 61</em>(8), 1902-1920. <a
+href="https://doi.org/10.1287/mnsc.2014.2081"
+class="uri">https://doi.org/10.1287/mnsc.2014.2081</a></li>
+<li>Björklund, A., &amp; Moffitt, R. (1987). The estimation of wage
+gains and welfare gains in self-selection models. <em>The Review of
+Economics and Statistics, 69</em>(1), 42-49. <a
+href="https://doi.org/10.2307/1937899"
+class="uri">https://doi.org/10.2307/1937899</a></li>
+<li>Bound, J., Jaeger, D. A., &amp; Baker, R. M. (1995). Problems with
+instrumental variables estimation when the correlation between the
+instruments and the endogenous explanatory variable is weak. <em>Journal
+of the American Statistical Association, 90</em>(430), 443-450. <a
+href="https://doi.org/10.1080/01621459.1995.10476536"
+class="uri">https://doi.org/10.1080/01621459.1995.10476536</a></li>
+<li>Carneiro, P., Heckman, J. J., &amp; Vytlacil, E. J. (2011).
+Estimating marginal returns to education. <em>American Economic Review,
+101</em>(6), 2754-2781. <a href="https://doi.org/10.1257/aer.101.6.2754"
+class="uri">https://doi.org/10.1257/aer.101.6.2754</a></li>
+<li>de Chaisemartin, C. (2017). Tolerating defiance? Local average
+treatment effects without monotonicity. <em>Quantitative Economics,
+8</em>(2), 367-396. <a href="https://doi.org/10.3982/QE601"
+class="uri">https://doi.org/10.3982/QE601</a></li>
+<li>Fuller, W. A. (1977). Some properties of a modification of the
+limited information estimator. <em>Econometrica, 45</em>(4), 939-953. <a
+href="https://doi.org/10.2307/1912683"
+class="uri">https://doi.org/10.2307/1912683</a></li>
+<li>Hausman, J. A. (1978). Specification tests in econometrics.
+<em>Econometrica, 46</em>(6), 1251-1271. <a
+href="https://doi.org/10.2307/1913827"
+class="uri">https://doi.org/10.2307/1913827</a></li>
+<li>Heckman, J. J. (1997). Instrumental variables: A study of implicit
+behavioral assumptions used in making program evaluations. <em>The
+Journal of Human Resources, 32</em>(3), 441-462. <a
+href="https://doi.org/10.2307/146178"
+class="uri">https://doi.org/10.2307/146178</a></li>
+<li>Heckman, J. J., &amp; Vytlacil, E. (1999). Local instrumental
+variables and latent variable models for identifying and bounding
+treatment effects. <em>Proceedings of the National Academy of Sciences,
+96</em>(8), 4730-4734. <a href="https://doi.org/10.1073/pnas.96.8.4730"
+class="uri">https://doi.org/10.1073/pnas.96.8.4730</a></li>
+<li>Heckman, J. J., &amp; Vytlacil, E. (2005). Structural equations,
+treatment effects, and econometric policy evaluation. <em>Econometrica,
+73</em>(3), 669-738. <a
+href="https://doi.org/10.1111/j.1468-0262.2005.00594.x"
+class="uri">https://doi.org/10.1111/j.1468-0262.2005.00594.x</a></li>
+<li>Imbens, G. W., &amp; Angrist, J. D. (1994). Identification and
+estimation of local average treatment effects. <em>Econometrica,
+62</em>(2), 467-475. <a href="https://doi.org/10.2307/2951620"
+class="uri">https://doi.org/10.2307/2951620</a></li>
+<li>Lee, D. S., McCrary, J., Moreira, M. J., &amp; Porter, J. (2022).
+Valid t-ratio inference for IV. <em>American Economic Review,
+112</em>(10), 3260-3290. <a href="https://doi.org/10.1257/aer.20211063"
+class="uri">https://doi.org/10.1257/aer.20211063</a></li>
+<li>Montiel Olea, J. L., &amp; Pflueger, C. (2013). A robust test for
+weak instruments. <em>Journal of Business &amp; Economic Statistics,
+31</em>(3), 358-369. <a
+href="https://doi.org/10.1080/00401706.2013.806694"
+class="uri">https://doi.org/10.1080/00401706.2013.806694</a></li>
+<li>Sargan, J. D. (1958). The estimation of economic relationships using
+instrumental variables. <em>Econometrica, 26</em>(3), 393-415. <a
+href="https://doi.org/10.2307/1907619"
+class="uri">https://doi.org/10.2307/1907619</a></li>
+<li>Staiger, D., &amp; Stock, J. H. (1997). Instrumental variables
+regression with weak instruments. <em>Econometrica, 65</em>(3), 557-586.
+<a href="https://doi.org/10.2307/2171753"
+class="uri">https://doi.org/10.2307/2171753</a></li>
+<li>Vytlacil, E. (2002). Independence, monotonicity, and latent index
+models: An equivalence result. <em>Econometrica, 70</em>(1), 331-341. <a
+href="https://doi.org/10.1111/1468-0262.00277"
+class="uri">https://doi.org/10.1111/1468-0262.00277</a></li>
+<li>Wald, A. (1940). The fitting of straight lines if both variables are
+subject to error. <em>The Annals of Mathematical Statistics, 11</em>(3),
+284-300. <a href="https://doi.org/10.1214/aoms/1177731868"
+class="uri">https://doi.org/10.1214/aoms/1177731868</a></li>
+<li>Working, E. J. (1927). What do statistical “demand curves” show?
+<em>The Quarterly Journal of Economics, 41</em>(2), 212-235. <a
+href="https://doi.org/10.2307/1883501"
+class="uri">https://doi.org/10.2307/1883501</a></li>
+</ul>
+</div>
+    <footer class="page-footer">
+<span>Foundations of Information Systems Economics: Empirical Methods for Information Systems Economics</span>
+    </footer>
+  </main>
+</div>
+<script>
+(function(){var p=(location.pathname.split('/').pop()||'index.html');document.querySelectorAll('.file-nav a').forEach(function(a){if(a.getAttribute('href')===p)a.classList.add('current');});})();
+
+/* Preserve complete formulas without internal scrollbars. Only formulas whose
+   natural width exceeds their text column are reduced, and resize restores the
+   largest size that fits. */
+(function () {
+  function fitMath() {
+    document.querySelectorAll('span.math').forEach(function (host) {
+      var katex = host.querySelector('.katex');
+      if (!katex) return;
+      katex.style.fontSize = '';
+      var parent = host.classList.contains('display') ? host : host.parentElement;
+      var available = Math.max(1, parent.clientWidth);
+      /* KaTeX's box can be clipped to the host before measurement; scrollWidth
+         retains the full typeset width and is therefore the correct basis. */
+      var needed = Math.max(katex.scrollWidth, katex.getBoundingClientRect().width);
+      /* Keep a small safety margin for KaTeX glyph overhangs and browser
+         sub-pixel rounding, so the last radical/bar is never clipped. */
+      var target = available * 0.98;
+      if (needed > target) {
+        katex.style.fontSize = Math.max(0.34, target / needed) + 'em';
+      }
+    });
+  }
+  document.addEventListener('DOMContentLoaded', function () {
+    requestAnimationFrame(fitMath);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitMath);
+  });
+  window.addEventListener('resize', fitMath);
+}());
+</script>
+<script defer src="assets/notes.js"></script>
+</body>
+</html>

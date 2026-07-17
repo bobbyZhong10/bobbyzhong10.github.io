@@ -1,0 +1,2055 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Estimation: MLE, M-Estimation &amp; GMM | IS Economics ·
+Empirical Methods</title>
+  <link rel="stylesheet" href="assets/style.css" />
+  <script defer="" src="assets/katex/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <link rel="stylesheet" href="assets/katex/katex.min.css" />
+</head>
+<body>
+<div class="page-wrapper">
+  <nav class="sidebar">
+    <div class="sidebar-title">Foundations of Information Systems Economics</div>
+    <div class="sidebar-subtitle">Theory · Methods · Applications</div>
+    <div class="toc-section-label">On this page</div>
+    <div class="toc">
+<ul>
+<li><a href="#introduction" id="toc-introduction">Introduction</a></li>
+<li><a href="#a-probability-printed-as-121"
+id="toc-a-probability-printed-as-121">1 A Probability Printed as
+121%</a></li>
+<li><a href="#the-economic-model-and-the-estimand"
+id="toc-the-economic-model-and-the-estimand">2 The Economic Model and
+the Estimand</a></li>
+<li><a href="#identification-and-large-sample-theory"
+id="toc-identification-and-large-sample-theory">3 Identification and
+Large-Sample Theory</a></li>
+<li><a href="#estimation-how-to-actually-compute-it"
+id="toc-estimation-how-to-actually-compute-it">4 Estimation: How to
+Actually Compute It</a></li>
+<li><a href="#anchoring-papers" id="toc-anchoring-papers">5 Anchoring
+Papers</a></li>
+<li><a href="#a-full-walkthrough-on-helix-data"
+id="toc-a-full-walkthrough-on-helix-data">6 A Full Walkthrough on Helix
+Data</a></li>
+<li><a href="#failure-modes-and-robustness"
+id="toc-failure-modes-and-robustness">7 Failure Modes and
+Robustness</a></li>
+<li><a href="#further-reading" id="toc-further-reading">8 Further
+Reading</a></li>
+</ul>
+    </div>
+    <div class="file-nav">
+      <div class="nav-label">This series</div>
+      <a href="index.html">Home · Overview</a>
+      <a href="introduction.html">Introduction · How to Use</a>
+      <a href="01_consumer_producer_welfare.html">01 Consumer, Producer &amp; Welfare</a>
+      <a href="02_game_theory.html">02 Game Theory</a>
+      <a href="03_information_mechanism_design.html">03 Information &amp; Mechanism Design</a>
+      <a href="04_pricing_imperfect_competition.html">04 Pricing &amp; Imperfect Competition</a>
+      <a href="05_estimation_mle_gmm.html">05 Estimation: MLE &amp; GMM</a>
+      <a href="06_inference.html">06 Inference: Bootstrap &amp; Clustering</a>
+      <a href="07_panel_dynamic_panel.html">07 Panel &amp; Dynamic Panel</a>
+      <a href="08_nonparametrics.html">08 Nonparametrics &amp; Semiparametrics</a>
+      <a href="09_potential_outcomes.html">09 Potential Outcomes &amp; Selection</a>
+      <a href="10_research_design_architecture.html">10 Research Design</a>
+      <a href="11_measurement_digital_traces.html">11 Measurement &amp; Digital Traces</a>
+      <a href="12_iv_late_mte.html">12 IV: LATE &amp; MTE</a>
+      <a href="13_did_event_studies.html">13 DiD &amp; Event Studies</a>
+      <a href="14_rdd_synthetic_control.html">14 RDD &amp; Synthetic Control</a>
+      <a href="15_sensitivity_partial_identification.html">15 Sensitivity &amp; Partial Identification</a>
+      <a href="16_causal_ml_dml.html">16 Causal ML &amp; DML</a>
+      <a href="17_digital_experimentation.html">17 Digital Experimentation</a>
+      <a href="18_interference_marketplace_experiments.html">18 Interference &amp; Marketplace Experiments</a>
+      <a href="19_discrete_choice.html">19 Discrete Choice &amp; Mixed Logit</a>
+      <a href="20_demand_blp.html">20 Demand Estimation &amp; BLP</a>
+      <a href="21_supply_markups_mergers.html">21 Supply, Markups &amp; Mergers</a>
+      <a href="22_entry_partial_id.html">22 Entry &amp; Partial Identification</a>
+      <a href="23_dynamic_structural.html">23 Dynamic Structural Models</a>
+      <a href="24_platforms_networks.html">24 Platforms &amp; Network Effects</a>
+      <a href="25_search_advertising.html">25 Search, Advertising &amp; Information Goods</a>
+      <a href="26_ai_algorithms_data.html">26 AI, Adoption &amp; Data Economics</a>
+      <a href="27_quick_reference.html">27 Quick Reference &amp; Tools</a>
+    </div>
+  </nav>
+  <main class="main-content" id="top">
+    <header class="page-header">
+      <h1>Estimation: MLE, M-Estimation &amp; GMM</h1>
+      <div class="subtitle">The Extremum Estimator and Its
+Sandwich</div>
+      <div class="meta">Foundations of Information Systems Economics · Chapter 5</div>
+    </header>
+<h2 id="introduction">Introduction</h2>
+<p>Helix wants to predict whether a developer will adopt a new tool. An
+analyst runs a linear regression, and for some firms the predicted
+adoption probability comes out to 121%. The software throws no error,
+the coefficients even carry standard errors, only the “probability” has
+wandered across a boundary it was supposed to respect. This small
+accident reminds us of something: estimation is not finished the moment
+you hand the data to an optimizer. The objective function, the parameter
+space, and the economic model together decide what the number you
+compute actually is.</p>
+<p>Maximum likelihood, nonlinear least squares, and the generalized
+method of moments look like three separate methods, but they are all
+searching for an extremum of a sample objective function. Once you place
+them inside the unified framework of the extremum estimator, three
+questions keep recurring: whether the population objective function has
+a unique extremum at the truth, whether the sample objective function
+will settle near the population objective function, and how the
+curvature and the noise around the extremum determine sampling error.
+Identification, consistency, and asymptotic normality then become one
+continuous argument rather than three disconnected lists of
+theorems.</p>
+<p>The Helix case also displays a subtler kind of error: the
+distribution is misspecified, the point estimate can still aim at the
+right conditional mean, yet the standard errors the model reports leave
+a nominal 95% confidence interval covering the truth only 71.5% of the
+time. Why the sandwich variance can fix this, when the information
+matrix equality holds, and how GMM’s moment conditions and weighting
+matrix change efficiency, form the spine of this chapter. An estimate
+usually occupies a single cell of a results table. What you really need
+to understand is why that cell should land near its target, and on what
+grounds you trust the parentheses beside it.</p>
+<h2 id="a-probability-printed-as-121">1 A Probability Printed as
+121%</h2>
+<div class="case">
+<p>Helix is a fictional B2B developer platform that sells a range of
+cloud tools to a large base of client firms. We use simulated data to
+tell this story, and the payoff is that the data-generating process is
+fully known, so every estimator can be reconciled against the truth, a
+teaching condition that real data can never give you. Each client firm
+<span class="math inline">i</span> has an observable, standardized
+engagement measure <span class="math inline">x_i</span> (past API
+activity, z-standardized), with mean zero and standard deviation one.
+The platform cares about two related things. The first is adoption:
+whether a firm turns on a paid Pro-tier tool, recorded as a binary
+variable <span class="math inline">D_i \in \{0,1\}</span>. The second is
+usage: after turning it on, the number of monthly API calls to that tool
+(in thousands), recorded as a nonnegative integer <span
+class="math inline">y_i</span>. This section looks at adoption
+first.</p>
+<p>The platform’s data scientist wants to know something
+straightforward: are more engaged firms more likely to adopt Pro, and by
+how much. She has a cross section of <span class="math inline">n =
+4000</span> firms, with both <span class="math inline">D_i</span> and
+<span class="math inline">x_i</span> in hand. The most natural first
+step is to treat adoption as an ordinary outcome variable and run a
+linear regression on <span class="math inline">x</span>, that is, a
+linear probability model (LPM): <span class="math inline">D_i = \gamma_0
++ \gamma_1 x_i + u_i</span>, estimated by OLS.</p>
+<p>It comes back as <span class="math inline">\hat\gamma_1 =
+0.215</span> (SE 0.007), with intercept <span
+class="math inline">\hat\gamma_0 = 0.427</span>. Read literally: a
+one-standard-deviation increase in engagement raises the adoption
+probability by about 21.5 percentage points. The number is not
+outrageous, but when she prints out the model’s fitted values as
+“predicted adoption probabilities” firm by firm, something breaks.</p>
+</div>
+<p>Among the fitted values, the highest firm has a predicted adoption
+probability of 1.213 and the lowest has <span
+class="math inline">-0.478</span>. Across the full sample, 2.93% of
+firms are predicted to have a “probability” outside <span
+class="math inline">[0,1]</span>, of which 2.5% fall below zero and 0.4%
+rise above one. A probability printed as 121% or as <span
+class="math inline">-48\%</span> is not a precision problem, it is a
+model that simply does not know a probability belongs in <span
+class="math inline">[0,1]</span>. This is the chapter’s first bad
+number, and it is bad in a blunter way than the usual identification
+bias: nothing was estimated crookedly, the objective function was
+mismatched to the problem from the very start.</p>
+<p>Where the trouble comes from can be said in a sentence. OLS minimizes
+the residual sum of squares, which by default lets the outcome variable
+range freely over the whole real line, and it uses a straight line to
+approximate the conditional mean <span class="math inline">\mathbb{E}[D
+\mid x]</span>. But when the outcome is binary, that conditional mean is
+exactly the adoption probability <span class="math inline">\Pr(D = 1
+\mid x)</span>, which must stay in <span
+class="math inline">[0,1]</span>, and a straight line with no ceiling
+and no floor cannot manage this. The subtler second flaw is that the LPM
+locks engagement’s marginal effect to a constant 0.215, the same for
+every firm. Intuitively that is wrong: a firm already dead set on
+adopting will not be moved by a bit more engagement, and neither will a
+firm that will never adopt; the firms actually pushed around by
+engagement are the ones already teetering on the edge of adoption. The
+marginal effect ought to vary across firms, and the LPM assumes it does
+not.</p>
+<div class="intuition">
+<p>Picture the LPM’s predicament as using a ruler with no upper mark to
+measure something that can only sit between 0 and 1. The ruler itself is
+fine, the mistake is measuring a bounded quantity with it. The fix is
+not to file the ruler down, but to swap in a different apparatus: let
+the linear index <span class="math inline">x_i&#39;\beta</span> vary
+freely over the real line first, then use a monotone function <span
+class="math inline">F(\cdot)</span> that squeezes the whole real line
+into <span class="math inline">[0,1]</span> to translate it into a
+probability. When <span class="math inline">x_i&#39;\beta</span> is
+large the probability hugs 1, when it is small the probability hugs 0,
+and it never crosses the boundary. Take <span
+class="math inline">F</span> to be the standard logistic and you have
+logit; take the standard normal CDF and you have probit. Once the
+apparatus changes, “minimize the residual sum of squares” is no longer
+the right objective, and in its place comes one that fits the
+probability structure better: the likelihood. What this chapter turns to
+next is exactly how to write down the correct objective function for a
+model, how to maximize it, and how to attach an honest standard error to
+the result.</p>
+</div>
+<p>The lesson of Section 1 can be summarized as follows: the first step
+of estimation is to choose the right objective function for your model,
+and if you choose wrong, no matter how elegant the algorithm, it is only
+optimizing the wrong thing. A binary outcome does not want a residual
+sum of squares, it wants a likelihood, and this pushes us straight
+toward MLE and the framework behind it that unifies all extremum
+estimators.</p>
+<h2 id="the-economic-model-and-the-estimand">2 The Economic Model and
+the Estimand</h2>
+<p>Before touching estimation, get two things clear: what model sits
+behind Helix’s adoption behavior, and which quantity in that model we
+actually want to estimate.</p>
+<h3 id="a-random-utility-model-of-adoption">2.1 A Random Utility Model
+of Adoption</h3>
+<p>Whether a firm adopts can be viewed through a random utility model
+(RUM). The net benefit firm <span class="math inline">i</span> obtains
+from adopting Pro is written as an observable part plus an unobservable
+part:</p>
+<p><span class="math display">U_i^* = \beta_0 + \beta_1 x_i -
+\varepsilon_i.</span></p>
+<p>The observable part <span class="math inline">\beta_0 + \beta_1
+x_i</span> varies linearly with engagement, and <span
+class="math inline">\beta_1 &gt; 0</span> means a more active firm gets
+a higher net benefit from adopting. The term <span
+class="math inline">\varepsilon_i</span> is everything the platform
+cannot observe: the firm’s internal procurement process, the decision
+maker’s preferences, how tight the budget is this period. The firm
+adopts when the net benefit is positive, <span class="math inline">D_i =
+\mathbf{1}\{U_i^* &gt; 0\} = \mathbf{1}\{\varepsilon_i &lt; \beta_0 +
+\beta_1 x_i\}</span>. So the adoption probability is the probability
+that the unobservable falls below the threshold:</p>
+<p><span class="math display">\Pr(D_i = 1 \mid x_i) = \Pr(\varepsilon_i
+&lt; \beta_0 + \beta_1 x_i) = F(\beta_0 + \beta_1 x_i),</span></p>
+<p>where <span class="math inline">F</span> is the cumulative
+distribution function of <span class="math inline">\varepsilon_i</span>.
+This step turns the patch of Section 1, “use a monotone function to
+squeeze the real line into <span class="math inline">[0,1]</span>”, into
+a model with a behavioral interpretation: <span
+class="math inline">F</span> is not some squashing function picked off
+the shelf, it is the distribution of the unobservable benefit shock.
+Take <span class="math inline">\varepsilon_i</span> to be standard
+logistic, <span class="math inline">F(z) = \Lambda(z) = 1 / (1 +
+e^{-z})</span>, and you get logit; take standard normal and you get
+probit. The two shapes are very close, logit has slightly thicker tails
+and is a bit cleaner to compute, and this chapter works mainly with
+it.</p>
+<div class="warning">
+<p>Here lies a constraint you cannot get around in discrete choice
+models, one that Chapter 19 will develop in full when it takes up
+discrete choice, but for now we state only the minimum necessary point:
+the absolute size of <span class="math inline">\beta</span> and the
+scale of <span class="math inline">\varepsilon</span>’s distribution are
+tangled together, and only their ratio is identified. Double the
+utility, the threshold, and the shock all at once, and the adoption
+probability does not move a hair, so the data cannot tell them apart.
+The convention is to fix the scale of <span
+class="math inline">\varepsilon</span> (the logistic variance set to
+<span class="math inline">\pi^2/3</span>, the normal to 1), so the
+estimated <span class="math inline">\beta</span> is a coefficient
+“relative to this scale.” This is also why logit coefficients and probit
+coefficients cannot be compared directly in magnitude, each has been
+divided by a different scale. This chapter treats the scale as already
+normalized and focuses on the estimation machinery itself.</p>
+</div>
+<h3 id="what-exactly-are-we-estimating">2.2 What Exactly Are We
+Estimating</h3>
+<p>With the model set up, the estimand has two layers. The first layer
+is the model parameter itself, <span class="math inline">\theta_0 =
+(\beta_0, \beta_1)</span>. It is the true parameter of the
+data-generating process, and later in this chapter we will give it a
+more abstract and more useful definition: the point at which a
+population objective function attains its extremum. The second layer is
+a quantity read off from the parameters that carries direct managerial
+meaning, called the marginal effect.</p>
+<p>Why do we need the second layer? Because in logit <span
+class="math inline">\beta_1</span> itself is not “how many points the
+adoption probability rises for each one-unit increase in engagement.”
+The derivative of the probability with respect to <span
+class="math inline">x</span> is</p>
+<p><span class="math display">\frac{\partial \Pr(D_i = 1 \mid
+x_i)}{\partial x_i} = f(\beta_0 + \beta_1 x_i)\, \beta_1,</span></p>
+<p>where <span class="math inline">f = F&#39;</span> is the density.
+This marginal effect varies with <span class="math inline">x</span>,
+which is exactly the point made in Section 1: engagement’s influence is
+largest near an adoption probability of 0.5 (where the density <span
+class="math inline">f</span> is highest) and tends to zero at both ends.
+To collapse this into a single number to report, there are two common
+conventions. One is the average marginal effect (AME), averaging each
+firm’s marginal effect, <span class="math inline">\mathbb{E}[f(\beta_0 +
+\beta_1 x)\,\beta_1]</span>; the other is the marginal effect at the
+mean (MEM), computed once at <span class="math inline">x = 0</span>,
+<span class="math inline">f(\beta_0)\,\beta_1</span>. In Helix’s truth
+the AME is 0.216 and the MEM is 0.264, and the two differ because the
+marginal effect is nonlinear, so averaging the regressor first and then
+computing, versus computing first and then averaging, naturally give
+different answers. What this section wants you to remember is: <span
+class="math inline">\beta_1</span> is the model’s internal parameter,
+and the AME is the “how many percentage points” you can write into a
+report, with the bridge between them being the derivative formula
+above.</p>
+<p>As for usage <span class="math inline">y_i</span>, Section 2 sets it
+aside for now. Its model (a count model with a log mean) waits until
+Section 3, where we discuss QMLE, because it happens to be the best
+example of “half misspecified.”</p>
+<p>The main points of Section 2 can be summarized as follows: Helix’s
+adoption is a random utility model, the adoption probability equals the
+probability that the unobservable benefit shock falls below the
+threshold, and taking the shock distribution to be logistic gives logit;
+the first layer we want to estimate is the model parameter <span
+class="math inline">\theta_0</span>, and the second layer is the AME
+read off from the parameters, the latter being the managerially
+meaningful “marginal percentage points.” The next section takes
+“estimating <span class="math inline">\theta_0</span>” itself and places
+it inside the unified framework of the extremum estimator, making clear
+why it is consistent and what its variance looks like.</p>
+<h2 id="identification-and-large-sample-theory">3 Identification and
+Large-Sample Theory</h2>
+<p>By now we have a model and a target parameter <span
+class="math inline">\theta_0</span>, but we have not yet said clearly
+how to estimate it from the data, still less why what we estimate can be
+trusted. This section answers both questions, and answers them at a
+unified altitude, letting MLE and GMM share one argument for consistency
+and asymptotic normality. Logically it precedes any specific algorithm:
+whether an estimator is consistent or not, and what its variance looks
+like, depends on the shape of the objective function and on whether the
+specification is correct, and has nothing to do with whether you use
+Newton or a quasi-Newton method to find the extremum. This is the most
+finely detailed section of the chapter. We first set up the extremum
+estimator as a unified framework (3.1), then state the identification
+condition (3.2), then use Jensen’s inequality to prove consistency
+(3.3), derive asymptotic normality and read off the sandwich variance
+(3.4), see how MLE uses the information matrix equality to collapse the
+sandwich into <span class="math inline">I^{-1}</span> (3.5), see how
+QMLE survives once that equality breaks (3.6), and finally mount
+estimation directly on moment conditions to get GMM (3.7).</p>
+<h3 id="the-extremum-estimator-a-unified-framework">3.1 The Extremum
+Estimator: A Unified Framework</h3>
+<p>Start with the intuition. Imagine you are searching for the highest
+point on a rolling terrain, where the height at each point is determined
+by the parameter <span class="math inline">\theta</span>, and all you
+have is a noisy contour map drawn from the sample. Your estimate is the
+highest point on this sample terrain map. The true parameter <span
+class="math inline">\theta_0</span> is the highest point on the
+population terrain map you cannot see. The larger the sample, the closer
+the sample terrain is to the population terrain, and the closer the two
+summits are to each other. That is the whole intuition of
+consistency.</p>
+<p>Write this sentence as a definition. An extremum estimator is the
+extremum point of some sample objective function <span
+class="math inline">Q_n(\theta)</span>:</p>
+<p><span class="math display">\hat\theta = \arg\max_{\theta \in \Theta}
+Q_n(\theta).</span></p>
+<p>Different <span class="math inline">Q_n</span> give different
+estimators, and the ones most used in econometrics are all special cases
+of this one line (below, <span class="math inline">z_i</span> denotes
+one observation, which in Helix is <span class="math inline">(D_i,
+x_i)</span> or <span class="math inline">(y_i, x_i)</span>):</p>
+<div class="theorem">
+<p><strong>(Several estimators are the same sentence.)</strong>
+Different sample objective functions <span
+class="math inline">Q_n(\theta)</span> give different estimators. MLE
+maximizes the average log-likelihood:</p>
+<p><span class="math display">\hat\theta_{MLE} = \arg\max_\theta
+\frac{1}{n} \sum_{i=1}^n \ln f(z_i; \theta).</span></p>
+<p>Nonlinear least squares (NLS) minimizes the residual sum of squares,
+where <span class="math inline">m(x_i, \beta)</span> is the specified
+form of the conditional mean:</p>
+<p><span class="math display">\hat\beta_{NLS} = \arg\min_\beta
+\frac{1}{n} \sum_{i=1}^n \big(y_i - m(x_i, \beta)\big)^2.</span></p>
+<p>GMM minimizes a weighted quadratic form of the moment conditions:</p>
+<p><span class="math display">\hat\theta_{GMM} = \arg\min_\theta\ \bar
+g_n(\theta)&#39;\, W\, \bar g_n(\theta), \qquad \bar g_n(\theta) =
+\frac{1}{n}\sum_{i=1}^n g(w_i, \theta).</span></p>
+<p>Maximizing with a sign flip is minimizing, so all three belong to the
+same family of extremum estimators.</p>
+</div>
+<p>OLS is the special case of NLS with <span
+class="math inline">m(x,\beta) = x&#39;\beta</span>, and also the
+special case of GMM with the moment condition <span
+class="math inline">g(w_i,\beta) = x_i(y_i - x_i&#39;\beta)</span> and
+weight <span class="math inline">W = I</span>. This “everything reduces
+to one argmax” viewpoint is not for show; its practical payoff is that
+once you prove, a single time, under what conditions an extremum
+estimator is consistent and what its variance looks like, MLE, GMM, and
+NLS are all proved at once, with no need to go through each separately.
+The rest of this section walks that unified path.</p>
+<h3
+id="identification-the-objective-function-must-have-a-unique-separable-peak">3.2
+Identification: The Objective Function Must Have a Unique, Separable
+Peak</h3>
+<p>The sample objective function <span
+class="math inline">Q_n(\theta)</span> converges pointwise, as the
+sample grows, to a population objective function <span
+class="math inline">Q_0(\theta) = \mathbb{E}[q(z, \theta)]</span> (for
+MLE this is <span class="math inline">\mathbb{E}[\ln
+f(z;\theta)]</span>). For the estimator to pin down the truth, the first
+prerequisite is that this population objective function attains its
+extremum at <span class="math inline">\theta_0</span>, and only at <span
+class="math inline">\theta_0</span>.</p>
+<div class="assumption">
+<p><strong>(Identification.)</strong> The population objective function
+<span class="math inline">Q_0(\theta)</span> attains a unique maximum at
+<span class="math inline">\theta_0</span> over the parameter space <span
+class="math inline">\Theta</span>: for any <span
+class="math inline">\theta \neq \theta_0</span>, <span
+class="math inline">Q_0(\theta) &lt; Q_0(\theta_0)</span>.</p>
+</div>
+<p>The word “unique” carries the entire weight of identification. If
+there were another <span class="math inline">\theta_1 \neq
+\theta_0</span> with <span class="math inline">Q_0(\theta_1) =
+Q_0(\theta_0)</span>, then at the population level the data cannot
+distinguish the two parameters, and no amount of sample would help,
+which is a failure of identification, not a shortfall of precision. The
+scale non-identification of Section 2.1 is one example: scale up <span
+class="math inline">\beta</span> and <span
+class="math inline">\varepsilon</span> proportionally and the likelihood
+is identical, the objective function develops a ridge of equal height,
+and the peak is not unique.</p>
+<p>But identification actually comes in degrees, strong and weak, rather
+than the crisp binary of present or absent, and this point matters
+enormously in practice. Even when the peak is unique, it may not be
+“separable enough”: the objective function is nearly flat around <span
+class="math inline">\theta_0</span>, with a broad swath of <span
+class="math inline">\theta</span> values all giving nearly the same
+objective value. In that case <span class="math inline">\theta_0</span>
+is barely unique in the population, yet in a sample it is extremely hard
+to tell apart from nearby values, and the estimator’s variance grows
+alarmingly large.</p>
+<div class="intuition">
+<p>Picture the strength of identification as the steepness of the peak.
+A lone peak rising sharply from the ground, you could grope your way to
+the top with your eyes closed, is strong identification: the objective
+function has high curvature near the truth, so a slight departure from
+the truth makes the objective value drop noticeably, and the data has
+strong opinions about which <span class="math inline">\theta</span> is
+better. A plateau swelling gently upward, where the top is anyone’s
+guess, is weak identification: the objective function is nearly flat,
+countless <span class="math inline">\theta</span> values look equally
+good, and the data has almost no opinion. The steepness of the peak, as
+we will see, is exactly the curvature <span class="math inline">A</span>
+behind the bread <span class="math inline">A^{-1}</span> in the
+asymptotic variance; the steeper the peak, the larger <span
+class="math inline">A</span>, the smaller <span
+class="math inline">A^{-1}</span>, and the smaller the variance. This is
+why the geometry of identification (how steep the peak is) and the
+precision of inference (how large the variance is) are two sides of the
+same thing. Section 4.3 will place a lone peak and a plateau side by
+side in Helix and measure their difference.</p>
+</div>
+<h3
+id="consistency-why-jensens-inequality-pins-the-summit-to-the-truth">3.3
+Consistency: Why Jensen’s Inequality Pins the Summit to the Truth</h3>
+<p>The identification assumption requires the population objective
+function to attain its extremum at the truth. But for MLE, on what
+grounds does this hold? Why does “maximizing the expected
+log-likelihood” lead us exactly to the true parameter and not somewhere
+else? The answer is an argument that is surprisingly short and
+surprisingly beautiful, using only Jensen’s inequality.</p>
+<p>Start with the intuition. You hold a family of candidate probability
+densities <span class="math inline">f(\cdot; \theta)</span>, one of
+which, <span class="math inline">\theta_0</span>, is true. The data are
+generated by <span class="math inline">f(\cdot; \theta_0)</span>. If you
+use a wrong <span class="math inline">\theta</span> to explain this
+data, on average you will feel the data “does not look much like” it
+came from <span class="math inline">f(\cdot; \theta)</span>, that is,
+the expected log-likelihood is low; only with the right <span
+class="math inline">\theta_0</span> does the data most “look like”
+itself, and the expected log-likelihood is highest. This measure of “a
+wrong density always explains worse” is precisely the Kullback-Leibler
+divergence from information theory, which is nonnegative and equals zero
+only when the two distributions are equal. The algebra below just makes
+this sentence precise.</p>
+<div class="theorem">
+<p><strong>(The core of MLE consistency.)</strong> If the model is
+correctly specified and <span class="math inline">\theta_0</span> is
+identified, then the expected log-likelihood is maximized at the truth:
+for any <span class="math inline">\theta</span>, <span
+class="math inline">\mathbb{E}[\ln f(z; \theta_0)] \geq \mathbb{E}[\ln
+f(z; \theta)]</span>.</p>
+</div>
+<p>The proof is only a few lines, and every line is worth staring at.
+Look at the likelihood ratio <span
+class="math inline">\frac{f(z;\theta)}{f(z;\theta_0)}</span>, take its
+log and negate it, and use the fact that <span class="math inline">g(a)
+= -\ln a</span> is convex together with Jensen’s inequality <span
+class="math inline">\mathbb{E}[g(Y)] \geq g(\mathbb{E}[Y])</span>:</p>
+<p><span class="math display">\mathbb{E}_z\left[ -\ln
+\frac{f(z;\theta)}{f(z;\theta_0)} \right] \geq -\ln \mathbb{E}_z\left[
+\frac{f(z;\theta)}{f(z;\theta_0)} \right].</span></p>
+<p>The expectation inside the brackets on the right is taken over the
+true distribution <span class="math inline">f(\cdot;\theta_0)</span>,
+the density cancels, and it equals exactly 1:</p>
+<p><span class="math display">\mathbb{E}_z\left[
+\frac{f(z;\theta)}{f(z;\theta_0)} \right] = \int
+\frac{f(z;\theta)}{f(z;\theta_0)}\, f(z;\theta_0)\, dz = \int
+f(z;\theta)\, dz = 1.</span></p>
+<p>And <span class="math inline">-\ln 1 = 0</span>, so the left side is
+<span class="math inline">\geq 0</span>, and splitting apart the log on
+the left gives</p>
+<p><span class="math display">\mathbb{E}[\ln f(z; \theta_0)] -
+\mathbb{E}[\ln f(z; \theta)] \geq 0.</span></p>
+<p>This is exactly what we wanted to prove: the expected log-likelihood
+is maximized at <span class="math inline">\theta_0</span>. Done.
+Equality holds if and only if <span class="math inline">f(\cdot;\theta)
+= f(\cdot;\theta_0)</span>, and the identification assumption guarantees
+this happens only at <span class="math inline">\theta = \theta_0</span>,
+so the peak is unique.</p>
+<div class="intuition">
+<p>The weight of this proof lies in how it upgrades “maximize the
+likelihood” from an operational recipe into a guaranteed identification
+strategy. The sample log-likelihood <span
+class="math inline">\frac{1}{n}\sum \ln f(z_i;\theta)</span> converges
+pointwise, by the law of large numbers, to <span
+class="math inline">\mathbb{E}[\ln f(z;\theta)]</span>, whose summit is
+pinned by Jensen at <span class="math inline">\theta_0</span>. So the
+summit of the sample objective, <span
+class="math inline">\hat\theta</span>, converges to the summit of the
+population objective, <span class="math inline">\theta_0</span>, and
+this is consistency. Convexity (the convexity of <span
+class="math inline">-\ln</span>) is the protagonist here, guaranteeing
+the direction of that decisive inequality. The entire argument uses
+nothing about the specific form of <span class="math inline">f</span>,
+so it treats logit, probit, Poisson, and normal alike, as long as the
+likelihood is written correctly.</p>
+</div>
+<p>To upgrade this pointwise convergence rigorously to <span
+class="math inline">\hat\theta \xrightarrow{p} \theta_0</span>, the
+technical apparatus also needs uniform convergence of the objective
+function in <span class="math inline">\theta</span>, plus compactness of
+the parameter space and other regularity conditions, so that the
+convergence of the summit can be pushed from “every point converges” to
+“the extremum point converges.” These conditions are standard and this
+chapter does not spell them out; Newey and McFadden (1994) give a
+complete treatment. The point is that the inequality fixing the
+direction comes from Jensen, not from any fine technical assumption.</p>
+<h3 id="asymptotic-normality-and-the-sandwich">3.4 Asymptotic Normality
+and the Sandwich</h3>
+<p>Consistency says <span class="math inline">\hat\theta</span> will
+converge to <span class="math inline">\theta_0</span>, but it does not
+say at what speed or in what distribution it fluctuates around <span
+class="math inline">\theta_0</span>. This subsection gives the answer,
+and gives it in the form that applies generally to extremum estimators,
+with MLE and GMM as special cases.</p>
+<p>Start with the intuition, which will guide the algebra below all the
+way through. The reason <span class="math inline">\hat\theta</span>
+lands, in each draw, near <span class="math inline">\theta_0</span> but
+not exactly on it, is the outcome of a tug-of-war between two forces.
+One force is the jitter of the sample gradient at the truth: the
+first-order condition should be zero at <span
+class="math inline">\theta_0</span>, but in a finite sample it carries
+noise, and the larger this noise, the farther <span
+class="math inline">\hat\theta</span> is pushed away from <span
+class="math inline">\theta_0</span>. The other force is the curvature of
+the objective function: the steeper the peak, the shorter the distance
+the same gradient noise can push the extremum point, because a steep
+peak clamps <span class="math inline">\hat\theta</span> tightly. So the
+shape of the variance is already suggested: the numerator is the
+gradient’s noise, the denominator is the curvature, with the noise in
+the middle and the curvature clamping it on both sides. This is where
+the sandwich <span class="math inline">A^{-1} B A^{-1}</span> comes
+from, and the Taylor expansion below just writes it precisely.</p>
+<p>The engine of the derivation is a Taylor expansion of the first-order
+condition. <span class="math inline">\hat\theta</span> is the extremum
+point of the sample objective, so it drives the sample gradient to zero:
+<span class="math inline">\nabla Q_n(\hat\theta) = 0</span>. Expand this
+gradient to first order around the truth <span
+class="math inline">\theta_0</span>,</p>
+<p><span class="math display">0 = \nabla Q_n(\hat\theta) \approx \nabla
+Q_n(\theta_0) + \nabla^2 Q_n(\theta_0)\,(\hat\theta -
+\theta_0),</span></p>
+<p>rearrange, multiply by <span class="math inline">\sqrt{n}</span>, and
+get</p>
+<p><span class="math display">\sqrt{n}(\hat\theta - \theta_0) \approx
+-\big[\nabla^2 Q_n(\theta_0)\big]^{-1} \sqrt{n}\, \nabla
+Q_n(\theta_0).</span></p>
+<p>Each of the two pieces on the right has a destination. The sample
+Hessian <span class="math inline">\nabla^2 Q_n(\theta_0)</span>
+converges by the law of large numbers to its expectation, which we write
+as <span class="math inline">-A = \mathbb{E}[\nabla^2
+q(z,\theta_0)]</span>, so <span class="math inline">A</span> is the
+negative curvature of the population objective at the truth, positive
+definite, measuring how steep the peak is. The sample gradient <span
+class="math inline">\sqrt{n}\,\nabla Q_n(\theta_0) = \frac{1}{\sqrt
+n}\sum_i \nabla q(z_i, \theta_0)</span> is a sum of mean-zero random
+terms (the gradient’s expectation is zero at <span
+class="math inline">\theta_0</span>) and converges by the central limit
+theorem to <span class="math inline">\mathcal{N}(0, B)</span>, where
+<span class="math inline">B = \mathbb{E}[\nabla q(z,\theta_0)\,\nabla
+q(z,\theta_0)&#39;]</span> is the variance of the gradient. Put the two
+pieces together:</p>
+<div class="theorem">
+<p><strong>(Asymptotic normality of the extremum estimator.)</strong>
+Under regularity conditions,</p>
+<p><span class="math display">\sqrt{n}(\hat\theta - \theta_0)
+\xrightarrow{d} \mathcal{N}\big(0,\ A^{-1} B A^{-1}\big),</span></p>
+<p>where <span class="math inline">A = -\,\mathbb{E}[\nabla^2 q(z,
+\theta_0)]</span> is the negative expected Hessian of the objective
+function at the truth (the curvature), and <span class="math inline">B =
+\mathbb{E}[\nabla q(z, \theta_0)\, \nabla q(z, \theta_0)&#39;]</span> is
+the variance of the gradient.</p>
+</div>
+<p>This <span class="math inline">A^{-1} B A^{-1}</span> is the
+protagonist of the chapter, the sandwich variance. The two slices of
+bread <span class="math inline">A^{-1}</span> are the reciprocal of the
+curvature, and the filling <span class="math inline">B</span> is the
+gradient’s noise. Its shape says two things clearly: the steeper the
+peak (the larger <span class="math inline">A</span>), the smaller the
+variance, because a steep peak clamps <span
+class="math inline">\hat\theta</span> tighter; the larger the gradient
+noise (the larger <span class="math inline">B</span>), the larger the
+variance, because the more the first-order condition jitters from draw
+to draw, the farther the extremum point is pushed. Section 3.2 said the
+strength of identification is the steepness of the peak, and that
+corresponds exactly to <span class="math inline">A</span> here; when
+identification is weak and the peak is flat, <span
+class="math inline">A</span> tends to zero, <span
+class="math inline">A^{-1}</span> explodes, and the variance explodes
+with it, which is what weak identification looks like inside the
+variance formula.</p>
+<p>These two slices of bread and this filling are not abstract symbols.
+Section 6 will measure them out on Helix: for the same usage parameter,
+using only one slice of bread, treating the filling as equal to the
+bread (that is, misusing <span class="math inline">I^{-1}</span>), gives
+a standard error of 0.0090, while honestly computing the full sandwich
+gives 0.0182, a full factor of two apart, and the truth stands on the
+side of the latter.</p>
+<p>The sandwich is the default shape of the variance of any extremum
+estimator, whether or not the objective function is a likelihood. The
+next subsection will show that MLE, when correctly specified, enjoys a
+special grace that lets this sandwich collapse; but that grace is
+conditional, and once the condition fails, the sandwich is the only
+reliable shape.</p>
+<h3
+id="mles-special-grace-the-information-matrix-equality-and-efficiency">3.5
+MLE’s Special Grace: The Information Matrix Equality and Efficiency</h3>
+<p>When the objective function happens to be a correctly specified
+log-likelihood, there is a nontrivial equality between <span
+class="math inline">A</span> and <span class="math inline">B</span> that
+lets the sandwich collapse into a single slice of bread. This equality
+is called the information matrix equality.</p>
+<p>State it first. For MLE, the gradient is the score <span
+class="math inline">s(z,\theta) = \nabla \ln f(z;\theta)</span>, and
+both the expectation of the negative Hessian and the variance of the
+score equal the Fisher information <span
+class="math inline">I(\theta_0)</span>:</p>
+<p><span class="math display">I(\theta_0) =
+-\,\mathbb{E}\!\left[\frac{\partial^2 \ln
+f}{\partial\theta\,\partial\theta&#39;}(z;\theta_0)\right] =
+\mathbb{E}\!\left[\frac{\partial \ln
+f}{\partial\theta}(z;\theta_0)\,\frac{\partial \ln
+f}{\partial\theta&#39;}(z;\theta_0)\right].</span></p>
+<p>The left side is the curvature <span class="math inline">A</span>,
+the right side is the gradient variance <span
+class="math inline">B</span>, and the equality says <span
+class="math inline">A = B = I(\theta_0)</span>. Substitute into the
+sandwich, <span class="math inline">A^{-1} B A^{-1} = I^{-1} I\, I^{-1}
+= I^{-1}</span>, and the sandwich collapses:</p>
+<p><span class="math display">\sqrt{n}(\hat\theta_{MLE} - \theta_0)
+\xrightarrow{d} \mathcal{N}\big(0,\ I(\theta_0)^{-1}\big).</span></p>
+<p>At first glance this equality looks strange: curvature and gradient
+variance are two seemingly unrelated quantities, so why should they
+happen to be equal? The intuition is that they are really two windows
+onto the same thing, both measuring how firmly the data pins down <span
+class="math inline">\theta</span>. One window is the curvature: the more
+sharply the log-likelihood bends at its summit, the faster the
+likelihood drops as you depart slightly from the truth, and the stronger
+the data’s opinion about <span class="math inline">\theta</span>. The
+other window is the variance of the score: a sharply bending likelihood
+is equivalent to a score (slope) that changes fast along <span
+class="math inline">\theta</span>, so it also jitters more across
+different samples. A sharply bending likelihood must come with a
+fiercely jittering score, and the two windows see the same number, the
+Fisher information. The two differentiations below just squeeze this
+“same thing” out algebraically.</p>
+<p>Why does this equality hold? The root is an identity: the density
+integrates to 1, <span class="math inline">\int f(z;\theta)\, dz =
+1</span>, and differentiating with respect to <span
+class="math inline">\theta</span>, the right side is a constant with
+derivative zero:</p>
+<p><span class="math display">0 = \frac{\partial}{\partial\theta} \int
+f(z;\theta)\, dz = \int \frac{\partial f}{\partial\theta}(z;\theta)\, dz
+= \int \frac{\partial \ln f}{\partial\theta}(z;\theta)\, f(z;\theta)\,
+dz = \mathbb{E}\!\left[\frac{\partial \ln
+f}{\partial\theta}(z;\theta_0)\right],</span></p>
+<p>where the third equality uses <span
+class="math inline">\frac{\partial \ln f}{\partial\theta} =
+\frac{1}{f}\frac{\partial f}{\partial\theta}</span>. This shows the
+score has expectation zero at the truth, which is exactly the
+incarnation, in the likelihood case, of Section 3.4’s “the gradient has
+expectation zero.” Differentiate this identity once more (differentiate
+<span class="math inline">\int \frac{\partial \ln f}{\partial\theta} f\,
+dz = 0</span> with respect to <span class="math inline">\theta</span>,
+using the product rule) and you get <span
+class="math inline">\mathbb{E}[\frac{\partial^2 \ln
+f}{\partial\theta\partial\theta&#39;}] + \mathbb{E}[\frac{\partial \ln
+f}{\partial\theta}\frac{\partial \ln f}{\partial\theta&#39;}] =
+0</span>, and rearranging gives the information matrix equality. The
+point is: this equality depends entirely on <span
+class="math inline">f</span> being the true distribution of the data,
+and only two differentiations can wring out the information in
+“integrates to 1”; once <span class="math inline">f</span> is not the
+true distribution, the first step <span class="math inline">\int f =
+1</span> still holds for the wrong <span class="math inline">f</span>,
+but it is no longer the distribution of the data, so the step where the
+score has expectation zero need not match the data’s true expectation,
+and the equality breaks with it. This foreshadows Section 3.6.</p>
+<p>The information matrix equality also incidentally crowns MLE with
+efficiency. Here <span class="math inline">I(\theta_0)</span> is the
+Fisher information contributed by a single observation, and <span
+class="math inline">n</span> independent observations together supply
+information <span class="math inline">n\, I(\theta_0)</span>. The
+Cramér-Rao lower bound says that any unbiased estimator built from <span
+class="math inline">n</span> observations has variance no smaller than
+the inverse of the total information <span class="math inline">[n\,
+I(\theta_0)]^{-1}</span>, equivalently, the asymptotic variance of the
+standardized estimator is no smaller than the inverse of the
+single-observation information:</p>
+<p><span class="math display">\mathrm{Avar}\big(\sqrt{n}(\hat\theta -
+\theta_0)\big) \geq I(\theta_0)^{-1}.</span></p>
+<p>And MLE’s asymptotic variance attains exactly this bound (matching
+the <span class="math inline">\mathcal{N}(0, I(\theta_0)^{-1})</span>
+above). In other words, when the likelihood is correctly specified, no
+(regular) estimator can be more precise than MLE, and this is the answer
+to the question “if MLE is most efficient, why use anything else”: as
+long as you dare to guarantee the distribution is fully correct, you
+indeed need nothing else. The collapse of the sandwich shows up directly
+on Helix’s adoption data in Section 6: the logit likelihood is correctly
+specified there, and the slope’s Fisher-information standard error and
+sandwich standard error are both 0.044, identical to the digit, so the
+two slices of bread and the filling really are equal. The trouble is in
+that “dare to guarantee,” and the next section pulls it apart.</p>
+<h3
+id="when-the-information-matrix-equality-breaks-qmle-and-the-sandwichs-redemption">3.6
+When the Information Matrix Equality Breaks: QMLE and the Sandwich’s
+Redemption</h3>
+<p>In practice we almost never dare to guarantee the distribution is
+fully correct. A very common situation is: you got the shape of the
+conditional mean right, but got the rest of the distribution (especially
+the variance) wrong. In that case the “likelihood” you wrote down is
+really a wrong likelihood, and maximizing it gives the quasi-maximum
+likelihood estimator (QMLE). The question arises: is QMLE still
+usable?</p>
+<p>The answer splits in two, and this is exactly the most important
+distinction in the chapter. The point-estimate half is often still
+salvageable. Look at Section 3.5’s condition that the score has
+expectation zero, <span class="math inline">\mathbb{E}[s(z,\theta_0)] =
+0</span>. If the score of your (wrong) likelihood happens to depend only
+on the part of the data you specified correctly (say the conditional
+mean), then even with the distribution wrong, this expectation is still
+zero at the true parameter, so Section 3.3’s consistency argument still
+goes through, and QMLE is still consistent. This kind of likelihood,
+where “getting one part right is enough,” belongs to the linear
+exponential family, which includes Poisson, normal, and binomial, whose
+scores all take the shape “residual times some function,” so as long as
+the conditional mean is right, the residual has expectation zero.</p>
+<p>The variance half cannot be salvaged, and if left unfixed it will
+deceive you. With the distribution misspecified, the premise “f is the
+true distribution” that the information matrix equality relies on is
+gone, <span class="math inline">A = B</span> no longer holds, and the
+sandwich no longer collapses. If you still stubbornly use <span
+class="math inline">I^{-1}</span> (that is, only one slice of bread
+<span class="math inline">A^{-1}</span>) as the variance, you are
+computing a wrong variance. The correct variance returns to its
+original, general shape: the sandwich <span class="math inline">A^{-1} B
+A^{-1}</span>, using the sample to estimate <span
+class="math inline">A</span> (the mean of the negative Hessian) and
+<span class="math inline">B</span> (the mean of the score outer product)
+separately, without assuming the two are equal. This robust variance is
+called the Huber-White sandwich in econometrics, and it is White’s
+(1982) contribution.</p>
+<div class="intuition">
+<p>Remember this half-chapter in one sentence: get the conditional mean
+right and the point estimate lives; get the distribution right too and
+<span class="math inline">I^{-1}</span> lives. The two “rights” govern
+two different things, and conflating them is the beginner’s most common
+mistake. Helix’s usage data will play this out in gory detail: the real
+usage is overdispersed (variance far larger than the mean), yet the data
+scientist, taking the easy route, fits a Poisson likelihood. Poisson’s
+conditional mean <span class="math inline">\exp(x&#39;\beta)</span> is
+correctly specified, so her <span class="math inline">\hat\beta</span>
+is consistent and estimates hug the truth; but Poisson rigidly assumes
+the variance equals the mean, which is wrong for overdispersed data, and
+the information matrix equality breaks. If she trusts the default
+standard errors Poisson spits out (which are <span
+class="math inline">I^{-1}</span>), she badly underestimates the
+uncertainty. Section 6 will measure this cost: a nominal 95% confidence
+interval actually covers the truth only 71.5% of the time, and swapping
+in the sandwich returns it to 95.5%. Same point estimate, two sets of
+standard errors, one deceives and one does not, and the difference lies
+entirely in whether you dare to guarantee the distribution.</p>
+</div>
+<p>This half-chapter also rewrites the scope of Section 3.5’s efficiency
+crown. MLE attains the Cramér-Rao lower bound on the premise that the
+likelihood is correct. Misspecify it and the crown comes off: QMLE is no
+longer efficient, and what it gains is robustness, trading a little
+efficiency loss for “even if the distribution is wrong, as long as the
+mean is right, both the point estimate and the (robust) inference still
+stand.” When you have no full confidence in the distribution, this trade
+is almost always worth it, which is also why the default move of modern
+empirical work is to report sandwich standard errors rather than the
+model’s default one.</p>
+<h3 id="gmm-mounting-estimation-directly-on-moment-conditions">3.7 GMM:
+Mounting Estimation Directly on Moment Conditions</h3>
+<p>MLE starts from a complete distributional assumption, which is both
+its strength (most efficient when correctly specified) and its soft spot
+(needing QMLE to patch it up when misspecified). Is there a path that
+bypasses the complete distribution and estimates using only the few
+moment conditions the economic model is confident about? Yes, and it is
+GMM. It is another pillar of this chapter’s unified framework, and it
+also gathers all the earlier estimators into one larger pocket.</p>
+<p>The starting point is a set of population moment conditions: the
+economic model tells you that at the true parameter, the expectation of
+some function is zero,</p>
+<p><span class="math display">\mathbb{E}[g(w_i, \theta_0)] =
+0,</span></p>
+<p>where <span class="math inline">g</span> is a <span
+class="math inline">q</span>-dimensional vector-valued function. The
+sample analogue is <span class="math inline">\bar g_n(\theta) =
+\frac{1}{n}\sum_i g(w_i, \theta)</span>. If the number of moment
+conditions <span class="math inline">q</span> equals the number of
+parameters <span class="math inline">k</span> (just-identified), you can
+generally find a <span class="math inline">\hat\theta</span> that makes
+<span class="math inline">\bar g_n(\hat\theta) = 0</span> hold exactly.
+If there are more moment conditions than parameters (over-identified),
+you generally cannot find a <span class="math inline">\theta</span>
+satisfying all moment conditions at once, and you settle for the next
+best: find a <span class="math inline">\theta</span> that makes the
+moment conditions “overall closest to zero,” using a <span
+class="math inline">q \times q</span> positive-definite weight matrix
+<span class="math inline">W</span> to weight their quadratic form:</p>
+<p><span class="math display">\hat\theta_{GMM} = \arg\min_\theta\ \bar
+g_n(\theta)&#39;\, W\, \bar g_n(\theta).</span></p>
+<p>This is the GMM objective listed in Section 3.1. Its asymptotic
+normality can be plugged straight into Section 3.4’s machine, only with
+<span class="math inline">A</span> and <span
+class="math inline">B</span> swapped into the language of moment
+conditions. Write the Jacobian <span class="math inline">D =
+\mathbb{E}[\partial g(w_i,\theta_0)/\partial\theta&#39;]</span> (<span
+class="math inline">q \times k</span>, how sensitive the moment
+conditions are to the parameters) and the moment variance <span
+class="math inline">S =
+\mathbb{E}[g(w_i,\theta_0)\,g(w_i,\theta_0)&#39;]</span> (<span
+class="math inline">q \times q</span>, how noisy the moment conditions
+themselves are). GMM’s asymptotic variance is a larger sandwich:</p>
+<p><span class="math display">\mathrm{Var} = (D&#39;WD)^{-1}\,(D&#39;W S
+W D)\,(D&#39;WD)^{-1}.</span></p>
+<p>The <span class="math inline">D</span> inside the bread <span
+class="math inline">(D&#39;WD)^{-1}</span> is the moment-condition
+version of curvature, and the larger <span class="math inline">D</span>
+(the more sensitive the moment conditions are to <span
+class="math inline">\theta</span>), the stronger the identification and
+the smaller the variance, which is exactly the moment-condition
+incarnation of Section 3.2’s steep peak.</p>
+<p>When over-identified, how to choose the weight <span
+class="math inline">W</span> has a beautiful optimal answer. Take <span
+class="math inline">W = S^{-1}</span>, weighting by the inverse of the
+moment variance, so noisy moment conditions get small weight and steady
+ones get large weight. Substitute into the sandwich above, and <span
+class="math inline">D&#39;S^{-1}D</span> lets the bread and filling
+cancel, so the variance collapses to</p>
+<p><span class="math display">\mathrm{Var}_{\text{eff}} =
+(D&#39;S^{-1}D)^{-1}.</span></p>
+<p>This is the minimum variance efficient GMM can attain, formally just
+like MLE’s <span class="math inline">I^{-1}</span>, and the collapse
+mechanism is the same: choose the right weight so the two slices of
+bread of the sandwich equal the filling. <span
+class="math inline">S</span> is generally unknown, so in practice it is
+estimated in two steps: the first step uses a convenient weight (such as
+the identity <span class="math inline">I</span>) to get a preliminary
+<span class="math inline">\hat\theta</span> and estimate <span
+class="math inline">\hat S</span> from it, and the second step
+re-estimates with <span class="math inline">\hat W = \hat S^{-1}</span>,
+which is called two-step feasible GMM.</p>
+<div class="theorem">
+<p><strong>(Hansen’s <span class="math inline">J</span> test.)</strong>
+When over-identified (<span class="math inline">q &gt; k</span>), the
+value of the objective function estimated with the efficient weight,
+multiplied by <span class="math inline">n</span>, converges to a
+chi-square distribution when all moment conditions are correct:</p>
+<p><span class="math display">n\, \bar g_n(\hat\theta)&#39;\, \hat
+S^{-1}\, \bar g_n(\hat\theta) \xrightarrow{d} \chi^2_{q-k}.</span></p>
+<p>The degrees of freedom <span class="math inline">q - k</span> is the
+degree of over-identification, that is, the number of extra moment
+conditions.</p>
+</div>
+<p>The intuition of the <span class="math inline">J</span> test is: when
+just-identified, you can drive the <span class="math inline">k</span>
+moment conditions exactly to zero, leaving no residual to test; when
+over-identified, the extra <span class="math inline">q - k</span> moment
+conditions cannot be pressed to zero even at the optimal <span
+class="math inline">\hat\theta</span>, and if all moment conditions are
+true, this residual is just sampling noise and <span
+class="math inline">J</span> is small; if some moment condition is
+actually wrong (the model is misspecified), the residual systematically
+departs from zero, <span class="math inline">J</span> grows large, and
+it rejects. It is a checkup on the model’s specification, and Section 6
+will show it not rejecting when correctly specified and firmly rejecting
+when the mean is misspecified.</p>
+<p>Finally, close the loop. MLE is really a special case of GMM: the
+score’s expectation being zero, <span
+class="math inline">\mathbb{E}[s(z,\theta_0)] = 0</span>, is itself a
+set of moment conditions, and moreover the “optimal” moment conditions
+(the variance estimated with them attains the Cramér-Rao lower bound).
+Section 2’s logit score, once simplified, takes the shape <span
+class="math inline">\sum_i (D_i - \Lambda(x_i&#39;\beta))\, x_i</span>,
+which is exactly the moment condition “adoption residual times <span
+class="math inline">x</span>,” <span class="math inline">\mathbb{E}[(D -
+\Lambda(x&#39;\beta))\,x] = 0</span>. Section 6 will also show that
+Poisson’s score takes the shape “usage residual times <span
+class="math inline">x</span>,” and adding one more moment on <span
+class="math inline">x^2</span> upgrades it from just-identified to
+over-identified GMM. MLE, QMLE, and GMM are thus gathered into one
+sentence: all are extremum estimators making some set of moment
+conditions (or their weighted quadratic form) hold as much as possible
+in the sample, and the only difference is where the moment conditions
+come from and whether that sandwich variance collapses.</p>
+<p>The main points of this section can be summarized as follows: the
+extremum estimator is the extremum point of a sample objective function,
+and MLE, GMM, and NLS are all special cases; identification requires the
+population objective function to have a unique, separable peak, and the
+steepness of the peak is the curvature <span
+class="math inline">A</span> in the asymptotic variance; consistency is
+guaranteed by Jensen’s inequality, independent of the specific form of
+<span class="math inline">f</span>; the asymptotic variance generally
+takes the sandwich shape <span class="math inline">A^{-1}BA^{-1}</span>,
+and MLE collapses it into <span class="math inline">I^{-1}</span> via
+the information matrix equality when correctly specified, attaining the
+Cramér-Rao lower bound; when half misspecified (mean right, distribution
+wrong), the QMLE point estimate is still consistent, but inference must
+use the sandwich rather than <span class="math inline">I^{-1}</span>;
+GMM mounts estimation directly on moment conditions, the efficient
+weight <span class="math inline">W = S^{-1}</span> gives the minimum
+variance <span class="math inline">(D&#39;S^{-1}D)^{-1}</span>,
+over-identification allows a <span class="math inline">J</span> test to
+check the specification, and MLE is nothing but GMM with the optimal
+moment conditions.</p>
+<h2 id="estimation-how-to-actually-compute-it">4 Estimation: How to
+Actually Compute It</h2>
+<p>Identification and large-sample theory made clear why the estimator
+is reliable and what its variance looks like. This section covers the
+three practical matters of getting it done: how to find that extremum
+point numerically, how to do two-step feasible GMM, and how
+identification slides in practice from “strong” toward “weak.”</p>
+<h3 id="numerical-optimization">4.1 Numerical Optimization</h3>
+<p>The logit log-likelihood has no closed-form solution, and <span
+class="math inline">\hat\beta</span> must be found by iteration. The
+workhorse algorithm is Newton-Raphson, whose idea is to approximate the
+objective function at the current point with a quadratic surface, jump
+directly to the vertex of that quadratic surface, and repeat. Written
+out with the gradient <span class="math inline">\nabla \ell</span> and
+Hessian <span class="math inline">\nabla^2 \ell</span>, it is</p>
+<p><span class="math display">\theta_{k+1} = \theta_k - \big[\nabla^2
+\ell(\theta_k)\big]^{-1}\, \nabla \ell(\theta_k).</span></p>
+<p>The intuition is: the gradient tells you which direction to go, the
+Hessian (curvature) tells you how far to go, taking small steps where
+the curvature is high and large steps where it is flat. When the
+objective function is concave (the logit log-likelihood is globally
+concave), Newton’s method converges extremely fast, usually reaching the
+answer in a few steps. The hand-written Newton iteration in Section 6
+converges on Helix in 6 steps to a solution matching mature software
+(differing at the order of <span
+class="math inline">10^{-13}</span>).</p>
+<p>Newton’s method’s soft spot is that each step must compute and invert
+the Hessian, which is costly when there are many parameters, and the
+Hessian may also be non-invertible (which is often a signal that
+identification is in trouble). Hence a series of variants. BHHH
+(Berndt-Hall-Hall-Hausman) is designed for MLE, replacing the negative
+Hessian with the mean of the score outer product <span
+class="math inline">\frac{1}{n}\sum s_i s_i&#39;</span>, which is
+exactly the substitution the information matrix equality permits (the
+two have equal expectation when correctly specified), and its advantage
+is needing only first derivatives and being naturally positive
+semidefinite. The quasi-Newton family (BFGS and others) gradually
+approximates the inverse of the Hessian during iteration using
+historical gradients, bypassing the explicit inversion at each step, and
+is the default choice for general nonlinear optimization. The shared
+caution is: if the objective function is nonconcave, or identification
+is so weak that the Hessian is nearly singular, any algorithm may get
+lost in a flat or multi-peaked terrain, failing to converge or halting
+at a false peak, and at that point what you should suspect is usually
+not the algorithm but the model.</p>
+<h3 id="two-step-feasible-gmm-and-efficiency">4.2 Two-Step Feasible GMM
+and Efficiency</h3>
+<p>Section 3.7 said the efficient weight is <span class="math inline">W
+= S^{-1}</span>, but <span class="math inline">S</span> is unknown, so
+getting it done means two steps. The first step takes a convenient
+initial weight <span class="math inline">W_0</span>, commonly the
+identity <span class="math inline">I</span>, to get a consistent but not
+necessarily efficient <span class="math inline">\hat\theta^{(1)}</span>.
+Use it to construct an estimate of the moment variance, and here is a
+practical detail worth pointing out: use the demeaned form,</p>
+<p><span class="math display">\hat S = \frac{1}{n}\sum_{i=1}^n
+\big(g(w_i,\hat\theta^{(1)}) - \bar g_n\big)\big(g(w_i,\hat\theta^{(1)})
+- \bar g_n\big)&#39;,</span></p>
+<p>rather than the un-demeaned <span class="math inline">\frac{1}{n}\sum
+g g&#39;</span>, because the latter mixes specification error into the
+weight when over-identified and is almost always a bad idea. The second
+step re-minimizes with <span class="math inline">\hat W = \hat
+S^{-1}</span> to get the efficient estimate <span
+class="math inline">\hat\theta_{GMM}</span>, and then computes sandwich
+standard errors from it.</p>
+<p>The precision gain that efficiency brings is real. In Section 6, on
+Helix’s usage data, over-identified GMM with the identity weight gives a
+slope SE of 0.023, and switching to the efficient weight brings the SE
+down to 0.015, a reduction of a third. The reasoning is the same as in
+Section 3.7: the efficient weight turns noisy moment conditions down and
+steady ones up, which amounts to using the information more fully. Note
+that efficient GMM is asymptotically efficient, and in small samples the
+two-step <span class="math inline">\hat S</span> itself carries noise,
+so it can sometimes be less stable than a well-designed identity weight,
+which is also the motivation for improvements like continuously-updating
+GMM (Hansen, Heaton, and Yaron 1996).</p>
+<h3 id="identification-weakens-in-practice">4.3 Identification Weakens
+in Practice</h3>
+<p>Section 3.2 said identification comes in degrees, and that under weak
+identification the peak is flat and the variance explodes. This
+subsection pulls it from the abstract to the concrete, because it is one
+of the most hidden traps in estimation practice: everything in the
+report looks normal, the point estimate is there and the standard error
+is there too, yet that standard error is so large the estimate carries
+almost no information, and in more extreme cases even the usual normal
+approximation itself fails.</p>
+<p>The root of weak identification is that the bread <span
+class="math inline">A</span> in the asymptotic variance (or <span
+class="math inline">D</span> in GMM) tends to zero. Return to Helix’s
+usage model, where the slope <span class="math inline">\beta_1</span>
+relies on the covariation between engagement <span
+class="math inline">x</span> and usage, and the strength of
+identification is proportional to how large the variation in <span
+class="math inline">x</span> is. When the variation in <span
+class="math inline">x</span> is ample, the objective function is a
+steep, lone peak around <span class="math inline">\beta_1</span> and
+estimation is precise; when <span class="math inline">x</span> barely
+varies (say all firms’ engagement is clustered together), the objective
+function spreads out into a plateau along the <span
+class="math inline">\beta_1</span> dimension, countless <span
+class="math inline">\beta_1</span> values give nearly the same objective
+value, and the estimator loses accuracy accordingly. Section 6 will
+place these two situations side by side: when the variation in <span
+class="math inline">x</span> is ample, the slope’s sampling standard
+deviation is 0.017, and when the variation in <span
+class="math inline">x</span> is squeezed to a minimum it soars to 0.294,
+a full 17 times, while the sensitivity of the moment condition to <span
+class="math inline">\beta_1</span> behind it (the Jacobian <span
+class="math inline">D</span>) differs by 567 times.</p>
+<p>What needs honesty is the two faces of weak identification, neither
+exaggerated nor understated. In this chapter’s example, the sample size
+is large enough (<span class="math inline">n = 4000</span>), so weak
+identification mainly shows up as a collapse of precision: the estimator
+is still approximately normal, the robust standard error can still cover
+what it should, only the interval is so wide as to be useless (the
+slope’s 95% interval spans from negative values to above 1, while the
+truth is a mere 0.5). This is “computable but useless,” not “computed
+wrong.” But in settings with small samples, or where the moment
+conditions are highly nonlinear in the parameters, weak identification
+will further pull the sampling distribution away from normal, and the
+usual <span class="math inline">t</span> interval cannot even hold its
+coverage, at which point you need specialized weak-identification-robust
+inference (Stock and Wright 2000), whose spirit is just like this
+series’ chapter on instrumental variables handling weak instruments:
+when identification itself does not hold up, the right response is not
+to switch to a fancier estimator, but to admit that this data and this
+specification have little to say about this parameter.</p>
+<p>The main points of Section 4 can be summarized as follows: MLE like
+logit, having no closed-form solution, is solved by iterating with
+Newton’s method and its variants, converging extremely fast under a
+concave objective, and a nearly singular Hessian is often an
+identification alarm; efficient GMM is implemented as two steps, and
+using the demeaned <span class="math inline">\hat S^{-1}</span> as the
+weight delivers a real gain in precision; the strength of identification
+manifests as the curvature of the objective function, and weak
+identification shows up in large samples as a collapse of precision and
+in small samples as also destroying the normal approximation, and
+diagnosing it relies on thinking through where the parameter’s
+identifying variation comes from, not on staring at the asterisks on
+some statistic.</p>
+<h2 id="anchoring-papers">5 Anchoring Papers</h2>
+<p>A method stands only when it lands in real research. Three anchoring
+papers: one turned discrete-choice MLE from a statistical trick into an
+estimation paradigm carrying economic structure, one laid down the
+entire asymptotic theory of GMM, and one is a representative work in
+information systems using discrete-choice MLE to study technology
+adoption. Each is organized by the five elements of paper, method, data,
+results, and limitations, with the emphasis on how they make the
+credibility of the specification clear.</p>
+<h3 id="mcfadden-1974">5.1 McFadden (1974)</h3>
+<div class="case">
+<p>Paper: “Conditional Logit Analysis of Qualitative Choice Behavior,”
+in Zarembka (Ed.), Frontiers in Econometrics (Academic Press), pages 105
+to 142. It is the founding work that welded the random utility model and
+conditional logit together and handed them to MLE for estimation, and
+the bloodline of Section 2’s adoption model runs through here.</p>
+<p>Method: McFadden starts from random utility, where an individual
+chooses the highest-utility option among several alternatives, and
+utility equals a linear combination of observable attributes plus an
+unobservable shock. He proves that when the shocks follow an
+independent, identically distributed extreme value (type I)
+distribution, the choice probability takes exactly the clean closed form
+of conditional logit, that is, the probability of choosing alternative
+<span class="math inline">j</span> is <span class="math inline">P_j =
+\exp(x_j&#39;\beta) / \sum_k \exp(x_k&#39;\beta)</span>. The parameter
+<span class="math inline">\beta</span> is estimated by maximum
+likelihood, turning an economic model of individual choice into a
+practicable econometric estimator.</p>
+<p>Data: mode-of-travel choices of San Francisco Bay Area commuters,
+using the travel time, cost, and other attributes of alternatives such
+as driving and public transit as explanatory variables, to predict which
+mode an individual chooses to commute by.</p>
+<p>Results: the model can not only estimate the marginal effects of time
+and cost on choice and compute the substitution among modes, but also
+predict the mode share of a not-yet-built new mode (Bay Area Rapid
+Transit, BART), demonstrating the predictive power of structured
+discrete choice relative to purely descriptive regression. This method
+later became the cornerstone of demand estimation and discrete choice,
+and McFadden won the Nobel Prize in Economics in 2000 for it.</p>
+<p>Limitations: conditional logit comes with the independence of
+irrelevant alternatives (IIA) property, arising from the assumption that
+shocks are independent and identically distributed, which constrains the
+pattern of substitution (the famous red-bus-blue-bus paradox) and is
+often violated in reality. Relaxing it requires generalizations such as
+nested logit and random-coefficients (mixed) logit, which is the main
+line this series develops later when discussing discrete choice and
+demand.</p>
+</div>
+<p>The exemplary significance of this paper is that it demonstrates MLE
+is not just a statistical procedure, but a complete chain that
+translates a behaviorally interpretable economic model into a likelihood
+and then hands it to maximum likelihood for estimation. The credibility
+of the specification rests on the assumption about the shock
+distribution (extreme value gives logit), and the IIA constraint it
+brings is exactly the object that an entire subsequent literature set
+out to loosen.</p>
+<h3 id="hansen-1982">5.2 Hansen (1982)</h3>
+<div class="case">
+<p>Paper: “Large Sample Properties of Generalized Method of Moments
+Estimators,” Econometrica 50(4):1029-1054. It laid down the entire
+asymptotic theory of GMM and is the original source of all the
+conclusions in this chapter’s Section 3.7.</p>
+<p>Method: Hansen builds estimation on a set of population moment
+conditions <span class="math inline">\mathbb{E}[g(w,\theta_0)] =
+0</span> given by the economic model, without needing a complete
+distributional assumption. He proves the consistency and asymptotic
+normality of the estimator that minimizes the weighted quadratic form of
+the moment conditions under over-identification, gives the efficient
+weight <span class="math inline">W = S^{-1}</span> and the minimum
+variance <span class="math inline">(D&#39;S^{-1}D)^{-1}</span> attained
+thereby, and proposes the over-identification test constructed from the
+objective function value (later called the Hansen <span
+class="math inline">J</span> test), with degrees of freedom equal to the
+degree of over-identification.</p>
+<p>Data: the paper itself is methodological, and the classic application
+it drives is the Euler equation of asset pricing under rational
+expectations, using macro and financial time series (consumption growth,
+asset returns) to estimate utility parameters (such as the coefficient
+of relative risk aversion), models that naturally give moment conditions
+rather than a complete likelihood, which is where GMM comes into its
+own.</p>
+<p>Results: GMM provides a unified estimation framework that gathers
+OLS, IV, and 2SLS as special cases, letting researchers still make
+efficient estimates and specification tests when they are only willing
+to maintain a few moment conditions and dare not write down a complete
+distribution. It thereafter became the workhorse tool of structural
+estimation (especially dynamic models and industrial organization).</p>
+<p>Limitations: GMM’s good properties are asymptotic, and the efficient
+weight <span class="math inline">\hat S</span> of the two-step estimate
+carries noise in small samples, which can distort inference; when the
+moment conditions are weak (the Jacobian <span
+class="math inline">D</span> is near zero) it falls into weak
+identification, and the <span class="math inline">J</span> test may also
+reject because of discrepancies among the moment conditions rather than
+a genuine model error. These are the practical vigilances this chapter’s
+Section 4 and Section 7 stress repeatedly.</p>
+</div>
+<p>Hansen’s contribution pushes this chapter’s unified framework to its
+extreme: estimation need not start from a distribution, and you can get
+to work as long as you can write down credible moment conditions. Its
+defense strategy is also clear, concentrating the credibility on a few
+economically grounded moment conditions rather than on a possibly
+misspecified complete likelihood, which shares one lineage with the
+robust spirit of Section 3.6’s QMLE.</p>
+<h3 id="forman-2005">5.3 Forman (2005)</h3>
+<div class="case">
+<p>Paper: “The Corporate Digital Divide: Determinants of Internet
+Adoption,” Management Science 51(4):641-654. It is a representative work
+in information systems using discrete-choice MLE to study firm
+technology adoption, and it shares the same skeleton as Helix’s adoption
+model: writing a binary adoption decision as the probability that a
+latent benefit exceeds a threshold, estimated by maximum likelihood.</p>
+<p>Method: Forman models whether a firm adopts Internet technology as a
+binary discrete-choice problem, where adoption occurs if and only if the
+net benefit of adopting is positive, and uses discrete-choice maximum
+likelihood to estimate the dependence of the adoption probability on
+firm characteristics, existing IT investments, and organizational
+structure, which is exactly the binary-choice MLE of this chapter’s
+Section 2. The core economic question is what kinds of firms adopt the
+Internet earlier, that is, what factors shape the so-called corporate
+digital divide.</p>
+<p>Data: cross-sectional IT survey data at the establishment level for a
+large number of U.S. commercial establishments, covering firms of
+different sizes, geographic locations, and existing technology
+endowments across finance and services, observing whether they adopted
+Internet technology.</p>
+<p>Results: the adoption probability rises with firm size and external
+competitive pressure, and larger firms facing fiercer competition adopt
+earlier. An interesting finding is that employees’ geographic dispersion
+is complementary to Internet adoption, with more geographically
+dispersed firms more inclined to adopt, consistent with the logic that
+the Internet lowers internal coordination costs. Existing client/server
+network investments have two sides: on the one hand complementary to
+adoption, on the other hand proprietary, platform-locked legacy
+investments raise switching costs and instead slow adoption. These
+marginal effects are all read off from the coefficients of the
+binary-choice MLE, exactly the step from parameters to marginal effects
+discussed in this chapter’s Section 2.</p>
+<p>Limitations: the cross-sectional adoption probability model
+identifies correlation rather than causation, as adoption and firm
+characteristics may both be driven by unobserved organizational
+capability; binary choice only depicts whether adoption happens, not its
+depth or intensity; and the conclusions also depend on the specification
+of the shock distribution. To get closer to causation requires the
+designs of this series’ causal chapters (panel, quasi-experiment,
+instrumental variables) to reinforce it.</p>
+</div>
+<p>This paper’s significance for the chapter is putting MLE back into a
+real IS research question: a binary adoption decision, a
+random-utility-style threshold model, a maximum likelihood estimate,
+plus an honest statement of scope (it estimates the determinants of and
+correlations with adoption, not the causal effect of an intervention).
+It demonstrates the most common use of discrete-choice MLE in
+information systems empirical work, and also reminds us of its
+boundaries.</p>
+<p>The three together make the significance of anchoring clear: McFadden
+translates the economic model of discrete choice into a likelihood,
+Hansen frees estimation from distributional assumptions into moment
+conditions, and Forman applies this MLE machine to an adoption problem
+in information systems. They share this chapter’s core: think through
+the model and the quantity to be estimated first, then choose a correct
+objective function, and finally attach an honest, robust measure of
+uncertainty to the result.</p>
+<h2 id="a-full-walkthrough-on-helix-data">6 A Full Walkthrough on Helix
+Data</h2>
+<p>Now run the preceding tools through Helix from start to finish. The
+code below uses R 4.5.3 with the random seed fixed at 512, and every
+number cited in the text comes from the actual output of running this
+code.</p>
+<h3 id="the-data-generating-process">6.1 The Data-Generating
+Process</h3>
+<p>The design parameters are as follows: <span class="math inline">n =
+4000</span> firms, engagement <span class="math inline">x_i \sim
+\mathcal{N}(0,1)</span>. Adoption is generated by logit, <span
+class="math inline">\Pr(D_i = 1 \mid x_i) = \Lambda(a_0 + a_1
+x_i)</span>, with <span class="math inline">a_0 = -0.40</span> and <span
+class="math inline">a_1 = 1.10</span>. Usage is generated by a negative
+binomial, with a log-linear conditional mean <span
+class="math inline">\mathbb{E}[y_i \mid x_i] = \exp(b_0 + b_1
+x_i)</span>, with <span class="math inline">b_0 = 1.00</span> and <span
+class="math inline">b_1 = 0.50</span>, while the size parameter
+(dispersion) is taken to be 2.0, making the variance <span
+class="math inline">\mu + \mu^2/2</span> far larger than the mean and
+manufacturing overdispersion.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">512</span>); n <span class="ot">&lt;-</span> <span class="dv">4000</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>x  <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(n)                              <span class="co"># standardized engagement</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>D  <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(n, <span class="dv">1</span>, <span class="fu">plogis</span>(<span class="sc">-</span><span class="fl">0.40</span> <span class="sc">+</span> <span class="fl">1.10</span> <span class="sc">*</span> x))<span class="co"># adoption: logit</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>mu <span class="ot">&lt;-</span> <span class="fu">exp</span>(<span class="fl">1.00</span> <span class="sc">+</span> <span class="fl">0.50</span> <span class="sc">*</span> x)                  <span class="co"># log-linear conditional mean of usage</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>y  <span class="ot">&lt;-</span> <span class="fu">rnbinom</span>(n, <span class="at">size =</span> <span class="fl">2.0</span>, <span class="at">mu =</span> mu)       <span class="co"># usage: negative binomial (overdispersed)</span></span></code></pre></div>
+<p>The key design intent is to make <span class="math inline">y</span>
+overdispersed but with a correct conditional mean: this way Poisson will
+get the mean right (QMLE consistent) yet get the variance assumption
+wrong (information matrix equality broken). In the sample, <span
+class="math inline">y</span>’s variance divided by its mean is about
+4.0, far larger than the 1.0 that Poisson imposes. The adoption rate is
+about 42.75%. In the truth, logit’s AME is 0.216 and MEM is 0.264, and
+the true value of the usage slope is 0.50, and these numbers are the
+targets for all the estimates that follow.</p>
+<h3 id="the-bad-numbers-of-the-lpm">6.2 The Bad Numbers of the LPM</h3>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>lpm  <span class="ot">&lt;-</span> <span class="fu">lm</span>(D <span class="sc">~</span> x)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>phat <span class="ot">&lt;-</span> <span class="fu">fitted</span>(lpm)</span></code></pre></div>
+<p>The naive LPM gives a slope of 0.215 (SE 0.007), an intercept of
+0.427. The real problem is in the fitted values: the maximum is 1.213
+and the minimum is <span class="math inline">-0.478</span>, and 2.93% of
+firms are predicted to have an adoption probability outside <span
+class="math inline">[0,1]</span> (2.5% below zero, 0.4% above one). The
+probability printed as 121% from Section 1 is confirmed here. The LPM’s
+objective function (residual sum of squares) is mismatched to a binary
+outcome, and this pushes us toward the logit likelihood.</p>
+<h3
+id="logit-mle-newton-iteration-consistency-and-two-sets-of-standard-errors">6.3
+Logit MLE: Newton Iteration, Consistency, and Two Sets of Standard
+Errors</h3>
+<p>The logit log-likelihood is solved by Newton’s method. The
+hand-written iteration agrees with the solution from mature
+software:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="fu">glm</span>(D <span class="sc">~</span> x, <span class="at">family =</span> <span class="fu">binomial</span>())        <span class="co"># logit MLE</span></span></code></pre></div>
+<p><span class="math inline">\hat\beta = (-0.367,\ 1.097)</span>,
+hugging the truth <span class="math inline">(-0.40,\ 1.10)</span>; the
+hand-written Newton iteration converges in 6 steps, differing from
+<code>glm</code> at the order of <span
+class="math inline">10^{-13}</span>. The AME read off from the
+parameters is 0.217, matching the true value 0.216. Because the logit
+likelihood is correctly specified here, the information matrix equality
+holds, and the two sets of standard errors should agree: the slope’s
+Fisher-information standard error is 0.044, and the Huber-White sandwich
+standard error is also 0.044, agreeing as expected. This is Section 3.5
+made manifest: with correct specification, the sandwich collapses into a
+single slice of bread, and the robust and non-robust standard errors are
+no different.</p>
+<p>Consistency can be demonstrated directly. Fix the DGP and let the
+sample size grow from 100 to 102400, repeatedly sampling at each sample
+size to see the distribution of the slope estimate:</p>
+<div class="table-scroll">
+<table style="width:100%;">
+<colgroup>
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 14%" />
+</colgroup>
+<thead>
+<tr>
+<th><span class="math inline">n</span></th>
+<th>100</th>
+<th>400</th>
+<th>1600</th>
+<th>6400</th>
+<th>25600</th>
+<th>102400</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>mean of <span class="math inline">\hat\beta_1</span></td>
+<td>1.136</td>
+<td>1.109</td>
+<td>1.097</td>
+<td>1.101</td>
+<td>1.101</td>
+<td>1.100</td>
+</tr>
+<tr>
+<td>SD of <span class="math inline">\hat\beta_1</span></td>
+<td>0.279</td>
+<td>0.147</td>
+<td>0.071</td>
+<td>0.035</td>
+<td>0.017</td>
+<td>0.009</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The mean converges steadily to the truth 1.10, and the standard
+deviation roughly halves each time the sample size quadruples (times 4),
+which is exactly the <span class="math inline">\sqrt{n}</span>
+convergence rate: the variance shrinks as <span
+class="math inline">1/n</span> and the standard deviation shrinks as
+<span class="math inline">1/\sqrt n</span>. The consistency that
+Jensen’s inequality promised in Section 3.3 is delivered in the
+numbers.</p>
+<figure>
+<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' viewBox='0 0 756.00 309.60' role="img" aria-label="Left panel: the logit average log-likelihood as a function of b_1 is a smooth, lone peak attaining its maximum near the truth, with the summit being the MLE, which is the extremum in the extremum estimator. Right panel: slice the GMM objective function along b_1, and when engagement variation is ample (navy) it is a steep valley with strong identification, while when the variation is squeezed to a minimum (gold) it is nearly flattened out with weak identification, a flat objective function unable to tell which \theta is better." style="max-width:100%;height:auto;display:block;margin:0 auto">
+<g class='svglite'>
+<defs>
+  <style type='text/css'><![CDATA[
+    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {
+      fill: none;
+      stroke: #000000;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-miterlimit: 10.00;
+    }
+    .svglite text {
+      white-space: pre;
+    }
+    .svglite g.glyphgroup path {
+      fill: inherit;
+      stroke: none;
+    }
+  ]]></style>
+</defs>
+<rect width='100%' height='100%' style='stroke: none; fill: #FAFAF9;'/>
+<defs>
+  <clipPath id='g1_cpMC4wMHw3NTYuMDB8MC4wMHwzMDkuNjA='>
+    <rect x='0.00' y='0.00' width='756.00' height='309.60' />
+  </clipPath>
+</defs>
+<g clip-path='url(#g1_cpMC4wMHw3NTYuMDB8MC4wMHwzMDkuNjA=)'>
+<rect x='0.00' y='0.000000000000057' width='756.00' height='309.60' style='stroke-width: 1.07; stroke: #FFFFFF; fill: #FFFFFF;' />
+</g>
+<defs>
+  <clipPath id='g1_cpNTIuNzl8NzQ0LjU0fDg1LjkxfDI2Ny4yMw=='>
+    <rect x='52.79' y='85.91' width='691.76' height='181.31' />
+  </clipPath>
+</defs>
+<g clip-path='url(#g1_cpNTIuNzl8NzQ0LjU0fDg1LjkxfDI2Ny4yMw==)'>
+</g>
+<g clip-path='url(#g1_cpMC4wMHw3NTYuMDB8MC4wMHwzMDkuNjA=)'>
+</g>
+<defs>
+  <clipPath id='g1_cpNS40OHwzNzkuNTl8NS40OHwzMDQuMTI='>
+    <rect x='5.48' y='5.48' width='374.11' height='298.64' />
+  </clipPath>
+</defs>
+<g clip-path='url(#g1_cpNS40OHwzNzkuNTl8NS40OHwzMDQuMTI=)'>
+<rect x='5.48' y='5.48' width='374.11' height='298.64' style='stroke-width: 1.16; stroke: none; fill: #FAFAF9;' />
+</g>
+<g clip-path='url(#g1_cpMC4wMHw3NTYuMDB8MC4wMHwzMDkuNjA=)'>
+</g>
+<defs>
+  <clipPath id='g1_cpMzc5LjU5fDc1MC41Mnw1LjQ4fDMwNC4xMg=='>
+    <rect x='379.59' y='5.48' width='370.93' height='298.64' />
+  </clipPath>
+</defs>
+<g clip-path='url(#g1_cpMzc5LjU5fDc1MC41Mnw1LjQ4fDMwNC4xMg==)'>
+<rect x='379.59' y='5.48' width='370.93' height='298.64' style='stroke-width: 1.16; stroke: none; fill: #FAFAF9;' />
+</g>
+<g clip-path='url(#g1_cpMC4wMHw3NTYuMDB8MC4wMHwzMDkuNjA=)'>
+</g>
+<defs>
+  <clipPath id='g1_cpNTIuNzl8MzczLjYyfDg1LjkxfDI2Ny4yMw=='>
+    <rect x='52.79' y='85.91' width='320.83' height='181.31' />
+  </clipPath>
+</defs>
+<g clip-path='url(#g1_cpNTIuNzl8MzczLjYyfDg1LjkxfDI2Ny4yMw==)'>
+<rect x='52.79' y='85.91' width='320.83' height='181.31' style='stroke-width: 1.16; stroke: none; fill: #FAFAF9;' />
+<polyline points='52.79,220.14 373.62,220.14 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<polyline points='52.79,170.74 373.62,170.74 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<polyline points='52.79,121.33 373.62,121.33 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<polyline points='115.98,267.23 115.98,85.91 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<polyline points='197.00,267.23 197.00,85.91 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<polyline points='278.02,267.23 278.02,85.91 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<polyline points='359.03,267.23 359.03,85.91 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<polyline points='67.37,258.98 69.80,252.96 72.23,247.05 74.66,241.28 77.09,235.63 79.52,230.11 81.95,224.72 84.38,219.44 86.81,214.30 89.24,209.27 91.67,204.37 94.11,199.59 96.54,194.93 98.97,190.39 101.40,185.97 103.83,181.66 106.26,177.47 108.69,173.40 111.12,169.45 113.55,165.61 115.98,161.88 118.41,158.27 120.84,154.76 123.27,151.37 125.70,148.09 128.13,144.91 130.56,141.85 132.99,138.88 135.42,136.03 137.85,133.28 140.29,130.63 142.72,128.09 145.15,125.64 147.58,123.30 150.01,121.05 152.44,118.91 154.87,116.86 157.30,114.90 159.73,113.05 162.16,111.28 164.59,109.61 167.02,108.03 169.45,106.54 171.88,105.14 174.31,103.83 176.74,102.61 179.17,101.48 181.60,100.43 184.03,99.46 186.47,98.58 188.90,97.79 191.33,97.07 193.76,96.44 196.19,95.88 198.62,95.41 201.05,95.01 203.48,94.69 205.91,94.44 208.34,94.27 210.77,94.18 213.20,94.16 215.63,94.21 218.06,94.33 220.49,94.52 222.92,94.79 225.35,95.12 227.78,95.52 230.21,95.99 232.65,96.52 235.08,97.12 237.51,97.78 239.94,98.51 242.37,99.30 244.80,100.16 247.23,101.08 249.66,102.05 252.09,103.09 254.52,104.18 256.95,105.34 259.38,106.55 261.81,107.82 264.24,109.15 266.67,110.53 269.10,111.97 271.53,113.46 273.96,115.00 276.39,116.60 278.83,118.25 281.26,119.95 283.69,121.71 286.12,123.51 288.55,125.36 290.98,127.27 293.41,129.22 295.84,131.21 298.27,133.26 300.70,135.35 303.13,137.49 305.56,139.67 307.99,141.90 310.42,144.18 312.85,146.49 315.28,148.85 317.71,151.26 320.14,153.70 322.58,156.19 325.01,158.72 327.44,161.29 329.87,163.90 332.30,166.55 334.73,169.23 337.16,171.96 339.59,174.73 342.02,177.53 344.45,180.37 346.88,183.24 349.31,186.16 351.74,189.11 354.17,192.09 356.60,195.11 359.03,198.17 ' style='stroke-width: 2.13; stroke: #1A365D; stroke-linecap: butt;' />
+<line x1='213.20' y1='267.23' x2='213.20' y2='85.91' style='stroke-width: 1.28; stroke: #C53030; stroke-dasharray: 6.83,6.83; stroke-linecap: butt;' />
+<circle cx='213.20' cy='94.16' r='3.16' style='stroke-width: 0.77; stroke: #2B6CB0; fill: #2B6CB0;' />
+<text x='216.24' y='212.93' style='font-size: 9.39px;fill: #C53030; font-family: "Arial";' textLength='60.78px' lengthAdjust='spacingAndGlyphs'>truth b1 = 1.10</text>
+<text x='213.20' y='104.89' style='font-size: 9.39px;fill: #2B6CB0; font-family: "Arial";' textLength='66.47px' lengthAdjust='spacingAndGlyphs'>  argmax = MLE</text>
+</g>
+<g clip-path='url(#g1_cpMC4wMHw3NTYuMDB8MC4wMHwzMDkuNjA=)'>
+<text x='47.41' y='223.58' text-anchor='end' style='font-size: 9.60px;fill: #2D3748; font-family: "Arial";' textLength='21.84px' lengthAdjust='spacingAndGlyphs'>-0.63</text>
+<text x='47.41' y='174.17' text-anchor='end' style='font-size: 9.60px;fill: #2D3748; font-family: "Arial";' textLength='21.84px' lengthAdjust='spacingAndGlyphs'>-0.61</text>
+<text x='47.41' y='124.76' text-anchor='end' style='font-size: 9.60px;fill: #2D3748; font-family: "Arial";' textLength='21.84px' lengthAdjust='spacingAndGlyphs'>-0.59</text>
+<text x='115.98' y='279.47' text-anchor='middle' style='font-size: 9.60px;fill: #2D3748; font-family: "Arial";' textLength='13.33px' lengthAdjust='spacingAndGlyphs'>0.5</text>
+<text x='197.00' y='279.47' text-anchor='middle' style='font-size: 9.60px;fill: #2D3748; font-family: "Arial";' textLength='13.33px' lengthAdjust='spacingAndGlyphs'>1.0</text>
+<text x='278.02' y='279.47' text-anchor='middle' style='font-size: 9.60px;fill: #2D3748; font-family: "Arial";' textLength='13.33px' lengthAdjust='spacingAndGlyphs'>1.5</text>
+<text x='359.03' y='279.47' text-anchor='middle' style='font-size: 9.60px;fill: #2D3748; font-family: "Arial";' textLength='13.33px' lengthAdjust='spacingAndGlyphs'>2.0</text>
+<text x='207.53' y='293.08' style='font-size: 12.00px;fill: #2D3748; font-family: "Arial";' textLength='6.67px' lengthAdjust='spacingAndGlyphs'>b</text>
+<text x='214.21' y='295.62' style='font-size: 8.40px;fill: #2D3748; font-family: "Arial";' textLength='4.67px' lengthAdjust='spacingAndGlyphs'>1</text>
+<text transform='translate(20.05,176.57) rotate(-90)' text-anchor='middle' style='font-size: 12.00px;fill: #2D3748; font-family: "Arial";' textLength='116.75px' lengthAdjust='spacingAndGlyphs'>average log-likelihood</text>
+<text x='52.79' y='36.64' style='font-size: 10.00px;fill: #718096; font-family: "Arial";' textLength='263.52px' lengthAdjust='spacingAndGlyphs'>logit average log-likelihood peaks at the truth (identification)</text>
+<text x='52.79' y='20.77' style='font-size: 13.00px; font-weight: bold;fill: #1A365D; font-family: "Arial";' textLength='281.09px' lengthAdjust='spacingAndGlyphs'>An extremum estimator maximizes a criterion</text>
+</g>
+<defs>
+  <clipPath id='g1_cpNDIzLjcxfDc0NC41NHw4NS45MXwyNjcuMjM='>
+    <rect x='423.71' y='85.91' width='320.83' height='181.31' />
+  </clipPath>
+</defs>
+<g clip-path='url(#g1_cpNDIzLjcxfDc0NC41NHw4NS45MXwyNjcuMjM=)'>
+<rect x='423.71' y='85.91' width='320.83' height='181.31' style='stroke-width: 1.16; stroke: none; fill: #FAFAF9;' />
+<polyline points='423.71,258.99 744.54,258.99 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<polyline points='423.71,217.78 744.54,217.78 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<polyline points='423.71,176.57 744.54,176.57 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<polyline points='423.71,135.36 744.54,135.36 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<polyline points='423.71,94.16 744.54,94.16 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<polyline points='492.98,267.23 492.98,85.91 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<polyline points='584.13,267.23 584.13,85.91 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<polyline points='675.27,267.23 675.27,85.91 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<polyline points='438.30,243.68 440.73,244.20 443.16,244.70 445.59,245.19 448.02,245.66 450.45,246.12 452.88,246.57 455.31,247.00 457.74,247.43 460.17,247.84 462.60,248.25 465.03,248.64 467.46,249.02 469.89,249.40 472.32,249.76 474.75,250.12 477.18,250.47 479.62,250.81 482.05,251.15 484.48,251.47 486.91,251.79 489.34,252.11 491.77,252.41 494.20,252.71 496.63,253.01 499.06,253.29 501.49,253.58 503.92,253.85 506.35,254.12 508.78,254.39 511.21,254.64 513.64,254.90 516.07,255.14 518.50,255.38 520.93,255.62 523.36,255.85 525.80,256.07 528.23,256.29 530.66,256.50 533.09,256.70 535.52,256.90 537.95,257.09 540.38,257.28 542.81,257.46 545.24,257.63 547.67,257.79 550.10,257.94 552.53,258.09 554.96,258.22 557.39,258.35 559.82,258.47 562.25,258.58 564.68,258.67 567.11,258.76 569.54,258.83 571.98,258.89 574.41,258.94 576.84,258.97 579.27,258.98 581.70,258.98 584.13,258.97 586.56,258.93 588.99,258.88 591.42,258.80 593.85,258.71 596.28,258.59 598.71,258.44 601.14,258.27 603.57,258.08 606.00,257.85 608.43,257.59 610.86,257.30 613.29,256.98 615.72,256.61 618.16,256.21 620.59,255.77 623.02,255.28 625.45,254.74 627.88,254.15 630.31,253.51 632.74,252.81 635.17,252.06 637.60,251.23 640.03,250.34 642.46,249.38 644.89,248.34 647.32,247.22 649.75,246.01 652.18,244.71 654.61,243.31 657.04,241.81 659.47,240.19 661.90,238.46 664.34,236.60 666.77,234.61 669.20,232.48 671.63,230.20 674.06,227.76 676.49,225.16 678.92,222.37 681.35,219.39 683.78,216.21 686.21,212.81 688.64,209.18 691.07,205.31 693.50,201.18 695.93,196.78 698.36,192.08 700.79,187.08 703.22,181.74 705.65,176.05 708.09,169.99 710.52,163.53 712.95,156.65 715.38,149.31 717.81,141.50 720.24,133.19 722.67,124.33 725.10,114.90 727.53,104.85 729.96,94.16 ' style='stroke-width: 2.13; stroke: #1A365D; stroke-linecap: butt;' />
+<polyline points='438.30,140.76 440.73,142.06 443.16,143.32 445.59,144.56 448.02,145.76 450.45,146.93 452.88,148.07 455.31,149.19 457.74,150.27 460.17,151.32 462.60,152.35 465.03,153.34 467.46,154.31 469.89,155.25 472.32,156.16 474.75,157.04 477.18,157.89 479.62,158.72 482.05,159.51 484.48,160.28 486.91,161.02 489.34,161.73 491.77,162.42 494.20,163.08 496.63,163.71 499.06,164.31 501.49,164.89 503.92,165.44 506.35,165.96 508.78,166.45 511.21,166.92 513.64,167.36 516.07,167.78 518.50,168.17 520.93,168.53 523.36,168.87 525.80,169.17 528.23,169.46 530.66,169.71 533.09,169.94 535.52,170.15 537.95,170.32 540.38,170.48 542.81,170.60 545.24,170.70 547.67,170.77 550.10,170.82 552.53,170.84 554.96,170.83 557.39,170.80 559.82,170.74 562.25,170.65 564.68,170.54 567.11,170.40 569.54,170.24 571.98,170.04 574.41,169.83 576.84,169.58 579.27,169.31 581.70,169.01 584.13,168.69 586.56,168.33 588.99,167.95 591.42,167.55 593.85,167.11 596.28,166.65 598.71,166.16 601.14,165.65 603.57,165.11 606.00,164.53 608.43,163.93 610.86,163.31 613.29,162.65 615.72,161.97 618.16,161.26 620.59,160.52 623.02,159.75 625.45,158.95 627.88,158.12 630.31,157.26 632.74,156.38 635.17,155.46 637.60,154.52 640.03,153.54 642.46,152.53 644.89,151.50 647.32,150.43 649.75,149.33 652.18,148.20 654.61,147.04 657.04,145.85 659.47,144.63 661.90,143.38 664.34,142.09 666.77,140.77 669.20,139.42 671.63,138.03 674.06,136.61 676.49,135.16 678.92,133.68 681.35,132.16 683.78,130.60 686.21,129.01 688.64,127.39 691.07,125.73 693.50,124.04 695.93,122.31 698.36,120.54 700.79,118.74 703.22,116.90 705.65,115.03 708.09,113.11 710.52,111.16 712.95,109.17 715.38,107.15 717.81,105.08 720.24,102.98 722.67,100.83 725.10,98.65 727.53,96.42 729.96,94.16 ' style='stroke-width: 2.13; stroke: #B7791F; stroke-linecap: butt;' />
+<line x1='584.13' y1='267.23' x2='584.13' y2='85.91' style='stroke-width: 1.28; stroke: #C53030; stroke-dasharray: 6.83,6.83; stroke-linecap: butt;' />
+<text x='585.95' y='258.95' style='font-size: 9.10px;fill: #C53030; font-family: "Arial";' textLength='18.22px' lengthAdjust='spacingAndGlyphs'>truth</text>
+</g>
+<g clip-path='url(#g1_cpMC4wMHw3NTYuMDB8MC4wMHwzMDkuNjA=)'>
+<text x='418.33' y='262.42' text-anchor='end' style='font-size: 9.60px;fill: #2D3748; font-family: "Arial";' textLength='18.66px' lengthAdjust='spacingAndGlyphs'>0.00</text>
+<text x='418.33' y='221.21' text-anchor='end' style='font-size: 9.60px;fill: #2D3748; font-family: "Arial";' textLength='18.66px' lengthAdjust='spacingAndGlyphs'>0.25</text>
+<text x='418.33' y='180.01' text-anchor='end' style='font-size: 9.60px;fill: #2D3748; font-family: "Arial";' textLength='18.66px' lengthAdjust='spacingAndGlyphs'>0.50</text>
+<text x='418.33' y='138.80' text-anchor='end' style='font-size: 9.60px;fill: #2D3748; font-family: "Arial";' textLength='18.66px' lengthAdjust='spacingAndGlyphs'>0.75</text>
+<text x='418.33' y='97.59' text-anchor='end' style='font-size: 9.60px;fill: #2D3748; font-family: "Arial";' textLength='18.66px' lengthAdjust='spacingAndGlyphs'>1.00</text>
+<text x='492.98' y='279.47' text-anchor='middle' style='font-size: 9.60px;fill: #2D3748; font-family: "Arial";' textLength='13.33px' lengthAdjust='spacingAndGlyphs'>0.0</text>
+<text x='584.13' y='279.47' text-anchor='middle' style='font-size: 9.60px;fill: #2D3748; font-family: "Arial";' textLength='13.33px' lengthAdjust='spacingAndGlyphs'>0.5</text>
+<text x='675.27' y='279.47' text-anchor='middle' style='font-size: 9.60px;fill: #2D3748; font-family: "Arial";' textLength='13.33px' lengthAdjust='spacingAndGlyphs'>1.0</text>
+<text x='578.46' y='293.08' style='font-size: 12.00px;fill: #2D3748; font-family: "Arial";' textLength='6.67px' lengthAdjust='spacingAndGlyphs'>b</text>
+<text x='585.13' y='295.62' style='font-size: 8.40px;fill: #2D3748; font-family: "Arial";' textLength='4.67px' lengthAdjust='spacingAndGlyphs'>1</text>
+<text transform='translate(394.17,176.57) rotate(-90)' text-anchor='middle' style='font-size: 12.00px;fill: #2D3748; font-family: "Arial";' textLength='150.05px' lengthAdjust='spacingAndGlyphs'>GMM objective (normalized)</text>
+<line x1='444.06' y1='59.34' x2='457.89' y2='59.34' style='stroke-width: 2.13; stroke: #1A365D; stroke-linecap: butt;' />
+<line x1='576.70' y1='59.34' x2='590.53' y2='59.34' style='stroke-width: 2.13; stroke: #B7791F; stroke-linecap: butt;' />
+<text x='465.59' y='62.74' style='font-size: 9.50px;fill: #2D3748; font-family: "Arial";' textLength='103.41px' lengthAdjust='spacingAndGlyphs'>strong (regressor varies)</text>
+<text x='598.23' y='62.74' style='font-size: 9.50px;fill: #2D3748; font-family: "Arial";' textLength='127.69px' lengthAdjust='spacingAndGlyphs'>weak (regressor barely varies)</text>
+<text x='423.71' y='36.64' style='font-size: 10.00px;fill: #718096; font-family: "Arial";' textLength='216.30px' lengthAdjust='spacingAndGlyphs'>a flat objective cannot tell one theta from another</text>
+<text x='423.71' y='20.77' style='font-size: 13.00px; font-weight: bold;fill: #1A365D; font-family: "Arial";' textLength='305.17px' lengthAdjust='spacingAndGlyphs'>Identification strength = curvature of the criterion</text>
+</g>
+</g>
+</svg>
+<figcaption aria-hidden="true">Left panel: the logit average
+log-likelihood as a function of <span class="math inline">b_1</span> is
+a smooth, lone peak attaining its maximum near the truth, with the
+summit being the MLE, which is the extremum in the extremum estimator.
+Right panel: slice the GMM objective function along <span
+class="math inline">b_1</span>, and when engagement variation is ample
+(navy) it is a steep valley with strong identification, while when the
+variation is squeezed to a minimum (gold) it is nearly flattened out
+with weak identification, a flat objective function unable to tell which
+<span class="math inline">\theta</span> is better.</figcaption>
+</figure>
+<h3
+id="poisson-qmle-mean-right-distribution-wrong-the-sandwich-to-the-rescue">6.4
+Poisson QMLE: Mean Right, Distribution Wrong, the Sandwich to the
+Rescue</h3>
+<p>Now it is usage’s turn. The data scientist, taking the easy route,
+fits a Poisson likelihood to the overdispersed <span
+class="math inline">y</span>:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>pm <span class="ot">&lt;-</span> <span class="fu">glm</span>(y <span class="sc">~</span> x, <span class="at">family =</span> <span class="fu">poisson</span>())        <span class="co"># Poisson QMLE</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>se_model <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(<span class="fu">diag</span>(<span class="fu">vcov</span>(pm)))            <span class="co"># Fisher-information standard errors</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>se_sand  <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(<span class="fu">diag</span>(sandwich<span class="sc">::</span><span class="fu">sandwich</span>(pm)))<span class="co"># Huber-White sandwich</span></span></code></pre></div>
+<p>The point estimate is good: <span class="math inline">\hat b =
+(1.024,\ 0.498)</span>, with the slope hugging the truth 0.50. This is
+the QMLE consistency of Section 3.6, where Poisson’s conditional mean
+<span class="math inline">\exp(x&#39;\beta)</span> is correctly
+specified, the score has expectation zero at the truth, and the
+consistency argument goes through unimpeded, even with the
+distributional assumption wrong.</p>
+<p>The bad news is in the standard errors. Poisson rigidly assumes the
+variance equals the mean, while the data’s Pearson dispersion is 2.63
+(should be 1 under Poisson), so the information matrix equality breaks.
+The slope’s Fisher-information standard error is 0.0090, and the
+sandwich standard error is 0.0182, the latter 2.0 times the former.
+Which is right? Use simulation as the referee: resample this DGP 2000
+times and look at <span class="math inline">\hat b_1</span>’s true
+sampling standard deviation, which is 0.0165. The sandwich’s average of
+0.0167 is almost dead on, while the Fisher-information’s average of
+0.0090 is only half the truth. The cost shows up directly in coverage: a
+nominal 95% confidence interval, using the Fisher-information standard
+error, actually covers the truth only 71.5% of the time, while using the
+sandwich it returns to 95.5%. Same point estimate, and trusting the
+wrong standard error turns an interval that should be 95% credible into
+one that is 71.5%.</p>
+<figure>
+<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' viewBox='0 0 684.00 360.00' role="img" aria-label="The Monte-Carlo sampling distribution of the Poisson-QMLE slope \hat b_1 (grey histogram, 2000 resamples), overlaid with the normal curves implied by each of the two sets of standard errors. The navy sandwich normal hugs the true sampling distribution, while the gold Fisher-information normal is far narrower, systematically underestimating the uncertainty by half, which is the geometric source of the nominal 95% interval actually covering only 71.5%." style="max-width:100%;height:auto;display:block;margin:0 auto">
+<g class='svglite'>
+<defs>
+  <style type='text/css'><![CDATA[
+    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {
+      fill: none;
+      stroke: #000000;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-miterlimit: 10.00;
+    }
+    .svglite text {
+      white-space: pre;
+    }
+    .svglite g.glyphgroup path {
+      fill: inherit;
+      stroke: none;
+    }
+  ]]></style>
+</defs>
+<rect width='100%' height='100%' style='stroke: none; fill: #FAFAF9;'/>
+<defs>
+  <clipPath id='g2_cpMC4wMHw2ODQuMDB8MC4wMHwzNjAuMDA='>
+    <rect x='0.00' y='0.00' width='684.00' height='360.00' />
+  </clipPath>
+</defs>
+<g clip-path='url(#g2_cpMC4wMHw2ODQuMDB8MC4wMHwzNjAuMDA=)'>
+<rect x='0.00' y='0.00' width='684.00' height='360.00' style='stroke-width: 1.16; stroke: none; fill: #FAFAF9;' />
+</g>
+<defs>
+  <clipPath id='g2_cpMzYuMTJ8Njc4LjAyfDgwLjQ0fDMxNy41NQ=='>
+    <rect x='36.12' y='80.44' width='641.90' height='237.12' />
+  </clipPath>
+</defs>
+<g clip-path='url(#g2_cpMzYuMTJ8Njc4LjAyfDgwLjQ0fDMxNy41NQ==)'>
+<rect x='36.12' y='80.44' width='641.90' height='237.12' style='stroke-width: 1.16; stroke: none; fill: #FAFAF9;' />
+<polyline points='36.12,306.77 678.02,306.77 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<polyline points='36.12,258.06 678.02,258.06 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<polyline points='36.12,209.36 678.02,209.36 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<polyline points='36.12,160.65 678.02,160.65 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<polyline points='36.12,111.94 678.02,111.94 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<polyline points='183.82,317.55 183.82,80.44 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<polyline points='357.07,317.55 357.07,80.44 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<polyline points='530.32,317.55 530.32,80.44 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<rect x='65.30' y='306.77' width='12.97' height='0.00' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='78.26' y='306.77' width='12.97' height='0.00' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='91.23' y='306.77' width='12.97' height='0.00' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='104.20' y='305.96' width='12.97' height='0.81' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='117.17' y='306.77' width='12.97' height='0.00' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='130.14' y='306.77' width='12.97' height='0.00' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='143.10' y='306.77' width='12.97' height='0.00' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='156.07' y='303.52' width='12.97' height='3.25' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='169.04' y='299.45' width='12.97' height='7.32' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='182.01' y='300.27' width='12.97' height='6.51' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='194.97' y='296.20' width='12.97' height='10.57' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='207.94' y='292.13' width='12.97' height='14.64' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='220.91' y='284.00' width='12.97' height='22.78' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='233.88' y='277.49' width='12.97' height='29.28' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='246.85' y='260.41' width='12.97' height='46.37' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='259.81' y='249.02' width='12.97' height='57.75' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='272.78' y='245.77' width='12.97' height='61.01' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='285.75' y='211.60' width='12.97' height='95.17' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='298.72' y='223.80' width='12.97' height='82.97' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='311.68' y='189.64' width='12.97' height='117.13' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='324.65' y='215.67' width='12.97' height='91.10' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='337.62' y='188.01' width='12.97' height='118.76' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='350.59' y='183.95' width='12.97' height='122.83' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='363.55' y='204.28' width='12.97' height='102.49' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='376.52' y='194.52' width='12.97' height='112.25' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='389.49' y='197.77' width='12.97' height='109.00' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='402.46' y='214.04' width='12.97' height='92.73' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='415.43' y='244.14' width='12.97' height='62.63' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='428.39' y='241.70' width='12.97' height='65.07' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='441.36' y='258.78' width='12.97' height='47.99' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='454.33' y='263.66' width='12.97' height='43.11' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='467.30' y='270.17' width='12.97' height='36.60' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='480.26' y='278.30' width='12.97' height='28.47' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='493.23' y='294.57' width='12.97' height='12.20' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='506.20' y='301.08' width='12.97' height='5.69' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='519.17' y='299.45' width='12.97' height='7.32' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='532.14' y='303.52' width='12.97' height='3.25' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='545.10' y='302.71' width='12.97' height='4.07' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='558.07' y='302.71' width='12.97' height='4.07' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='571.04' y='305.96' width='12.97' height='0.81' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='584.01' y='306.77' width='12.97' height='0.00' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='596.97' y='306.77' width='12.97' height='0.00' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='609.94' y='305.96' width='12.97' height='0.81' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='622.91' y='306.77' width='12.97' height='0.00' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='635.88' y='306.77' width='12.97' height='0.00' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<polyline points='71.78,306.77 73.21,306.77 74.64,306.77 76.07,306.77 77.50,306.77 78.93,306.77 80.36,306.77 81.79,306.77 83.22,306.77 84.65,306.77 86.08,306.77 87.51,306.77 88.94,306.77 90.37,306.77 91.80,306.77 93.23,306.77 94.66,306.77 96.09,306.77 97.52,306.77 98.95,306.77 100.38,306.77 101.81,306.77 103.24,306.77 104.67,306.77 106.10,306.77 107.53,306.77 108.96,306.77 110.39,306.77 111.82,306.77 113.25,306.77 114.68,306.77 116.11,306.77 117.54,306.77 118.97,306.77 120.40,306.77 121.83,306.77 123.26,306.77 124.69,306.77 126.12,306.77 127.55,306.77 128.98,306.77 130.41,306.77 131.84,306.77 133.27,306.77 134.70,306.77 136.13,306.77 137.56,306.77 138.99,306.77 140.42,306.77 141.85,306.77 143.28,306.77 144.71,306.77 146.14,306.77 147.57,306.77 149.00,306.77 150.43,306.77 151.86,306.77 153.29,306.77 154.72,306.77 156.15,306.77 157.58,306.77 159.01,306.77 160.44,306.77 161.87,306.77 163.30,306.77 164.73,306.77 166.16,306.77 167.59,306.77 169.02,306.77 170.45,306.77 171.88,306.77 173.31,306.77 174.74,306.77 176.17,306.77 177.60,306.77 179.03,306.77 180.46,306.77 181.89,306.76 183.32,306.76 184.75,306.76 186.18,306.76 187.61,306.76 189.04,306.75 190.47,306.75 191.90,306.74 193.33,306.74 194.76,306.73 196.19,306.73 197.62,306.72 199.05,306.71 200.48,306.70 201.91,306.69 203.34,306.68 204.77,306.67 206.20,306.65 207.63,306.63 209.06,306.61 210.49,306.59 211.92,306.56 213.35,306.53 214.78,306.49 216.21,306.45 217.64,306.41 219.07,306.36 220.50,306.30 221.93,306.23 223.36,306.16 224.79,306.08 226.22,305.99 227.65,305.89 229.08,305.77 230.51,305.65 231.94,305.51 233.37,305.35 234.80,305.18 236.23,304.98 237.66,304.77 239.09,304.53 240.52,304.27 241.95,303.98 243.38,303.67 244.81,303.32 246.24,302.94 247.67,302.52 249.10,302.07 250.53,301.57 251.96,301.03 253.39,300.43 254.82,299.79 256.25,299.09 257.68,298.34 259.11,297.52 260.54,296.63 261.97,295.68 263.40,294.65 264.83,293.55 266.26,292.36 267.69,291.09 269.12,289.73 270.55,288.28 271.98,286.73 273.41,285.08 274.84,283.32 276.27,281.45 277.70,279.48 279.13,277.39 280.56,275.18 281.99,272.85 283.42,270.40 284.85,267.82 286.28,265.12 287.71,262.29 289.14,259.33 290.57,256.24 292.00,253.02 293.43,249.68 294.86,246.20 296.29,242.61 297.72,238.89 299.15,235.05 300.58,231.09 302.01,227.02 303.44,222.85 304.87,218.58 306.30,214.22 307.73,209.76 309.16,205.24 310.59,200.64 312.02,195.98 313.46,191.28 314.89,186.53 316.32,181.76 317.75,176.97 319.18,172.18 320.61,167.41 322.04,162.65 323.47,157.93 324.90,153.27 326.33,148.67 327.76,144.15 329.19,139.73 330.62,135.41 332.05,131.22 333.48,127.17 334.91,123.27 336.34,119.54 337.77,115.99 339.20,112.64 340.63,109.48 342.06,106.55 343.49,103.84 344.92,101.38 346.35,99.16 347.78,97.20 349.21,95.51 350.64,94.09 352.07,92.94 353.50,92.08 354.93,91.50 356.36,91.21 357.79,91.21 359.22,91.50 360.65,92.08 362.08,92.94 363.51,94.09 364.94,95.51 366.37,97.20 367.80,99.16 369.23,101.38 370.66,103.84 372.09,106.55 373.52,109.48 374.95,112.64 376.38,115.99 377.81,119.54 379.24,123.27 380.67,127.17 382.10,131.22 383.53,135.41 384.96,139.73 386.39,144.15 387.82,148.67 389.25,153.27 390.68,157.93 392.11,162.65 393.54,167.41 394.97,172.18 396.40,176.97 397.83,181.76 399.26,186.53 400.69,191.28 402.12,195.98 403.55,200.64 404.98,205.24 406.41,209.76 407.84,214.22 409.27,218.58 410.70,222.85 412.13,227.02 413.56,231.09 414.99,235.05 416.42,238.89 417.85,242.61 419.28,246.20 420.71,249.68 422.14,253.02 423.57,256.24 425.00,259.33 426.43,262.29 427.86,265.12 429.29,267.82 430.72,270.40 432.15,272.85 433.58,275.18 435.01,277.39 436.44,279.48 437.87,281.45 439.30,283.32 440.73,285.08 442.16,286.73 443.59,288.28 445.02,289.73 446.45,291.09 447.88,292.36 449.31,293.55 450.74,294.65 452.17,295.68 453.60,296.63 455.03,297.52 456.46,298.34 457.89,299.09 459.32,299.79 460.75,300.43 462.18,301.03 463.61,301.57 465.04,302.07 466.47,302.52 467.90,302.94 469.33,303.32 470.76,303.67 472.19,303.98 473.62,304.27 475.05,304.53 476.48,304.77 477.91,304.98 479.34,305.18 480.77,305.35 482.20,305.51 483.63,305.65 485.06,305.77 486.49,305.89 487.92,305.99 489.35,306.08 490.78,306.16 492.21,306.23 493.64,306.30 495.07,306.36 496.50,306.41 497.93,306.45 499.36,306.49 500.79,306.53 502.22,306.56 503.65,306.59 505.08,306.61 506.51,306.63 507.94,306.65 509.37,306.67 510.80,306.68 512.23,306.69 513.66,306.70 515.09,306.71 516.52,306.72 517.95,306.73 519.38,306.73 520.81,306.74 522.24,306.74 523.67,306.75 525.10,306.75 526.53,306.76 527.96,306.76 529.39,306.76 530.82,306.76 532.25,306.76 533.68,306.77 535.11,306.77 536.54,306.77 537.97,306.77 539.40,306.77 540.83,306.77 542.26,306.77 543.69,306.77 545.12,306.77 546.55,306.77 547.98,306.77 549.41,306.77 550.84,306.77 552.27,306.77 553.70,306.77 555.13,306.77 556.56,306.77 557.99,306.77 559.42,306.77 560.85,306.77 562.28,306.77 563.71,306.77 565.14,306.77 566.57,306.77 568.00,306.77 569.43,306.77 570.86,306.77 572.29,306.77 573.72,306.77 575.15,306.77 576.58,306.77 578.01,306.77 579.44,306.77 580.87,306.77 582.30,306.77 583.73,306.77 585.16,306.77 586.59,306.77 588.02,306.77 589.45,306.77 590.88,306.77 592.31,306.77 593.74,306.77 595.17,306.77 596.60,306.77 598.03,306.77 599.46,306.77 600.89,306.77 602.32,306.77 603.75,306.77 605.18,306.77 606.61,306.77 608.04,306.77 609.47,306.77 610.90,306.77 612.33,306.77 613.76,306.77 615.19,306.77 616.62,306.77 618.05,306.77 619.48,306.77 620.91,306.77 622.34,306.77 623.77,306.77 625.20,306.77 626.63,306.77 628.06,306.77 629.49,306.77 630.92,306.77 632.35,306.77 633.78,306.77 635.21,306.77 636.64,306.77 638.07,306.77 639.50,306.77 640.93,306.77 642.36,306.77 ' style='stroke-width: 2.13; stroke: #B7791F; stroke-linecap: butt;' />
+<polyline points='71.78,306.72 73.21,306.72 74.64,306.72 76.07,306.71 77.50,306.71 78.93,306.70 80.36,306.69 81.79,306.69 83.22,306.68 84.65,306.68 86.08,306.67 87.51,306.66 88.94,306.65 90.37,306.64 91.80,306.63 93.23,306.62 94.66,306.61 96.09,306.60 97.52,306.59 98.95,306.57 100.38,306.56 101.81,306.54 103.24,306.52 104.67,306.51 106.10,306.49 107.53,306.47 108.96,306.45 110.39,306.42 111.82,306.40 113.25,306.37 114.68,306.35 116.11,306.32 117.54,306.29 118.97,306.25 120.40,306.22 121.83,306.18 123.26,306.14 124.69,306.10 126.12,306.06 127.55,306.01 128.98,305.96 130.41,305.91 131.84,305.86 133.27,305.80 134.70,305.74 136.13,305.67 137.56,305.60 138.99,305.53 140.42,305.46 141.85,305.38 143.28,305.29 144.71,305.20 146.14,305.11 147.57,305.01 149.00,304.91 150.43,304.80 151.86,304.69 153.29,304.57 154.72,304.44 156.15,304.31 157.58,304.17 159.01,304.02 160.44,303.87 161.87,303.71 163.30,303.55 164.73,303.37 166.16,303.19 167.59,303.00 169.02,302.80 170.45,302.59 171.88,302.37 173.31,302.14 174.74,301.91 176.17,301.66 177.60,301.40 179.03,301.13 180.46,300.85 181.89,300.56 183.32,300.26 184.75,299.94 186.18,299.61 187.61,299.27 189.04,298.92 190.47,298.55 191.90,298.17 193.33,297.78 194.76,297.37 196.19,296.94 197.62,296.50 199.05,296.05 200.48,295.58 201.91,295.09 203.34,294.59 204.77,294.07 206.20,293.53 207.63,292.98 209.06,292.41 210.49,291.82 211.92,291.21 213.35,290.58 214.78,289.94 216.21,289.28 217.64,288.59 219.07,287.89 220.50,287.17 221.93,286.43 223.36,285.67 224.79,284.89 226.22,284.09 227.65,283.27 229.08,282.43 230.51,281.57 231.94,280.69 233.37,279.78 234.80,278.86 236.23,277.92 237.66,276.96 239.09,275.98 240.52,274.98 241.95,273.95 243.38,272.91 244.81,271.85 246.24,270.77 247.67,269.67 249.10,268.56 250.53,267.42 251.96,266.27 253.39,265.09 254.82,263.91 256.25,262.70 257.68,261.48 259.11,260.24 260.54,258.99 261.97,257.73 263.40,256.44 264.83,255.15 266.26,253.84 267.69,252.53 269.12,251.20 270.55,249.86 271.98,248.51 273.41,247.15 274.84,245.79 276.27,244.41 277.70,243.03 279.13,241.65 280.56,240.26 281.99,238.87 283.42,237.48 284.85,236.09 286.28,234.69 287.71,233.30 289.14,231.91 290.57,230.52 292.00,229.14 293.43,227.77 294.86,226.40 296.29,225.04 297.72,223.68 299.15,222.34 300.58,221.02 302.01,219.70 303.44,218.40 304.87,217.11 306.30,215.84 307.73,214.59 309.16,213.36 310.59,212.15 312.02,210.96 313.46,209.79 314.89,208.65 316.32,207.53 317.75,206.44 319.18,205.38 320.61,204.34 322.04,203.34 323.47,202.36 324.90,201.42 326.33,200.51 327.76,199.64 329.19,198.80 330.62,197.99 332.05,197.23 333.48,196.50 334.91,195.81 336.34,195.16 337.77,194.54 339.20,193.97 340.63,193.44 342.06,192.95 343.49,192.51 344.92,192.11 346.35,191.75 347.78,191.43 349.21,191.16 350.64,190.94 352.07,190.76 353.50,190.62 354.93,190.53 356.36,190.48 357.79,190.48 359.22,190.53 360.65,190.62 362.08,190.76 363.51,190.94 364.94,191.16 366.37,191.43 367.80,191.75 369.23,192.11 370.66,192.51 372.09,192.95 373.52,193.44 374.95,193.97 376.38,194.54 377.81,195.16 379.24,195.81 380.67,196.50 382.10,197.23 383.53,197.99 384.96,198.80 386.39,199.64 387.82,200.51 389.25,201.42 390.68,202.36 392.11,203.34 393.54,204.34 394.97,205.38 396.40,206.44 397.83,207.53 399.26,208.65 400.69,209.79 402.12,210.96 403.55,212.15 404.98,213.36 406.41,214.59 407.84,215.84 409.27,217.11 410.70,218.40 412.13,219.70 413.56,221.02 414.99,222.34 416.42,223.68 417.85,225.04 419.28,226.40 420.71,227.77 422.14,229.14 423.57,230.52 425.00,231.91 426.43,233.30 427.86,234.69 429.29,236.09 430.72,237.48 432.15,238.87 433.58,240.26 435.01,241.65 436.44,243.03 437.87,244.41 439.30,245.79 440.73,247.15 442.16,248.51 443.59,249.86 445.02,251.20 446.45,252.53 447.88,253.84 449.31,255.15 450.74,256.44 452.17,257.73 453.60,258.99 455.03,260.24 456.46,261.48 457.89,262.70 459.32,263.91 460.75,265.09 462.18,266.27 463.61,267.42 465.04,268.56 466.47,269.67 467.90,270.77 469.33,271.85 470.76,272.91 472.19,273.95 473.62,274.98 475.05,275.98 476.48,276.96 477.91,277.92 479.34,278.86 480.77,279.78 482.20,280.69 483.63,281.57 485.06,282.43 486.49,283.27 487.92,284.09 489.35,284.89 490.78,285.67 492.21,286.43 493.64,287.17 495.07,287.89 496.50,288.59 497.93,289.28 499.36,289.94 500.79,290.58 502.22,291.21 503.65,291.82 505.08,292.41 506.51,292.98 507.94,293.53 509.37,294.07 510.80,294.59 512.23,295.09 513.66,295.58 515.09,296.05 516.52,296.50 517.95,296.94 519.38,297.37 520.81,297.78 522.24,298.17 523.67,298.55 525.10,298.92 526.53,299.27 527.96,299.61 529.39,299.94 530.82,300.26 532.25,300.56 533.68,300.85 535.11,301.13 536.54,301.40 537.97,301.66 539.40,301.91 540.83,302.14 542.26,302.37 543.69,302.59 545.12,302.80 546.55,303.00 547.98,303.19 549.41,303.37 550.84,303.55 552.27,303.71 553.70,303.87 555.13,304.02 556.56,304.17 557.99,304.31 559.42,304.44 560.85,304.57 562.28,304.69 563.71,304.80 565.14,304.91 566.57,305.01 568.00,305.11 569.43,305.20 570.86,305.29 572.29,305.38 573.72,305.46 575.15,305.53 576.58,305.60 578.01,305.67 579.44,305.74 580.87,305.80 582.30,305.86 583.73,305.91 585.16,305.96 586.59,306.01 588.02,306.06 589.45,306.10 590.88,306.14 592.31,306.18 593.74,306.22 595.17,306.25 596.60,306.29 598.03,306.32 599.46,306.35 600.89,306.37 602.32,306.40 603.75,306.42 605.18,306.45 606.61,306.47 608.04,306.49 609.47,306.51 610.90,306.52 612.33,306.54 613.76,306.56 615.19,306.57 616.62,306.59 618.05,306.60 619.48,306.61 620.91,306.62 622.34,306.63 623.77,306.64 625.20,306.65 626.63,306.66 628.06,306.67 629.49,306.68 630.92,306.68 632.35,306.69 633.78,306.69 635.21,306.70 636.64,306.71 638.07,306.71 639.50,306.72 640.93,306.72 642.36,306.72 ' style='stroke-width: 2.13; stroke: #1A365D; stroke-linecap: butt;' />
+<line x1='357.07' y1='317.55' x2='357.07' y2='80.44' style='stroke-width: 1.28; stroke: #C53030; stroke-dasharray: 6.83,6.83; stroke-linecap: butt;' />
+<text x='360.11' y='303.42' style='font-size: 9.39px;fill: #C53030; font-family: "Arial";' textLength='60.78px' lengthAdjust='spacingAndGlyphs'>truth b1 = 0.50</text>
+</g>
+<g clip-path='url(#g2_cpMC4wMHw2ODQuMDB8MC4wMHwzNjAuMDA=)'>
+<text x='30.74' y='310.21' text-anchor='end' style='font-size: 9.60px;fill: #2D3748; font-family: "Arial";' textLength='5.33px' lengthAdjust='spacingAndGlyphs'>0</text>
+<text x='30.74' y='261.50' text-anchor='end' style='font-size: 9.60px;fill: #2D3748; font-family: "Arial";' textLength='10.66px' lengthAdjust='spacingAndGlyphs'>10</text>
+<text x='30.74' y='212.79' text-anchor='end' style='font-size: 9.60px;fill: #2D3748; font-family: "Arial";' textLength='10.66px' lengthAdjust='spacingAndGlyphs'>20</text>
+<text x='30.74' y='164.08' text-anchor='end' style='font-size: 9.60px;fill: #2D3748; font-family: "Arial";' textLength='10.66px' lengthAdjust='spacingAndGlyphs'>30</text>
+<text x='30.74' y='115.37' text-anchor='end' style='font-size: 9.60px;fill: #2D3748; font-family: "Arial";' textLength='10.66px' lengthAdjust='spacingAndGlyphs'>40</text>
+<text x='183.82' y='329.80' text-anchor='middle' style='font-size: 9.60px;fill: #2D3748; font-family: "Arial";' textLength='18.66px' lengthAdjust='spacingAndGlyphs'>0.46</text>
+<text x='357.07' y='329.80' text-anchor='middle' style='font-size: 9.60px;fill: #2D3748; font-family: "Arial";' textLength='18.66px' lengthAdjust='spacingAndGlyphs'>0.50</text>
+<text x='530.32' y='329.80' text-anchor='middle' style='font-size: 9.60px;fill: #2D3748; font-family: "Arial";' textLength='18.66px' lengthAdjust='spacingAndGlyphs'>0.54</text>
+<text x='351.40' y='348.96' style='font-size: 12.00px;fill: #2D3748; font-family: "Arial";' textLength='6.67px' lengthAdjust='spacingAndGlyphs'>b</text>
+<text x='351.92' y='343.54' style='font-size: 12.00px;fill: #2D3748; font-family: "Arial";' textLength='5.62px' lengthAdjust='spacingAndGlyphs'>^</text>
+<text x='358.08' y='351.50' style='font-size: 8.40px;fill: #2D3748; font-family: "Arial";' textLength='4.67px' lengthAdjust='spacingAndGlyphs'>1</text>
+<text transform='translate(14.57,198.99) rotate(-90)' text-anchor='middle' style='font-size: 12.00px;fill: #2D3748; font-family: "Arial";' textLength='38.02px' lengthAdjust='spacingAndGlyphs'>density</text>
+<line x1='216.44' y1='53.86' x2='230.27' y2='53.86' style='stroke-width: 2.13; stroke: #B7791F; stroke-linecap: butt;' />
+<line x1='385.01' y1='53.86' x2='398.83' y2='53.86' style='stroke-width: 2.13; stroke: #1A365D; stroke-linecap: butt;' />
+<text x='237.97' y='57.26' style='font-size: 9.50px;fill: #2D3748; font-family: "Arial";' textLength='139.33px' lengthAdjust='spacingAndGlyphs'>naive Fisher-info SE (too narrow)</text>
+<text x='406.54' y='57.26' style='font-size: 9.50px;fill: #2D3748; font-family: "Arial";' textLength='92.89px' lengthAdjust='spacingAndGlyphs'>sandwich SE (correct)</text>
+<text x='36.12' y='31.16' style='font-size: 10.00px;fill: #718096; font-family: "Arial";' textLength='369.66px' lengthAdjust='spacingAndGlyphs'>Monte-Carlo sampling distribution of the Poisson-QMLE slope vs the two SE stories</text>
+<text x='36.12' y='15.29' style='font-size: 13.00px; font-weight: bold;fill: #1A365D; font-family: "Arial";' textLength='244.20px' lengthAdjust='spacingAndGlyphs'>Under overdispersion, the naive SE lies</text>
+</g>
+</g>
+</svg>
+<figcaption aria-hidden="true">The Monte-Carlo sampling distribution of
+the Poisson-QMLE slope <span class="math inline">\hat b_1</span> (grey
+histogram, 2000 resamples), overlaid with the normal curves implied by
+each of the two sets of standard errors. The navy sandwich normal hugs
+the true sampling distribution, while the gold Fisher-information normal
+is far narrower, systematically underestimating the uncertainty by half,
+which is the geometric source of the nominal 95% interval actually
+covering only 71.5%.</figcaption>
+</figure>
+<h3 id="the-same-thing-done-again-with-gmm">6.5 The Same Thing, Done
+Again with GMM</h3>
+<p>Poisson’s conditional mean gives a set of moment conditions <span
+class="math inline">\mathbb{E}[(y - \exp(b_0 + b_1 x))\, h(x)] =
+0</span>. Taking <span class="math inline">h(x) = (1, x)</span> is
+just-identified, and these two moment conditions are exactly Poisson’s
+score first-order conditions, estimating <span class="math inline">\hat
+b_1 = 0.498</span>, identical to the Poisson QMLE to the digit,
+confirming Section 3.7’s “MLE is GMM with the optimal moment
+conditions.”</p>
+<p>Add one more moment, taking <span class="math inline">h(x) = (1, x,
+x^2)</span>, and it upgrades from just-identified to over-identified (3
+moments, 2 parameters). Now the weight matrix begins to matter.
+Estimating with the identity weight gives a slope of 0.509 (SE 0.023),
+and switching to the efficient weight <span class="math inline">\hat W =
+\hat S^{-1}</span> gives a slope of 0.484 (SE 0.015), the standard error
+reduced by a third, which is the precision dividend of efficient
+weighting. Over-identification also allows a Hansen <span
+class="math inline">J</span> test: here the conditional mean is
+correctly specified, <span class="math inline">J = 1.88</span> (1 degree
+of freedom), <span class="math inline">p = 0.17</span>, does not reject,
+and the checkup passes.</p>
+<p>To see whether the <span class="math inline">J</span> test really
+does raise an alarm, secretly add a quadratic term to usage’s true mean,
+<span class="math inline">\exp(b_0 + b_1 x + 0.25 x^2)</span>, while
+still fitting with the two-parameter model without <span
+class="math inline">x^2</span>, and that <span
+class="math inline">x^2</span> moment condition should catch the flaw:
+<span class="math inline">J</span> jumps to 25.60, <span
+class="math inline">p &lt; 10^{-5}</span>, and firmly rejects. The <span
+class="math inline">J</span> test is quiet when correctly specified and
+flares up when the mean is misspecified, which is exactly its value as a
+specification checkup.</p>
+<h3 id="weak-identification-a-flattened-out-objective-function">6.6 Weak
+Identification: A Flattened-Out Objective Function</h3>
+<p>Finally, demonstrate the weak identification of Section 4.3. Turn off
+the identifying variation of the usage slope: when engagement <span
+class="math inline">x</span> has ample variation (SD 1.0) it is strong
+identification, and when the variation is squeezed to a minimum (SD
+0.05) it is weak identification, each resampled 1000 times:</p>
+<div class="table-scroll">
+<table>
+<thead>
+<tr>
+<th></th>
+<th>strong identification</th>
+<th>weak identification</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>sampling SD of <span class="math inline">\hat b_1</span></td>
+<td>0.017</td>
+<td>0.294</td>
+</tr>
+<tr>
+<td>moment-condition Jacobian <span class="math inline">\lvert
+D_{b_1}\rvert</span></td>
+<td>3.85</td>
+<td>0.007</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Under weak identification the sampling standard deviation is 17 times
+that under strong identification, while the sensitivity of the moment
+condition to <span class="math inline">b_1</span> behind it (the
+Jacobian <span class="math inline">D</span>, the signal strength of
+identification) differs by 567 times. The direction is exactly what the
+bread of Section 3.4’s sandwich foretold: the weaker the identifying
+signal and the flatter the peak, the larger the variance. The two
+multiples are not in simple proportion, because the sandwich carries two
+slices of <span class="math inline">A^{-1}</span>, so with fixed noise
+the variance roughly scales with the square of the reciprocal of the
+curvature, while squeezing <span class="math inline">x</span>’s
+variation also shrinks the noise of the moment condition itself, and the
+two forces stack to land at a 17-fold gap in standard deviation. To be
+honest, this weak identification at <span class="math inline">n =
+4000</span> is mainly a collapse of precision rather than a failure of
+inference, and the robust standard error still maintains about 94%
+coverage, only the slope’s 95% interval is so wide it spans from
+negative values to above 1 while the truth is a mere 0.5, and the
+estimate is “computable but useless.” This is the same pathology as the
+weak instruments in this series’ chapter on instrumental variables, in
+two incarnations.</p>
+<h3 id="the-grand-reconciliation">6.7 The Grand Reconciliation</h3>
+<p>Place all the estimates side by side, with each one’s own truth as
+the target:</p>
+<div class="table-scroll">
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr>
+<th>estimator</th>
+<th>estimate</th>
+<th>SE</th>
+<th>target / note</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>LPM slope</td>
+<td>0.215</td>
+<td>0.007</td>
+<td>wrong objective function, predicted probabilities out of bounds</td>
+</tr>
+<tr>
+<td>logit MLE slope</td>
+<td>1.097</td>
+<td>0.044</td>
+<td>truth 1.10; Fisher = sandwich (correctly specified)</td>
+</tr>
+<tr>
+<td>logit AME</td>
+<td>0.217</td>
+<td>none</td>
+<td>truth 0.216</td>
+</tr>
+<tr>
+<td>Poisson QMLE slope</td>
+<td>0.498</td>
+<td>0.018</td>
+<td>truth 0.50; sandwich, not the Fisher 0.009</td>
+</tr>
+<tr>
+<td>GMM just-identified slope</td>
+<td>0.498</td>
+<td>none</td>
+<td>equal to Poisson QMLE</td>
+</tr>
+<tr>
+<td>GMM efficient over-identified slope</td>
+<td>0.484</td>
+<td>0.015</td>
+<td>efficient weighting, tighter than the identity-weight 0.023</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>This section’s reconciliation can be summarized as follows: the LPM
+prints out-of-bounds probabilities because the objective function is
+chosen wrong; the logit MLE hugs the truth, and because it is correctly
+specified the two sets of standard errors agree, with consistency
+delivered as <span class="math inline">\sqrt n</span> with the sample
+size; the Poisson QMLE has a correctly specified mean so the point
+estimate is consistent, but the misspecified distribution makes the
+Fisher standard error report only half the true uncertainty, and only
+the sandwich fixes the coverage from 71.5% back to 95.5%; the same
+conditional mean rewritten as GMM has the just-identified case reproduce
+the QMLE and the over-identified case gain precision through efficient
+weighting and check the specification with a <span
+class="math inline">J</span> test; and draining the identifying
+variation flattens the objective function, so the variance amplifies a
+hundredfold with the collapse of the curvature.</p>
+<h2 id="failure-modes-and-robustness">7 Failure Modes and
+Robustness</h2>
+<p>The specifications in the simulation are manufactured, and in real
+research they can fail at any moment. This section reviews the most
+common ways they fail and the operational responses.</p>
+<p>Misspecification is the most pervasive threat, and distinguishing
+“which part of the specification is wrong” is the whole key. Getting the
+conditional mean right and the distribution wrong is the luckiest tier:
+the point estimate is still consistent via QMLE, and all you need is to
+fix the standard errors with the sandwich, with Helix’s Poisson example
+as the template. What is truly dangerous is getting even the conditional
+mean wrong, at which point consistency itself is gone, and no matter how
+robust the standard error, it only attaches an honest interval to a
+wrong point estimate, which is meaningless. Practice therefore has two
+lines of defense: first, report sandwich robust standard errors by
+default, unless you dare to guarantee the distribution is fully correct
+(a confidence rarely warranted), because robust standard errors are
+harmless when correctly specified (collapsing back to Fisher) and
+lifesaving when misspecified; second, use over-identification tests or
+specification tests to check the conditional mean itself, with the <span
+class="math inline">J</span> test, the Hausman test, and the information
+matrix test all being this kind of checkup, checking the mean layer
+rather than the distribution layer.</p>
+<p>Reporting the wrong standard error is a closely adjacent second trap,
+and it is more hidden than a wrong point estimate, because the point
+estimate looks perfectly normal. The core discipline is to think through
+which slice the variance you report is: the model’s default standard
+error is mostly <span class="math inline">I^{-1}</span> (one slice of
+bread), which is only right when the information matrix equality holds,
+and this equality requires the distribution to be fully correct plus
+homoskedasticity, no clustering, and no serial correlation, premises
+that often do not hold. The robust default should be the sandwich, and
+when the data has a group structure you should further cluster, which is
+the subject of the next chapter on inference. A recurring lesson is: a
+beautiful, suspiciously narrow standard error is often not because the
+estimate is precise, but because the wrong variance formula was
+used.</p>
+<p>Weak identification is the third trap, and its destructive power has
+already been quantified above. Diagnosing it cannot rely only on the
+asterisks of the point estimate, but on where the identifying variation
+comes from and whether it is enough. In GMM, check whether the Jacobian
+<span class="math inline">D</span> is bizarrely close to singular; in
+MLE, check whether the Hessian is nearly singular, whether the
+log-likelihood is nearly flat, and whether the optimization struggles to
+converge, all of which are identification alarms. The first response to
+a remedy should not be to switch to a fancier estimator, but to return
+to the design: is the identifying variation for this parameter simply
+too thin. When the sample is small or the model is highly nonlinear,
+weak identification will also destroy the normal approximation,
+requiring specialized weak-identification-robust inference.</p>
+<p>Numerical failure is equally worth watching, especially in discrete
+choice. A classic trap is perfect separation: if some covariate can
+perfectly separate <span class="math inline">D = 1</span> from <span
+class="math inline">D = 0</span>, the logit maximum likelihood estimate
+diverges to infinity, with the coefficient estimated ever larger and the
+standard error ever more absurd, because the likelihood has no interior
+maximum along that direction. The software may throw no error, merely
+spitting out huge coefficients and standard errors, and it takes a
+person to see it. Similarly, when the objective function is nonconcave
+and multi-peaked, the optimization may halt at a false peak, and
+rerunning from different starting values and checking convergence
+diagnostics is basic hygiene. These are not theoretical problems, they
+are practical problems you run into every day.</p>
+<p>The interpretation of tests also requires a measure of care.
+Asymptotically the three tests of Wald, likelihood ratio, and Lagrange
+multiplier (together the trinity of tests) are equivalent at the null
+hypothesis, but in finite samples or under suspect specification they
+part ways: the Wald test relies on the estimate of <span
+class="math inline">I^{-1}</span>, which is distorted along with the
+standard error when misspecified; the likelihood ratio needs a correct
+likelihood and may not be usable under QMLE; and at that point a Wald
+test based on the robust variance or a specialized robust test is more
+trustworthy. When the <span class="math inline">J</span> test rejects
+you also need to think through what it is saying: it rejects “all moment
+conditions jointly hold,” which could be that some moment is genuinely
+wrong, or that different moment conditions should give slightly
+different answers under heterogeneity, and not necessarily a
+disaster.</p>
+<p>Stringing these failure modes together, this chapter’s robustness
+rests, in the end, on two things: first, distinguishing which part of
+the model you got right (the mean? the distribution?), and judging from
+that whether the point estimate still lives and which set of standard
+errors to use; second, thinking through what variation your parameter is
+identified by and how strong that identification is. Think these two
+things through and estimation is stable; fail to think them through and
+even the most automated software is merely quickly handing you a number
+that may be wrong in a very respectable way.</p>
+<h2 id="further-reading">8 Further Reading</h2>
+<div class="readings">
+<p>Required reading, in suggested reading order:</p>
+<ul>
+<li>Wooldridge (2010, <em>Econometric Analysis of Cross Section and
+Panel Data</em>, 2nd ed.), Chapters 12 to 14. The clearest and most
+readable textbook version of a unified treatment of M-estimation, MLE,
+and GMM, and the source of this chapter’s sandwich and QMLE
+framework.</li>
+<li>White (1982, <em>Econometrica</em>). The original source of QMLE and
+the sandwich, and reading it clarifies why the point estimate still
+lives when “the mean is right and the distribution is wrong,” while
+<span class="math inline">I^{-1}</span> must be swapped for the
+sandwich.</li>
+<li>Hansen (1982, <em>Econometrica</em>). The founding work of GMM,
+focusing on how the efficient weight <span class="math inline">W =
+S^{-1}</span> collapses the variance into <span
+class="math inline">(D&#39;S^{-1}D)^{-1}</span> and the construction of
+the over-identification <span class="math inline">J</span> test.</li>
+<li>McFadden (1974, <em>Frontiers in Econometrics</em>). The source of
+conditional logit and random utility, the template for translating the
+economic model of discrete choice into a likelihood, and the origin of
+this chapter’s Section 2 adoption model.</li>
+</ul>
+<p>Further reading:</p>
+<ul>
+<li>Newey and McFadden (1994, <em>Handbook of Econometrics</em> Vol. 4).
+The authoritative technical treatment of the consistency and asymptotic
+normality of extremum estimators, where the regularity conditions
+skipped in this chapter’s 3.3 and 3.4 have complete proofs, the standard
+citation when writing methods papers.</li>
+<li>Amemiya (1985, <em>Advanced Econometrics</em>). The classic textbook
+source of the unified name and framework of the extremum estimator,
+gathering MLE, NLS, and GMM into one argmax viewpoint.</li>
+<li>Cameron and Trivedi (2013, <em>Regression Analysis of Count
+Data</em>, 2nd ed.). The standard reference for count models and Poisson
+QMLE, where the full discussion of overdispersion and the sandwich in
+this chapter’s usage example resides.</li>
+<li>Hansen, Heaton and Yaron (1996, <em>JBES</em>). The finite-sample
+problems of two-step GMM and continuously-updating GMM, for
+understanding why “asymptotically efficient” need not be best in small
+samples.</li>
+<li>Stock and Wright (2000, <em>Econometrica</em>). Robust inference for
+GMM under weak identification, the response to the small-sample
+breakdown of weak identification in this chapter’s Section 4.3, sharing
+one lineage with the weak instruments of the instrumental variables
+chapter.</li>
+</ul>
+</div>
+<div class="apa-refs">
+<ul>
+<li>Amemiya, T. (1985). <em>Advanced econometrics</em>. Harvard
+University Press.</li>
+<li>Berndt, E. R., Hall, B. H., Hall, R. E., &amp; Hausman, J. A.
+(1974). Estimation and inference in nonlinear structural models.
+<em>Annals of Economic and Social Measurement, 3</em>(4), 653-665.</li>
+<li>Cameron, A. C., &amp; Trivedi, P. K. (2013). <em>Regression analysis
+of count data</em> (2nd ed.). Cambridge University Press.</li>
+<li>Forman, C. (2005). The corporate digital divide: Determinants of
+Internet adoption. <em>Management Science, 51</em>(4), 641-654. <a
+href="https://doi.org/10.1287/mnsc.1040.0343"
+class="uri">https://doi.org/10.1287/mnsc.1040.0343</a></li>
+<li>Hansen, L. P. (1982). Large sample properties of generalized method
+of moments estimators. <em>Econometrica, 50</em>(4), 1029-1054. <a
+href="https://doi.org/10.2307/1912775"
+class="uri">https://doi.org/10.2307/1912775</a></li>
+<li>Hansen, L. P., Heaton, J., &amp; Yaron, A. (1996). Finite-sample
+properties of some alternative GMM estimators. <em>Journal of Business
+&amp; Economic Statistics, 14</em>(3), 262-280. <a
+href="https://doi.org/10.1080/07350015.1996.10524656"
+class="uri">https://doi.org/10.1080/07350015.1996.10524656</a></li>
+<li>McFadden, D. (1974). Conditional logit analysis of qualitative
+choice behavior. In P. Zarembka (Ed.), <em>Frontiers in
+econometrics</em> (pp. 105-142). Academic Press.</li>
+<li>Newey, W. K., &amp; McFadden, D. (1994). Large sample estimation and
+hypothesis testing. In R. F. Engle &amp; D. L. McFadden (Eds.),
+<em>Handbook of econometrics</em> (Vol. 4, pp. 2111-2245). Elsevier. <a
+href="https://doi.org/10.1016/S1573-4412(05)80005-4"
+class="uri">https://doi.org/10.1016/S1573-4412(05)80005-4</a></li>
+<li>Stock, J. H., &amp; Wright, J. H. (2000). GMM with weak
+identification. <em>Econometrica, 68</em>(5), 1055-1096. <a
+href="https://doi.org/10.1111/1468-0262.00151"
+class="uri">https://doi.org/10.1111/1468-0262.00151</a></li>
+<li>White, H. (1982). Maximum likelihood estimation of misspecified
+models. <em>Econometrica, 50</em>(1), 1-25. <a
+href="https://doi.org/10.2307/1912526"
+class="uri">https://doi.org/10.2307/1912526</a></li>
+<li>Wooldridge, J. M. (2010). <em>Econometric analysis of cross section
+and panel data</em> (2nd ed.). MIT Press.</li>
+</ul>
+</div>
+    <footer class="page-footer">
+<span>Foundations of Information Systems Economics: Empirical Methods for Information Systems Economics</span>
+    </footer>
+  </main>
+</div>
+<script>
+(function(){var p=(location.pathname.split('/').pop()||'index.html');document.querySelectorAll('.file-nav a').forEach(function(a){if(a.getAttribute('href')===p)a.classList.add('current');});})();
+
+/* Preserve complete formulas without internal scrollbars. Only formulas whose
+   natural width exceeds their text column are reduced, and resize restores the
+   largest size that fits. */
+(function () {
+  function fitMath() {
+    document.querySelectorAll('span.math').forEach(function (host) {
+      var katex = host.querySelector('.katex');
+      if (!katex) return;
+      katex.style.fontSize = '';
+      var parent = host.classList.contains('display') ? host : host.parentElement;
+      var available = Math.max(1, parent.clientWidth);
+      /* KaTeX's box can be clipped to the host before measurement; scrollWidth
+         retains the full typeset width and is therefore the correct basis. */
+      var needed = Math.max(katex.scrollWidth, katex.getBoundingClientRect().width);
+      /* Keep a small safety margin for KaTeX glyph overhangs and browser
+         sub-pixel rounding, so the last radical/bar is never clipped. */
+      var target = available * 0.98;
+      if (needed > target) {
+        katex.style.fontSize = Math.max(0.34, target / needed) + 'em';
+      }
+    });
+  }
+  document.addEventListener('DOMContentLoaded', function () {
+    requestAnimationFrame(fitMath);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitMath);
+  });
+  window.addEventListener('resize', fitMath);
+}());
+</script>
+<script defer src="assets/notes.js"></script>
+</body>
+</html>

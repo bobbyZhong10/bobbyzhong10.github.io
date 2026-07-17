@@ -1,0 +1,1784 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Discrete Choice: From RUM to Mixed Logit | IS Economics ·
+Empirical Methods</title>
+  <link rel="stylesheet" href="assets/style.css" />
+  <script defer="" src="assets/katex/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <link rel="stylesheet" href="assets/katex/katex.min.css" />
+</head>
+<body>
+<div class="page-wrapper">
+  <nav class="sidebar">
+    <div class="sidebar-title">Foundations of Information Systems Economics</div>
+    <div class="sidebar-subtitle">Theory · Methods · Applications</div>
+    <div class="toc-section-label">On this page</div>
+    <div class="toc">
+<ul>
+<li><a href="#introduction" id="toc-introduction">Introduction</a></li>
+<li><a href="#a-number-that-does-not-add-up"
+id="toc-a-number-that-does-not-add-up">1 A number that does not add
+up</a></li>
+<li><a href="#the-economic-model-and-the-estimand"
+id="toc-the-economic-model-and-the-estimand">2 The economic model and
+the estimand</a></li>
+<li><a href="#identification" id="toc-identification">3
+Identification</a></li>
+<li><a href="#estimation-from-plain-logit-to-mixed-logit"
+id="toc-estimation-from-plain-logit-to-mixed-logit">4 Estimation: from
+plain logit to mixed logit</a></li>
+<li><a href="#anchoring-papers" id="toc-anchoring-papers">5 Anchoring
+papers</a></li>
+<li><a href="#a-full-walkthrough-on-the-selva-data"
+id="toc-a-full-walkthrough-on-the-selva-data">6 A full walkthrough on
+the Selva data</a></li>
+<li><a href="#failure-modes-of-identification-and-robustness"
+id="toc-failure-modes-of-identification-and-robustness">7 Failure modes
+of identification and robustness</a></li>
+<li><a href="#further-reading" id="toc-further-reading">8 Further
+reading</a></li>
+</ul>
+    </div>
+    <div class="file-nav">
+      <div class="nav-label">This series</div>
+      <a href="index.html">Home · Overview</a>
+      <a href="introduction.html">Introduction · How to Use</a>
+      <a href="01_consumer_producer_welfare.html">01 Consumer, Producer &amp; Welfare</a>
+      <a href="02_game_theory.html">02 Game Theory</a>
+      <a href="03_information_mechanism_design.html">03 Information &amp; Mechanism Design</a>
+      <a href="04_pricing_imperfect_competition.html">04 Pricing &amp; Imperfect Competition</a>
+      <a href="05_estimation_mle_gmm.html">05 Estimation: MLE &amp; GMM</a>
+      <a href="06_inference.html">06 Inference: Bootstrap &amp; Clustering</a>
+      <a href="07_panel_dynamic_panel.html">07 Panel &amp; Dynamic Panel</a>
+      <a href="08_nonparametrics.html">08 Nonparametrics &amp; Semiparametrics</a>
+      <a href="09_potential_outcomes.html">09 Potential Outcomes &amp; Selection</a>
+      <a href="10_research_design_architecture.html">10 Research Design</a>
+      <a href="11_measurement_digital_traces.html">11 Measurement &amp; Digital Traces</a>
+      <a href="12_iv_late_mte.html">12 IV: LATE &amp; MTE</a>
+      <a href="13_did_event_studies.html">13 DiD &amp; Event Studies</a>
+      <a href="14_rdd_synthetic_control.html">14 RDD &amp; Synthetic Control</a>
+      <a href="15_sensitivity_partial_identification.html">15 Sensitivity &amp; Partial Identification</a>
+      <a href="16_causal_ml_dml.html">16 Causal ML &amp; DML</a>
+      <a href="17_digital_experimentation.html">17 Digital Experimentation</a>
+      <a href="18_interference_marketplace_experiments.html">18 Interference &amp; Marketplace Experiments</a>
+      <a href="19_discrete_choice.html">19 Discrete Choice &amp; Mixed Logit</a>
+      <a href="20_demand_blp.html">20 Demand Estimation &amp; BLP</a>
+      <a href="21_supply_markups_mergers.html">21 Supply, Markups &amp; Mergers</a>
+      <a href="22_entry_partial_id.html">22 Entry &amp; Partial Identification</a>
+      <a href="23_dynamic_structural.html">23 Dynamic Structural Models</a>
+      <a href="24_platforms_networks.html">24 Platforms &amp; Network Effects</a>
+      <a href="25_search_advertising.html">25 Search, Advertising &amp; Information Goods</a>
+      <a href="26_ai_algorithms_data.html">26 AI, Adoption &amp; Data Economics</a>
+      <a href="27_quick_reference.html">27 Quick Reference &amp; Tools</a>
+    </div>
+  </nav>
+  <main class="main-content" id="top">
+    <header class="page-header">
+      <h1>Discrete Choice: From RUM to Mixed Logit</h1>
+      <div class="subtitle">Random Utility, IIA, and the Road to Random
+Coefficients</div>
+      <div class="meta">Foundations of Information Systems Economics · Chapter 19</div>
+    </header>
+<h2 id="introduction">Introduction</h2>
+<p>If a food delivery platform raises the delivery fee on restaurant A
+by one dollar, where do the lost orders go? Perhaps they move to
+restaurant B down the same street with a similar menu, perhaps they
+switch to a different cuisine, perhaps the customer simply orders
+nothing at all. If the researcher only reports “how much did orders
+fall,” the platform still does not know who A’s true competitors are.
+And if the model treats every alternative as equally close, it may even
+deliver a very precise answer that happens to be very wrong. The
+difficulty in discrete choice research has never been merely to explain
+“which one the user picked,” but to recover, from choice after choice,
+the substitution relationships among the alternatives.</p>
+<p>Random utility maximization offers a clean language for this. Every
+option carries a part of its utility that the researcher can see and a
+part that the researcher cannot, and the consumer picks the one with the
+highest total utility. Assign a probability distribution to the
+unobservable part, and individual optimization turns into an estimable
+choice probability. This step looks like nothing more than adding a
+random term, but it actually completes the most crucial seam between
+consumer theory and data. The problems follow immediately: the level and
+scale of utility need to be normalized, price is often correlated with
+unobserved quality, and the distributional assumption on the error term
+directly dictates who substitutes for whom.</p>
+<p>This chapter starts from the most computationally convenient model,
+the logit. Its closed form is a pleasure to work with, but the IIA
+restriction may force a similar restaurant and a completely different
+outside option to absorb the lost demand in the same proportion. Nested
+logit uses within-group correlation to admit that “close neighbors are
+more alike,” and mixed logit lets consumers have different tastes. Price
+endogeneity is handled separately by instrumental variables or a control
+function. The Selva delivery-platform case that runs through the whole
+chapter is deliberately built so the truth is known, so that each model
+must not only fit the data but also account for exactly how far off it
+got the elasticities and diversion ratios.</p>
+<p>What we really need to deliver, then, is not just a likelihood
+function that converges, but a substitution logic we can articulate:
+which normalizations the parameters depend on, whether IIA is credible
+here, and toward whom a price change pushes consumers. The differences
+among logit, nested logit, and mixed logit only reveal their economic
+content once you look at elasticities and diversion ratios. The next
+chapter will move the lens from individual choice to market shares: once
+“who bought whom” disappears, the Berry inversion takes over the job
+that the individual likelihood used to do.</p>
+<h2 id="a-number-that-does-not-add-up">1 A number that does not add
+up</h2>
+<div class="case">
+<p>Selva is a fictional food delivery platform. We tell this case with
+simulated data, and the advantage is that the data generating process
+(DGP) is fully known, so every number an estimator hands back can be
+reconciled against the truth, a teaching condition that real data can
+never provide. The setup is as follows. The platform operates in 300
+city-week markets, and in each market there are four restaurant brands
+to choose from, labeled A, B, C, D, plus an outside option of “not
+ordering.” The four brands belong to two cuisine nests: A and B are
+Western comfort food (comfort), and C and D are Asian cuisine (asian).
+The data are at the order level: 1200 users, each placing 8 orders
+within the window, for 9600 choices in total, each time picking exactly
+one of the five options available in that market at that moment. The
+first thing the platform wants to know is basic: how sensitive are users
+to price, and if a brand raises its price by one dollar, how many orders
+does it lose, and to whom?</p>
+</div>
+<p>Start with the most direct approach. Treat each choice as the
+dependent variable and run a standard conditional logit, putting brand
+fixed effects, star ratings, and price into utility, estimate the price
+coefficient by maximum likelihood, and then convert it into a demand
+elasticity. Brand A’s own-price elasticity comes out to <span
+class="math inline">-1.78</span>: a 1% price increase drops A’s order
+volume by 1.78%. Taken in isolation, this looks like a conclusion you
+could use directly. The elasticity is less than 2 in absolute value,
+demand looks not especially sensitive, and written into a brief for the
+operations team the conclusion would read “users are not that
+price-conscious, A still has room to raise prices.”</p>
+<p>The problem is that we know the truth. These data were generated from
+a world with a distinctly higher price elasticity, and A’s true
+own-price elasticity is <span class="math inline">-2.78</span>. The
+naive logit understates the price sensitivity of demand by well over a
+third, and a recommendation to raise prices based on it could point in
+entirely the wrong direction. The regression itself is not miswritten,
+maximum likelihood converges cleanly, and the standard errors are small.
+So where exactly does the <span class="math inline">-1.78</span> go
+wrong?</p>
+<p>The answer comes in two layers, and this chapter peels them off one
+at a time. The first layer is endogeneity: expensive brands are often
+also better along dimensions the researcher cannot see (faster
+preparation, more consistent flavor, a more prominent recommendation
+slot), and this unseen quality both raises price and attracts orders on
+its own, so the price coefficient is diluted by the illusion that “good
+things are naturally expensive and still sell well,” and the elasticity
+is pulled toward zero. Section 3 will spell out where this bias comes
+from, and Section 4 uses a control function to push the price
+coefficient back from <span class="math inline">0.141</span> to <span
+class="math inline">0.245</span>, with the elasticity moving accordingly
+from <span class="math inline">-1.78</span> to around <span
+class="math inline">-3.00</span>. The second layer is more subtle, and
+is more the theme of this chapter: even with the price coefficient
+fixed, the logit still wrongly assumes that after A raises its price the
+lost orders are distributed in proportion to the other options’ shares,
+whereas the truth is that most of them pour toward A’s same-nest Western
+sibling B. Fixing this layer takes nested logit and mixed logit. By the
+time Section 6 has run all four estimators on Selva, A’s own-price
+elasticity lands at <span class="math inline">-2.75</span>, and the
+within-nest substitution is recovered as well.</p>
+<h2 id="the-economic-model-and-the-estimand">2 The economic model and
+the estimand</h2>
+<p>Before touching estimation, pin down two things: what target quantity
+we want to estimate, and in what model language we write it down. The
+target quantity in discrete choice is very different from that in linear
+regression, and it is worth stating clearly first.</p>
+<p>Demand estimation has two core deliverables, one being the own-price
+elasticity, and the other the substitution pattern, the latter often
+characterized by the diversion ratio. The own-price elasticity says how
+much a brand’s own sales fall when it raises its price; the diversion
+ratio says where that lost fraction of orders goes, with <span
+class="math inline">D_{A\to B}</span> denoting the share of A’s lost
+orders that B picks up. Together, these two answer the questions that
+operations and regulators actually care about: how much pricing power a
+brand has, whether a merger of two brands would markedly raise prices
+because they are close neighbors, and where delisting an option would
+push demand. Section 6 will show that both the own-price elasticity and
+the diversion ratio that the naive logit hands back are wrong, and that
+the direction of the error is set by the model specification, not by
+sampling noise. The estimand of this chapter is therefore not any single
+coefficient, but this whole set of elasticities and diversion ratios,
+all of which are functions of the utility parameters: estimate the
+parameters and substitute them into the closed-form formulas.</p>
+<p>To write these quantities down we need the notation of random
+utility. Index the decision maker by <span class="math inline">i</span>,
+let the choice set for one decision be <span
+class="math inline">\{0,1,\dots,J\}</span>, where <span
+class="math inline">0</span> is the outside option (not ordering) and
+<span class="math inline">1</span> through <span
+class="math inline">J</span> are the <span class="math inline">J</span>
+inside products. Decision maker <span class="math inline">i</span> gets
+utility from option <span class="math inline">j</span> equal to</p>
+<p><span class="math display">U_{ij} = V_{ij} +
+\varepsilon_{ij}</span></p>
+<p><span class="math inline">V_{ij}</span> is the observable part (also
+called the representative utility), a function of product
+characteristics and parameters; <span
+class="math inline">\varepsilon_{ij}</span> is the part the researcher
+cannot observe, which is given a probability distribution when it enters
+the model. The decision maker picks the option with the highest utility,
+so the probability of choosing <span class="math inline">j</span> is</p>
+<p><span class="math display">s_{ij} = \Pr\big(U_{ij} &gt; U_{ik}\ \
+\forall k \neq j\big) = \Pr\big(\varepsilon_{ik} - \varepsilon_{ij} &lt;
+V_{ij} - V_{ik}\ \ \forall k \neq j\big)</span></p>
+<p>This expression stitches economics (pick the highest utility) to
+statistics (a probability over <span
+class="math inline">\varepsilon</span>). The choice probability is a
+<span class="math inline">J</span>-dimensional integral over the joint
+distribution of <span class="math inline">\varepsilon</span>, and
+exactly what it looks like depends entirely on what distribution you
+assign to <span class="math inline">\varepsilon</span>. Set it to
+multivariate normal and you get multinomial probit; set it to
+independent and identically distributed Type-I extreme value and you get
+the star of this chapter, the logit, whose integral has a closed form.
+Choosing a continuous, full-support distribution has two further
+advantages: the choice probability is smooth and differentiable in <span
+class="math inline">V</span> everywhere, and it always lands in the open
+interval <span class="math inline">(0,1)</span>, so any observed choice
+pattern can be rationalized by the model.</p>
+<p>The representative utility is usually set to be linear. In the Selva
+setup,</p>
+<p><span class="math display">V_{ij} = \delta_j + \beta_r\,
+\mathrm{rating}_{j} - \alpha\, \mathrm{price}_{j} + \xi_{j}</span></p>
+<p><span class="math inline">\delta_j</span> is the brand fixed effect
+(the outside option is normalized to <span class="math inline">\delta_0
+= 0</span>), <span class="math inline">\mathrm{rating}_j</span> is the
+star rating, <span class="math inline">\mathrm{price}_j</span> is the
+price, <span class="math inline">\alpha &gt; 0</span> is the disutility
+of price, and <span class="math inline">\xi_j</span> is a product
+quality that the researcher cannot observe but that both the decision
+maker and the platform know full well. <span
+class="math inline">\xi_j</span> is the source of the endogeneity
+problem that runs through the whole chapter: it both enters utility and
+is correlated with price, and Section 3 treats it in detail. For now
+just remember: that <span class="math inline">\xi_j</span> in <span
+class="math inline">V_{ij}</span> is precisely what the naive logit
+omits, and hence what biases its price coefficient.</p>
+<div class="intuition">
+<p>Think of <span class="math inline">\varepsilon_{ij}</span> as the
+decision maker’s mood of the moment and every chance factor the
+researcher cannot measure: today they especially want something spicy,
+last time one place let them down, a friend just recommended some brand.
+The researcher sees none of this and can only treat it as a random
+variable. The cleverness of RUM is that it does not pretend to observe
+these moods; it admits it cannot, packs them into a distribution, and
+then asks “under this distribution, what is the probability of choosing
+each option.” A deterministic model of individual optimization thereby
+becomes, in the researcher’s eyes, a probability model, and probability
+is exactly the share we can count in the data. That is how theory and
+data get connected.</p>
+</div>
+<p>To summarize: the estimand in discrete choice is the whole
+substitution structure of own-price elasticity and diversion ratio, the
+language that carries it is random utility, the presence of the outside
+option lets the “order or not” margin into the model too, and that
+unobservable <span class="math inline">\xi_j</span> in utility is the
+seed of endogeneity. This section has not yet touched what distribution
+to give <span class="math inline">\varepsilon</span>, which is the first
+step in the next section’s building up of the logit.</p>
+<h2 id="identification">3 Identification</h2>
+<p>Identification comes logically before estimation. This section
+answers: given the RUM framework, which utility parameters and which
+substitution patterns can the choice shares in the data actually pin
+down, and which things are in principle not identified and must be
+supplied by normalization conventions or extra assumptions. This is the
+most finely analyzed section of the chapter, and as a depth benchmark it
+is split into numbered subsections, each of which gives intuition before
+formalization.</p>
+<h3
+id="from-random-utility-to-logit-how-the-gumbel-distribution-gives-a-closed-form">3.1
+From random utility to logit: how the Gumbel distribution gives a closed
+form</h3>
+<p>Start with the most elementary question: if the unobservable utility
+<span class="math inline">\varepsilon</span> follows some distribution,
+can the probability of choosing an option be written as an expression we
+can actually compute. In general this is a high-dimensional integral
+with no closed form, and can only be simulated numerically. The whole
+magic of the logit lies in picking the right distribution, one that
+collapses this integral into a single line of algebra.</p>
+<p>That distribution is the Type-I extreme value, also called the Gumbel
+distribution. Its cumulative distribution function and density are</p>
+<p><span class="math display">F(\varepsilon) =
+\exp\big(-e^{-\varepsilon}\big), \qquad f(\varepsilon) =
+e^{-\varepsilon}\exp\big(-e^{-\varepsilon}\big)</span></p>
+<p>The standard Gumbel has mean equal to the Euler-Mascheroni constant
+<span class="math inline">\gamma \approx 0.577</span> and variance <span
+class="math inline">\pi^2/6</span>. It looks like a right-skewed bell,
+and the reason it is called an extreme value distribution is that it is
+the limiting distribution of the maximum of a large class of
+distributions, which makes it natural for characterizing “the most
+prominent among several unseen factors.”</p>
+<p>Now do that collapsing integral. Assume <span
+class="math inline">\varepsilon_{i0},\dots,\varepsilon_{iJ}</span> are
+independent and identically distributed standard Gumbel. Given <span
+class="math inline">\varepsilon_{ij}</span>, choosing <span
+class="math inline">j</span> requires <span
+class="math inline">\varepsilon_{ik} &lt; \varepsilon_{ij} + V_{ij} -
+V_{ik}</span> for all <span class="math inline">k \neq j</span>, and by
+independence the conditional probability is the product of the
+individual CDFs,</p>
+<p><span class="math display">\Pr(j \mid \varepsilon_{ij}) = \prod_{k
+\neq j} \exp\!\Big(-e^{-(\varepsilon_{ij} + V_{ij} -
+V_{ik})}\Big)</span></p>
+<p>Then integrate over <span class="math inline">\varepsilon_{ij}</span>
+against its density. Folding the <span class="math inline">k = j</span>
+term into the product too (it equals <span
+class="math inline">\exp(-e^{-\varepsilon_{ij}})</span>, which just
+completes a piece of the density), rearrange into</p>
+<p><span class="math display">s_{ij} = \int_{-\infty}^{\infty}
+e^{-\varepsilon_{ij}} \exp\!\Big(-e^{-\varepsilon_{ij}}
+\underbrace{\textstyle\sum_{k} e^{-(V_{ij}-V_{ik})}}_{\equiv\, A}\Big)\,
+d\varepsilon_{ij}</span></p>
+<p>Make the substitution <span class="math inline">t =
+e^{-\varepsilon_{ij}}</span>, so <span class="math inline">dt =
+-e^{-\varepsilon_{ij}}d\varepsilon_{ij}</span>, and the integral becomes
+<span class="math inline">\int_0^\infty e^{-At}\,dt = 1/A</span>. And
+since <span class="math inline">A = \sum_k e^{-(V_{ij}-V_{ik})} =
+e^{-V_{ij}}\sum_k e^{V_{ik}}</span>, substituting back gives</p>
+<p><span class="math display">s_{ij} = \frac{e^{V_{ij}}}{\sum_{k}
+e^{V_{ik}}}</span></p>
+<p>This is the logit choice probability, in multinomial logistic form.
+With the outside-option normalization <span class="math inline">V_{i0} =
+0</span>, that term in the denominator is just <span
+class="math inline">e^0 = 1</span>, so</p>
+<p><span class="math display">s_{ij} = \frac{e^{V_{ij}}}{1 +
+\sum_{k=1}^{J} e^{V_{ik}}}</span></p>
+<p>This one line makes an important point clear: the probability of
+choosing an option depends only on the differences in representative
+utility across options, and varies with utility in a smooth, monotone
+way. The Gumbel assumption buys exactly this closed form, and the price
+it charges is the IIA that the next several subsections have to pay
+back.</p>
+<div class="intuition">
+<p>The quantity <span class="math inline">\log\big(\sum_k
+e^{V_{ik}}\big)</span> is called the inclusive value or log-sum, and it
+is in fact the expected maximum utility <span
+class="math inline">\mathbb{E}[\max_k U_{ik}]</span> available to the
+decision maker (up to a constant <span
+class="math inline">\gamma</span>). It is a smooth approximation to the
+max: <span class="math inline">\max(10, 20) = 20</span>, while <span
+class="math inline">\log(e^{10}+e^{20}) \approx 20.00005</span>, almost
+identical, but differentiable everywhere. When we get to nested logit,
+this log-sum will reappear as “the attractiveness of a nest”; when we
+discuss welfare, it is the handle on the change in consumer surplus.
+Remember that in the logit world, “the total value of a set of options”
+is the log-sum-exp of their utilities.</p>
+</div>
+<h3
+id="only-differences-and-scale-are-identified-two-normalizations">3.2
+Only differences and scale are identified: two normalizations</h3>
+<p>RUM has two natural indeterminacies that cannot be pinned down
+without conventions, and they must be stated up front or the
+coefficients later will be uninterpretable.</p>
+<p>The first is location (level). Choice depends only on the relative
+heights of utilities, so adding the same constant <span
+class="math inline">a</span> to the utilities of all options leaves the
+ranking untouched and the choice probabilities unchanged. Algebraically,
+replace each <span class="math inline">V_{ij}</span> with <span
+class="math inline">V_{ij} + a</span>, and numerator and denominator
+both multiply by <span class="math inline">e^a</span> and cancel. The
+consequence is that the absolute level of utility is not identified,
+only differences are. The convention in practice is to set the outside
+option’s utility to zero and read every other option’s <span
+class="math inline">\delta_j</span> relative to it. By the same logic,
+anything that varies with the decision maker but not the option (for
+instance income <span class="math inline">Y_i</span> entering utility on
+its own) appears in the same amount across all options and cancels in
+the difference, and is uniformly not identified, unless it interacts
+with an option characteristic (for instance <span
+class="math inline">\mathrm{price}_j / Y_i</span>), in which case the
+interaction does bring cross-option variation.</p>
+<p>The second is scale. Multiply all utilities by the same positive
+number <span class="math inline">\lambda</span>, and the ranking still
+does not change, but <span
+class="math inline">\mathrm{Var}(\lambda\varepsilon) =
+\lambda^2\mathrm{Var}(\varepsilon)</span> does. This says the scale of
+utility and the variance of <span class="math inline">\varepsilon</span>
+are one and the same thing, and pinning down one pins down the other.
+The logit convention fixes the variance of <span
+class="math inline">\varepsilon</span> at <span
+class="math inline">\pi^2/6</span> (the variance of the standard
+Gumbel). This convention has an easily overlooked corollary: every
+coefficient is really “the true coefficient divided by the standard
+deviation of <span class="math inline">\varepsilon</span>.” The larger
+the fluctuation in unseen utility (the stronger the noise), the more the
+estimated coefficient is compressed toward zero. So the logit
+coefficients from two data sets cannot be compared in magnitude
+directly, since their scales may differ; what can be compared is the
+ratio of coefficients, for instance <span class="math inline">\beta_r /
+\alpha</span>, which is the marginal rate of substitution between rating
+and price, with the scale cancelling in numerator and denominator.</p>
+<div class="warning">
+<p>Interpreting the coefficients of a logit or any discrete choice model
+as “the absolute marginal utility” is wrong; they only have relative
+meaning. Comparing coefficient magnitudes across models or across
+samples, when the two error scales differ, may produce differences that
+are purely differences in scale. To compare, compare identified ratios
+(such as willingness-to-pay <span class="math inline">=
+\beta_x/\alpha</span>) or elasticities, which are immune to the scale
+normalization.</p>
+</div>
+<p>These two normalizations are not technical fastidiousness but one
+half of the price-elasticity puzzle from Section 1. The
+willingness-to-pay for a rating is <span class="math inline">\beta_r /
+\alpha</span>, a dollar-denominated ratio; as long as the price
+coefficient <span class="math inline">\alpha</span> is biased by
+endogeneity, this ratio is wrong along with it, and the scale
+normalization by itself cannot save it, which takes the control function
+of Section 4.</p>
+<h3 id="iia-the-logits-strongest-restriction">3.3 IIA: the logit’s
+strongest restriction</h3>
+<p>The logit’s closed form is beautiful, but it quietly takes on a very
+strong behavioral restriction, and understanding it is the key to
+understanding the whole back half of the chapter. Take any two options
+<span class="math inline">j</span> and <span
+class="math inline">k</span>; the ratio of their choice probabilities
+is</p>
+<p><span class="math display">\frac{s_{ij}}{s_{ik}} =
+\frac{e^{V_{ij}}}{e^{V_{ik}}} = e^{V_{ij} - V_{ik}}</span></p>
+<p>This ratio depends only on the utilities of <span
+class="math inline">j</span> and <span class="math inline">k</span>
+themselves, and has nothing whatever to do with what some third option
+<span class="math inline">\ell</span> is, whether it exists, or how good
+it is. This is the independence of irrelevant alternatives, IIA. It
+sounds like a harmless technicality, but it is actually a strong
+behavioral assertion.</p>
+<p>The classic counterexample is red-bus/blue-bus. Imagine a commute
+with only two options, driving and taking a blue bus, each with half the
+share, so the ratio is 1. Now a red bus is introduced, identical to the
+blue bus except for color. IIA forces the ratio of “car to either bus”
+to remain 1, so the model predicts the three options split into thirds
+each, with driving’s share dropping from 1/2 to 1/3. But common sense
+tells us that the red and blue buses are nearly the same thing to a
+commuter, that the red bus should mostly steal riders from the blue bus,
+that driving’s share should stay near 1/2, and that the two buses should
+each take about 1/4. The logit goes wrong precisely by treating the red
+and blue buses as new options that are independent of each other just as
+“driving” is, without recognizing that the red and blue buses are close
+neighbors. The root cause is that the logit assumes the <span
+class="math inline">\varepsilon</span> are mutually independent, and
+does not allow “my preference for the blue bus and my preference for the
+red bus are highly positively correlated.”</p>
+<p>Translate IIA into elasticities and the problem is clearer. The
+logit’s own-price and cross-price elasticities have closed forms:</p>
+<p><span class="math display">\eta_{jj} = \frac{\partial
+s_{ij}}{\partial p_j}\frac{p_j}{s_{ij}} = -\alpha\, p_j\,(1 - s_{ij}),
+\qquad \eta_{jk} = \frac{\partial s_{ij}}{\partial
+p_k}\frac{p_k}{s_{ij}} = \alpha\, p_k\, s_{ik}</span></p>
+<p>Fix your gaze on the cross elasticity <span
+class="math inline">\eta_{jk}</span>: it depends only on the price and
+share of the option <span class="math inline">k</span> that raised its
+price, and has nothing at all to do with which option <span
+class="math inline">j</span> is being affected. In other words, after
+<span class="math inline">k</span> raises its price, the shares of all
+other products are pushed up by the same proportion, regardless of how
+similar they are to <span class="math inline">k</span>. This is called
+proportional substitution. Carried down to the diversion ratio,</p>
+<p><span class="math display">D_{j \to k} = \frac{s_{ik}}{1 -
+s_{ij}}</span></p>
+<p><span class="math inline">j</span>’s lost demand is distributed
+entirely in proportion to the shares of the remaining options, and there
+is simply no place in the model for “who is closer to whom.” This is
+exactly the deeper error from Section 1: when Selva’s A raises its
+price, the truth is that orders flow mainly to B, which is also Western,
+but the logit merely apportions them by share across B, C, D, and the
+outside option, siphoning away the part that should have gone to B. The
+numbers in Section 6 will nail this down.</p>
+<p>IIA is not all bad. It has one historically useful corollary: since
+the ratio of any two options is independent of a third, the <span
+class="math inline">\beta</span> estimated from any subset of options is
+consistent, and this was once used to subsample when the options were
+very numerous, to save computation. But for modern demand estimation,
+IIA is a restriction that must be relaxed, not a convenience to be
+exploited, because the substitution pattern is exactly the product we
+need to deliver.</p>
+<h3 id="price-endogeneity-another-threat-to-identification">3.4 Price
+endogeneity: another threat to identification</h3>
+<p>IIA is an ailment of the substitution structure, while price
+endogeneity is an ailment of the level parameters; the two are
+independent and must be treated separately. Return to that <span
+class="math inline">\xi_j</span> in utility. It is a product quality the
+researcher cannot observe but the platform and users know clearly: more
+reliable preparation, better packaging, a more prominent recommendation
+slot. The platform sees <span class="math inline">\xi_j</span> when it
+prices, good things are naturally priced higher, so <span
+class="math inline">\mathrm{Cov}(\mathrm{price}_j, \xi_j) &gt; 0</span>.
+The naive logit stuffs <span class="math inline">\xi_j</span> into the
+error, and since price is positively correlated with this error, the
+standard endogeneity bias arrives.</p>
+<p>The direction of the bias can be worked out. High-<span
+class="math inline">\xi</span> products are both expensive and popular,
+and if you do not control for <span class="math inline">\xi</span>, the
+model sees that “the expensive ones actually sell well” and pushes the
+disutility of price toward zero, so <span
+class="math inline">\alpha</span> is underestimated and demand looks
+less sensitive than it truly is. This is exactly where the <span
+class="math inline">-1.78</span> of Section 1 comes from: the true <span
+class="math inline">\alpha = 0.30</span>, but the naive estimate is only
+<span class="math inline">0.141</span>, less than half. Note that this
+bias is unrelated to sample size, and no amount of extra data will
+remove it; it is a problem at the level of identification. Note too that
+it is present just as much in individual choice data, and is not caused
+by “data that are not fine enough”; even if we observed every choice of
+every person, as long as price is correlated with <span
+class="math inline">\xi</span>, <span class="math inline">\alpha</span>
+is biased.</p>
+<p>Curing it requires an instrument: a variable that can move price but
+does not enter utility directly. In Selva this variable is each market’s
+local input cost (courier hourly wages, food cost, and the like), which
+pushes up price but does not affect the user’s preference for a given
+order, satisfying the exclusion restriction. With an instrument in hand,
+there are two roads to setting <span class="math inline">\alpha</span>
+right. One is the control function, which is especially handy on
+individual data and is detailed in Section 4; the other is to invert
+shares into a product-level <span class="math inline">\delta_j</span>
+and then do IV-GMM, which is the main battleground of market-level data,
+taken up later in this series when we discuss market-level demand
+estimation. Here we just set up the identification logic: the root of
+price endogeneity is that <span class="math inline">\xi</span> enters
+both utility and pricing, and the cure is to find exogenous variation
+that enters pricing only, not utility.</p>
+<h3
+id="relaxing-iia-what-nested-logit-and-random-coefficients-change">3.5
+Relaxing IIA: what nested logit and random coefficients change</h3>
+<p>The root of IIA is that the <span
+class="math inline">\varepsilon</span> are independent, so relaxing it
+means allowing the <span class="math inline">\varepsilon</span> to be
+correlated, or equivalently, letting each person have their own tastes.
+What each of these two roads identifies is worth spelling out first.</p>
+<p>Nested logit takes the road of “building a structure for the
+correlation.” Sort the options into several nests, which in Selva are
+the Western nest <span class="math inline">\{A, B\}</span>, the Asian
+nest <span class="math inline">\{C, D\}</span>, and the outside option
+as a nest of its own. The unobservable utilities of same-nest products
+are allowed to be positively correlated, while across nests they remain
+independent. This is achieved through a generalized extreme value (GEV)
+joint distribution, and the choice probability it gives is</p>
+<p><span class="math display">s_{ij} =
+\frac{e^{V_{ij}/\lambda_g}\Big(\sum_{k \in g}
+e^{V_{ik}/\lambda_g}\Big)^{\lambda_g - 1}}{\sum_{h}\Big(\sum_{k \in h}
+e^{V_{ik}/\lambda_h}\Big)^{\lambda_h}}</span></p>
+<figure>
+<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' viewBox='0 0 547.20 259.20' role="img" aria-label="The nest structure of the nested logit: one order is first allocated among the outside option and the two cuisine nests, and then among the products within a nest; the unobservable utilities of same-nest products are allowed to be positively correlated. The smaller the nest parameter \lambda, the stronger the within-nest correlation, and the value marked in the figure is the \lambda = 0.875 estimated on Selva in Section 4.3." style="max-width:100%;height:auto;display:block;margin:0 auto">
+<g class='svglite'>
+<defs>
+  <style type='text/css'><![CDATA[
+    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {
+      fill: none;
+      stroke: #000000;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-miterlimit: 10.00;
+    }
+    .svglite text {
+      white-space: pre;
+    }
+    .svglite g.glyphgroup path {
+      fill: inherit;
+      stroke: none;
+    }
+  ]]></style>
+</defs>
+<rect width='100%' height='100%' style='stroke: none; fill: #FFFFFF;'/>
+<defs>
+  <clipPath id='g1_cpMC4wMHw1NDcuMjB8MC4wMHwyNTkuMjA='>
+    <rect x='0.00' y='0.00' width='547.20' height='259.20' />
+  </clipPath>
+</defs>
+<g clip-path='url(#g1_cpMC4wMHw1NDcuMjB8MC4wMHwyNTkuMjA=)'>
+<polygon points='7.20,252.00 540.00,252.00 540.00,7.20 7.20,7.20 ' style='stroke-width: 0.75; stroke: #FFFFFF;' />
+</g>
+<defs>
+  <clipPath id='g1_cpNy4yMHw1NDAuMDB8Ny4yMHwyNTIuMDA='>
+    <rect x='7.20' y='7.20' width='532.80' height='244.80' />
+  </clipPath>
+</defs>
+<g clip-path='url(#g1_cpNy4yMHw1NDAuMDB8Ny4yMHwyNTIuMDA=)'>
+<rect x='224.27' y='23.82' width='98.67' height='30.22' style='stroke-width: 1.50; stroke: #1A365D;' />
+<text x='273.60' y='43.16' text-anchor='middle' style='font-size: 12.00px;fill: #1A365D; font-family: "Arial";' textLength='51.36px' lengthAdjust='spacingAndGlyphs'>one order</text>
+<rect x='46.67' y='97.49' width='98.67' height='34.00' style='stroke-width: 1.50; stroke: #718096;' />
+<text x='96.00' y='111.81' text-anchor='middle' style='font-size: 11.04px;fill: #718096; font-family: "Arial";' textLength='35.59px' lengthAdjust='spacingAndGlyphs'>outside</text>
+<text x='96.00' y='125.06' text-anchor='middle' style='font-size: 11.04px;fill: #718096; font-family: "Arial";' textLength='48.45px' lengthAdjust='spacingAndGlyphs'>(no order)</text>
+<rect x='224.27' y='97.49' width='98.67' height='34.00' style='stroke-width: 1.50; stroke: #C53030;' />
+<text x='273.60' y='111.81' text-anchor='middle' style='font-size: 11.04px;fill: #C53030; font-family: "Arial";' textLength='30.06px' lengthAdjust='spacingAndGlyphs'>nest 1</text>
+<text x='273.60' y='125.06' text-anchor='middle' style='font-size: 11.04px;fill: #C53030; font-family: "Arial";' textLength='36.78px' lengthAdjust='spacingAndGlyphs'>comfort</text>
+<rect x='401.87' y='97.49' width='98.67' height='34.00' style='stroke-width: 1.50; stroke: #2B6CB0;' />
+<text x='451.20' y='111.81' text-anchor='middle' style='font-size: 11.04px;fill: #2B6CB0; font-family: "Arial";' textLength='30.06px' lengthAdjust='spacingAndGlyphs'>nest 2</text>
+<text x='451.20' y='125.06' text-anchor='middle' style='font-size: 11.04px;fill: #2B6CB0; font-family: "Arial";' textLength='26.39px' lengthAdjust='spacingAndGlyphs'>asian</text>
+<line x1='273.60' y1='54.04' x2='96.00' y2='97.49' style='stroke-width: 0.75; stroke: #718096;' />
+<line x1='273.60' y1='54.04' x2='273.60' y2='97.49' style='stroke-width: 0.75; stroke: #C53030;' />
+<line x1='273.60' y1='54.04' x2='451.20' y2='97.49' style='stroke-width: 0.75; stroke: #2B6CB0;' />
+<rect x='174.93' y='173.04' width='98.67' height='34.00' style='stroke-width: 1.50; stroke: #C53030;' />
+<text x='224.27' y='193.99' text-anchor='middle' style='font-size: 11.04px;fill: #C53030; font-family: "Arial";' textLength='7.36px' lengthAdjust='spacingAndGlyphs'>A</text>
+<rect x='273.60' y='173.04' width='98.67' height='34.00' style='stroke-width: 1.50; stroke: #C53030;' />
+<text x='322.93' y='193.99' text-anchor='middle' style='font-size: 11.04px;fill: #C53030; font-family: "Arial";' textLength='7.36px' lengthAdjust='spacingAndGlyphs'>B</text>
+<rect x='357.47' y='173.04' width='98.67' height='34.00' style='stroke-width: 1.50; stroke: #2B6CB0;' />
+<text x='406.80' y='194.00' text-anchor='middle' style='font-size: 11.04px;fill: #2B6CB0; font-family: "Arial";' textLength='7.97px' lengthAdjust='spacingAndGlyphs'>C</text>
+<rect x='446.27' y='173.04' width='98.67' height='34.00' style='stroke-width: 1.50; stroke: #2B6CB0;' />
+<text x='495.60' y='193.99' text-anchor='middle' style='font-size: 11.04px;fill: #2B6CB0; font-family: "Arial";' textLength='7.97px' lengthAdjust='spacingAndGlyphs'>D</text>
+<line x1='273.60' y1='131.49' x2='224.27' y2='173.04' style='stroke-width: 0.75; stroke: #C53030;' />
+<line x1='273.60' y1='131.49' x2='322.93' y2='173.04' style='stroke-width: 0.75; stroke: #C53030;' />
+<line x1='451.20' y1='131.49' x2='406.80' y2='173.04' style='stroke-width: 0.75; stroke: #2B6CB0;' />
+<line x1='451.20' y1='131.49' x2='495.60' y2='173.04' style='stroke-width: 0.75; stroke: #2B6CB0;' />
+<text x='104.54' y='236.31' style='font-size: 11.04px;fill: #2D3748; font-family: "Arial";' textLength='135.84px' lengthAdjust='spacingAndGlyphs'>within-nest correlation = 1 - </text>
+<text x='240.38' y='236.31' style='font-size: 11.04px;fill: #2D3748; font-family: "Symbol";' textLength='6.05px' lengthAdjust='spacingAndGlyphs'>λ</text>
+<text x='246.44' y='230.88' style='font-size: 7.73px;fill: #2D3748; font-family: "Arial";' textLength='4.30px' lengthAdjust='spacingAndGlyphs'>2</text>
+<text x='250.73' y='236.31' style='font-size: 11.04px;fill: #2D3748; font-family: "Arial";' textLength='60.09px' lengthAdjust='spacingAndGlyphs'>;  estimated </text>
+<text x='310.82' y='236.31' style='font-size: 11.04px;fill: #2D3748; font-family: "Symbol";' textLength='6.05px' lengthAdjust='spacingAndGlyphs'>λ</text>
+<text x='316.88' y='236.31' style='font-size: 11.04px;fill: #2D3748; font-family: "Arial";' textLength='125.78px' lengthAdjust='spacingAndGlyphs'>=0.875, correlation=0.235</text>
+</g>
+</g>
+</svg>
+<figcaption aria-hidden="true">The nest structure of the nested logit:
+one order is first allocated among the outside option and the two
+cuisine nests, and then among the products within a nest; the
+unobservable utilities of same-nest products are allowed to be
+positively correlated. The smaller the nest parameter <span
+class="math inline">\lambda</span>, the stronger the within-nest
+correlation, and the value marked in the figure is the <span
+class="math inline">\lambda = 0.875</span> estimated on Selva in Section
+4.3.</figcaption>
+</figure>
+<p>Here <span class="math inline">g</span> is the nest that <span
+class="math inline">j</span> belongs to (this chapter uses <span
+class="math inline">g</span> and <span class="math inline">h</span> for
+nests, unrelated to the book-wide convention of writing cohort as <span
+class="math inline">g</span>), and <span class="math inline">\lambda_g
+\in (0, 1]</span> is the nest parameter. <span
+class="math inline">\lambda_g = 1</span> falls back to the ordinary
+logit (no extra within-nest correlation); <span
+class="math inline">\lambda_g \to 0</span> means same-nest products are
+nearly perfect substitutes (correlation tending to 1). IIA still holds
+within a nest but no longer holds across nests, so “A raises its price
+and flows mainly to B” can now be accommodated. What identifies <span
+class="math inline">\lambda_g</span>? Variation of the kind “how
+changing the characteristic of some product in a nest affects the whole
+nest’s share relative to other nests”: how strong within-nest
+substitution is leaves an imprint in the response of the nest’s total
+share to characteristics. In the log-sum notation of Section 3.1, you
+can read it as a two-level choice: first pick a nest by the nests’
+inclusive values, then pick a product within the nest by a logit, <span
+class="math inline">s_{ij} = s_{ij \mid g}\cdot s_{ig}</span>, though
+the essence is a correlation structure of <span
+class="math inline">\varepsilon</span> rather than a genuine two-step
+process. The price is that the nests must be specified by the researcher
+before estimation, and if the nests are drawn wrong, the substitution
+pattern is wrong too.</p>
+<p>Mixed logit (random coefficients logit) takes the road of “letting
+tastes differ across people,” which is more flexible. Suppose each
+person’s coefficients <span class="math inline">\beta_i</span> follow
+some distribution <span class="math inline">F(\beta \mid \theta)</span>,
+for instance the price coefficient <span class="math inline">\alpha_i =
+\bar\alpha + \sigma_\alpha \nu_i</span> and the preference for the
+Western nest <span class="math inline">b_i = \sigma_b \eta_i</span> (the
+random coefficient <span class="math inline">b_i</span> here is
+unrelated to the nest parameter <span
+class="math inline">\lambda_g</span> of the nested logit, and is denoted
+separately to avoid confusion), where <span class="math inline">\nu_i,
+\eta_i</span> are the individual’s taste draws. Given <span
+class="math inline">\beta_i</span>, each person is internally still a
+logit; integrating the individual logit over the taste distribution
+gives the aggregate choice probability</p>
+<p><span class="math display">s_{ij}(\theta) = \int \frac{e^{\,\beta\,
+x_{ij}}}{\sum_k e^{\,\beta\, x_{ik}}}\, dF(\beta \mid \theta)</span></p>
+<p>This integral generally has no closed form and must be computed by
+simulation. Why does it relax IIA? Because substitution is no longer
+determined by shares but by “who is like whom in characteristics”: two
+products that are both cheap are favored simultaneously by the same
+group of price-sensitive people, so when one raises its price, demand
+flows more toward the other cheap one, rather than being scattered by
+share. McFadden and Train (2000) proved that as long as the
+characteristics are chosen richly enough, mixed logit can approximate
+any random utility model, including probit, making it the most general
+tool in discrete choice.</p>
+<p>The identification of mixed logit has one point that must be spelled
+out, and it also explains a deliberate design of this chapter’s Selva
+data. The random coefficient distribution does not in principle require
+a panel: if the choice sets and product characteristics facing different
+decision makers have sufficiently rich variation satisfying the
+exclusion restriction, a cross section of single choices can identify
+the taste distribution too. The extra value of a panel is that the
+correlation of the same person’s choices across different situations
+directly reveals persistent tastes, and helps separate this
+heterogeneity from the choice-by-choice independent utility shocks.
+Letting each Selva user place 8 orders uses precisely the internal
+consistency of these 8 choices (always picking the cheap one, always
+picking Western) to strengthen the identification of <span
+class="math inline">\sigma_\alpha</span> and <span
+class="math inline">\sigma_b</span>. Under this chapter’s particular DGP
+and limited cross-sectional variation, cutting each person’s choices to
+1 would make the variance-term estimates collapse toward zero; that is a
+symptom of insufficient information in this example, and cannot be
+extrapolated into a general claim that “a pure cross section cannot
+identify mixed logit.”</p>
+<p>The key points of this section can be summarized as follows: the
+logit’s choice probability identifies only differences and ratios of
+utility, with the absolute level and scale supplied by normalizations;
+IIA locks substitution into proportional allocation and is a strong
+restriction that must be relaxed; price endogeneity is another threat,
+independent of IIA, arising because <span class="math inline">\xi</span>
+enters both utility and pricing, and is cured with an instrument;
+relaxing IIA has two roads, nested logit (build a structure for the
+correlation, identify the nest parameter) and mixed logit (let tastes
+vary across people, identify their distribution from rich choice-set
+variation, with a panel able to strengthen identification markedly).
+None of this has yet touched “how to estimate,” which is the business of
+the next section.</p>
+<h2 id="estimation-from-plain-logit-to-mixed-logit">4 Estimation: from
+plain logit to mixed logit</h2>
+<p>This section advances along the logic of “where the previous method
+fails gives rise to the next.” Plain logit hands off two ailments,
+endogeneity bias and IIA; the control function cures endogeneity, and
+nested logit and mixed logit cure IIA.</p>
+<h3 id="maximum-likelihood-for-plain-logit">4.1 Maximum likelihood for
+plain logit</h3>
+<p>With the choice probability in closed form, estimating plain logit is
+standard maximum likelihood. Having observed <span
+class="math inline">N</span> choices, with <span
+class="math inline">d_{ij} = 1</span> indicating that choice <span
+class="math inline">i</span> picked <span class="math inline">j</span>,
+the log-likelihood is</p>
+<p><span class="math display">\ell(\theta) = \sum_{i} \sum_{j} d_{ij}\,
+\log s_{ij}(\theta)</span></p>
+<p>The logit log-likelihood is globally concave (log-sum-exp is a convex
+function), so there is no need to worry about separated local maxima. A
+finite optimum is unique only when the design matrix has full rank and
+the sample has no complete or quasi-complete separation; if separation
+occurs, the supremum of the likelihood is approached as the coefficients
+diverge, and the software reporting “converged” does not mean the MLE
+exists. Its score is also well structured,</p>
+<p><span class="math display">\frac{\partial \ell}{\partial \beta} =
+\sum_i \sum_j \big(d_{ij} - s_{ij}\big)\, x_{ij}</span></p>
+<p>The first-order condition is that “the difference between observed
+choice and predicted probability is orthogonal to the characteristics,”
+which is the intuitive source of the moment condition. Running this
+plain logit on Selva, the price coefficient is <span
+class="math inline">0.141</span> (SE <span
+class="math inline">0.007</span>), the rating coefficient <span
+class="math inline">0.554</span> (SE <span
+class="math inline">0.089</span>), converting into a willingness-to-pay
+for a rating of <span class="math inline">0.554 / 0.141 \approx
+\$3.93</span> per star, and an own-price elasticity of <span
+class="math inline">-1.78</span>. These are the set of numbers that did
+not add up in Section 1, ailing in two places: the price coefficient is
+biased by <span class="math inline">\xi</span>, and substitution is
+locked by IIA. We treat them in turn below.</p>
+<h3 id="the-control-function-cures-endogeneity">4.2 The control function
+cures endogeneity</h3>
+<p>The idea of the control function is plain: the root of endogeneity is
+the component of <span class="math inline">\xi_j</span> that is
+correlated with price, and if we can estimate this component, put it
+into the regression, and control it out, then the remaining price
+variation is clean. Two steps. First, regress price on the instrument
+and exogenous characteristics,</p>
+<p><span class="math display">\mathrm{price}_{j} = f(\mathrm{rating}_j,\
+w_j,\ \text{brand}) + e_{j}</span></p>
+<p><span class="math inline">w_j</span> is the local cost, the
+instrument, and take the residual <span class="math inline">\hat
+e_j</span>. Second, put this residual as an extra control variable (that
+is, the control function) into utility,</p>
+<p><span class="math display">V_{ij} = \delta_j + \beta_r\,
+\mathrm{rating}_j - \alpha\, \mathrm{price}_j + \rho\, \hat
+e_j</span></p>
+<p>and run the logit again. The reasoning is that the component of <span
+class="math inline">\xi_j</span> correlated with price is absorbed by
+<span class="math inline">\hat e_j</span>, so the price coefficient
+<span class="math inline">\alpha</span> is now identified on the
+“purified” variation and returns to consistency. In Selva’s first step
+the coefficient on the instrument <span class="math inline">w</span> is
+<span class="math inline">1.605</span>, with a partial-F as high as
+<span class="math inline">2351</span>, a very strong instrument, so
+there is no need to worry about weak instruments. In the second step the
+price coefficient jumps from <span class="math inline">0.141</span> to
+<span class="math inline">0.245</span> (SE <span
+class="math inline">0.008</span>), and the control function coefficient
+<span class="math inline">\rho = 0.299</span> is significantly positive,
+exactly as expected under “higher-quality products are priced higher.”
+The own-price elasticity moves accordingly from <span
+class="math inline">-1.78</span> to <span
+class="math inline">-3.00</span>. This layer of endogeneity is now
+cured.</p>
+<div class="warning">
+<p>The control function buys consistency but also comes with two
+disciplines. One is that it requires the first-step price equation to be
+essentially correctly specified, which is a stronger assumption than
+pure IV, because IV only needs the instrument to be valid, whereas the
+control function further depends on the specification of the
+relationship between <span class="math inline">\xi</span> and <span
+class="math inline">e</span>. The other is that the second-step standard
+error must account for the first step being estimated, since <span
+class="math inline">\hat e_j</span> is not the true residual, and using
+the ordinary second-step SE directly will understate it. The reliable
+practice is to bootstrap the two steps together (resampling at the
+market level), or to use the Murphy-Topel two-step correction. This
+series’ module on inference gives the variance formula for this kind of
+two-step estimator.</p>
+</div>
+<p>The control function fixes the price coefficient but does not touch
+IIA: this logit still assumes proportional substitution. Section 6 will
+show that the diversion pattern of the control-function logit is almost
+identical to that of the naive version, with the diversion of A toward B
+still only around <span class="math inline">0.25</span>, whereas the
+truth is <span class="math inline">0.34</span>. To fix substitution, you
+have to change the model.</p>
+<h3 id="nested-logit-cures-within-nest-substitution">4.3 Nested logit
+cures within-nest substitution</h3>
+<p>Nested logit sorts A, B into the Western nest and C, D into the Asian
+nest, allowing same-nest products to substitute more strongly.
+Estimation is still maximum likelihood, with one extra parameter, the
+nest parameter <span class="math inline">\lambda</span> (here a common
+<span class="math inline">\lambda</span> is set for the two inside
+nests, and the outside option’s nest is fixed at <span
+class="math inline">\lambda_0 = 1</span>). The likelihood uses the GEV
+choice probability of Section 3.5, and to handle price endogeneity along
+the way, the utility continues to carry the control function residual
+<span class="math inline">\hat e_j</span>. One point to watch: the
+nested logit likelihood is no longer globally concave and may have
+multiple local solutions, so in practice one must try several starting
+values and constrain <span class="math inline">\lambda</span> within
+<span class="math inline">(0, 1]</span> (this chapter uses the
+reparameterization <span class="math inline">\lambda =
+\mathrm{logistic}(\theta)</span> to guarantee this).</p>
+<p>On Selva, <span class="math inline">\hat\lambda = 0.875</span> (SE
+<span class="math inline">0.063</span>), significantly less than 1,
+indicating there is indeed extra within-nest correlation. The nest
+parameter can be translated into the correlation of same-nest
+unobservable utilities, about <span class="math inline">1 - \lambda^2 =
+0.235</span>. The price coefficient is <span
+class="math inline">0.227</span>, the rating coefficient <span
+class="math inline">0.644</span>. The most important change is in the
+substitution pattern: the diversion of A toward B upon a price rise
+climbs from the logit’s <span class="math inline">0.25</span> to <span
+class="math inline">0.32</span>, moving clearly toward the truth of
+<span class="math inline">0.34</span>, because the model now recognizes
+that B is A’s same-nest neighbor. The price of nested logit is that the
+nest structure is rigidly specified by the researcher, and drawing the
+nests wrong forfeits everything; moreover it assumes price sensitivity
+is the same for everyone, ignoring taste heterogeneity.</p>
+<h3 id="mixed-logit-and-simulated-maximum-likelihood">4.4 Mixed logit
+and simulated maximum likelihood</h3>
+<p>Mixed logit does not pre-draw nests, but lets each person have their
+own price sensitivity <span class="math inline">\alpha_i = \bar\alpha +
+\sigma_\alpha\nu_i</span> and Western preference <span
+class="math inline">b_i = \sigma_b\eta_i</span>, and the substitution
+pattern emerges naturally from the data. Its choice probability is an
+integral with no closed form, and must be estimated by simulated maximum
+likelihood (SML): for each person draw <span
+class="math inline">R</span> sets of tastes <span
+class="math inline">(\nu_i^{(r)}, \eta_i^{(r)})</span>, use them to
+compute <span class="math inline">R</span> individual logit
+probabilities, and average them as the simulated value of that person’s
+choice probability.</p>
+<p>The key in this example is that the likelihood preserves the panel
+structure. The same person <span class="math inline">i</span>’s 8
+choices share the same set of persistent tastes <span
+class="math inline">\beta_i</span>, so one must first, given <span
+class="math inline">\beta_i^{(r)}</span>, take the product of the
+probabilities of this person’s 8 choices, and then average over <span
+class="math inline">r</span>:</p>
+<p><span class="math display">\hat P_i(\theta) =
+\frac{1}{R}\sum_{r=1}^{R} \prod_{t=1}^{T_i} \frac{e^{\,\beta_i^{(r)}
+x_{i c_{it} t}}}{\sum_k e^{\,\beta_i^{(r)} x_{i k t}}}, \qquad
+\ell(\theta) = \sum_i \log \hat P_i(\theta)</span></p>
+<p><span class="math inline">c_{it}</span> is the option chosen by
+person <span class="math inline">i</span> on the <span
+class="math inline">t</span>-th occasion. The internal consistency of
+the 8 choices (whether this person always picks the cheap one, always
+picks Western) is the source of identification for <span
+class="math inline">\sigma_\alpha, \sigma_b</span>. Price endogeneity is
+still handled with the control function residual.</p>
+<p>Running <span class="math inline">R = 100</span> sets of simulation
+draws on Selva, mixed logit recovers the taste heterogeneity: the mean
+price coefficient <span class="math inline">\bar\alpha = 0.293</span>
+(SE <span class="math inline">0.010</span>), the standard deviation
+<span class="math inline">\sigma_\alpha = 0.116</span> (SE <span
+class="math inline">0.004</span>), and the Western-preference standard
+deviation <span class="math inline">\sigma_b = 0.807</span> (SE <span
+class="math inline">0.043</span>). Compared with the true values <span
+class="math inline">\bar\alpha = 0.30</span>, <span
+class="math inline">\sigma_\alpha = 0.12</span>, <span
+class="math inline">\sigma_b = 0.90</span>, nearly all on target. The
+substitution pattern is also the closest to the truth: the diversion of
+A toward B upon a price rise is <span class="math inline">0.328</span>,
+and toward the outside option <span class="math inline">0.250</span>,
+both ends closest to the true values <span
+class="math inline">0.342</span> and <span
+class="math inline">0.238</span>; A’s own-price elasticity is <span
+class="math inline">-2.75</span>, almost exactly the true <span
+class="math inline">-2.78</span>.</p>
+<div class="warning">
+<p>SML has a property one must know: when using the usual biased
+simulated log likelihood, a fixed number of simulation draws <span
+class="math inline">R</span> leaves a simulation bias that does not
+vanish with sample size, so it is generally inconsistent, and especially
+severe when the choice probability is small. In practice, let <span
+class="math inline">R</span> grow together with the sample size, or
+switch to the method of simulated moments (the simulation error in the
+moment conditions enters linearly and not through the <span
+class="math inline">\log</span>, so the bias is smaller). In addition
+the mixed logit likelihood is non-convex, so one should supply an
+analytic gradient, use multiple starting values, and when necessary use
+quasi-Monte Carlo (such as Halton sequences) to reduce the simulation
+variance. This chapter’s <span class="math inline">R = 100</span>
+already recovers the parameters stably in this simulated sample; if each
+person’s choices are cut to 1, the variance terms in this example
+collapse toward zero, which shows the current cross-sectional variation
+is insufficient and cannot be used to claim that all cross-sectional
+mixed logits are unidentified.</p>
+</div>
+<h3
+id="elasticities-and-diversion-what-demand-estimation-truly-needs-to-deliver">4.5
+Elasticities and diversion: what demand estimation truly needs to
+deliver</h3>
+<p>Estimating the parameters is only half the product; what needs to be
+delivered are the elasticities and diversion ratios. All three models
+have computable forms for their elasticities. Logit and nested logit
+have closed-form elasticities (the former in Section 3.3, the latter
+obtained by differentiating the GEV probability, with the within-nest
+and cross-nest cross elasticities differing). The aggregate elasticity
+of mixed logit is a weighted average of the individual logit
+elasticities over the taste distribution,</p>
+<p><span class="math display">\eta_{jk} = \frac{p_k}{s_j}\int
+\frac{\partial s_{ij}}{\partial p_k}\, dF_i, \qquad \frac{\partial
+s_{ij}}{\partial p_k} = \begin{cases} -\alpha_i\, s_{ij}(1 - s_{ij})
+&amp; k = j \\ +\alpha_i\, s_{ij} s_{ik} &amp; k \neq
+j\end{cases}</span></p>
+<p>It is precisely because different people are weighted differently
+(price-sensitive people carry more weight in the substitution among
+cheap products) that mixed logit breaks free of the shackle of
+proportional substitution. The diversion ratio is analogous, with <span
+class="math inline">D_{j\to k}</span> being a weighted average of the
+individual diversions <span class="math inline">s_{ik}/(1 -
+s_{ij})</span>, the weights differing by situation (price rise,
+delisting, quality change). It is only when these quantities are
+computed that we get what operations and regulators want to see: who has
+pricing power, whether a merger would raise prices, and where a
+delisting pushes demand. The reconciliation table in Section 6 will
+place the elasticities and diversions of the four models side by side,
+against the truth.</p>
+<p>A word on inference: the standard errors of logit and nested logit
+come from the Hessian of the maximum likelihood; mixed logit is the same
+but with attention to simulation error; with a control function, all
+must fold in the estimation uncertainty of the first step. If the same
+user’s multiple choices are correlated (as a panel naturally is), the
+standard errors should be clustered at the user level, or they will be
+understated. The route of this section is now complete: plain logit
+reveals the ailments, the control function cures endogeneity, nested
+logit and mixed logit cure IIA, and elasticities and diversion are the
+final products.</p>
+<h2 id="anchoring-papers">5 Anchoring papers</h2>
+<p>A method only stands up once it lands in real research. Three
+anchoring papers: one is the methodological origin of random utility,
+one gives the standard solution for handling endogeneity on individual
+data, and one is a representative application of discrete choice in the
+context of information goods. Each is laid out along five elements,
+paper, method, data, results, limitations, with attention to how the
+assumptions are defended.</p>
+<h3 id="mcfadden-1974">5.1 McFadden (1974)</h3>
+<div class="case">
+<p>Paper and place in methodological history: “Conditional Logit
+Analysis of Qualitative Choice Behavior,” in the volume Frontiers in
+Econometrics edited by Zarembka. This paper connected random utility
+maximization from the choice theory of psychology to econometrics, gave
+the estimation framework of conditional logit, and is the origin of the
+whole of discrete choice demand analysis, for which McFadden shared the
+2000 Nobel Prize in Economics with Heckman.</p>
+<p>Method: starting from RUM, set the unobservable utility to
+independent and identically distributed Type-I extreme value, derive the
+closed-form choice probability of conditional logit, and estimate by
+maximum likelihood. Unlike the earlier multinomial logit, conditional
+logit lets the choice probability depend on the option’s own
+characteristics (such as travel time and cost), not just on the decision
+maker’s characteristics, and it is this that makes demand analysis
+possible.</p>
+<p>Data: the travel-mode choices of San Francisco Bay Area commuters,
+used to predict the ridership of the then-unbuilt BART rail transit. The
+options are driving, bus, rail, and so on, and the characteristics are
+the time and cost of each mode.</p>
+<p>Results: the model’s pre-BART prediction of the mode share was 6.3%,
+and the actual post-construction figure was about 6.2%, almost hitting
+the truth on the nose; by contrast, the official prediction of the time,
+based on aggregate methods, was as high as around 15%, nearly double the
+actual figure. This ability to “use a model to predict an option that
+does not yet exist” is exactly where the value of RUM over purely
+descriptive methods lies.</p>
+<p>Limitations: conditional logit carries IIA, and the independence
+assumption of Type-I EV locks substitution into proportional allocation,
+unable to characterize red-bus/blue-bus close-neighbor substitution.
+McFadden himself was clear about this, and the later nested logit (GEV)
+and mixed logit were both created to relax it. The historical
+significance of this paper lies half in its being a pioneer, and half in
+its clearly identifying the very restriction that later generations
+would spend decades loosening.</p>
+</div>
+<h3 id="petrin-and-train-2010">5.2 Petrin and Train (2010)</h3>
+<div class="case">
+<p>Paper: “A Control Function Approach to Endogeneity in Consumer Choice
+Models,” Journal of Marketing Research. It gives a practical and general
+solution for handling price endogeneity on individual choice data, and
+is the direct source of this chapter’s Section 4.2.</p>
+<p>Method: the control function. In the first step, regress the
+endogenous price on the instrument and exogenous characteristics and
+take the residual; in the second step, put the residual as an extra
+variable into utility and estimate the discrete choice model. Compared
+with BLP-style share inversion plus IV-GMM, the advantage of the control
+function is that it can be used directly on data that retain the
+complete individual choices, is simple to implement, and is naturally
+compatible with mixed logit.</p>
+<p>Data: the paper demonstrates with consumer-goods data such as
+television-service choices, where price is correlated with unobservable
+product quality, constituting a typical endogeneity.</p>
+<p>Results: the price coefficient and substitution elasticities after
+the control-function correction agree closely with those from BLP-style
+instrumental methods, showing that on individual data this simpler road
+can reach the same destination. This contrast of “two roads converging”
+is the source of its persuasiveness.</p>
+<p>Limitations: the control function requires the first-step price
+equation to be correctly specified, an assumption stronger than pure IV;
+the standard errors of the two-step estimation need a special correction
+and cannot use the ordinary second-step SE directly. The authors account
+for both points, and this practice of putting the method’s boundary of
+applicability out in the open is worth learning.</p>
+</div>
+<h3 id="gentzkow-2007">5.3 Gentzkow (2007)</h3>
+<div class="case">
+<p>Paper: “Valuing New Goods in a Model with Complementarity: Online
+Newspapers,” American Economic Review. The question is how readers in
+the Washington area choose among the print Washington Post, its online
+edition, and reading neither, a representative work of discrete choice
+demand in the context of information goods, and it strikes directly at
+the core of this chapter: how unobservable taste heterogeneity distorts
+the substitution structure.</p>
+<p>Method: an individual-level discrete choice demand model, whose
+specification allows the print and online editions to be either
+substitutes or complements (this is what complementarity in the title
+means, referring to what the model allows rather than what the
+conclusion asserts), with the key being to incorporate both observable
+and unobservable reader heterogeneity at once. Identification relies on
+the covariance structure of individual consumption bundles, not on the
+shares of single choices.</p>
+<p>Data: individual-level reading microdata for Washington-area readers,
+including reader characteristics and consumption of the two media, print
+and online.</p>
+<p>Results: the most memorable point of this paper is precisely a lesson
+about heterogeneity. A naive model without heterogeneity makes the
+online and print editions look like complements, as if launching the
+online edition would not cannibalize print; but once both observable and
+unobservable reader heterogeneity are put in, the two are in fact
+significant substitutes, and that layer of “complementarity” was a false
+appearance manufactured by unobservable heterogeneity. On the
+substitution estimate, the online edition pulled down print daily
+circulation by about 27000 copies, so the cannibalization is real.
+Ignoring heterogeneity not only underestimates substitution, it gets the
+sign of substitution backward, which is exactly the through-line of this
+chapter’s mixed logit: flattening out heterogeneity systematically
+distorts the substitution pattern.</p>
+<p>Limitations: identifying heterogeneity places high demands on model
+specification and data structure, and the individual-level preference
+correlation must be discernible from the data; the sample is newspaper
+readers of a specific period and region, and extrapolation to other
+information goods calls for caution. The value of this paper lies in
+demonstrating how the discrete choice framework can answer the core IS
+question of digital products, and why getting the heterogeneity right,
+and thereby getting the substitution structure right, is the key
+product.</p>
+</div>
+<p>Putting the three together, the significance of anchoring is clear:
+McFadden set up RUM and logit and flagged IIA as the restriction to be
+loosened, Petrin-Train gave the standard solution for curing endogeneity
+on individual data, and Gentzkow showed how, on the home turf of
+information goods, getting reader heterogeneity right, and thereby
+getting even the sign of substitution right, changes the substantive
+conclusion. The advance of methods has always revolved around the two
+through-lines of “get heterogeneity right so as to loosen IIA, and get
+<span class="math inline">\xi</span> under control.”</p>
+<h2 id="a-full-walkthrough-on-the-selva-data">6 A full walkthrough on
+the Selva data</h2>
+<p>Now run all the tools of Section 4 through the full Selva panel. The
+code below uses R 4.5.3, with set.seed(15) fixed for reproducibility,
+and every number quoted in the text comes from the actual run output of
+this code.</p>
+<h3 id="dgp">6.1 DGP</h3>
+<p>The design parameters are as follows: 300 city-week markets, four
+brands A, B, C, D belonging to the Western nest <span
+class="math inline">\{A, B\}</span> and the Asian nest <span
+class="math inline">\{C, D\}</span>, plus an outside option; 1200 users
+each placing 8 orders, for 9600 order-level choices in total. The true
+model is a random coefficients logit, where price sensitivity <span
+class="math inline">\alpha_i</span> and Western preference <span
+class="math inline">b_i</span> vary across people, and price is
+positively correlated with unobservable quality <span
+class="math inline">\xi</span>.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">15</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>delta_true <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="fl">0.80</span>, <span class="fl">0.50</span>, <span class="fl">0.60</span>, <span class="fl">0.30</span>)   <span class="co"># brand fixed effects, outside = 0</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>beta_r     <span class="ot">&lt;-</span> <span class="fl">0.90</span>                          <span class="co"># rating taste (per star)</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>alpha_bar  <span class="ot">&lt;-</span> <span class="fl">0.30</span>; sigma_a <span class="ot">&lt;-</span> <span class="fl">0.12</span>         <span class="co"># price coefficient: mean and heterogeneity</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>sigma_b    <span class="ot">&lt;-</span> <span class="fl">0.90</span>                          <span class="co"># sd of Western-nest taste (within-nest correlation)</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>sigma_xi   <span class="ot">&lt;-</span> <span class="fl">0.45</span>                          <span class="co"># unobservable quality xi</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co"># price inversion: rising with local cost w, quality xi, rating =&gt; price positively correlated with xi (endogenous)</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>grid[, price <span class="sc">:=</span> price_base[j] <span class="sc">+</span> <span class="fl">1.6</span><span class="sc">*</span>w <span class="sc">+</span> <span class="fl">2.2</span><span class="sc">*</span>xi <span class="sc">+</span> <span class="fl">0.8</span><span class="sc">*</span>(rating<span class="dv">-4</span>) <span class="sc">+</span> <span class="fu">rnorm</span>(.N, <span class="dv">0</span>, <span class="fl">0.6</span>)]</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co"># user-level random coefficients, fixed within their 8 orders</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>usr[, alpha_i <span class="sc">:=</span> alpha_bar <span class="sc">+</span> sigma_a<span class="sc">*</span><span class="fu">rnorm</span>(Nusr)]</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>usr[, b_i     <span class="sc">:=</span> sigma_b<span class="sc">*</span><span class="fu">rnorm</span>(Nusr)]</span></code></pre></div>
+<p>Simulate each choice from the true model: given the user’s random
+coefficients, compute the utilities of the five options, add a Type-I EV
+draw, and take the argmax.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>choose_one <span class="ot">&lt;-</span> <span class="cf">function</span>(mk, ai, bi){</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  g <span class="ot">&lt;-</span> grid[.(mk), on <span class="ot">=</span> <span class="st">&quot;m&quot;</span>]</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  V <span class="ot">&lt;-</span> delta_true[g<span class="sc">$</span>j] <span class="sc">+</span> beta_r<span class="sc">*</span>g<span class="sc">$</span>rating <span class="sc">-</span> ai<span class="sc">*</span>g<span class="sc">$</span>price <span class="sc">+</span> bi<span class="sc">*</span>(g<span class="sc">$</span>nestj<span class="sc">==</span><span class="dv">1</span><span class="dt">L</span>) <span class="sc">+</span> g<span class="sc">$</span>xi</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  V <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">0</span>, V)                                 <span class="co"># outside option utility 0</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">which.max</span>(V <span class="sc">-</span> <span class="fu">log</span>(<span class="sc">-</span><span class="fu">log</span>(<span class="fu">runif</span>(J<span class="sc">+</span><span class="dv">1</span>)))) <span class="sc">-</span> <span class="dv">1</span><span class="dt">L</span>    <span class="co"># take max after Type-I EV draw</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>In the generated data the outside-option share is <span
+class="math inline">0.252</span>, and the four brands’ shares are <span
+class="math inline">0.186</span>, <span
+class="math inline">0.209</span>, <span
+class="math inline">0.160</span>, <span
+class="math inline">0.193</span>. The correlation of price with <span
+class="math inline">\xi</span> is <span
+class="math inline">0.355</span>, and with rating <span
+class="math inline">0.567</span>, and price ranges from <span
+class="math inline">6.6</span> to <span class="math inline">22.4</span>
+dollars. The design intent of this DGP is: the true substitution pattern
+is determined by within-nest taste correlation, the true price
+sensitivity is <span class="math inline">0.30</span>, and let us see
+which estimator can recover them.</p>
+<h3 id="plain-logit-reproducing-the-opening-numbers">6.2 Plain logit:
+reproducing the opening numbers</h3>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>negll_logit <span class="ot">&lt;-</span> <span class="cf">function</span>(par){</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  V  <span class="ot">&lt;-</span> Xmat <span class="sc">%*%</span> par                       <span class="co"># brand dummies + rating + price</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  Vm <span class="ot">&lt;-</span> <span class="fu">matrix</span>(V, <span class="at">ncol =</span> J<span class="sc">+</span><span class="dv">1</span><span class="dt">L</span>, <span class="at">byrow =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  P  <span class="ot">&lt;-</span> <span class="fu">exp</span>(Vm <span class="sc">-</span> <span class="fu">apply</span>(Vm,<span class="dv">1</span>,max)); P <span class="ot">&lt;-</span> P <span class="sc">/</span> <span class="fu">rowSums</span>(P)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="sc">-</span><span class="fu">sum</span>(<span class="fu">log</span>(<span class="fu">rowSums</span>(P <span class="sc">*</span> chosen_matrix)))</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">optim</span>(start, negll_logit, <span class="at">method =</span> <span class="st">&quot;BFGS&quot;</span>, <span class="at">hessian =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<p>The price coefficient is <span class="math inline">0.141</span> (SE
+<span class="math inline">0.007</span>), the rating coefficient <span
+class="math inline">0.554</span> (SE <span
+class="math inline">0.089</span>). The willingness-to-pay for a rating
+is <span class="math inline">0.554 / 0.141 \approx \$3.93</span> per
+star, and A’s own-price elasticity is <span
+class="math inline">-1.78</span>. These are the set of numbers that did
+not add up in Section 1, ailing because the price coefficient is biased
+by <span class="math inline">\xi</span> and substitution is locked by
+IIA.</p>
+<h3 id="control-function-setting-the-price-coefficient-right">6.3
+Control function: setting the price coefficient right</h3>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>fs <span class="ot">&lt;-</span> <span class="fu">lm</span>(price <span class="sc">~</span> w <span class="sc">+</span> rating <span class="sc">+</span> <span class="fu">factor</span>(j), <span class="at">data =</span> grid)   <span class="co"># first step</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>grid[, cf <span class="sc">:=</span> <span class="fu">residuals</span>(fs)]                              <span class="co"># control function residual</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co"># second step: put cf as an extra variable into the logit utility and re-estimate</span></span></code></pre></div>
+<p>In the first step the coefficient on the instrument <span
+class="math inline">w</span> is <span class="math inline">1.605</span>,
+with a partial-F as high as <span class="math inline">2351</span>, a
+strong instrument. In the second step the price coefficient jumps from
+<span class="math inline">0.141</span> to <span
+class="math inline">0.245</span> (SE <span
+class="math inline">0.008</span>), and the control function coefficient
+<span class="math inline">\rho = 0.299</span> is significantly positive,
+consistent with “higher-quality products are priced higher.” The WTP for
+a rating becomes <span class="math inline">\$2.82</span>, and A’s
+own-price elasticity moves to <span class="math inline">-3.00</span>.
+Endogeneity is cured, but the next subsection will show the substitution
+pattern has barely moved.</p>
+<h3 id="nested-logit-recovering-within-nest-substitution">6.4 Nested
+logit: recovering within-nest substitution</h3>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>negll_nl <span class="ot">&lt;-</span> <span class="cf">function</span>(par){</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  lam <span class="ot">&lt;-</span> <span class="fu">plogis</span>(par[<span class="dv">8</span>])                    <span class="co"># constrain lambda in (0,1)</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  V  <span class="ot">&lt;-</span> <span class="fu">baseV</span>(par) <span class="sc">+</span> par[<span class="dv">6</span>]<span class="sc">*</span>PRICE          <span class="co"># includes control-function residual</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  Vs <span class="ot">&lt;-</span> V; Vs[, inside] <span class="ot">&lt;-</span> V[, inside]<span class="sc">/</span>lam</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  eV <span class="ot">&lt;-</span> <span class="fu">exp</span>(Vs)</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  D1 <span class="ot">&lt;-</span> <span class="fu">rowSums</span>(eV[, nest1]); D2 <span class="ot">&lt;-</span> <span class="fu">rowSums</span>(eV[, nest2]); Dout <span class="ot">&lt;-</span> eV[,<span class="dv">1</span>]</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  den <span class="ot">&lt;-</span> Dout <span class="sc">+</span> D1<span class="sc">^</span>lam <span class="sc">+</span> D2<span class="sc">^</span>lam</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>  <span class="co"># ... within-nest GEV probability, see the formula in Section 3.5</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p><span class="math inline">\hat\lambda = 0.875</span> (SE <span
+class="math inline">0.063</span>), significantly less than 1, with the
+correlation of same-nest unobservable utilities about <span
+class="math inline">1 - \lambda^2 = 0.235</span>. The price coefficient
+is <span class="math inline">0.227</span>, the rating coefficient <span
+class="math inline">0.644</span>. The diversion of A toward B upon a
+price rise climbs from the logit’s <span class="math inline">0.25</span>
+to <span class="math inline">0.32</span>, moving toward the truth of
+<span class="math inline">0.34</span>.</p>
+<h3 id="mixed-logit-panel-sml">6.5 Mixed logit: panel SML</h3>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>negll_mxl <span class="ot">&lt;-</span> <span class="cf">function</span>(par){</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  logLi_r <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="dv">0</span>, Nuser, R)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (r <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span>R){                          <span class="co"># R = 100 sets of simulation draws</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>    alpha_r <span class="ot">&lt;-</span> par[<span class="st">&quot;alpha_bar&quot;</span>] <span class="sc">+</span> par[<span class="st">&quot;sigma_a&quot;</span>]<span class="sc">*</span>NU[,r]   <span class="co"># user-level price coefficient</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    b_r     <span class="ot">&lt;-</span> par[<span class="st">&quot;sigma_b&quot;</span>]<span class="sc">*</span>ETA[,r]</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    V <span class="ot">&lt;-</span> <span class="fu">baseV</span>(par) <span class="sc">-</span> alpha_r<span class="sc">*</span>PRICE <span class="sc">+</span> b_r<span class="sc">*</span>NEST1</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    P <span class="ot">&lt;-</span> <span class="fu">exp</span>(V <span class="sc">-</span> <span class="fu">apply</span>(V,<span class="dv">1</span>,max)); P <span class="ot">&lt;-</span> P<span class="sc">/</span><span class="fu">rowSums</span>(P)</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    <span class="co"># sum the log probabilities of a user&#39;s 8 orders first (panel structure), then average over r</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    logLi_r[,r] <span class="ot">&lt;-</span> <span class="fu">tapply</span>(<span class="fu">log</span>(<span class="fu">rowSums</span>(P<span class="sc">*</span>CHOSEN)), uid, sum)</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>  <span class="sc">-</span><span class="fu">sum</span>(<span class="fu">log</span>(<span class="fu">rowMeans</span>(<span class="fu">exp</span>(logLi_r))))        <span class="co"># stabilized numerically with log-sum-exp</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>With <span class="math inline">R = 100</span> sets of draws, the mean
+price coefficient <span class="math inline">\bar\alpha = 0.293</span>
+(SE <span class="math inline">0.010</span>), the standard deviation
+<span class="math inline">\sigma_\alpha = 0.116</span> (SE <span
+class="math inline">0.004</span>), and the Western-preference standard
+deviation <span class="math inline">\sigma_b = 0.807</span> (SE <span
+class="math inline">0.043</span>), compared with the true values <span
+class="math inline">0.30</span>, <span class="math inline">0.12</span>,
+<span class="math inline">0.90</span>, nearly all on target. A’s
+own-price elasticity is <span class="math inline">-2.75</span>, almost
+exactly the true <span class="math inline">-2.78</span>.</p>
+<figure>
+<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' viewBox='0 0 590.40 331.20' role="img" aria-label="Where demand flows, by diversion ratio, after brand A raises its price by one dollar. Plain logit (red) apportions the lost orders roughly by share across the options, sending only about 0.25 to the same-nest sibling B and too much to the outside option; nested (blue) and mixed (olive) recover the high diversion to B, close to the truth (navy)." style="max-width:100%;height:auto;display:block;margin:0 auto">
+<g class='svglite'>
+<defs>
+  <style type='text/css'><![CDATA[
+    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {
+      fill: none;
+      stroke: #000000;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-miterlimit: 10.00;
+    }
+    .svglite text {
+      white-space: pre;
+    }
+    .svglite g.glyphgroup path {
+      fill: inherit;
+      stroke: none;
+    }
+  ]]></style>
+</defs>
+<rect width='100%' height='100%' style='stroke: none; fill: #FFFFFF;'/>
+<defs>
+  <clipPath id='g2_cpMC4wMHw1OTAuNDB8MC4wMHwzMzEuMjA='>
+    <rect x='0.00' y='0.00' width='590.40' height='331.20' />
+  </clipPath>
+</defs>
+<g clip-path='url(#g2_cpMC4wMHw1OTAuNDB8MC4wMHwzMzEuMjA=)'>
+<rect x='80.96' y='138.12' width='25.05' height='135.48' style='stroke-width: 0.75; stroke: none; fill: #1A365D;' />
+<rect x='106.01' y='91.43' width='25.05' height='182.17' style='stroke-width: 0.75; stroke: none; fill: #C53030;' />
+<rect x='131.07' y='108.04' width='25.05' height='165.56' style='stroke-width: 0.75; stroke: none; fill: #2B6CB0;' />
+<rect x='156.12' y='131.39' width='25.05' height='142.21' style='stroke-width: 0.75; stroke: none; fill: #6B8E23;' />
+<rect x='206.22' y='78.91' width='25.05' height='194.69' style='stroke-width: 0.75; stroke: none; fill: #1A365D;' />
+<rect x='231.28' y='129.17' width='25.05' height='144.43' style='stroke-width: 0.75; stroke: none; fill: #C53030;' />
+<rect x='256.33' y='90.99' width='25.05' height='182.61' style='stroke-width: 0.75; stroke: none; fill: #2B6CB0;' />
+<rect x='281.38' y='87.07' width='25.05' height='186.53' style='stroke-width: 0.75; stroke: none; fill: #6B8E23;' />
+<rect x='331.49' y='166.36' width='25.05' height='107.24' style='stroke-width: 0.75; stroke: none; fill: #1A365D;' />
+<rect x='356.54' y='164.40' width='25.05' height='109.20' style='stroke-width: 0.75; stroke: none; fill: #C53030;' />
+<rect x='381.59' y='174.05' width='25.05' height='99.55' style='stroke-width: 0.75; stroke: none; fill: #2B6CB0;' />
+<rect x='406.64' y='164.70' width='25.05' height='108.90' style='stroke-width: 0.75; stroke: none; fill: #6B8E23;' />
+<rect x='456.75' y='141.87' width='25.05' height='131.73' style='stroke-width: 0.75; stroke: none; fill: #1A365D;' />
+<rect x='481.80' y='140.26' width='25.05' height='133.34' style='stroke-width: 0.75; stroke: none; fill: #C53030;' />
+<rect x='506.85' y='152.18' width='25.05' height='121.42' style='stroke-width: 0.75; stroke: none; fill: #2B6CB0;' />
+<rect x='531.91' y='142.09' width='25.05' height='131.51' style='stroke-width: 0.75; stroke: none; fill: #6B8E23;' />
+<text x='131.07' y='299.52' text-anchor='middle' style='font-size: 12.00px; font-family: "Arial";' textLength='38.69px' lengthAdjust='spacingAndGlyphs'>outside</text>
+<text x='256.33' y='299.52' text-anchor='middle' style='font-size: 12.00px; font-family: "Arial";' textLength='74.67px' lengthAdjust='spacingAndGlyphs'>B (same nest)</text>
+<text x='381.59' y='299.52' text-anchor='middle' style='font-size: 12.00px; font-family: "Arial";' textLength='8.67px' lengthAdjust='spacingAndGlyphs'>C</text>
+<text x='506.85' y='299.52' text-anchor='middle' style='font-size: 12.00px; font-family: "Arial";' textLength='8.67px' lengthAdjust='spacingAndGlyphs'>D</text>
+<text transform='translate(15.84,154.08) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Arial";' textLength='112.70px' lengthAdjust='spacingAndGlyphs'>diversion ratio from A</text>
+<line x1='61.92' y1='273.60' x2='61.92' y2='45.94' style='stroke-width: 0.75;' />
+<line x1='61.92' y1='273.60' x2='54.72' y2='273.60' style='stroke-width: 0.75;' />
+<line x1='61.92' y1='216.69' x2='54.72' y2='216.69' style='stroke-width: 0.75;' />
+<line x1='61.92' y1='159.77' x2='54.72' y2='159.77' style='stroke-width: 0.75;' />
+<line x1='61.92' y1='102.86' x2='54.72' y2='102.86' style='stroke-width: 0.75;' />
+<line x1='61.92' y1='45.94' x2='54.72' y2='45.94' style='stroke-width: 0.75;' />
+<text transform='translate(44.64,273.60) rotate(-90)' text-anchor='middle' style='font-size: 10.80px; font-family: "Arial";' textLength='15.00px' lengthAdjust='spacingAndGlyphs'>0.0</text>
+<text transform='translate(44.64,216.69) rotate(-90)' text-anchor='middle' style='font-size: 10.80px; font-family: "Arial";' textLength='15.00px' lengthAdjust='spacingAndGlyphs'>0.1</text>
+<text transform='translate(44.64,159.77) rotate(-90)' text-anchor='middle' style='font-size: 10.80px; font-family: "Arial";' textLength='15.00px' lengthAdjust='spacingAndGlyphs'>0.2</text>
+<text transform='translate(44.64,102.86) rotate(-90)' text-anchor='middle' style='font-size: 10.80px; font-family: "Arial";' textLength='15.00px' lengthAdjust='spacingAndGlyphs'>0.3</text>
+<text transform='translate(44.64,45.94) rotate(-90)' text-anchor='middle' style='font-size: 10.80px; font-family: "Arial";' textLength='15.00px' lengthAdjust='spacingAndGlyphs'>0.4</text>
+<text x='318.96' y='22.00' text-anchor='middle' style='font-size: 13.20px;fill: #1A365D; font-family: "Arial";' textLength='241.00px' lengthAdjust='spacingAndGlyphs'>Diversion from A after a $1 price increase</text>
+</g>
+<defs>
+  <clipPath id='g2_cpNjEuOTJ8NTc2LjAwfDM0LjU2fDI3My42MA=='>
+    <rect x='61.92' y='34.56' width='514.08' height='239.04' />
+  </clipPath>
+</defs>
+<g clip-path='url(#g2_cpNjEuOTJ8NTc2LjAwfDM0LjU2fDI3My42MA==)'>
+<rect x='504.29' y='44.82' width='8.21' height='6.84' style='stroke-width: 0.75; stroke: none; fill: #1A365D;' />
+<rect x='504.29' y='58.50' width='8.21' height='6.84' style='stroke-width: 0.75; stroke: none; fill: #C53030;' />
+<rect x='504.29' y='72.18' width='8.21' height='6.84' style='stroke-width: 0.75; stroke: none; fill: #2B6CB0;' />
+<rect x='504.29' y='85.86' width='8.21' height='6.84' style='stroke-width: 0.75; stroke: none; fill: #6B8E23;' />
+<text x='522.76' y='52.32' style='font-size: 11.40px; font-family: "Arial";' textLength='38.56px' lengthAdjust='spacingAndGlyphs'>TRUTH</text>
+<text x='522.76' y='66.00' style='font-size: 11.40px; font-family: "Arial";' textLength='48.11px' lengthAdjust='spacingAndGlyphs'>plain logit</text>
+<text x='522.76' y='79.68' style='font-size: 11.40px; font-family: "Arial";' textLength='34.19px' lengthAdjust='spacingAndGlyphs'>nested</text>
+<text x='522.76' y='93.36' style='font-size: 11.40px; font-family: "Arial";' textLength='30.38px' lengthAdjust='spacingAndGlyphs'>mixed</text>
+<line x1='61.92' y1='273.60' x2='576.00' y2='273.60' style='stroke-width: 0.75;' />
+</g>
+</g>
+</svg>
+<figcaption aria-hidden="true">Where demand flows, by diversion ratio,
+after brand A raises its price by one dollar. Plain logit (red)
+apportions the lost orders roughly by share across the options, sending
+only about 0.25 to the same-nest sibling B and too much to the outside
+option; nested (blue) and mixed (olive) recover the high diversion to B,
+close to the truth (navy).</figcaption>
+</figure>
+<h3 id="the-full-reconciliation">6.6 The full reconciliation</h3>
+<p>Place the key products of the four estimators side by side with the
+truth. Price sensitivity and WTP:</p>
+<div class="table-scroll">
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr>
+<th>Estimator</th>
+<th>Price coefficient <span class="math inline">\alpha</span></th>
+<th>Rating WTP (per star)</th>
+<th>A own-price elasticity</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Truth (DGP)</td>
+<td>0.300</td>
+<td>$3.00</td>
+<td>-2.78</td>
+</tr>
+<tr>
+<td>plain logit (naive)</td>
+<td>0.141</td>
+<td>$3.93</td>
+<td>-1.78</td>
+</tr>
+<tr>
+<td>logit + control function</td>
+<td>0.245</td>
+<td>$2.82</td>
+<td>-3.00</td>
+</tr>
+<tr>
+<td>nested logit</td>
+<td>0.227</td>
+<td>$2.84</td>
+<td>-3.04</td>
+</tr>
+<tr>
+<td>mixed logit (panel SML)</td>
+<td>0.293</td>
+<td>$2.64</td>
+<td>-2.75</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The diversion ratios (the proportion of lost orders flowing to each
+option) after A raises its price by one dollar:</p>
+<div class="table-scroll">
+<table>
+<thead>
+<tr>
+<th>Estimator</th>
+<th><span class="math inline">\to</span> outside</th>
+<th><span class="math inline">\to</span> B (same nest)</th>
+<th><span class="math inline">\to</span> C</th>
+<th><span class="math inline">\to</span> D</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Truth (DGP)</td>
+<td>0.238</td>
+<td>0.342</td>
+<td>0.188</td>
+<td>0.231</td>
+</tr>
+<tr>
+<td>plain logit (naive)</td>
+<td>0.315</td>
+<td>0.256</td>
+<td>0.194</td>
+<td>0.235</td>
+</tr>
+<tr>
+<td>logit + control function</td>
+<td>0.320</td>
+<td>0.254</td>
+<td>0.192</td>
+<td>0.234</td>
+</tr>
+<tr>
+<td>nested logit</td>
+<td>0.291</td>
+<td>0.321</td>
+<td>0.175</td>
+<td>0.213</td>
+</tr>
+<tr>
+<td>mixed logit (panel SML)</td>
+<td>0.250</td>
+<td>0.328</td>
+<td>0.191</td>
+<td>0.231</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The two tables together tell the whole through-line of the chapter.
+The first table looks at price sensitivity: the naive <span
+class="math inline">\alpha = 0.141</span> severely understates, the
+control function pushes it to <span class="math inline">0.245</span>,
+and mixed logit further to <span class="math inline">0.293</span>,
+almost hitting the truth of <span class="math inline">0.30</span>. The
+second table looks at the substitution pattern, which is the deeper
+teaching point: the diversions of the naive and control-function
+versions of the logit are almost identical, both sending only around
+<span class="math inline">0.25</span> to the same-nest B and both
+sending too much, up to <span class="math inline">0.32</span>, to the
+outside option, which shows that curing endogeneity does not touch IIA
+at all, and that the two problems are independent of each other. What
+truly pulls the diversion toward B from <span
+class="math inline">0.25</span> up to over <span
+class="math inline">0.32</span>, close to the truth of <span
+class="math inline">0.34</span>, is nested logit and mixed logit; and
+among them mixed logit gets even the <span
+class="math inline">0.250</span> going to the outside option closest to
+the truth of <span class="math inline">0.238</span>.</p>
+<figure>
+<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' viewBox='0 0 590.40 316.80' role="img" aria-label="Mixed logit recovers the price-sensitivity heterogeneity that plain logit flattened out. The true distribution (navy solid line) N(0.30, 0.12) and the mixed logit estimated distribution (red dashed line) nearly coincide; plain logit gives only a single point compressed by endogeneity (gray), and the control function pushes this single point to the right (blue), but it is still a single point, blind to the spread within the population." style="max-width:100%;height:auto;display:block;margin:0 auto">
+<g class='svglite'>
+<defs>
+  <style type='text/css'><![CDATA[
+    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {
+      fill: none;
+      stroke: #000000;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-miterlimit: 10.00;
+    }
+    .svglite text {
+      white-space: pre;
+    }
+    .svglite g.glyphgroup path {
+      fill: inherit;
+      stroke: none;
+    }
+  ]]></style>
+</defs>
+<rect width='100%' height='100%' style='stroke: none; fill: #FFFFFF;'/>
+<defs>
+  <clipPath id='g3_cpMC4wMHw1OTAuNDB8MC4wMHwzMTYuODA='>
+    <rect x='0.00' y='0.00' width='590.40' height='316.80' />
+  </clipPath>
+</defs>
+<g clip-path='url(#g3_cpMC4wMHw1OTAuNDB8MC4wMHwzMTYuODA=)'>
+</g>
+<defs>
+  <clipPath id='g3_cpNjEuOTJ8NTc2LjAwfDM0LjU2fDI1Ni4zMg=='>
+    <rect x='61.92' y='34.56' width='514.08' height='221.76' />
+  </clipPath>
+</defs>
+<g clip-path='url(#g3_cpNjEuOTJ8NTc2LjAwfDM0LjU2fDI1Ni4zMg==)'>
+<polyline points='80.96,241.92 82.15,241.60 83.35,241.28 84.54,240.94 85.73,240.60 86.92,240.25 88.12,239.89 89.31,239.51 90.50,239.13 91.70,238.74 92.89,238.34 94.08,237.92 95.28,237.50 96.47,237.06 97.66,236.61 98.85,236.15 100.05,235.68 101.24,235.20 102.43,234.70 103.63,234.20 104.82,233.68 106.01,233.15 107.21,232.60 108.40,232.04 109.59,231.47 110.78,230.88 111.98,230.29 113.17,229.67 114.36,229.05 115.56,228.41 116.75,227.75 117.94,227.08 119.14,226.40 120.33,225.70 121.52,224.98 122.71,224.25 123.91,223.51 125.10,222.75 126.29,221.97 127.49,221.18 128.68,220.37 129.87,219.55 131.07,218.71 132.26,217.85 133.45,216.98 134.64,216.09 135.84,215.19 137.03,214.27 138.22,213.33 139.42,212.37 140.61,211.40 141.80,210.41 143.00,209.40 144.19,208.38 145.38,207.34 146.57,206.28 147.77,205.21 148.96,204.12 150.15,203.01 151.35,201.88 152.54,200.74 153.73,199.58 154.92,198.40 156.12,197.21 157.31,196.00 158.50,194.77 159.70,193.52 160.89,192.26 162.08,190.99 163.28,189.69 164.47,188.38 165.66,187.05 166.85,185.71 168.05,184.35 169.24,182.98 170.43,181.59 171.63,180.18 172.82,178.76 174.01,177.33 175.21,175.88 176.40,174.41 177.59,172.93 178.78,171.44 179.98,169.94 181.17,168.42 182.36,166.88 183.56,165.34 184.75,163.78 185.94,162.21 187.14,160.63 188.33,159.04 189.52,157.44 190.71,155.83 191.91,154.21 193.10,152.57 194.29,150.93 195.49,149.28 196.68,147.63 197.87,145.96 199.07,144.29 200.26,142.61 201.45,140.92 202.64,139.23 203.84,137.54 205.03,135.84 206.22,134.13 207.42,132.43 208.61,130.72 209.80,129.00 211.00,127.29 212.19,125.57 213.38,123.86 214.57,122.14 215.77,120.43 216.96,118.72 218.15,117.01 219.35,115.30 220.54,113.60 221.73,111.90 222.92,110.21 224.12,108.52 225.31,106.83 226.50,105.16 227.70,103.49 228.89,101.83 230.08,100.18 231.28,98.54 232.47,96.91 233.66,95.30 234.85,93.69 236.05,92.10 237.24,90.52 238.43,88.95 239.63,87.40 240.82,85.87 242.01,84.35 243.21,82.85 244.40,81.36 245.59,79.90 246.78,78.45 247.98,77.02 249.17,75.62 250.36,74.23 251.56,72.87 252.75,71.53 253.94,70.21 255.14,68.92 256.33,67.65 257.52,66.41 258.71,65.19 259.91,64.00 261.10,62.84 262.29,61.70 263.49,60.59 264.68,59.51 265.87,58.46 267.07,57.44 268.26,56.46 269.45,55.50 270.64,54.57 271.84,53.68 273.03,52.81 274.22,51.98 275.42,51.19 276.61,50.42 277.80,49.70 279.00,49.00 280.19,48.34 281.38,47.72 282.57,47.13 283.77,46.58 284.96,46.07 286.15,45.59 287.35,45.15 288.54,44.74 289.73,44.38 290.92,44.05 292.12,43.75 293.31,43.50 294.50,43.28 295.70,43.10 296.89,42.96 298.08,42.86 299.28,42.80 300.47,42.77 301.66,42.79 302.85,42.84 304.05,42.93 305.24,43.06 306.43,43.22 307.63,43.43 308.82,43.67 310.01,43.95 311.21,44.27 312.40,44.63 313.59,45.02 314.78,45.45 315.98,45.92 317.17,46.42 318.36,46.96 319.56,47.54 320.75,48.15 321.94,48.80 323.14,49.48 324.33,50.20 325.52,50.95 326.71,51.73 327.91,52.55 329.10,53.41 330.29,54.29 331.49,55.21 332.68,56.16 333.87,57.14 335.07,58.15 336.26,59.19 337.45,60.26 338.64,61.36 339.84,62.48 341.03,63.64 342.22,64.82 343.42,66.03 344.61,67.27 345.80,68.53 347.00,69.81 348.19,71.12 349.38,72.46 350.57,73.81 351.77,75.19 352.96,76.59 354.15,78.01 355.35,79.45 356.54,80.91 357.73,82.39 358.92,83.88 360.12,85.40 361.31,86.93 362.50,88.47 363.70,90.03 364.89,91.61 366.08,93.20 367.28,94.80 368.47,96.42 369.66,98.04 370.85,99.68 372.05,101.32 373.24,102.98 374.43,104.65 375.63,106.32 376.82,108.00 378.01,109.69 379.21,111.38 380.40,113.08 381.59,114.78 382.78,116.48 383.98,118.19 385.17,119.90 386.36,121.62 387.56,123.33 388.75,125.05 389.94,126.76 391.14,128.48 392.33,130.19 393.52,131.90 394.71,133.61 395.91,135.31 397.10,137.01 398.29,138.71 399.49,140.40 400.68,142.09 401.87,143.77 403.07,145.45 404.26,147.11 405.45,148.77 406.64,150.43 407.84,152.07 409.03,153.70 410.22,155.33 411.42,156.95 412.61,158.55 413.80,160.15 415.00,161.73 416.19,163.30 417.38,164.86 418.57,166.41 419.77,167.95 420.96,169.47 422.15,170.98 423.35,172.48 424.54,173.96 425.73,175.43 426.92,176.88 428.12,178.32 429.31,179.75 430.50,181.16 431.70,182.55 432.89,183.93 434.08,185.29 435.28,186.64 436.47,187.97 437.66,189.29 438.85,190.59 440.05,191.87 441.24,193.14 442.43,194.39 443.63,195.62 444.82,196.84 446.01,198.04 447.21,199.22 448.40,200.38 449.59,201.53 450.78,202.66 451.98,203.78 453.17,204.87 454.36,205.95 455.56,207.02 456.75,208.06 457.94,209.09 459.14,210.10 460.33,211.10 461.52,212.07 462.71,213.04 463.91,213.98 465.10,214.91 466.29,215.82 467.49,216.71 468.68,217.59 469.87,218.45 471.07,219.29 472.26,220.12 473.45,220.93 474.64,221.73 475.84,222.51 477.03,223.28 478.22,224.03 479.42,224.76 480.61,225.48 481.80,226.18 483.00,226.87 484.19,227.55 485.38,228.21 486.57,228.85 487.77,229.48 488.96,230.10 490.15,230.70 491.35,231.29 492.54,231.87 493.73,232.43 494.92,232.98 496.12,233.52 497.31,234.04 498.50,234.55 499.70,235.05 500.89,235.54 502.08,236.01 503.28,236.47 504.47,236.92 505.66,237.36 506.85,237.79 508.05,238.21 509.24,238.62 510.43,239.01 511.63,239.40 512.82,239.77 514.01,240.14 515.21,240.49 516.40,240.84 517.59,241.17 518.78,241.50 519.98,241.82 521.17,242.13 522.36,242.43 523.56,242.72 524.75,243.00 525.94,243.28 527.14,243.55 528.33,243.81 529.52,244.06 530.71,244.30 531.91,244.54 533.10,244.77 534.29,244.99 535.49,245.21 536.68,245.42 537.87,245.62 539.07,245.82 540.26,246.01 541.45,246.19 542.64,246.37 543.84,246.54 545.03,246.71 546.22,246.87 547.42,247.03 548.61,247.18 549.80,247.33 551.00,247.47 552.19,247.60 553.38,247.74 554.57,247.86 555.77,247.99 556.96,248.11 ' style='stroke-width: 1.80; stroke: #1A365D;' />
+</g>
+<g clip-path='url(#g3_cpMC4wMHw1OTAuNDB8MC4wMHwzMTYuODA=)'>
+<text x='243.91' y='308.51' style='font-size: 12.00px; font-family: "Arial";' textLength='88.02px' lengthAdjust='spacingAndGlyphs'>price sensitivity  </text>
+<text x='331.92' y='308.51' style='font-size: 12.00px; font-family: "Symbol";' textLength='7.58px' lengthAdjust='spacingAndGlyphs'>α</text>
+<text x='339.49' y='311.04' style='font-size: 8.40px; font-family: "Arial";' textLength='1.86px' lengthAdjust='spacingAndGlyphs'>i</text>
+<text x='341.36' y='308.51' style='font-size: 12.00px; font-family: "Arial";' textLength='52.66px' lengthAdjust='spacingAndGlyphs'>  (utils / $)</text>
+<text transform='translate(15.84,145.44) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Arial";' textLength='38.02px' lengthAdjust='spacingAndGlyphs'>density</text>
+<line x1='80.96' y1='256.32' x2='520.34' y2='256.32' style='stroke-width: 0.75;' />
+<line x1='80.96' y1='256.32' x2='80.96' y2='263.52' style='stroke-width: 0.75;' />
+<line x1='154.19' y1='256.32' x2='154.19' y2='263.52' style='stroke-width: 0.75;' />
+<line x1='227.42' y1='256.32' x2='227.42' y2='263.52' style='stroke-width: 0.75;' />
+<line x1='300.65' y1='256.32' x2='300.65' y2='263.52' style='stroke-width: 0.75;' />
+<line x1='373.88' y1='256.32' x2='373.88' y2='263.52' style='stroke-width: 0.75;' />
+<line x1='447.11' y1='256.32' x2='447.11' y2='263.52' style='stroke-width: 0.75;' />
+<line x1='520.34' y1='256.32' x2='520.34' y2='263.52' style='stroke-width: 0.75;' />
+<text x='80.96' y='282.24' text-anchor='middle' style='font-size: 10.80px; font-family: "Arial";' textLength='15.00px' lengthAdjust='spacingAndGlyphs'>0.0</text>
+<text x='154.19' y='282.24' text-anchor='middle' style='font-size: 10.80px; font-family: "Arial";' textLength='15.00px' lengthAdjust='spacingAndGlyphs'>0.1</text>
+<text x='227.42' y='282.24' text-anchor='middle' style='font-size: 10.80px; font-family: "Arial";' textLength='15.00px' lengthAdjust='spacingAndGlyphs'>0.2</text>
+<text x='300.65' y='282.24' text-anchor='middle' style='font-size: 10.80px; font-family: "Arial";' textLength='15.00px' lengthAdjust='spacingAndGlyphs'>0.3</text>
+<text x='373.88' y='282.24' text-anchor='middle' style='font-size: 10.80px; font-family: "Arial";' textLength='15.00px' lengthAdjust='spacingAndGlyphs'>0.4</text>
+<text x='447.11' y='282.24' text-anchor='middle' style='font-size: 10.80px; font-family: "Arial";' textLength='15.00px' lengthAdjust='spacingAndGlyphs'>0.5</text>
+<text x='520.34' y='282.24' text-anchor='middle' style='font-size: 10.80px; font-family: "Arial";' textLength='15.00px' lengthAdjust='spacingAndGlyphs'>0.6</text>
+<line x1='61.92' y1='251.07' x2='61.92' y2='63.11' style='stroke-width: 0.75;' />
+<line x1='61.92' y1='251.07' x2='54.72' y2='251.07' style='stroke-width: 0.75;' />
+<line x1='61.92' y1='219.74' x2='54.72' y2='219.74' style='stroke-width: 0.75;' />
+<line x1='61.92' y1='188.41' x2='54.72' y2='188.41' style='stroke-width: 0.75;' />
+<line x1='61.92' y1='157.09' x2='54.72' y2='157.09' style='stroke-width: 0.75;' />
+<line x1='61.92' y1='125.76' x2='54.72' y2='125.76' style='stroke-width: 0.75;' />
+<line x1='61.92' y1='94.43' x2='54.72' y2='94.43' style='stroke-width: 0.75;' />
+<line x1='61.92' y1='63.11' x2='54.72' y2='63.11' style='stroke-width: 0.75;' />
+<text transform='translate(44.64,251.07) rotate(-90)' text-anchor='middle' style='font-size: 10.80px; font-family: "Arial";' textLength='15.00px' lengthAdjust='spacingAndGlyphs'>0.0</text>
+<text transform='translate(44.64,219.74) rotate(-90)' text-anchor='middle' style='font-size: 10.80px; font-family: "Arial";' textLength='15.00px' lengthAdjust='spacingAndGlyphs'>0.5</text>
+<text transform='translate(44.64,188.41) rotate(-90)' text-anchor='middle' style='font-size: 10.80px; font-family: "Arial";' textLength='15.00px' lengthAdjust='spacingAndGlyphs'>1.0</text>
+<text transform='translate(44.64,157.09) rotate(-90)' text-anchor='middle' style='font-size: 10.80px; font-family: "Arial";' textLength='15.00px' lengthAdjust='spacingAndGlyphs'>1.5</text>
+<text transform='translate(44.64,125.76) rotate(-90)' text-anchor='middle' style='font-size: 10.80px; font-family: "Arial";' textLength='15.00px' lengthAdjust='spacingAndGlyphs'>2.0</text>
+<text transform='translate(44.64,94.43) rotate(-90)' text-anchor='middle' style='font-size: 10.80px; font-family: "Arial";' textLength='15.00px' lengthAdjust='spacingAndGlyphs'>2.5</text>
+<text transform='translate(44.64,63.11) rotate(-90)' text-anchor='middle' style='font-size: 10.80px; font-family: "Arial";' textLength='15.00px' lengthAdjust='spacingAndGlyphs'>3.0</text>
+</g>
+<g clip-path='url(#g3_cpNjEuOTJ8NTc2LjAwfDM0LjU2fDI1Ni4zMg==)'>
+<polyline points='80.96,242.44 82.15,242.13 83.35,241.81 84.54,241.47 85.73,241.13 86.92,240.78 88.12,240.41 89.31,240.04 90.50,239.65 91.70,239.26 92.89,238.85 94.08,238.43 95.28,238.00 96.47,237.56 97.66,237.11 98.85,236.64 100.05,236.16 101.24,235.67 102.43,235.16 103.63,234.64 104.82,234.11 106.01,233.56 107.21,233.00 108.40,232.43 109.59,231.84 110.78,231.23 111.98,230.61 113.17,229.98 114.36,229.33 115.56,228.67 116.75,227.99 117.94,227.29 119.14,226.58 120.33,225.85 121.52,225.10 122.71,224.34 123.91,223.56 125.10,222.76 126.29,221.95 127.49,221.12 128.68,220.27 129.87,219.41 131.07,218.52 132.26,217.62 133.45,216.70 134.64,215.76 135.84,214.80 137.03,213.83 138.22,212.83 139.42,211.82 140.61,210.79 141.80,209.74 143.00,208.67 144.19,207.58 145.38,206.47 146.57,205.34 147.77,204.20 148.96,203.03 150.15,201.85 151.35,200.64 152.54,199.42 153.73,198.18 154.92,196.92 156.12,195.64 157.31,194.34 158.50,193.02 159.70,191.68 160.89,190.33 162.08,188.95 163.28,187.56 164.47,186.15 165.66,184.72 166.85,183.27 168.05,181.81 169.24,180.32 170.43,178.82 171.63,177.31 172.82,175.77 174.01,174.22 175.21,172.66 176.40,171.07 177.59,169.47 178.78,167.86 179.98,166.23 181.17,164.59 182.36,162.93 183.56,161.26 184.75,159.57 185.94,157.87 187.14,156.16 188.33,154.44 189.52,152.70 190.71,150.95 191.91,149.20 193.10,147.43 194.29,145.65 195.49,143.86 196.68,142.07 197.87,140.26 199.07,138.45 200.26,136.64 201.45,134.81 202.64,132.98 203.84,131.15 205.03,129.31 206.22,127.47 207.42,125.62 208.61,123.77 209.80,121.93 211.00,120.08 212.19,118.23 213.38,116.38 214.57,114.53 215.77,112.68 216.96,110.84 218.15,109.00 219.35,107.17 220.54,105.34 221.73,103.51 222.92,101.70 224.12,99.89 225.31,98.09 226.50,96.30 227.70,94.52 228.89,92.75 230.08,90.99 231.28,89.24 232.47,87.51 233.66,85.79 234.85,84.09 236.05,82.41 237.24,80.74 238.43,79.09 239.63,77.45 240.82,75.84 242.01,74.24 243.21,72.67 244.40,71.12 245.59,69.59 246.78,68.09 247.98,66.61 249.17,65.15 250.36,63.72 251.56,62.32 252.75,60.94 253.94,59.59 255.14,58.27 256.33,56.98 257.52,55.72 258.71,54.49 259.91,53.30 261.10,52.13 262.29,51.00 263.49,49.90 264.68,48.84 265.87,47.81 267.07,46.81 268.26,45.86 269.45,44.93 270.64,44.05 271.84,43.20 273.03,42.39 274.22,41.62 275.42,40.89 276.61,40.20 277.80,39.55 279.00,38.93 280.19,38.36 281.38,37.83 282.57,37.34 283.77,36.89 284.96,36.49 286.15,36.12 287.35,35.80 288.54,35.52 289.73,35.28 290.92,35.08 292.12,34.93 293.31,34.82 294.50,34.76 295.70,34.73 296.89,34.75 298.08,34.82 299.28,34.92 300.47,35.07 301.66,35.26 302.85,35.50 304.05,35.77 305.24,36.09 306.43,36.45 307.63,36.85 308.82,37.30 310.01,37.79 311.21,38.31 312.40,38.88 313.59,39.49 314.78,40.14 315.98,40.83 317.17,41.56 318.36,42.32 319.56,43.13 320.75,43.97 321.94,44.86 323.14,45.77 324.33,46.73 325.52,47.72 326.71,48.75 327.91,49.81 329.10,50.90 330.29,52.03 331.49,53.19 332.68,54.39 333.87,55.62 335.07,56.87 336.26,58.16 337.45,59.48 338.64,60.82 339.84,62.20 341.03,63.60 342.22,65.02 343.42,66.48 344.61,67.96 345.80,69.46 347.00,70.99 348.19,72.54 349.38,74.11 350.57,75.70 351.77,77.31 352.96,78.94 354.15,80.59 355.35,82.26 356.54,83.94 357.73,85.65 358.92,87.36 360.12,89.09 361.31,90.84 362.50,92.59 363.70,94.36 364.89,96.14 366.08,97.93 367.28,99.73 368.47,101.54 369.66,103.35 370.85,105.18 372.05,107.01 373.24,108.84 374.43,110.68 375.63,112.52 376.82,114.37 378.01,116.21 379.21,118.06 380.40,119.91 381.59,121.76 382.78,123.61 383.98,125.46 385.17,127.31 386.36,129.15 387.56,130.99 388.75,132.82 389.94,134.65 391.14,136.48 392.33,138.30 393.52,140.11 394.71,141.91 395.91,143.71 397.10,145.49 398.29,147.27 399.49,149.04 400.68,150.80 401.87,152.55 403.07,154.28 404.26,156.01 405.45,157.72 406.64,159.42 407.84,161.11 409.03,162.78 410.22,164.44 411.42,166.09 412.61,167.72 413.80,169.33 415.00,170.93 416.19,172.52 417.38,174.09 418.57,175.64 419.77,177.17 420.96,178.69 422.15,180.19 423.35,181.68 424.54,183.14 425.73,184.59 426.92,186.02 428.12,187.44 429.31,188.83 430.50,190.21 431.70,191.56 432.89,192.90 434.08,194.22 435.28,195.52 436.47,196.81 437.66,198.07 438.85,199.31 440.05,200.54 441.24,201.74 442.43,202.93 443.63,204.10 444.82,205.24 446.01,206.37 447.21,207.48 448.40,208.57 449.59,209.64 450.78,210.70 451.98,211.73 453.17,212.74 454.36,213.74 455.56,214.72 456.75,215.68 457.94,216.62 459.14,217.54 460.33,218.44 461.52,219.33 462.71,220.20 463.91,221.05 465.10,221.88 466.29,222.69 467.49,223.49 468.68,224.27 469.87,225.04 471.07,225.78 472.26,226.51 473.45,227.23 474.64,227.93 475.84,228.61 477.03,229.27 478.22,229.92 479.42,230.56 480.61,231.18 481.80,231.78 483.00,232.38 484.19,232.95 485.38,233.51 486.57,234.06 487.77,234.59 488.96,235.12 490.15,235.62 491.35,236.12 492.54,236.60 493.73,237.07 494.92,237.52 496.12,237.96 497.31,238.40 498.50,238.82 499.70,239.22 500.89,239.62 502.08,240.01 503.28,240.38 504.47,240.75 505.66,241.10 506.85,241.44 508.05,241.78 509.24,242.10 510.43,242.41 511.63,242.72 512.82,243.02 514.01,243.30 515.21,243.58 516.40,243.85 517.59,244.11 518.78,244.36 519.98,244.61 521.17,244.85 522.36,245.08 523.56,245.30 524.75,245.52 525.94,245.72 527.14,245.93 528.33,246.12 529.52,246.31 530.71,246.49 531.91,246.67 533.10,246.84 534.29,247.00 535.49,247.16 536.68,247.31 537.87,247.46 539.07,247.60 540.26,247.74 541.45,247.88 542.64,248.00 543.84,248.13 545.03,248.25 546.22,248.36 547.42,248.47 548.61,248.58 549.80,248.68 551.00,248.78 552.19,248.88 553.38,248.97 554.57,249.06 555.77,249.14 556.96,249.22 ' style='stroke-width: 1.80; stroke: #C53030; stroke-dasharray: 9.60,9.60;' />
+<line x1='184.33' y1='256.32' x2='184.33' y2='34.56' style='stroke-width: 1.50; stroke: #718096; stroke-dasharray: 2.00,6.00;' />
+<line x1='260.68' y1='256.32' x2='260.68' y2='34.56' style='stroke-width: 1.50; stroke: #2B6CB0; stroke-dasharray: 2.00,6.00;' />
+<line x1='433.95' y1='47.52' x2='453.39' y2='47.52' style='stroke-width: 1.80; stroke: #1A365D;' />
+<line x1='433.95' y1='60.48' x2='453.39' y2='60.48' style='stroke-width: 1.80; stroke: #C53030; stroke-dasharray: 9.60,9.60;' />
+<line x1='433.95' y1='73.44' x2='453.39' y2='73.44' style='stroke-width: 1.50; stroke: #718096; stroke-dasharray: 2.00,6.00;' />
+<line x1='433.95' y1='86.40' x2='453.39' y2='86.40' style='stroke-width: 1.50; stroke: #2B6CB0; stroke-dasharray: 2.00,6.00;' />
+<text x='463.11' y='51.39' style='font-size: 10.80px; font-family: "Arial";' textLength='90.58px' lengthAdjust='spacingAndGlyphs'>truth  N(0.30, 0.12)</text>
+<text x='463.11' y='64.35' style='font-size: 10.80px; font-family: "Arial";' textLength='95.44px' lengthAdjust='spacingAndGlyphs'>mixed logit estimate</text>
+<text x='463.11' y='77.31' style='font-size: 10.80px; font-family: "Arial";' textLength='108.03px' lengthAdjust='spacingAndGlyphs'>plain logit point (naive)</text>
+<text x='463.11' y='90.27' style='font-size: 10.80px; font-family: "Arial";' textLength='100.22px' lengthAdjust='spacingAndGlyphs'>control-function point</text>
+</g>
+<g clip-path='url(#g3_cpMC4wMHw1OTAuNDB8MC4wMHwzMTYuODA=)'>
+<text x='318.96' y='21.48' text-anchor='middle' style='font-size: 11.76px;fill: #1A365D; font-family: "Arial";' textLength='417.17px' lengthAdjust='spacingAndGlyphs'>Mixed logit recovers the price-sensitivity heterogeneity plain logit averages away</text>
+</g>
+</g>
+</svg>
+<figcaption aria-hidden="true">Mixed logit recovers the
+price-sensitivity heterogeneity that plain logit flattened out. The true
+distribution (navy solid line) N(0.30, 0.12) and the mixed logit
+estimated distribution (red dashed line) nearly coincide; plain logit
+gives only a single point compressed by endogeneity (gray), and the
+control function pushes this single point to the right (blue), but it is
+still a single point, blind to the spread within the
+population.</figcaption>
+</figure>
+<p>The reconciliation of this section can be summarized as follows: on
+the same data, plain logit is off by a third on price sensitivity and
+locked by IIA on the substitution pattern; the control function fixes
+the price coefficient but does not touch substitution; nested logit and
+mixed logit fix substitution, and among them mixed logit additionally
+recovers price sensitivity together with its population heterogeneity,
+with elasticities and diversions all close to the truth. The differences
+come not from sampling noise but entirely from the model
+specification.</p>
+<h2 id="failure-modes-of-identification-and-robustness">7 Failure modes
+of identification and robustness</h2>
+<p>In the simulation the identification assumptions are constructed, but
+in real research they can fail at any moment. This section lays out the
+most common ways they fail and the actionable responses.</p>
+<p>Misspecifying IIA is the most expensive error in discrete choice,
+because it is silent. Plain logit will always converge and always give a
+pretty price coefficient, you will not receive any error message, yet
+the substitution pattern it hands back is wrong, and the decisions of
+delisting, merging, and new-product introduction all ride on the
+substitution pattern. One diagnostic is the Hausman-McFadden test:
+re-estimate from a subset of the options, and if the <span
+class="math inline">\hat\beta</span> differs significantly from the full
+set, IIA is rejected. A more practical attitude is to treat IIA as a
+restriction to be relaxed by default, and unless there is strong reason
+to believe the options are genuinely independent of one another, go to
+nested or mixed logit and draw out the substitution pattern for the
+reader, rather than reporting only the average effect.</p>
+<p>The nest structure of nested logit is a specification choice by the
+researcher, and drawing the nests wrong will steer the substitution
+pattern in a wrong direction. Along what dimension the nests should be
+split (cuisine, price tier, on- or off-platform) has no uniform answer,
+and depends on which dimension the close-neighbor relationships are
+strongest along. The robust practice is to try several reasonable nest
+structures and see whether the conclusion is stable, and if different
+partitions give substantively different substitution patterns, then the
+data themselves are insufficient to support nested logit, and one should
+turn to mixed logit, which needs no preset nests. Beware one common
+error: the within-nest share terms like <span
+class="math inline">\log(s_{j\mid g})</span> in nested logit are
+themselves endogenous, and forgetting to find a separate instrument for
+them will, through attenuation, push <span
+class="math inline">\lambda</span> toward 1, pretending that IIA
+holds.</p>
+<p>The soft spots of mixed logit are at both the identification and
+computation ends. On identification, the variance parameters must be
+pinned by rich choice-set and characteristic variation; the repeated
+choices of a panel additionally provide the correlation of the same
+person across situations, which usually strengthens identification
+markedly. Only with single choices and choice sets lacking sufficient
+variation are the variance terms prone to weak identification and
+collapse toward zero. On specification, the shape of the taste
+distribution is chosen by the researcher, and setting the price
+coefficient to normal will allow a fraction of people to have a positive
+price coefficient (the more expensive the more they love to buy), which
+is unreasonable, so one often switches to lognormal to constrain it to
+be negative, but the tail of the lognormal may in turn give absurd
+elasticities, and there is no free lunch. On computation, the usual SML
+retains a simulation bias under a fixed number of draws, so let the
+number of draws grow with the sample, or use quasi-Monte Carlo to reduce
+variance, and confirm from multiple starting values that it is not a
+local solution. An honest paper reports the robustness of the conclusion
+to changing the distributional assumption and the number of draws,
+rather than reporting only one good-looking set of estimates.</p>
+<p>Handling price endogeneity has its own failure modes. The control
+function depends on the first-step price equation being correctly
+specified, an assumption that cannot be tested directly, and if it is
+misspecified the second step is biased all the same. The validity of the
+instrument is likewise an assertion at the level of identification, not
+something a statistical test can prove, and the local cost must truly
+enter pricing only and not the user’s preference for a given order; if a
+peak season both raises price and boosts the platform’s overall
+popularity, it enters both sides at once and the exclusion restriction
+breaks. A weak instrument makes the variance of the corrected
+coefficient explode, and it may even be biased worse than without
+correction, and a first-step partial-F that is too low is a danger
+signal. Selva’s instrument is extremely strong (partial-F 2351), and
+real data are often not so lucky, so report the first-step strength
+honestly.</p>
+<p>There are two more easily overlooked checkpoints. One is the
+definition of the outside option, which determines the “market size,”
+and hence the level of all shares and elasticities; define the market
+too large or too small, and the outside-option share is distorted
+accordingly, so the price elasticity is systematically biased. The other
+is the way income or budget enters, for if price enters utility through
+<span class="math inline">\mathrm{price}/Y_i</span> or <span
+class="math inline">\log(Y_i - \mathrm{price})</span>, the implied
+substitution and welfare meaning are very different from linear entry,
+and choosing which requires a mechanistic reason.</p>
+<p>Stringing these failure modes together, the credibility of discrete
+choice comes down, in the end, to two things: whether the substitution
+structure is specified right, and whether exogenous variation in price
+can be found. IIA tests, multiple nest structures, robustness of the
+taste distribution, and the strength and exclusion of the instrument are
+all evidence provided around these two, and none can be replaced by “the
+model converged and the coefficients are significant.”</p>
+<h2 id="further-reading">8 Further reading</h2>
+<div class="readings">
+<p>Required reading, in suggested reading order:</p>
+<ul>
+<li>Train (2009, Discrete Choice Methods with Simulation, 2nd ed.). The
+standard textbook of discrete choice, covering logit, GEV, mixed logit,
+and simulation estimation in one volume, the authoritative source for
+all the methods in this chapter; read it first to establish the whole
+picture.</li>
+<li>McFadden (1974). The origin of conditional logit and RUM; read it to
+understand where IIA comes from and why it is the restriction to be
+loosened.</li>
+<li>McFadden and Train (2000, Journal of Applied Econometrics). The
+universality theorem that mixed logit can approximate any RUM;
+understand why random coefficients is the most general tool.</li>
+<li>Petrin and Train (2010, Journal of Marketing Research). The standard
+practice of handling endogeneity with a control function on individual
+data, the direct source of this chapter’s Section 4.2.</li>
+<li>Gentzkow (2007, American Economic Review). An exemplar of discrete
+choice demand in the context of information goods, demonstrating why the
+substitution and complementarity structure is the key product.</li>
+</ul>
+<p>Further reading:</p>
+<ul>
+<li>Berry (1994, RAND Journal of Economics). The origin of share
+inversion, connecting the individual choice model to data with only
+market-level shares, taken up later in this series when we discuss
+market-level demand estimation.</li>
+<li>Nevo (2001, Econometrica). A practical guide to random coefficients
+logit on market-level data, a mirror image of this chapter’s individual
+version.</li>
+<li>Bhat (2001, Transportation Research Part B). Quasi-Monte Carlo
+(Halton sequence) simulation for mixed logit, a practical technique for
+reducing SML variance.</li>
+<li>Small and Rosen (1981, Econometrica). Welfare measurement for
+discrete choice models, the bridge from log-sum to changes in consumer
+surplus.</li>
+<li>Conlon and Mortimer (2021, RAND Journal of Economics). A modern
+treatment and aggregation of diversion ratios, a systematic exposition
+of the diversion ratio as a core product of demand.</li>
+</ul>
+</div>
+<div class="apa-refs">
+<ul>
+<li>Berry, S. T. (1994). Estimating discrete-choice models of product
+differentiation. <em>The RAND Journal of Economics, 25</em>(2), 242-262.
+<a href="https://doi.org/10.2307/2555829"
+class="uri">https://doi.org/10.2307/2555829</a></li>
+<li>Bhat, C. R. (2001). Quasi-random maximum simulated likelihood
+estimation of the mixed multinomial logit model. <em>Transportation
+Research Part B: Methodological, 35</em>(7), 677-693. <a
+href="https://doi.org/10.1016/S0191-2615(00)00014-X"
+class="uri">https://doi.org/10.1016/S0191-2615(00)00014-X</a></li>
+<li>Conlon, C., &amp; Mortimer, J. H. (2021). Empirical properties of
+diversion ratios. <em>The RAND Journal of Economics, 52</em>(4),
+693-726. <a href="https://doi.org/10.1111/1756-2171.12388"
+class="uri">https://doi.org/10.1111/1756-2171.12388</a></li>
+<li>Gentzkow, M. (2007). Valuing new goods in a model with
+complementarity: Online newspapers. <em>American Economic Review,
+97</em>(3), 713-744. <a href="https://doi.org/10.1257/aer.97.3.713"
+class="uri">https://doi.org/10.1257/aer.97.3.713</a></li>
+<li>McFadden, D. (1974). Conditional logit analysis of qualitative
+choice behavior. In P. Zarembka (Ed.), <em>Frontiers in
+econometrics</em> (pp. 105-142). Academic Press.</li>
+<li>McFadden, D., &amp; Train, K. (2000). Mixed MNL models for discrete
+response. <em>Journal of Applied Econometrics, 15</em>(5), 447-470. <a
+href="https://doi.org/10.1002/1099-1255(200009/10)15:5%3C447::AID-JAE570%3E3.0.CO;2-1"
+class="uri">https://doi.org/10.1002/1099-1255(200009/10)15:5%3C447::AID-JAE570%3E3.0.CO;2-1</a></li>
+<li>Nevo, A. (2001). Measuring market power in the ready-to-eat cereal
+industry. <em>Econometrica, 69</em>(2), 307-342. <a
+href="https://doi.org/10.1111/1468-0262.00194"
+class="uri">https://doi.org/10.1111/1468-0262.00194</a></li>
+<li>Petrin, A., &amp; Train, K. (2010). A control function approach to
+endogeneity in consumer choice models. <em>Journal of Marketing
+Research, 47</em>(1), 3-13. <a
+href="https://doi.org/10.1509/jmkr.47.1.3"
+class="uri">https://doi.org/10.1509/jmkr.47.1.3</a></li>
+<li>Small, K. A., &amp; Rosen, H. S. (1981). Applied welfare economics
+with discrete choice models. <em>Econometrica, 49</em>(1), 105-130. <a
+href="https://doi.org/10.2307/1911129"
+class="uri">https://doi.org/10.2307/1911129</a></li>
+<li>Train, K. E. (2009). <em>Discrete choice methods with
+simulation</em> (2nd ed.). Cambridge University Press. <a
+href="https://doi.org/10.1017/CBO9780511805271"
+class="uri">https://doi.org/10.1017/CBO9780511805271</a></li>
+</ul>
+</div>
+    <footer class="page-footer">
+<span>Foundations of Information Systems Economics: Empirical Methods for Information Systems Economics</span>
+    </footer>
+  </main>
+</div>
+<script>
+(function(){var p=(location.pathname.split('/').pop()||'index.html');document.querySelectorAll('.file-nav a').forEach(function(a){if(a.getAttribute('href')===p)a.classList.add('current');});})();
+
+/* Preserve complete formulas without internal scrollbars. Only formulas whose
+   natural width exceeds their text column are reduced, and resize restores the
+   largest size that fits. */
+(function () {
+  function fitMath() {
+    document.querySelectorAll('span.math').forEach(function (host) {
+      var katex = host.querySelector('.katex');
+      if (!katex) return;
+      katex.style.fontSize = '';
+      var parent = host.classList.contains('display') ? host : host.parentElement;
+      var available = Math.max(1, parent.clientWidth);
+      /* KaTeX's box can be clipped to the host before measurement; scrollWidth
+         retains the full typeset width and is therefore the correct basis. */
+      var needed = Math.max(katex.scrollWidth, katex.getBoundingClientRect().width);
+      /* Keep a small safety margin for KaTeX glyph overhangs and browser
+         sub-pixel rounding, so the last radical/bar is never clipped. */
+      var target = available * 0.98;
+      if (needed > target) {
+        katex.style.fontSize = Math.max(0.34, target / needed) + 'em';
+      }
+    });
+  }
+  document.addEventListener('DOMContentLoaded', function () {
+    requestAnimationFrame(fitMath);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitMath);
+  });
+  window.addEventListener('resize', fitMath);
+}());
+</script>
+<script defer src="assets/notes.js"></script>
+</body>
+</html>

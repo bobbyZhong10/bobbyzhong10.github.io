@@ -1,0 +1,1526 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Demand Estimation: Berry Inversion &amp; BLP | IS Economics ·
+Empirical Methods</title>
+  <link rel="stylesheet" href="assets/style.css" />
+  <script defer="" src="assets/katex/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <link rel="stylesheet" href="assets/katex/katex.min.css" />
+</head>
+<body>
+<div class="page-wrapper">
+  <nav class="sidebar">
+    <div class="sidebar-title">Foundations of Information Systems Economics</div>
+    <div class="sidebar-subtitle">Theory · Methods · Applications</div>
+    <div class="toc-section-label">On this page</div>
+    <div class="toc">
+<ul>
+<li><a href="#introduction" id="toc-introduction">Introduction</a></li>
+<li><a href="#a-number-that-doesnt-add-up"
+id="toc-a-number-that-doesnt-add-up">1 A number that doesn’t add
+up</a></li>
+<li><a href="#economic-model-and-estimand"
+id="toc-economic-model-and-estimand">2 Economic model and
+estimand</a></li>
+<li><a href="#identification" id="toc-identification">3
+Identification</a></li>
+<li><a href="#estimation-from-iv-logit-to-blp"
+id="toc-estimation-from-iv-logit-to-blp">4 Estimation: from IV logit to
+BLP</a></li>
+<li><a href="#anchor-papers" id="toc-anchor-papers">5 Anchor
+papers</a></li>
+<li><a href="#a-full-walkthrough-on-selva-data"
+id="toc-a-full-walkthrough-on-selva-data">6 A full walkthrough on Selva
+data</a></li>
+<li><a href="#failure-modes-and-robustness-of-identification"
+id="toc-failure-modes-and-robustness-of-identification">7 Failure modes
+and robustness of identification</a></li>
+<li><a href="#further-reading" id="toc-further-reading">8 Further
+reading</a></li>
+</ul>
+    </div>
+    <div class="file-nav">
+      <div class="nav-label">This series</div>
+      <a href="index.html">Home · Overview</a>
+      <a href="introduction.html">Introduction · How to Use</a>
+      <a href="01_consumer_producer_welfare.html">01 Consumer, Producer &amp; Welfare</a>
+      <a href="02_game_theory.html">02 Game Theory</a>
+      <a href="03_information_mechanism_design.html">03 Information &amp; Mechanism Design</a>
+      <a href="04_pricing_imperfect_competition.html">04 Pricing &amp; Imperfect Competition</a>
+      <a href="05_estimation_mle_gmm.html">05 Estimation: MLE &amp; GMM</a>
+      <a href="06_inference.html">06 Inference: Bootstrap &amp; Clustering</a>
+      <a href="07_panel_dynamic_panel.html">07 Panel &amp; Dynamic Panel</a>
+      <a href="08_nonparametrics.html">08 Nonparametrics &amp; Semiparametrics</a>
+      <a href="09_potential_outcomes.html">09 Potential Outcomes &amp; Selection</a>
+      <a href="10_research_design_architecture.html">10 Research Design</a>
+      <a href="11_measurement_digital_traces.html">11 Measurement &amp; Digital Traces</a>
+      <a href="12_iv_late_mte.html">12 IV: LATE &amp; MTE</a>
+      <a href="13_did_event_studies.html">13 DiD &amp; Event Studies</a>
+      <a href="14_rdd_synthetic_control.html">14 RDD &amp; Synthetic Control</a>
+      <a href="15_sensitivity_partial_identification.html">15 Sensitivity &amp; Partial Identification</a>
+      <a href="16_causal_ml_dml.html">16 Causal ML &amp; DML</a>
+      <a href="17_digital_experimentation.html">17 Digital Experimentation</a>
+      <a href="18_interference_marketplace_experiments.html">18 Interference &amp; Marketplace Experiments</a>
+      <a href="19_discrete_choice.html">19 Discrete Choice &amp; Mixed Logit</a>
+      <a href="20_demand_blp.html">20 Demand Estimation &amp; BLP</a>
+      <a href="21_supply_markups_mergers.html">21 Supply, Markups &amp; Mergers</a>
+      <a href="22_entry_partial_id.html">22 Entry &amp; Partial Identification</a>
+      <a href="23_dynamic_structural.html">23 Dynamic Structural Models</a>
+      <a href="24_platforms_networks.html">24 Platforms &amp; Network Effects</a>
+      <a href="25_search_advertising.html">25 Search, Advertising &amp; Information Goods</a>
+      <a href="26_ai_algorithms_data.html">26 AI, Adoption &amp; Data Economics</a>
+      <a href="27_quick_reference.html">27 Quick Reference &amp; Tools</a>
+    </div>
+  </nav>
+  <main class="main-content" id="top">
+    <header class="page-header">
+      <h1>Demand Estimation: Berry Inversion &amp; BLP</h1>
+      <div class="subtitle">From Market Shares to Elasticities and
+Substitution</div>
+      <div class="meta">Foundations of Information Systems Economics · Chapter 20</div>
+    </header>
+<h2 id="introduction">Introduction</h2>
+<p>A spreadsheet from the car market will tell you how many units of
+each model sold in each city, at what price, with how much horsepower,
+but it usually will not tell you where a consumer who did not buy a
+given model turned instead. Yet that substitution is exactly what merger
+review, pricing, and welfare analysis care about most. Once the
+individual choice records vanish, demand does not vanish with them; the
+researcher simply has to reassemble the underlying consumer preferences
+out of a single table of market shares.</p>
+<p>Berry’s key insight is to treat market shares as an invertible map of
+mean utilities. Observe the shares and you can back out the <span
+class="math inline">\delta_{jt}</span> that makes the model generate
+exactly those shares; then use instruments to separate price from
+unobserved quality. In plain logit this inversion is just a one-line
+difference of log shares. Add random coefficients and the closed form is
+gone, but you can still find that vector of mean utilities with a
+contraction mapping. A problem that looked like a high-dimensional
+integral equation is thereby organized into two pieces of work: an inner
+inversion and an outer GMM.</p>
+<p>Computational success does not automatically buy economic
+credibility. Plain logit inherits IIA; if your price instrument is
+merely correlated with price in the sample while also reflecting product
+quality, no amount of second-stage polish will save you; and random
+coefficients, without enough variation in shares and valid instruments,
+can quietly collapse back to simple logit. Selva’s six meal-kit brands
+and three hundred markets run through the whole chapter. Because the
+truth in this simulated world is known, we can watch exactly how the
+wrong substitution structure propagates from the price coefficient
+through elasticities, markups, and marginal costs.</p>
+<p>This chapter builds on the random utility, IIA, and mixed logit of
+Chapter 19, and it uses GMM and instrumental variables. The goal is not
+to treat BLP as a black-box procedure but to leave you able to write
+down the Berry inversion, explain which variation identifies the price
+coefficient versus the random coefficients, check whether the
+contraction and the outer optimization actually converged, and judge the
+economic content of an instrument. The next chapter picks up the
+estimated demand system and backs out costs and market power from firm
+pricing.</p>
+<h2 id="a-number-that-doesnt-add-up">1 A number that doesn’t add up</h2>
+<div class="case">
+<p>Selva is a fictional delivery platform, and in this chapter we look
+at one of its meal-kit categories. The data are at the market level: the
+platform operates in 300 city-week markets, each market offers six
+brands, labeled 1 through 6, plus an outside option of not ordering. For
+each brand in each market we observe only three things: the market
+share, the price, and two observable characteristics (<span
+class="math inline">x_1</span> records quality, <span
+class="math inline">x_2</span> records menu breadth). We see no
+individual, who they are or what they bought, only the aggregated
+shares. What the platform wants to know is the same old question: how
+sensitive are users to price, and if a given brand raises its price, how
+much demand does it lose and to whom.</p>
+</div>
+<p>Start with Berry’s most direct step. Market shares are a function of
+utility, and in plain logit that function can be inverted in one line:
+the log share of product <span class="math inline">j</span> minus the
+log share of the outside option is exactly its mean utility <span
+class="math inline">\delta_{jt} = x_{jt}\beta - \alpha p_{jt} +
+\xi_{jt}</span>. So take <span class="math inline">\ln s_{jt} - \ln
+s_{0t}</span> as the dependent variable, run an ordinary least squares
+regression on characteristics and price, and out pops the price
+coefficient <span class="math inline">\alpha</span>.</p>
+<p>The result is absurd. OLS estimates a price coefficient of <span
+class="math inline">-0.19</span>, and note the sign: utility is written
+as <span class="math inline">-\alpha p</span>, so <span
+class="math inline">\alpha</span> should be positive to make price a
+disutility, yet it comes out negative, meaning price enters utility
+positively. Translated into demand language, this demand curve slopes
+upward, with an own-price elasticity of <span
+class="math inline">+1.2</span>: the more Selva’s meal kits cost, the
+more users buy. No sensible demand curve has this shape. Take it
+seriously and you can derive even more ridiculous conclusions. Back out
+marginal cost from the pricing first-order condition, and an
+upward-sloping demand gives negative markups, implying a median marginal
+cost of <span class="math inline">13.6</span> dollars per meal while
+these brands sell at a median of only <span
+class="math inline">7.6</span> dollars. That is to say every brand, in
+every market, on every order, is selling at a loss of five or six
+dollars. This is of course impossible.</p>
+<p>The regression is not miswritten and the inversion is not miswritten;
+Berry’s line of algebra is an exact identity. What is wrong is treating
+price as exogenous. Expensive brands tend to be better along dimensions
+the researcher cannot see, so <span class="math inline">\xi_{jt}</span>
+raises both a brand’s share and its price. OLS cannot tell “expensive”
+from “good,” swallows the entire disutility of price and then some, and
+forces out an upward-sloping demand curve. This is exactly the price
+endogeneity of the previous chapter, only in market-level data its
+consequences can be extreme enough to flip the sign of the demand slope.
+Section 4 will show that once a cost instrument tames price, <span
+class="math inline">\alpha</span> returns to a positive <span
+class="math inline">0.51</span> and demand slopes down again; but that
+is not enough, because plain logit’s IIA makes elasticities
+systematically too small (own-price elasticity is only <span
+class="math inline">-3.3</span>, against a truth of about <span
+class="math inline">-4.4</span>) and distorts the substitution pattern
+too. To get both elasticities and substitution right you need full BLP,
+at which point <span class="math inline">\alpha</span> lands at <span
+class="math inline">0.75</span>, right up against the truth of <span
+class="math inline">0.70</span>.</p>
+<h2 id="economic-model-and-estimand">2 Economic model and estimand</h2>
+<p>Before doing any inversion, let us write down the market-level demand
+model and the target quantity clearly. It is a direct aggregation of the
+previous chapter’s individual model, and the notation is almost carried
+over verbatim.</p>
+<p>What demand estimation must deliver is still those two things:
+own-price elasticities and the substitution pattern (the diversion
+ratio). What is special about market-level data is that neither can be
+read directly off the shares; you must first estimate the utility
+parameters and then plug them into the elasticity formulas. So the
+estimand of this chapter is the utility parameters <span
+class="math inline">(\beta, \alpha)</span> and the random-coefficient
+distribution parameters <span class="math inline">\theta_2</span>, along
+with the elasticity matrix and diversion ratios derived from them. Only
+once these are in hand can the supply side be brought in to recover
+marginal costs and evaluate mergers, which is the next chapter’s
+business.</p>
+<p>The notation follows the previous chapter. Index markets by <span
+class="math inline">t</span>, products by <span class="math inline">j
+\in \{1, \dots, J\}</span>, with <span class="math inline">j = 0</span>
+the outside option. The utility consumer <span
+class="math inline">i</span> gets from product <span
+class="math inline">j</span> is</p>
+<p><span class="math display">u_{ijt} = \underbrace{x_{jt}\beta - \alpha
+p_{jt} + \xi_{jt}}_{\delta_{jt}} + \underbrace{\mu_{ijt}}_{\text{random
+coef.}} + \varepsilon_{ijt}, \qquad u_{i0t} =
+\varepsilon_{i0t}</span></p>
+<p><span class="math inline">\delta_{jt}</span> is the mean utility of
+product <span class="math inline">j</span> in market <span
+class="math inline">t</span>, common to all consumers, holding the
+observable characteristics <span class="math inline">x_{jt}</span>,
+price <span class="math inline">p_{jt}</span>, and the quality <span
+class="math inline">\xi_{jt}</span> that the researcher cannot observe
+but the platform and consumers both know. <span
+class="math inline">\mu_{ijt}</span> is the consumer-varying part of
+preferences, the random coefficients from the previous chapter: <span
+class="math inline">\mu_{ijt} = -\sigma_p \nu_{ip} p_{jt} + \sum_k
+\sigma_k \nu_{ik} x_{jt}^{(k)}</span>, where <span
+class="math inline">\nu_i</span> is the individual’s taste draw and
+<span class="math inline">\sigma_p</span> and <span
+class="math inline">\sigma_k</span> describe how dispersed tastes are
+over price and over the <span class="math inline">k</span>-th
+characteristic respectively (price counts as one characteristic carrying
+a random coefficient). <span
+class="math inline">\varepsilon_{ijt}</span> is Type-I extreme value.
+Turn <span class="math inline">\mu</span> off (all <span
+class="math inline">\sigma_k = 0</span>) and you fall back to plain
+logit.</p>
+<p>Given <span class="math inline">\delta_t</span> and the nonlinear
+parameters <span class="math inline">\theta_2 = \sigma</span> (the
+vector of random-coefficient standard deviations), the predicted share
+of product <span class="math inline">j</span> in market <span
+class="math inline">t</span> is an integral over the taste distribution.
+Given <span class="math inline">\delta_t</span>, the share depends on
+<span class="math inline">\sigma</span> only through <span
+class="math inline">\mu</span>, whereas <span
+class="math inline">\alpha</span> and <span
+class="math inline">\beta</span> are linear parameters that enter
+through <span class="math inline">\delta</span> and are solved by
+concentrated 2SLS (see Section 4.3):</p>
+<p><span class="math display">s_{jt}(\delta_t, \theta_2) = \int
+\frac{\exp[\delta_{jt} + \mu_{ijt}]}{1 + \sum_k \exp[\delta_{kt} +
+\mu_{ikt}]}\, dF(\nu)</span></p>
+<p>This equation is the pivot of the whole chapter. It says the
+predicted share is the average, over the taste distribution, of each
+consumer’s internal logit probability, exactly the mixed logit share
+from the previous chapter, except that now we do not observe individuals
+and only observe the realized value of this integral (the market share).
+The first step of estimation is to invert this map from <span
+class="math inline">\delta</span> to shares: given the observed shares,
+find the vector of <span class="math inline">\delta_{jt}</span> that
+makes predicted shares exactly equal observed shares.</p>
+<div class="intuition">
+<p>Why insist on first inverting out <span
+class="math inline">\delta_{jt}</span> rather than running a nonlinear
+regression on shares directly? Because <span
+class="math inline">\xi_{jt}</span> hides inside <span
+class="math inline">\delta_{jt}</span>, and it is correlated with price,
+the entire source of endogeneity. If you can solve <span
+class="math inline">\delta_{jt}</span> out on its own, then <span
+class="math inline">\delta_{jt} = x_{jt}\beta - \alpha p_{jt} +
+\xi_{jt}</span> is a linear equation with <span
+class="math inline">\xi_{jt}</span> as its residual, and the whole
+arsenal of instrumental-variable tools we have for endogenous residuals
+becomes immediately available. The point of the inversion is to
+reorganize a nonlinear integral equation, in which <span
+class="math inline">\xi</span> is hopelessly entangled, into a linear
+moment condition where <span class="math inline">\xi</span> appears
+cleanly in the residual position. All of BLP’s ingenuity is in the
+service of completing this inversion and making it run numerically.</p>
+</div>
+<p>To summarize: the market-level demand model is the aggregation of the
+previous chapter’s individual model; <span
+class="math inline">\delta_{jt}</span> holds the endogenous <span
+class="math inline">\xi_{jt}</span>; the predicted share is the integral
+of a random-coefficient logit; the estimand is the utility and
+random-coefficient parameters plus the elasticities and diversion ratios
+derived from them; and the inversion reorganizes endogeneity into an
+instrumental-variable problem in the residual, which is the starting
+point of the next section’s identification.</p>
+<h2 id="identification">3 Identification</h2>
+<p>Identification comes before estimation in logic. This section
+answers: starting from observables like market shares, prices, and
+characteristics, under what assumptions can the utility parameters and
+the substitution pattern be pinned down. This is the most finely worked
+section in the chapter, split into numbered subsections, each giving
+intuition before formalization. Inversion, endogeneity, instruments, and
+the identification of random coefficients are dissected one by one.</p>
+<h3 id="berry-inversion-recovering-mean-utility-from-shares">3.1 Berry
+inversion: recovering mean utility from shares</h3>
+<p>Start with the most transparent plain-logit inversion, the starting
+point for understanding everything, and it is just algebra. In plain
+logit there are no random coefficients, <span
+class="math inline">\mu_{ijt} = 0</span>, and the share degenerates
+to</p>
+<p><span class="math display">s_{jt} = \frac{\exp(\delta_{jt})}{1 +
+\sum_k \exp(\delta_{kt})}, \qquad s_{0t} = \frac{1}{1 + \sum_k
+\exp(\delta_{kt})}</span></p>
+<p>Divide the two and take logs, and the whole denominator cancels
+completely:</p>
+<p><span class="math display">\ln s_{jt} - \ln s_{0t} = \delta_{jt} =
+x_{jt}\beta - \alpha p_{jt} + \xi_{jt}</span></p>
+<p>This is the Berry (1994) inversion. The left side is all data (the
+observed shares), and the right side is the utility we want to estimate
+plus the residual <span class="math inline">\xi_{jt}</span>. It turns an
+entire discrete-choice model into a linear regression whose dependent
+variable is a difference of log shares. A few points to make clear.
+First, this inversion is one-to-one: each observed share corresponds to
+a unique <span class="math inline">\delta_{jt}</span>, one <span
+class="math inline">\xi_{jt}</span> per product, no more and no less.
+Second, using observed shares versus true shares on the left agrees as
+the sample grows infinite, which is why the inversion is stable when
+market-level data are plentiful. Third, and this is the crux, <span
+class="math inline">p_{jt}</span> on the right is correlated with the
+residual <span class="math inline">\xi_{jt}</span>, so running OLS
+directly is the disaster of Section 1, and you must use IV.</p>
+<p>The Berry inversion can be written in a unified abstract form, <span
+class="math inline">\delta_t = \sigma^{-1}(s_t; \theta_2)</span>, read
+as “invert the share map to recover mean utility.” Plain logit is the
+special case where this inverse has a closed form; the nested-logit
+inverse carries one extra term, the within-nest share (Section 4.2); the
+random-coefficient BLP inverse has no closed form and must be solved by
+iteration (Section 3.4). Wherever a share appears inside the inverse, it
+corresponds to an endogenous variable and calls for an instrument, a
+rule that holds throughout.</p>
+<h3 id="why-price-is-endogenous-correlation-from-the-supply-side">3.2
+Why price is endogenous: correlation from the supply side</h3>
+<p>Section 1 said price is correlated with <span
+class="math inline">\xi_{jt}</span>; here we explain the mechanism
+fully, because it is both the root of endogeneity and the guide to
+finding instruments. <span class="math inline">\xi_{jt}</span> is
+product quality outside the researcher’s view. The platform and
+merchants see it when they price, better things get priced higher, so
+price naturally carries a piece of <span class="math inline">\xi</span>.
+More precisely, price is set by the supply side’s optimal pricing, and
+optimal pricing is a function of demand, and demand contains <span
+class="math inline">\xi</span>, so the equilibrium price is a function
+of <span class="math inline">\xi</span>. This is not the incidental
+correlation of measurement error but a systematic correlation forced by
+an economic mechanism. In Selva’s data the correlation between price and
+<span class="math inline">\xi</span> is <span
+class="math inline">0.23</span>, which looks small but is enough to flip
+the sign of the OLS demand slope.</p>
+<p>This mechanism also points to where the instrument should be found.
+Since price is endogenous because it moves with <span
+class="math inline">\xi</span> (the demand side), a variable that moves
+only with cost (the supply side) and does not enter utility can supply
+clean price variation. Such cost shifters are the most reliable
+instruments in BLP. In Selva it is the local input cost <span
+class="math inline">w_{jt}</span> in each market (ingredients, delivery,
+labor), which pushes price up but does not directly affect users’
+preference for a given meal, satisfying the exclusion restriction.
+Section 3.3 works through the available instruments systematically.</p>
+<div class="warning">
+<p>The direction of price endogeneity in market-level data can be
+extreme enough to flip the sign of the demand slope, which is unlike
+individual data. In the previous chapter’s individual logit, endogeneity
+merely pushes <span class="math inline">\alpha</span> toward zero
+(elasticities too small); here OLS gives <span
+class="math inline">\alpha &lt; 0</span> outright, an upward-sloping
+demand. The reason is that in market-level data price is almost entirely
+determined endogenously by the supply side, and the share of price
+coming from <span class="math inline">\xi</span> through pricing is
+heavier. Do not underestimate its destructive power in market-level data
+just because “in individual data endogeneity is only mild
+attenuation.”</p>
+</div>
+<h3 id="instruments-and-the-exclusion-restriction">3.3 Instruments and
+the exclusion restriction</h3>
+<p>After the inversion, <span class="math inline">\delta_{jt} =
+x_{jt}\beta - \alpha p_{jt} + \xi_{jt}</span> is a linear IV problem,
+<span class="math inline">p_{jt}</span> is endogenous, and it needs an
+instrument satisfying <span class="math inline">\mathbb{E}[\xi_{jt} \mid
+z_{jt}] = 0</span>. There are several usable sources, each with its own
+logic and its own weakness.</p>
+<p>Cost shifters are the cleanest class. Any variable that enters cost
+but not utility qualifies: local factor prices, exchange rates,
+raw-material costs, taxes. It moves price directly while being unrelated
+to <span class="math inline">\xi</span>, the tightest logic there is.
+The weakness is that good cost shifters are not always found, especially
+when a digital product’s marginal cost is nearly zero.</p>
+<p>The BLP instrument is the original device of Berry, Levinsohn, and
+Pakes, using rivals’ product characteristics. The intuition is that the
+more competitors a product has around it, and the more similar they are,
+the greater the substitution pressure it faces, the lower the
+equilibrium markup, and the lower the price, so rival characteristics
+move the product’s own price through the markup channel while not
+entering the product’s own utility. The common construction is the sum
+of rival characteristics in the same market. The weakness is the one
+Armstrong (2016) points out: when the number of products per market is
+large, the markup tends to a constant, and this class of instrument
+loses its power to move price, degenerating into a weak instrument, at
+which point you still cannot do without a cost shifter.</p>
+<p>The Hausman instrument uses the same product’s price in other
+markets. The logic is that prices in different markets share cost shocks
+but not the demand shocks specific to each market. The weakness is that
+this “demand shocks are not correlated across markets” assumption is
+strong; national advertising or national taste changes both break
+it.</p>
+<p>Gandhi and Houde’s (2019) differentiation instrument is designed
+specifically to identify the random coefficients. It uses the distance
+between a product and its rivals in characteristic space, for example
+the sum of squared differences between each rival’s and the product’s
+characteristics in the same market. What it captures is “how densely
+packed the products are around this product,” and the substitution
+strength governed by the random coefficients depends precisely on this
+density, so it is especially powerful for identifying <span
+class="math inline">\sigma</span>. In Selva’s estimation, it is exactly
+by adding rival costs and the differentiation instrument that the random
+coefficients get identified out of the trap of collapsing to zero.</p>
+<p>Matching these instruments to what they identify is the key to
+understanding BLP identification. The mean price coefficient <span
+class="math inline">\alpha</span> is identified by exogenous variation
+in price, with cost shifters as the workhorse. The random coefficient
+<span class="math inline">\sigma</span> is identified by “how the
+substitution pattern varies with product characteristics”: raise a
+product’s price, and watch whether demand flows mainly to products
+similar to it in characteristics or spreads out evenly; the more it
+concentrates on similar products, the larger is <span
+class="math inline">\sigma</span>. The differentiation instrument and
+the BLP instrument supply exactly this “who sits next to whom in
+characteristic space” variation. Identifying <span
+class="math inline">\sigma</span> is naturally harder than identifying
+<span class="math inline">\alpha</span>, a point Section 7 will return
+to from the angle of failure modes.</p>
+<h3 id="inversion-with-random-coefficients-the-contraction-mapping">3.4
+Inversion with random coefficients: the contraction mapping</h3>
+<p>The plain-logit inversion has a closed form because the share is a
+simple function of <span class="math inline">\delta</span>. Once random
+coefficients enter, the share is that integral, <span
+class="math inline">\delta</span> is wrapped inside the integral sign,
+and there is no closed-form inverse. BLP’s key technical contribution is
+to provide an iteration guaranteed to converge that solves <span
+class="math inline">\delta</span> out.</p>
+<p>For a fixed <span class="math inline">\theta_2</span>, the <span
+class="math inline">\delta_t</span> we seek satisfies the <span
+class="math inline">J</span> equations “predicted shares equal observed
+shares.” BLP proves that the following iteration is a contraction
+mapping:</p>
+<p><span class="math display">\delta_t^{(h+1)} = \delta_t^{(h)} + \ln
+S_t^{\text{obs}} - \ln s_t\big(\delta_t^{(h)}, \theta_2\big)</span></p>
+<p>The intuition is plain: if the current <span
+class="math inline">\delta</span> predicts a product’s share below the
+observed share, raise its <span class="math inline">\delta</span> a bit,
+and vice versa, with the adjustment equal to exactly the difference of
+the two log shares. BLP proves this map has a contraction modulus less
+than 1, so no matter where you start, repeated iteration converges to
+the unique <span class="math inline">\delta_t(\theta_2)</span>. In
+practice the convergence tolerance is set very tight (on the order of
+<span class="math inline">10^{-12}</span>), because errors in the inner
+inversion get amplified in the outer GMM, a point Section 4.4 makes
+formally. There are acceleration tricks like SQUAREM, and you can also
+rewrite the inversion as a convex optimization problem and solve it with
+Newton’s method, but the contraction iteration is the most classic and
+most robust approach.</p>
+<figure>
+<svg viewBox="0 0 720 430" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, 'Noto Sans SC', sans-serif" role="img" aria-label="Starting from any point, the mean utilities δ for each product converge monotonically along the red staircase to the unique fixed point δ* under repeated application of the Berry contraction map T; at δ* the model’s predicted shares exactly equal the observed shares and the inversion is complete. Because the slope of T is everywhere below 1 (contraction modulus less than 1), convergence holds for any starting point." style="max-width:100%;height:auto;display:block;margin:0 auto">
+  <line x1="100" y1="40" x2="100" y2="380" stroke="#94a1b2" stroke-width="1.5"/>
+  <line x1="100" y1="380" x2="440" y2="380" stroke="#94a1b2" stroke-width="1.5"/>
+  <text x="96" y="34" text-anchor="end" font-size="13" fill="#64748b">T(δ)</text>
+  <text x="446" y="384" text-anchor="start" font-size="13" fill="#64748b">δ →</text>
+
+  <line x1="100" y1="380" x2="440" y2="40" stroke="#1a365d" stroke-width="2" stroke-dasharray="5 4"/>
+
+  <line x1="100" y1="286.5" x2="440" y2="133.5" stroke="#2b6cb0" stroke-width="2.5"/>
+
+  <polyline fill="none" stroke="#c53030" stroke-width="2"
+    points="134,346 134,271.2 208.8,271.2 208.8,237.5 242.5,237.5 242.5,222.4 257.6,222.4 257.6,215.5 264.4,215.5 264.4,212.6 270,212.6"/>
+
+  <line x1="134" y1="380" x2="134" y2="386" stroke="#64748b" stroke-width="1.2"/>
+  <text x="134" y="400" text-anchor="middle" font-size="12" fill="#64748b">δ₀</text>
+
+  <line x1="270" y1="210" x2="270" y2="380" stroke="#cfccc4" stroke-width="1.2" stroke-dasharray="4 4"/>
+  <circle cx="270" cy="210" r="5" fill="#1a365d"/>
+  <text x="270" y="400" text-anchor="middle" font-size="12.5" fill="#1a365d">δ*</text>
+
+  <line x1="472" y1="92" x2="504" y2="92" stroke="#1a365d" stroke-width="2" stroke-dasharray="5 4"/>
+  <text x="512" y="96" text-anchor="start" font-size="12.5" fill="#2d3748">45° reference line: δ = T(δ)</text>
+  <line x1="472" y1="120" x2="504" y2="120" stroke="#2b6cb0" stroke-width="2.5"/>
+  <text x="512" y="124" text-anchor="start" font-size="12.5" fill="#2d3748">contraction map T(δ)</text>
+  <line x1="472" y1="148" x2="504" y2="148" stroke="#c53030" stroke-width="2"/>
+  <text x="512" y="152" text-anchor="start" font-size="12.5" fill="#2d3748">iteration δ₀ → δ₁ → ⋯ → δ*</text>
+
+  <text x="472" y="196" text-anchor="start" font-size="12" fill="#4a5568">Slope of T is everywhere below 1</text>
+  <text x="472" y="215" text-anchor="start" font-size="12" fill="#4a5568">(≈0.45 here), so T is a contraction.</text>
+  <text x="472" y="234" text-anchor="start" font-size="12" fill="#4a5568">From any δ₀, iterate δ ← T(δ), the</text>
+  <text x="472" y="253" text-anchor="start" font-size="12" fill="#4a5568">staircase converges to the unique</text>
+  <text x="472" y="272" text-anchor="start" font-size="12" fill="#4a5568">fixed point δ*. At δ*, predicted</text>
+  <text x="472" y="291" text-anchor="start" font-size="12" fill="#4a5568">shares equal observed shares, so</text>
+  <text x="472" y="310" text-anchor="start" font-size="12" fill="#4a5568">the inversion is complete.</text>
+</svg>
+<figcaption aria-hidden="true">Starting from any point, the mean
+utilities δ for each product converge monotonically along the red
+staircase to the unique fixed point δ* under repeated application of the
+Berry contraction map T; at δ* the model’s predicted shares exactly
+equal the observed shares and the inversion is complete. Because the
+slope of T is everywhere below 1 (contraction modulus less than 1),
+convergence holds for any starting point.</figcaption>
+</figure>
+<p>With the ability to solve <span
+class="math inline">\delta(\theta_2)</span> for every <span
+class="math inline">\theta_2</span>, the random-coefficient inversion is
+complete, and <span class="math inline">\delta_{jt}(\theta_2) =
+x_{jt}\beta - \alpha p_{jt} + \xi_{jt}</span> becomes the familiar
+linear IV equation again, only now <span
+class="math inline">\delta</span> depends on the <span
+class="math inline">\theta_2</span> we want to estimate. How to nest the
+inner and outer loops together for estimation is the business of Section
+4.</p>
+<h3 id="what-random-coefficients-identify-and-how">3.5 What random
+coefficients identify, and how</h3>
+<p>The random coefficient <span class="math inline">\sigma</span> is the
+entire increment of BLP over plain logit, and its identification
+deserves its own careful treatment, because it is the hardest and most
+prone to failure.</p>
+<p><span class="math inline">\sigma</span> measures how far the
+substitution pattern departs from IIA. As the previous chapter
+explained, plain logit’s IIA forces substitution to be allocated in
+proportion to shares, regardless of “who is like whom.” Random
+coefficients break this: if many consumers prefer high quality, then two
+high-quality products are favored by the same group of people, and when
+one raises its price, demand flows more to the other high-quality one
+rather than scattering by shares. The larger is <span
+class="math inline">\sigma</span>, the stronger this
+characteristic-similarity-based concentrated substitution. So all the
+identifying information for <span class="math inline">\sigma</span> is
+in “how the substitution pattern varies with product characteristics”:
+the data must let us see that substitution strength really does differ
+across markets with different characteristic distributions, or across
+products with different characteristics.</p>
+<p>This brings two identification conditions to keep firmly in mind.
+First, product characteristics must have enough cross-market variation
+in the data, otherwise “how substitution varies with characteristics”
+cannot be observed and <span class="math inline">\sigma</span> is not
+identified. Second, you need instruments that capture density in
+characteristic space, that is the differentiation and BLP instruments
+above. The random coefficient on quality <span
+class="math inline">\sigma_{x_1}</span> can be identified with this
+variation, and Selva estimates it quite precisely, which is exactly what
+holds up the near-neighbor substitution we will see later. The random
+coefficient on price <span class="math inline">\sigma_p</span> is
+another matter, and is famously the hardest parameter to identify in
+BLP: price is itself endogenous, and the exogenous variation available
+to identify it is very limited. Section 6 will show that even with rival
+costs and the differentiation instrument added, <span
+class="math inline">\sigma_p</span> in Selva is barely pinned down, with
+a point estimate near zero and a standard error far larger than the
+point estimate. This is not a program bug but a faithful reflection of
+the difficulty of identifying the price random coefficient, and the
+honest thing is to report this uncertainty rather than pretend it was
+estimated precisely. Fortunately the substitution pattern is governed
+mainly by <span class="math inline">\sigma_{x_1}</span>, so an imprecise
+<span class="math inline">\sigma_p</span> does not ruin the elasticity
+and substitution structure this chapter must deliver.</p>
+<h3 id="nonparametric-identification-berry-haile">3.6 Nonparametric
+identification: Berry-Haile</h3>
+<p>All the identification above hangs on functional forms like “utility
+is linear, <span class="math inline">\varepsilon</span> is Type-I EV.” A
+natural question is, setting these parametric assumptions aside, how
+much market-level data can identify on its own. Berry and Haile (2014)
+give the answer, worth knowing because it builds BLP’s credibility on a
+firmer foundation than “we happened to pick the right distribution.”</p>
+<p>Their conclusion is that under a few nonparametric conditions, demand
+(and even marginal cost) can be nonparametrically identified from
+market-level data. There are three core conditions. Connected
+substitutes guarantees the demand map is invertible, so shares can be
+inverted to mean utility, which is the generalization of the Berry
+inversion from logit to arbitrary models. Exogeneity of the instruments,
+<span class="math inline">\mathbb{E}[\xi_{jt} \mid z_t] = 0</span>,
+supplies the exogenous variation needed to identify price. Completeness
+is the nonparametric version of the rank condition, guaranteeing the
+information carried by the instruments is enough to pin down the demand
+function. The key count is that a market has <span
+class="math inline">J</span> endogenous shares and <span
+class="math inline">J</span> endogenous prices, and in general you need
+<span class="math inline">2J</span> instruments, <span
+class="math inline">J</span> of them from exogenous product
+characteristics (the BLP-instrument type) and another <span
+class="math inline">J</span> from variables that enter only price, like
+cost shifters or Hausman instruments. If you are willing to accept the
+single parametric assumption that utility is linear in price, then the
+price part needs only one instrument, greatly lightening the
+instrumental-variable burden. This explains why a good cost shifter is
+so critical in practice.</p>
+<p>The main points of this section can be summarized as follows: the
+Berry inversion turns shares into mean utility, with a closed form for
+plain logit and a contraction-mapping iteration for random coefficients;
+price is endogenous because of the supply side’s optimal pricing and
+needs an instrument that enters only cost; the mean price coefficient is
+identified by cost shifters and the random coefficient by how
+substitution varies with characteristics, which requires a
+differentiation instrument and is naturally harder; and Berry-Haile
+places all of this on the solid ground of nonparametric identification.
+None of this yet says how to compute it, which is the next section.</p>
+<h2 id="estimation-from-iv-logit-to-blp">4 Estimation: from IV logit to
+BLP</h2>
+<p>This section proceeds by increasing complexity, each step giving
+birth to the next where the last one fails. Plain logit’s IV regression
+fixes endogeneity but locks down substitution; the random-coefficient
+BLP fixes substitution; and NFXP and MPEC are two ways of computing
+it.</p>
+<h3 id="iv-logit-berry-inversion-plus-linear-instruments">4.1 IV logit:
+Berry inversion plus linear instruments</h3>
+<p>With the inversion from Section 3.1, estimating plain logit is a
+linear IV regression: run two-stage least squares of <span
+class="math inline">\ln s_{jt} - \ln s_{0t}</span> on <span
+class="math inline">x_{jt}</span> and <span
+class="math inline">p_{jt}</span>, instrumenting price with cost
+shifters and the BLP instrument. On Selva, the first-stage coefficient
+on the cost shifter <span class="math inline">w</span> is <span
+class="math inline">0.696</span>, with a partial-F as high as <span
+class="math inline">1520</span>, an extremely strong instrument. The
+second-stage price coefficient returns to <span
+class="math inline">0.51</span> (against OLS’s <span
+class="math inline">-0.19</span>), demand finally slopes down, and the
+median own-price elasticity is <span class="math inline">-3.3</span>.
+The endogeneity layer is cured.</p>
+<p>But IV logit is still plain logit, and IIA remains. Its elasticities
+are systematically too small: the true median is about <span
+class="math inline">-4.4</span> while IV logit gives only <span
+class="math inline">-3.3</span>, because the homogeneous-logit
+elasticity formula does not match the true substitution with random
+coefficients. Worse is the substitution pattern: IIA forces diversion to
+be allocated by shares, and Section 6 will show IV logit clearly
+underestimates near-neighbor substitution. Markups are then overstated
+too, and the backed-out marginal costs come in too low. To get both
+elasticities and substitution right, you must relax IIA.</p>
+<h3 id="nested-logit-one-step-away">4.2 Nested logit: one step away</h3>
+<p>The most economical step toward relaxing IIA is nested logit, sorting
+products into nests and allowing stronger within-nest substitution. Its
+inversion has just one term more than plain logit:</p>
+<p><span class="math display">\ln s_{jt} - \ln s_{0t} = x_{jt}\beta -
+\alpha p_{jt} + \rho \ln s_{j \mid g, t} + \xi_{jt}</span></p>
+<p>The extra <span class="math inline">\ln s_{j \mid g, t}</span> is the
+product’s share within its nest, and <span
+class="math inline">\rho</span> is the within-nest correlation parameter
+(corresponding to the previous chapter’s <span class="math inline">1 -
+\lambda</span>). This term brings a new trouble: the within-nest share
+<span class="math inline">s_{j \mid g, t}</span> is itself endogenous,
+being a function of the dependent variable, which amounts to using a
+part of <span class="math inline">Y</span> to explain <span
+class="math inline">Y</span>. Forgetting to find it its own instrument
+will, through simultaneity bias, push <span
+class="math inline">\rho</span> toward 1, faking a strong within-nest
+correlation that does not exist. A valid instrument is usually the
+number of products in the nest or rival characteristics. Nested logit is
+the transition from plain logit to BLP: it is more flexible than plain
+logit, but the nest structure must be specified by the researcher in
+advance, and mis-drawing the nests undoes everything, and it also
+assumes price sensitivity is the same for everyone. What truly relaxes
+all of this together is random coefficients.</p>
+<h3 id="full-blp-inner-inversion-nested-in-outer-gmm">4.3 Full BLP:
+inner inversion nested in outer GMM</h3>
+<p>BLP brings in random coefficients, and estimation becomes a two-layer
+nesting, a structure called the nested fixed point (NFXP). The
+parameters split into two groups: the linear parameters <span
+class="math inline">\theta_1 = (\beta, \alpha)</span> and the nonlinear
+parameters <span class="math inline">\theta_2 = \sigma</span>.</p>
+<p>The inner loop, for a fixed <span
+class="math inline">\theta_2</span>, does the contraction mapping of
+Section 3.4 and solves out <span
+class="math inline">\delta(\theta_2)</span> making predicted shares
+equal observed shares. With <span
+class="math inline">\delta(\theta_2)</span>, the linear equation <span
+class="math inline">\delta_{jt}(\theta_2) = x_{jt}\beta - \alpha p_{jt}
++ \xi_{jt}</span> can be solved for <span
+class="math inline">\theta_1</span> and the residual <span
+class="math inline">\xi(\theta_2)</span> in one step by IV
+(concentrating out the linear parameters, so the outer loop only needs
+to search over <span class="math inline">\theta_2</span>). The outer
+loop uses the moment condition <span
+class="math inline">\mathbb{E}[\xi_{jt} \mid z_{jt}] = 0</span> to
+construct a GMM objective:</p>
+<p><span class="math display">\hat\theta_2 = \arg\min_{\theta_2}\
+\big(Z&#39; \xi(\theta_2)\big)&#39; W \big(Z&#39;
+\xi(\theta_2)\big)</span></p>
+<p>Every time the optimizer proposes a <span
+class="math inline">\theta_2</span>, the inner loop re-solves the
+inversion, recomputes <span class="math inline">\xi</span>, and
+recomputes the objective, until the outer loop converges. That is the
+full BLP. On Selva it estimates the price coefficient at <span
+class="math inline">0.751</span> (standard error <span
+class="math inline">0.075</span>), right up against the truth of <span
+class="math inline">0.70</span>; the quality coefficient <span
+class="math inline">\beta_{x_1} = 1.661</span> (truth <span
+class="math inline">1.6</span>); the median own-price elasticity <span
+class="math inline">-4.7</span>, close to the truth <span
+class="math inline">-4.4</span>; and the backed-out median marginal cost
+<span class="math inline">5.94</span> dollars, near the truth <span
+class="math inline">5.81</span>, with none negative. The elasticities,
+markups, and costs, the quantities that really need to be delivered, are
+all estimated correctly by BLP.</p>
+<p>One implementation detail is worth stressing. That integral share has
+no analytic form and must be approximated by simulation or numerical
+integration: draw <span class="math inline">R</span> sets of tastes
+<span class="math inline">\nu</span> and average the <span
+class="math inline">R</span> individual logit probabilities. Fixing the
+number of draws introduces simulation error, and in practice you make
+<span class="math inline">R</span> large enough, or use quasi-Monte
+Carlo (such as Halton sequences) to push down the simulation variance.
+The convergence tolerance must be set very tight, because small errors
+in the inner loop get amplified in the outer loop.</p>
+<p>In production research, few people hand-write this nested loop, and
+instead use mature software, most mainstream being Python’s pyblp, which
+packages up the contraction mapping, optimal instruments, the supply
+side, and micro moments, so a single configuration estimates it:</p>
+<div class="sourceCode" id="cb1"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pyblp</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>problem <span class="op">=</span> pyblp.Problem(product_formulations, product_data)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>results <span class="op">=</span> problem.solve(sigma<span class="op">=</span>initial_sigma, optimization<span class="op">=</span>pyblp.Optimization(<span class="st">&#39;bfgs&#39;</span>))</span></code></pre></div>
+<p>To explain every step fully, this chapter hand-writes the contraction
+mapping and GMM in R, and every number in the text comes from an actual
+run of this hand-written code; once you understand the mechanics,
+switching to pyblp in production will be more stable and faster.</p>
+<h3 id="nfxp-and-mpec-one-estimator-two-algorithms">4.4 NFXP and MPEC:
+one estimator, two algorithms</h3>
+<p>BLP’s nested fixed point has a well-known pain point: if the inner
+contraction is not solved accurately enough, the error seeps into the
+outer GMM and biases <span class="math inline">\hat\theta_2</span>, so
+the tolerance must be set extremely tight, at high computational cost.
+Dubé, Fox, and Su (2012) give another computational path, MPEC
+(mathematical programming with equilibrium constraints). It no longer
+embeds the inversion inside the objective function but treats “predicted
+shares equal observed shares” as a set of constraints, letting the
+optimizer search over <span class="math inline">\theta</span> and <span
+class="math inline">\delta</span> (and even <span
+class="math inline">\xi</span>) simultaneously, with the constraints
+holding only at the optimum.</p>
+<p>The point is that NFXP and MPEC deliver the same statistical
+estimator, only by different algorithms, converging to the same set of
+FOCs. The difference is entirely in computational convenience: NFXP
+concentrates <span class="math inline">\delta</span> out and searches
+only over the low-dimensional <span class="math inline">\theta_2</span>,
+which is efficient when <span class="math inline">\sigma</span> is not
+high-dimensional but is sensitive to the inner tolerance; MPEC has many
+more parameters (<span class="math inline">\delta</span> all enter the
+optimization) and a large Hessian, but its constraints hold only at the
+optimum, so it is insensitive to the inner tolerance and its derivatives
+are easier to compute too. Which to choose is a computational trade-off
+and does not change the estimator itself. Separating “identification”
+from “algorithm” is a general habit of mind for understanding structural
+estimation: the same identification, the same estimator, can be computed
+by many different methods.</p>
+<h3 id="zero-shares-and-other-practicalities">4.5 Zero shares and other
+practicalities</h3>
+<p>A common headache with market-level data is zero shares. If a product
+sells zero in a market, <span class="math inline">\ln s_{jt}</span> is
+undefined and the left side of the Berry inversion cannot be computed.
+Simply dropping these observations or stuffing in a small constant both
+introduce selection bias, because products with observed zero shares
+systematically correspond to lower <span class="math inline">\xi</span>,
+so dropping them non-randomly deletes the sample and biases demand
+toward being inelastic. Gandhi, Lu, and Shi give a proper treatment:
+treat shares as multinomial sampling under a finite market size and use
+it to derive bounds on the true shares (moment inequalities), or use a
+Laplace-type constant-added transform to make the log defined and
+analytically correct the bias it introduces. Zero shares are especially
+common in the long-tail categories of digital platforms, so this problem
+cannot be ignored.</p>
+<h3 id="micro-moments-reconnecting-individual-information">4.6 Micro
+moments: reconnecting individual information</h3>
+<p>If, besides market shares, you also have some individual-level
+information (a small consumer survey, second-choice data, the
+interaction of demographics with choice), you can bring them in as extra
+moments for BLP, that is micro-BLP. Its value is in identifying power:
+random coefficients, especially the parts interacted with demographics,
+are hard to identify precisely from market shares alone, whereas the
+covariation of “who bought what” in the individual information pins them
+down directly. Which moment identifies which parameter is a matter of
+care: observable heterogeneity (<span class="math inline">\Pi</span>,
+the interaction of characteristics with demographics) is identified by
+the covariance of characteristics and demographics, and unobservable
+heterogeneity (<span class="math inline">\Sigma</span>) is identified by
+the covariance of second choices. Petrin’s (2002) minivan study and
+Conlon and Gortmaker’s (2023) modern treatment are the representatives
+of this path. The control function discussed at the end of the previous
+chapter is another way to tame individual price endogeneity,
+complementary to the moment method here.</p>
+<p>The route of this section is now complete: Berry inversion plus IV is
+the estimation of plain logit, curing endogeneity but locking down
+substitution; nested logit relaxes it halfway; full BLP uses
+contraction-mapping inversion plus GMM to fix substitution, with NFXP
+and MPEC as two ways to compute it; zero shares need special treatment;
+and with individual information, micro moments can greatly strengthen
+identification.</p>
+<h2 id="anchor-papers">5 Anchor papers</h2>
+<p>A method stands only when it lands in real research. Three anchor
+papers: one exposes the inversion idea, one pushes it to the general
+case and founds BLP, and one gives an application that is still a model
+of practice today. Each is laid out by the five elements of paper,
+method, data, results, and limitations, with a focus on how the
+identifying assumptions are defended.</p>
+<h3 id="berry-1994">5.1 Berry (1994)</h3>
+<div class="case">
+<p>Paper and place in the history of methods: “Estimating
+Discrete-Choice Models of Product Differentiation,” RAND Journal of
+Economics. This paper exposes the core idea of inversion: market shares
+can be inverted to recover mean utility, thereby turning demand
+estimation with only aggregate data into a regression with instrumental
+variables, and it is the starting point of all market-level demand
+estimation.</p>
+<p>Method: Berry inversion. For plain logit it gives the closed-form
+inversion <span class="math inline">\ln s_j - \ln s_0 = x_j\beta -
+\alpha p_j + \xi_j</span>, and for nested logit an inversion with one
+extra within-nest-share term, and points out that both price and
+within-nest share are endogenous and both need instruments. The paper
+also sketches a framework estimating the supply side’s optimal-pricing
+first-order condition jointly with demand, paving the way for recovering
+marginal costs later.</p>
+<p>Data: the paper demonstrates on product-level data from the U.S.
+automobile market, with each model’s share, price, and characteristics.
+Automobiles are the classic testing ground for differentiated-product
+demand, with rich product characteristics and dispersed market
+shares.</p>
+<p>Results: inversion plus instruments can consistently estimate demand
+parameters from market shares, and gives own-price elasticities and
+markups far more reasonable than approaches ignoring endogeneity. The
+paper established the basic paradigm of market-level demand estimation
+for the next two decades.</p>
+<p>Limitations: the closed-form inversion holds only for logit and
+nested logit, which carry IIA or a preset nest structure and have
+restricted substitution. Generalizing the inversion to arbitrary
+random-coefficient models, and thereby fully relaxing substitution,
+requires a numerical method, which is exactly the contribution of BLP
+the next year. Half of this paper’s historical significance is in
+exposing the inversion, and half is in marking the ceiling of the logit
+inversion.</p>
+</div>
+<h3 id="berry-levinsohn-and-pakes-1995">5.2 Berry, Levinsohn and Pakes
+(1995)</h3>
+<div class="case">
+<p>Paper: “Automobile Prices in Market Equilibrium,” Econometrica, that
+is BLP. It generalizes the Berry inversion to a general model with
+random coefficients, gives a contraction mapping to solve <span
+class="math inline">\delta</span> numerically, and puts demand together
+with the supply side’s optimal pricing into GMM, the founding work of
+structural demand estimation.</p>
+<p>Method: random-coefficient logit demand, contraction-mapping
+inversion, GMM estimation, paired with the first-order condition of
+supply-side multiproduct Bertrand pricing. Random coefficients let the
+substitution pattern be governed by product characteristics rather than
+shares, escaping IIA; the BLP instrument (rival characteristics)
+supplies the exogenous variation needed for identification.</p>
+<p>Data: a product-level panel of the U.S. automobile market from 1971
+to 1990, with each model’s share, price, horsepower, size, fuel economy,
+and other characteristics.</p>
+<p>Results: the estimated own-price elasticities and substitution
+patterns are far more reasonable than logit’s, with substitution between
+similar models significantly stronger than the share-proportional
+prediction; estimating demand and supply together also recovers each
+model’s marginal cost and evaluates market power. This method has since
+become the standard language of empirical IO.</p>
+<p>Limitations: random coefficients, especially the one on price, are
+hard to identify and sensitive to both the instruments and the numerical
+implementation; mishandling the contraction tolerance or the number of
+simulation draws can bias the estimates. These implementation-level
+pitfalls gave rise to later work: Dubé-Fox-Su’s MPEC,
+Reynaert-Verboven’s optimal instruments, and software like pyblp that
+hardens best practice. BLP’s greatness is half in the method and half in
+the long string of follow-up questions it opened.</p>
+</div>
+<h3 id="nevo-2001">5.3 Nevo (2001)</h3>
+<div class="case">
+<p>Paper: “Measuring Market Power in the Ready-to-Eat Cereal Industry,”
+Econometrica. It is a model of BLP in practice, and it also fixed a key
+practical trick: use product and market fixed effects to absorb most of
+<span class="math inline">\xi</span>, making identification more
+stable.</p>
+<p>Method: random-coefficient logit demand, with random coefficients
+that include both interactions with observable demographics (observable
+heterogeneity) and pure unobservable heterogeneity. The paper uses brand
+fixed effects to absorb the product-level mean quality that does not
+vary across markets, concentrating the endogeneity burden onto the part
+of <span class="math inline">\xi</span> that varies across markets, and
+then uses instruments against it. The paper’s appendix later became the
+textbook from which countless people learned BLP implementation.</p>
+<p>Data: brand-level scanner data on ready-to-eat cereal across multiple
+cities and quarters, including shares, prices, characteristics, and city
+demographics. Cereal is the classic battlefield for
+differentiated-consumer-good demand, with many brands and a rich
+substitution structure.</p>
+<p>Results: the estimated demand is quite elastic, and the backed-out
+markups show cereal makers do have considerable market power, but this
+power comes mainly from product differentiation and brand positioning
+rather than collusion. The paper uses structural demand to take apart
+the antitrust core question of “does a high price equal collusion.”</p>
+<p>Limitations: fixed effects, while absorbing a great deal of
+endogeneity, also eat up part of the variation needed to identify the
+price coefficient, raising the strength requirement on the remaining
+instruments; identifying the random coefficients is still tight. The
+paper accounts for these trade-offs clearly. It demonstrates all the
+craft BLP needs to go from method to credible empirics: fixed effects,
+instruments, and an honest accounting of the sources of
+identification.</p>
+</div>
+<p>Put the three together and the point of anchoring becomes clear:
+Berry exposes the inversion and makes demand estimation from aggregate
+data possible, BLP uses random coefficients and the contraction mapping
+to fully relax substitution and connect the supply side, and Nevo
+polishes it into a credible empirical tool and demonstrates how to
+answer antitrust questions. Progress in market-level demand estimation
+has always turned on the same three threads: inverting shares into
+utility, finding exogenous variation in price, and getting the
+substitution pattern right.</p>
+<h2 id="a-full-walkthrough-on-selva-data">6 A full walkthrough on Selva
+data</h2>
+<p>Now run all the tools of Section 4 through Selva’s market-level data
+end to end. The code below uses R 4.5.3, fixing set.seed(16) for
+reproducibility, and every number cited in the text comes from an actual
+run of this code.</p>
+<h3 id="dgp">6.1 DGP</h3>
+<p>The design parameters are as follows: 300 city-week markets, six
+meal-kit brands sorted into high, medium, and low quality tiers, plus an
+outside option; the baseline is six single-product firms (each brand a
+firm of its own, and the next chapter merges the firms of brands 1 and
+2). True demand is random-coefficient logit, with a random coefficient
+on quality <span class="math inline">x_1</span> and one on price; true
+supply is multiproduct Bertrand-Nash, with equilibrium price set by
+marginal cost plus markup and therefore correlated with the unobserved
+quality <span class="math inline">\xi</span>.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">16</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>alpha <span class="ot">&lt;-</span> <span class="fl">0.7</span>; beta_x1 <span class="ot">&lt;-</span> <span class="fl">1.6</span>; beta_x2 <span class="ot">&lt;-</span> <span class="fl">0.8</span>           <span class="co"># demand: mean-utility parameters</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>sigma_x1 <span class="ot">&lt;-</span> <span class="fl">1.1</span>; sigma_p <span class="ot">&lt;-</span> <span class="fl">0.15</span>                        <span class="co"># random-coefficient standard deviations</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co"># cost mc = gamma0 + gamma_w*w + gamma_x1*x1 + omega ; w = local input cost (instrument)</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>dt[, mc <span class="sc">:=</span> <span class="fl">2.2</span> <span class="sc">+</span> <span class="fl">0.8</span><span class="sc">*</span>w <span class="sc">+</span> <span class="fl">0.7</span><span class="sc">*</span>x1 <span class="sc">+</span> omega]</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co"># equilibrium price: multiproduct Bertrand-Nash fixed point p = mc + (H .* Delta)^{-1} s</span></span></code></pre></div>
+<p>The equilibrium is solved by finding a pricing fixed point for each
+market: given costs and demand, iterate <span class="math inline">p = mc
++ (\mathcal{H} \odot \Delta)^{-1} s</span> until convergence, where
+<span class="math inline">\Delta</span> is the negative matrix of demand
+price derivatives (<span class="math inline">\Delta_{jk} = -\partial s_j
+/ \partial p_k</span>, with positive diagonal) and <span
+class="math inline">\mathcal{H}</span> is the ownership matrix (the
+identity for single-product firms). The full derivation and use of this
+supply-side first-order condition is the subject of the next chapter;
+here it only generates the data. In the generated data, the median price
+is <span class="math inline">7.6</span> dollars, the median marginal
+cost <span class="math inline">5.8</span>, the median markup <span
+class="math inline">1.65</span>, the median Lerner index (markup as a
+share of price) <span class="math inline">0.23</span>, the median inside
+share <span class="math inline">0.099</span>, and the median outside
+share <span class="math inline">0.18</span>. The correlation of price
+with unobserved quality <span class="math inline">\xi</span> is <span
+class="math inline">0.23</span> (the seed of endogeneity), and its
+correlation with the cost shifter <span class="math inline">w</span> is
+<span class="math inline">0.61</span> (the strength of the
+instrument).</p>
+<h3 id="ols-logit-reproducing-the-opening-disaster">6.2 OLS logit:
+reproducing the opening disaster</h3>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>dt[, y <span class="sc">:=</span> <span class="fu">log</span>(s) <span class="sc">-</span> <span class="fu">log</span>(s0)]                              <span class="co"># Berry inversion: difference of log shares</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>ols <span class="ot">&lt;-</span> <span class="fu">feols</span>(y <span class="sc">~</span> x1 <span class="sc">+</span> x2 <span class="sc">+</span> p, <span class="at">data =</span> dt)</span></code></pre></div>
+<p>The price coefficient is <span class="math inline">-0.19</span>, the
+sign is wrong, demand slopes upward, and the own-price elasticity is
+<span class="math inline">+1.2</span>. The median marginal cost backed
+out from the single-product pricing FOC is <span
+class="math inline">13.6</span> dollars, far above the <span
+class="math inline">7.6</span> selling price. This is the disaster of
+Section 1, and the root cause is price endogeneity.</p>
+<h3 id="iv-logit-curing-endogeneity">6.3 IV logit: curing
+endogeneity</h3>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>iv <span class="ot">&lt;-</span> <span class="fu">feols</span>(y <span class="sc">~</span> x1 <span class="sc">+</span> x2 <span class="sc">|</span> p <span class="sc">~</span> w <span class="sc">+</span> sumx1_riv <span class="sc">+</span> sumx2_riv, <span class="at">data =</span> dt)</span></code></pre></div>
+<p>Price is instrumented by the cost shifter <span
+class="math inline">w</span> and the sum of rival characteristics. The
+first-stage coefficient on <span class="math inline">w</span> is <span
+class="math inline">0.696</span> with a partial-F of <span
+class="math inline">1520</span>, a strong instrument. The price
+coefficient returns to <span class="math inline">0.51</span>, demand
+slopes down, the median own-price elasticity is <span
+class="math inline">-3.3</span>, and the backed-out median marginal cost
+rises to <span class="math inline">5.3</span> dollars. The sign is
+right, but IIA leaves the elasticities still too small and the
+substitution still distorted.</p>
+<h3 id="full-blp-inner-contraction-plus-outer-gmm">6.4 Full BLP: inner
+contraction plus outer GMM</h3>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># inner: for fixed theta2, solve delta by contraction mapping</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>contract <span class="ot">&lt;-</span> <span class="cf">function</span>(mu, s_obs, d0){</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  d <span class="ot">&lt;-</span> d0</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="cf">repeat</span> { d_new <span class="ot">&lt;-</span> d <span class="sc">+</span> <span class="fu">log</span>(s_obs) <span class="sc">-</span> <span class="fu">log</span>(<span class="fu">pred_share</span>(d, mu))</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>           <span class="cf">if</span> (<span class="fu">max</span>(<span class="fu">abs</span>(d_new <span class="sc">-</span> d)) <span class="sc">&lt;</span> <span class="fl">1e-12</span>) <span class="cf">break</span>; d <span class="ot">&lt;-</span> d_new }</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  d_new</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="co"># outer: minimize the GMM objective over (sigma_x1, sigma_p), concentrating out the linear parameters by 2SLS</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>gmm_obj <span class="ot">&lt;-</span> <span class="cf">function</span>(theta2){</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  delta <span class="ot">&lt;-</span> <span class="fu">delta_theta</span>(theta2)                          <span class="co"># one contraction per market</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>  xi    <span class="ot">&lt;-</span> delta <span class="sc">-</span> Xlin <span class="sc">%*%</span> <span class="fu">solve_2sls</span>(Xlin, delta, Z)  <span class="co"># recover the residual</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>  g <span class="ot">&lt;-</span> <span class="fu">t</span>(Z) <span class="sc">%*%</span> xi; <span class="fu">as.numeric</span>(<span class="fu">t</span>(g) <span class="sc">%*%</span> Wmat <span class="sc">%*%</span> g)</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>Estimation results (truth in parentheses): the price coefficient
+<span class="math inline">0.751</span> (<span
+class="math inline">0.70</span>, standard error <span
+class="math inline">0.075</span>), the quality coefficient <span
+class="math inline">\beta_{x_1} = 1.661</span> (<span
+class="math inline">1.6</span>, SE <span
+class="math inline">0.115</span>), <span class="math inline">\beta_{x_2}
+= 0.711</span> (<span class="math inline">0.8</span>, SE <span
+class="math inline">0.075</span>), the quality random coefficient <span
+class="math inline">\sigma_{x_1} = 1.21</span> (<span
+class="math inline">1.1</span>, SE <span
+class="math inline">0.281</span>), and the price random coefficient
+<span class="math inline">\sigma_p = 0.033</span> (<span
+class="math inline">0.15</span>, SE <span
+class="math inline">0.601</span>). Note that the standard error of <span
+class="math inline">\sigma_p</span> is far larger than the point
+estimate, so it is barely identified, exactly the faithful reflection of
+the difficulty of identifying the price random coefficient discussed in
+Section 3.5. But the quantities that really must be delivered are
+estimated quite accurately: the median own-price elasticity is <span
+class="math inline">-4.7</span> (truth <span
+class="math inline">-4.4</span>) and the backed-out median marginal cost
+is <span class="math inline">5.94</span> dollars (truth <span
+class="math inline">5.81</span>), with none negative.</p>
+<figure>
+<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' viewBox='0 0 590.40 316.80' role="img" aria-label="Recovered price coefficients: OLS gives the wrong negative sign (upward-sloping demand), IV logit swings it back to positive but too small because of IIA, and full BLP hits almost exactly the truth of 0.70. The dashed line is the truth." style="max-width:100%;height:auto;display:block;margin:0 auto">
+<g class='svglite'>
+<defs>
+  <style type='text/css'><![CDATA[
+    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {
+      fill: none;
+      stroke: #000000;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-miterlimit: 10.00;
+    }
+    .svglite text {
+      white-space: pre;
+    }
+    .svglite g.glyphgroup path {
+      fill: inherit;
+      stroke: none;
+    }
+  ]]></style>
+</defs>
+<rect width='100%' height='100%' style='stroke: none; fill: #FFFFFF;'/>
+<defs>
+  <clipPath id='g2_cpMC4wMHw1OTAuNDB8MC4wMHwzMTYuODA='>
+    <rect x='0.00' y='0.00' width='590.40' height='316.80' />
+  </clipPath>
+</defs>
+<g clip-path='url(#g2_cpMC4wMHw1OTAuNDB8MC4wMHwzMTYuODA=)'>
+<rect x='82.35' y='192.42' width='103.19' height='33.67' style='stroke-width: 0.75; stroke: none; fill: #C53030;' />
+<rect x='206.17' y='99.57' width='103.19' height='92.85' style='stroke-width: 0.75; stroke: none; fill: #DD8452;' />
+<rect x='330.00' y='55.56' width='103.19' height='136.86' style='stroke-width: 0.75; stroke: none; fill: #2B6CB0;' />
+<rect x='453.82' y='64.79' width='103.19' height='127.63' style='stroke-width: 0.75; stroke: none; fill: #1A365D;' />
+<text x='133.94' y='279.36' text-anchor='middle' style='font-size: 12.00px; font-family: "Arial";' textLength='49.34px' lengthAdjust='spacingAndGlyphs'>OLS logit</text>
+<text x='257.77' y='279.36' text-anchor='middle' style='font-size: 12.00px; font-family: "Arial";' textLength='36.67px' lengthAdjust='spacingAndGlyphs'>IV logit</text>
+<text x='381.59' y='279.36' text-anchor='middle' style='font-size: 12.00px; font-family: "Arial";' textLength='41.34px' lengthAdjust='spacingAndGlyphs'>full BLP</text>
+<text x='505.42' y='279.36' text-anchor='middle' style='font-size: 12.00px; font-family: "Arial";' textLength='24.00px' lengthAdjust='spacingAndGlyphs'>truth</text>
+<text transform='translate(14.75,215.12) rotate(-90)' style='font-size: 12.00px; font-family: "Arial";' textLength='89.80px' lengthAdjust='spacingAndGlyphs'>price coefficient  </text>
+<text transform='translate(14.75,125.33) rotate(-90)' style='font-size: 12.00px; font-family: "Symbol";' textLength='7.58px' lengthAdjust='spacingAndGlyphs'>α</text>
+<text transform='translate(14.75,117.76) rotate(-90)' style='font-size: 12.00px; font-family: "Arial";' textLength='42.00px' lengthAdjust='spacingAndGlyphs'>  (per $)</text>
+<line x1='63.36' y1='228.89' x2='63.36' y2='46.56' style='stroke-width: 0.75;' />
+<line x1='63.36' y1='228.89' x2='56.16' y2='228.89' style='stroke-width: 0.75;' />
+<line x1='63.36' y1='192.42' x2='56.16' y2='192.42' style='stroke-width: 0.75;' />
+<line x1='63.36' y1='155.96' x2='56.16' y2='155.96' style='stroke-width: 0.75;' />
+<line x1='63.36' y1='119.49' x2='56.16' y2='119.49' style='stroke-width: 0.75;' />
+<line x1='63.36' y1='83.02' x2='56.16' y2='83.02' style='stroke-width: 0.75;' />
+<line x1='63.36' y1='46.56' x2='56.16' y2='46.56' style='stroke-width: 0.75;' />
+<text transform='translate(46.08,228.89) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Arial";' textLength='20.67px' lengthAdjust='spacingAndGlyphs'>-0.2</text>
+<text transform='translate(46.08,192.42) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Arial";' textLength='16.67px' lengthAdjust='spacingAndGlyphs'>0.0</text>
+<text transform='translate(46.08,155.96) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Arial";' textLength='16.67px' lengthAdjust='spacingAndGlyphs'>0.2</text>
+<text transform='translate(46.08,119.49) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Arial";' textLength='16.67px' lengthAdjust='spacingAndGlyphs'>0.4</text>
+<text transform='translate(46.08,83.02) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Arial";' textLength='16.67px' lengthAdjust='spacingAndGlyphs'>0.6</text>
+<text transform='translate(46.08,46.56) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Arial";' textLength='16.67px' lengthAdjust='spacingAndGlyphs'>0.8</text>
+</g>
+<defs>
+  <clipPath id='g2_cpNjMuMzZ8NTc2LjAwfDM3LjQ0fDI1My40NA=='>
+    <rect x='63.36' y='37.44' width='512.64' height='216.00' />
+  </clipPath>
+</defs>
+<g clip-path='url(#g2_cpNjMuMzZ8NTc2LjAwfDM3LjQ0fDI1My40NA==)'>
+<line x1='63.36' y1='192.42' x2='576.00' y2='192.42' style='stroke-width: 0.75; stroke: #718096;' />
+<line x1='63.36' y1='64.79' x2='576.00' y2='64.79' style='stroke-width: 0.75; stroke: #1A365D; stroke-dasharray: 1.00,3.00;' />
+<text x='133.94' y='241.05' text-anchor='middle' style='font-size: 11.40px; font-family: "Arial";' textLength='25.95px' lengthAdjust='spacingAndGlyphs'>-0.18</text>
+<text x='257.77' y='96.30' text-anchor='middle' style='font-size: 11.40px; font-family: "Arial";' textLength='22.16px' lengthAdjust='spacingAndGlyphs'>0.51</text>
+<text x='381.59' y='52.29' text-anchor='middle' style='font-size: 11.40px; font-family: "Arial";' textLength='22.16px' lengthAdjust='spacingAndGlyphs'>0.75</text>
+<text x='505.42' y='61.52' text-anchor='middle' style='font-size: 11.40px; font-family: "Arial";' textLength='22.16px' lengthAdjust='spacingAndGlyphs'>0.70</text>
+</g>
+<g clip-path='url(#g2_cpMC4wMHw1OTAuNDB8MC4wMHwzMTYuODA=)'>
+<text x='319.68' y='22.92' text-anchor='middle' style='font-size: 11.76px;fill: #1A365D; font-family: "Arial";' textLength='395.27px' lengthAdjust='spacingAndGlyphs'>Recovering the price coefficient: OLS gets the sign wrong; BLP hits the truth</text>
+</g>
+</g>
+</svg>
+<figcaption aria-hidden="true">Recovered price coefficients: OLS gives
+the wrong negative sign (upward-sloping demand), IV logit swings it back
+to positive but too small because of IIA, and full BLP hits almost
+exactly the truth of 0.70. The dashed line is the truth.</figcaption>
+</figure>
+<h3
+id="substitution-patterns-blp-recovers-the-near-neighbor-substitution-logit-throws-away">6.5
+Substitution patterns: BLP recovers the near-neighbor substitution logit
+throws away</h3>
+<p>The most important difference among the three estimators is not the
+value of the price coefficient but the substitution pattern. Put side by
+side the diversion ratios of demand flowing to each brand after brand 1
+(the highest quality) raises its price:</p>
+<div class="table-scroll">
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr>
+<th>Flows to</th>
+<th>Truth</th>
+<th>BLP</th>
+<th>logit (IIA)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="math inline">\to</span> Brand 2 (second-highest
+quality, near neighbor)</td>
+<td>0.271</td>
+<td>0.278</td>
+<td>0.206</td>
+</tr>
+<tr>
+<td><span class="math inline">\to</span> Brand 3</td>
+<td>0.197</td>
+<td>0.200</td>
+<td>0.164</td>
+</tr>
+<tr>
+<td><span class="math inline">\to</span> Brand 4</td>
+<td>0.190</td>
+<td>0.194</td>
+<td>0.162</td>
+</tr>
+<tr>
+<td><span class="math inline">\to</span> Brand 5</td>
+<td>0.149</td>
+<td>0.150</td>
+<td>0.137</td>
+</tr>
+<tr>
+<td><span class="math inline">\to</span> Brand 6</td>
+<td>0.100</td>
+<td>0.100</td>
+<td>0.096</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Brand 1 and brand 2 are closest in quality, near neighbors of each
+other, and the true substitution ratio is <span
+class="math inline">0.271</span>. BLP recovers this strong near-neighbor
+substitution (<span class="math inline">0.278</span>, almost exactly the
+truth), whereas plain logit, constrained by IIA, allocates only by
+shares and gives <span class="math inline">0.206</span>, systematically
+too low. This difference is not academic fastidiousness: when the next
+chapter simulates merging the firms of brand 1 and brand 2, it is
+exactly this diversion ratio that determines whether the merger raises
+price significantly. Using logit’s <span
+class="math inline">0.206</span> underestimates the merger’s upward
+price pressure, while BLP’s <span class="math inline">0.278</span> comes
+close to the truth.</p>
+<figure>
+<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' viewBox='0 0 590.40 316.80' role="img" aria-label="Diversion ratios after brand 1 raises its price. Brand 1 and brand 2 are closest in quality, with the highest true substitution ratio (navy); BLP (blue) recovers this strong near-neighbor substitution, while plain logit (red), constrained by IIA, systematically underestimates it." style="max-width:100%;height:auto;display:block;margin:0 auto">
+<g class='svglite'>
+<defs>
+  <style type='text/css'><![CDATA[
+    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {
+      fill: none;
+      stroke: #000000;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-miterlimit: 10.00;
+    }
+    .svglite text {
+      white-space: pre;
+    }
+    .svglite g.glyphgroup path {
+      fill: inherit;
+      stroke: none;
+    }
+  ]]></style>
+</defs>
+<rect width='100%' height='100%' style='stroke: none; fill: #FFFFFF;'/>
+<defs>
+  <clipPath id='g3_cpMC4wMHw1OTAuNDB8MC4wMHwzMTYuODA='>
+    <rect x='0.00' y='0.00' width='590.40' height='316.80' />
+  </clipPath>
+</defs>
+<g clip-path='url(#g3_cpMC4wMHw1OTAuNDB8MC4wMHwzMTYuODA=)'>
+<rect x='82.35' y='86.08' width='24.98' height='170.24' style='stroke-width: 0.75; stroke: none; fill: #1A365D;' />
+<rect x='107.33' y='81.22' width='24.98' height='175.10' style='stroke-width: 0.75; stroke: none; fill: #2B6CB0;' />
+<rect x='132.31' y='126.53' width='24.98' height='129.79' style='stroke-width: 0.75; stroke: none; fill: #C53030;' />
+<rect x='182.28' y='132.60' width='24.98' height='123.72' style='stroke-width: 0.75; stroke: none; fill: #1A365D;' />
+<rect x='207.26' y='130.66' width='24.98' height='125.66' style='stroke-width: 0.75; stroke: none; fill: #2B6CB0;' />
+<rect x='232.24' y='152.99' width='24.98' height='103.33' style='stroke-width: 0.75; stroke: none; fill: #C53030;' />
+<rect x='282.21' y='137.03' width='24.98' height='119.29' style='stroke-width: 0.75; stroke: none; fill: #1A365D;' />
+<rect x='307.19' y='134.41' width='24.98' height='121.91' style='stroke-width: 0.75; stroke: none; fill: #2B6CB0;' />
+<rect x='332.17' y='154.20' width='24.98' height='102.12' style='stroke-width: 0.75; stroke: none; fill: #C53030;' />
+<rect x='382.14' y='162.69' width='24.98' height='93.63' style='stroke-width: 0.75; stroke: none; fill: #1A365D;' />
+<rect x='407.12' y='162.21' width='24.98' height='94.11' style='stroke-width: 0.75; stroke: none; fill: #2B6CB0;' />
+<rect x='432.10' y='170.09' width='24.98' height='86.23' style='stroke-width: 0.75; stroke: none; fill: #C53030;' />
+<rect x='482.07' y='193.44' width='24.98' height='62.88' style='stroke-width: 0.75; stroke: none; fill: #1A365D;' />
+<rect x='507.05' y='193.50' width='24.98' height='62.82' style='stroke-width: 0.75; stroke: none; fill: #2B6CB0;' />
+<rect x='532.03' y='195.73' width='24.98' height='60.59' style='stroke-width: 0.75; stroke: none; fill: #C53030;' />
+<text x='119.82' y='282.24' text-anchor='middle' style='font-size: 11.40px; font-family: "Arial";' textLength='80.41px' lengthAdjust='spacingAndGlyphs'>to 2 (nest-mate)</text>
+<text x='219.75' y='282.24' text-anchor='middle' style='font-size: 11.40px; font-family: "Arial";' textLength='19.00px' lengthAdjust='spacingAndGlyphs'>to 3</text>
+<text x='319.68' y='282.24' text-anchor='middle' style='font-size: 11.40px; font-family: "Arial";' textLength='19.00px' lengthAdjust='spacingAndGlyphs'>to 4</text>
+<text x='419.61' y='282.24' text-anchor='middle' style='font-size: 11.40px; font-family: "Arial";' textLength='19.00px' lengthAdjust='spacingAndGlyphs'>to 5</text>
+<text x='519.54' y='282.24' text-anchor='middle' style='font-size: 11.40px; font-family: "Arial";' textLength='19.00px' lengthAdjust='spacingAndGlyphs'>to 6</text>
+<text transform='translate(17.28,146.88) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Arial";' textLength='155.38px' lengthAdjust='spacingAndGlyphs'>diversion ratio from product 1</text>
+<line x1='63.36' y1='256.32' x2='63.36' y2='67.54' style='stroke-width: 0.75;' />
+<line x1='63.36' y1='256.32' x2='56.16' y2='256.32' style='stroke-width: 0.75;' />
+<line x1='63.36' y1='224.86' x2='56.16' y2='224.86' style='stroke-width: 0.75;' />
+<line x1='63.36' y1='193.39' x2='56.16' y2='193.39' style='stroke-width: 0.75;' />
+<line x1='63.36' y1='161.93' x2='56.16' y2='161.93' style='stroke-width: 0.75;' />
+<line x1='63.36' y1='130.47' x2='56.16' y2='130.47' style='stroke-width: 0.75;' />
+<line x1='63.36' y1='99.00' x2='56.16' y2='99.00' style='stroke-width: 0.75;' />
+<line x1='63.36' y1='67.54' x2='56.16' y2='67.54' style='stroke-width: 0.75;' />
+<text transform='translate(46.08,256.32) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Arial";' textLength='23.34px' lengthAdjust='spacingAndGlyphs'>0.00</text>
+<text transform='translate(46.08,193.39) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Arial";' textLength='23.34px' lengthAdjust='spacingAndGlyphs'>0.10</text>
+<text transform='translate(46.08,130.47) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Arial";' textLength='23.34px' lengthAdjust='spacingAndGlyphs'>0.20</text>
+<text transform='translate(46.08,67.54) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Arial";' textLength='23.34px' lengthAdjust='spacingAndGlyphs'>0.30</text>
+</g>
+<defs>
+  <clipPath id='g3_cpNjMuMzZ8NTc2LjAwfDM3LjQ0fDI1Ni4zMg=='>
+    <rect x='63.36' y='37.44' width='512.64' height='218.88' />
+  </clipPath>
+</defs>
+<g clip-path='url(#g3_cpNjMuMzZ8NTc2LjAwfDM3LjQ0fDI1Ni4zMg==)'>
+<rect x='506.81' y='47.70' width='8.21' height='6.84' style='stroke-width: 0.75; stroke: none; fill: #1A365D;' />
+<rect x='506.81' y='61.38' width='8.21' height='6.84' style='stroke-width: 0.75; stroke: none; fill: #2B6CB0;' />
+<rect x='506.81' y='75.06' width='8.21' height='6.84' style='stroke-width: 0.75; stroke: none; fill: #C53030;' />
+<text x='525.28' y='55.20' style='font-size: 11.40px; font-family: "Arial";' textLength='22.80px' lengthAdjust='spacingAndGlyphs'>truth</text>
+<text x='525.28' y='68.88' style='font-size: 11.40px; font-family: "Arial";' textLength='21.52px' lengthAdjust='spacingAndGlyphs'>BLP</text>
+<text x='525.28' y='82.56' style='font-size: 11.40px; font-family: "Arial";' textLength='45.59px' lengthAdjust='spacingAndGlyphs'>logit (IIA)</text>
+</g>
+<g clip-path='url(#g3_cpMC4wMHw1OTAuNDB8MC4wMHwzMTYuODA=)'>
+<text x='319.68' y='22.80' text-anchor='middle' style='font-size: 11.40px;fill: #1A365D; font-family: "Arial";' textLength='429.72px' lengthAdjust='spacingAndGlyphs'>Diversion from product 1: BLP recovers the strong nest-mate substitution logit misses</text>
+</g>
+</g>
+</svg>
+<figcaption aria-hidden="true">Diversion ratios after brand 1 raises its
+price. Brand 1 and brand 2 are closest in quality, with the highest true
+substitution ratio (navy); BLP (blue) recovers this strong near-neighbor
+substitution, while plain logit (red), constrained by IIA,
+systematically underestimates it.</figcaption>
+</figure>
+<h3 id="the-full-reconciliation">6.6 The full reconciliation</h3>
+<p>Put the key products of the three estimators side by side with the
+truth:</p>
+<div class="table-scroll">
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr>
+<th>Estimator</th>
+<th>Price coefficient <span class="math inline">\alpha</span></th>
+<th>Own-price elasticity (median)</th>
+<th>Backed-out marginal cost (median)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Truth (DGP)</td>
+<td>0.700</td>
+<td>-4.4</td>
+<td>$5.81</td>
+</tr>
+<tr>
+<td>OLS logit</td>
+<td>-0.19</td>
+<td>+1.2</td>
+<td>$13.6</td>
+</tr>
+<tr>
+<td>IV logit</td>
+<td>0.51</td>
+<td>-3.3</td>
+<td>$5.28</td>
+</tr>
+<tr>
+<td>Full BLP</td>
+<td>0.751</td>
+<td>-4.7</td>
+<td>$5.94</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Three rows tell the entire main thread of this chapter. OLS gets even
+the sign of the demand slope wrong and backs out a marginal cost above
+the selling price, purely the work of endogeneity. IV logit uses a cost
+instrument to cure endogeneity, and demand slopes down, but plain
+logit’s IIA makes it underestimate elasticities and flatten
+near-neighbor substitution. Full BLP both cures endogeneity and relaxes
+substitution, with the price coefficient, elasticities, and marginal
+costs all close to the truth, and the substitution pattern also recovers
+the near-neighbor structure logit throws away. These differences all
+come from model specification and identification strategy, not from
+sample noise. This backed-out marginal cost and substitution structure
+is exactly the raw material for the next chapter’s supply-side
+analysis.</p>
+<h2 id="failure-modes-and-robustness-of-identification">7 Failure modes
+and robustness of identification</h2>
+<p>In the simulation the identifying assumptions are constructed, while
+in real research they may fail at any moment. This section reviews the
+most common ways they fail and the operable responses.</p>
+<p>The validity of the price instrument is the foundation of the whole
+building. A cost shifter qualifies only when it truly enters cost but
+not utility; a variable that both raises cost and lifts the platform’s
+overall popularity (a peak season, say) enters both sides of supply and
+demand, and the exclusion restriction breaks. The BLP instrument’s
+weakness is Armstrong’s (2016) large-market degeneracy: once the number
+of products per market is large, the markup tends to a constant, rival
+characteristics lose their power to move price, and it becomes a weak
+instrument. Diagnostically, look at first-stage strength; a weak
+instrument makes the price coefficient’s variance explode and can bias
+it worse than OLS. When a digital product’s marginal cost is nearly
+zero, a good cost shifter is especially hard to find, a real obstacle to
+applying BLP to platform data.</p>
+<p>The identification of random coefficients is the second weak link and
+the most easily glossed over. <span class="math inline">\sigma</span> is
+identified by how substitution varies with characteristics, and if
+product characteristics have insufficient cross-market variation, or a
+differentiation instrument is lacking, <span
+class="math inline">\sigma</span> collapses toward zero and quietly
+pulls the model back to IIA. The random coefficient on price <span
+class="math inline">\sigma_p</span> is especially hard, and in Selva its
+standard error is far larger than its point estimate, barely identified.
+The honest thing is to report <span class="math inline">\sigma</span>’s
+standard error and the strength of the instrument identifying it, rather
+than only a point estimate that looks nonzero. If <span
+class="math inline">\sigma</span> really cannot be identified, frankly
+admitting the data only support logit-level substitution conclusions is
+better than forcing an untrustworthy random coefficient.</p>
+<p>Many-instrument and many-weak-instrument bias is an invisible trap in
+market-level BLP. To identify the random coefficients, people tend to
+stuff many functions of rival characteristics into the instrument set,
+but when the instruments are many and each individually weak, the
+second-stage estimate biases toward OLS, and OLS is exactly the one that
+gives the wrong sign. Selva’s estimation showed this bias when the
+number of markets was small, with the price coefficient pulled down,
+only returning near the truth after the number of markets was increased.
+The response is to compress the dimension with principal components or
+optimal instruments, not to pile up instruments mindlessly.</p>
+<p>The numerical implementation itself manufactures bias. If the
+contraction-mapping tolerance is set loose, the error of the inner
+inversion seeps into the outer GMM and biases <span
+class="math inline">\theta_2</span>, exactly the problem MPEC aims to
+sidestep; if the number of simulation draws is too small, simulation
+error contaminates the estimates, and the smaller the share the more
+severe it is. The robust practice is to set the tolerance extremely
+tight, the number of draws large enough, and start from multiple initial
+values to confirm it is not a local solution. These are not optional
+tuning knobs but part of whether BLP is credible.</p>
+<p>There are several more easily overlooked gates. Zero shares, if
+simply discarded, introduce selection bias, worst in long-tail
+categories, and need the Gandhi-Lu-Shi treatment. The definitions of the
+outside option and market size determine the level of all shares and
+elasticities, and defining them too large or too small biases
+systematically. On functional form, whether price enters utility as
+<span class="math inline">p</span> or as <span class="math inline">p /
+y</span> (<span class="math inline">y</span> being income) implies
+different substitution and welfare content, and needs a mechanistic
+reason. The last gate is left to the next chapter: when backing out
+marginal cost from demand, the pricing FOC assumes some competitive
+behavior (conduct), and if the true competition is not the assumed kind,
+the backed-out cost is wrong, which ties demand estimation to the
+behavioral assumptions of the supply side.</p>
+<p>Stringing these failure modes together, BLP’s credibility comes down
+to two things: whether exogenous variation in price can be found, and
+whether the way substitution varies with characteristics can be
+identified. Instrument strength and exclusion, the standard errors of
+the random coefficients, the rigor of the numerical implementation, and
+the handling of zero shares and market definition are all evidence
+provided around these two, and none of them can be replaced by “the GMM
+converged and the coefficients look good.”</p>
+<h2 id="further-reading">8 Further reading</h2>
+<div class="readings">
+<p>Required reading, in suggested order:</p>
+<ul>
+<li>Berry (1994, RAND Journal of Economics). The origin of the inversion
+idea; read it first to understand why market shares can be inverted to
+utility and why price needs an instrument.</li>
+<li>Berry, Levinsohn and Pakes (1995, Econometrica). The founding work
+of BLP, with random coefficients, the contraction mapping, and the
+supply side as one, the source of structural demand estimation.</li>
+<li>Nevo (2001, Econometrica). BLP’s model of practice, with the
+practicalities of fixed effects and instruments, and an appendix that is
+the best textbook for learning the implementation.</li>
+<li>Conlon and Gortmaker (2020, RAND Journal of Economics). The
+best-practice guide for pyblp, hardening twenty years of pitfalls into
+operable norms, required reading before doing BLP by hand.</li>
+<li>Gandhi and Houde (2019). The differentiation instrument, the modern
+way to identify random coefficients, the direct source of Section 3.3 of
+this chapter.</li>
+</ul>
+<p>Further reading:</p>
+<ul>
+<li>Berry and Haile (2014, Econometrica). The foundation for
+nonparametric identification of demand from market-level data, with
+connected substitutes and completeness, for understanding why BLP is
+credible.</li>
+<li>Dubé, Fox and Su (2012, Econometrica). The contrast of MPEC and
+NFXP, the classic example of one estimator and two algorithms.</li>
+<li>Armstrong (2016, Econometrica). The critique of the BLP instrument
+degenerating in large markets, and why you cannot do without a cost
+shifter.</li>
+<li>Petrin (2002, Journal of Political Economy). The micro-moment
+example of bringing individual information into BLP.</li>
+<li>Gandhi, Lu and Shi (2023, Quantitative Economics). The problem of
+zeroes in market shares and its treatment.</li>
+</ul>
+</div>
+<div class="apa-refs">
+<ul>
+<li>Armstrong, T. B. (2016). Large market asymptotics for differentiated
+product demand estimators with economic models of supply.
+<em>Econometrica, 84</em>(5), 1961-1980. <a
+href="https://doi.org/10.3982/ECTA10600"
+class="uri">https://doi.org/10.3982/ECTA10600</a></li>
+<li>Berry, S. T. (1994). Estimating discrete-choice models of product
+differentiation. <em>RAND Journal of Economics, 25</em>(2), 242-262. <a
+href="https://doi.org/10.2307/2555829"
+class="uri">https://doi.org/10.2307/2555829</a></li>
+<li>Berry, S. T., &amp; Haile, P. A. (2014). Identification in
+differentiated products markets using market level data.
+<em>Econometrica, 82</em>(5), 1749-1797. <a
+href="https://doi.org/10.3982/ECTA9027"
+class="uri">https://doi.org/10.3982/ECTA9027</a></li>
+<li>Berry, S., Levinsohn, J., &amp; Pakes, A. (1995). Automobile prices
+in market equilibrium. <em>Econometrica, 63</em>(4), 841-890. <a
+href="https://doi.org/10.2307/2171802"
+class="uri">https://doi.org/10.2307/2171802</a></li>
+<li>Conlon, C., &amp; Gortmaker, J. (2020). Best practices for
+differentiated products demand estimation with PyBLP. <em>RAND Journal
+of Economics, 51</em>(4), 1108-1161. <a
+href="https://doi.org/10.1111/1756-2171.12352"
+class="uri">https://doi.org/10.1111/1756-2171.12352</a></li>
+<li>Conlon, C., &amp; Gortmaker, J. (2023). Incorporating micro data
+into differentiated products demand estimation with PyBLP (SSRN Working
+Paper No. 4553609). <a href="https://doi.org/10.2139/ssrn.4553609"
+class="uri">https://doi.org/10.2139/ssrn.4553609</a></li>
+<li>Dubé, J.-P., Fox, J. T., &amp; Su, C.-L. (2012). Improving the
+numerical performance of static and dynamic aggregate discrete choice
+random coefficients demand estimation. <em>Econometrica, 80</em>(5),
+2231-2267. <a href="https://doi.org/10.3982/ECTA8585"
+class="uri">https://doi.org/10.3982/ECTA8585</a></li>
+<li>Gandhi, A., &amp; Houde, J.-F. (2019). <em>Measuring substitution
+patterns in differentiated-products industries</em> (Working Paper
+No. 26375). National Bureau of Economic Research.</li>
+<li>Gandhi, A., Lu, Z., &amp; Shi, X. (2023). Estimating demand for
+differentiated products with zeroes in market share data.
+<em>Quantitative Economics, 14</em>(2), 381-418. <a
+href="https://doi.org/10.3982/QE1593"
+class="uri">https://doi.org/10.3982/QE1593</a></li>
+<li>Nevo, A. (2001). Measuring market power in the ready-to-eat cereal
+industry. <em>Econometrica, 69</em>(2), 307-342. <a
+href="https://doi.org/10.1111/1468-0262.00194"
+class="uri">https://doi.org/10.1111/1468-0262.00194</a></li>
+<li>Petrin, A. (2002). Quantifying the benefits of new products: The
+case of the minivan. <em>Journal of Political Economy, 110</em>(4),
+705-729. <a href="https://doi.org/10.1086/340779"
+class="uri">https://doi.org/10.1086/340779</a></li>
+</ul>
+</div>
+    <footer class="page-footer">
+<span>Foundations of Information Systems Economics: Empirical Methods for Information Systems Economics</span>
+    </footer>
+  </main>
+</div>
+<script>
+(function(){var p=(location.pathname.split('/').pop()||'index.html');document.querySelectorAll('.file-nav a').forEach(function(a){if(a.getAttribute('href')===p)a.classList.add('current');});})();
+
+/* Preserve complete formulas without internal scrollbars. Only formulas whose
+   natural width exceeds their text column are reduced, and resize restores the
+   largest size that fits. */
+(function () {
+  function fitMath() {
+    document.querySelectorAll('span.math').forEach(function (host) {
+      var katex = host.querySelector('.katex');
+      if (!katex) return;
+      katex.style.fontSize = '';
+      var parent = host.classList.contains('display') ? host : host.parentElement;
+      var available = Math.max(1, parent.clientWidth);
+      /* KaTeX's box can be clipped to the host before measurement; scrollWidth
+         retains the full typeset width and is therefore the correct basis. */
+      var needed = Math.max(katex.scrollWidth, katex.getBoundingClientRect().width);
+      /* Keep a small safety margin for KaTeX glyph overhangs and browser
+         sub-pixel rounding, so the last radical/bar is never clipped. */
+      var target = available * 0.98;
+      if (needed > target) {
+        katex.style.fontSize = Math.max(0.34, target / needed) + 'em';
+      }
+    });
+  }
+  document.addEventListener('DOMContentLoaded', function () {
+    requestAnimationFrame(fitMath);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitMath);
+  });
+  window.addEventListener('resize', fitMath);
+}());
+</script>
+<script defer src="assets/notes.js"></script>
+</body>
+</html>

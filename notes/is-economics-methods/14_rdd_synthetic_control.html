@@ -1,0 +1,1891 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>RDD &amp; Synthetic Control | Foundations of Information Systems Economics</title>
+  <link rel="stylesheet" href="assets/style.css" />
+  <script defer="" src="assets/katex/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <link rel="stylesheet" href="assets/katex/katex.min.css" />
+</head>
+<body>
+<div class="page-wrapper">
+  <nav class="sidebar">
+    <div class="sidebar-title">Foundations of Information Systems Economics</div>
+    <div class="sidebar-subtitle">Theory · Methods · Applications</div>
+    <div class="toc-section-label">On this page</div>
+    <div class="toc">
+<ul>
+<li><a href="#introduction" id="toc-introduction">Introduction</a></li>
+<li><a href="#two-numbers-that-look-wrong"
+id="toc-two-numbers-that-look-wrong">1 Two Numbers That Look
+Wrong</a></li>
+<li><a href="#the-economic-model-and-the-estimand"
+id="toc-the-economic-model-and-the-estimand">2 The Economic Model and
+the Estimand</a></li>
+<li><a href="#identification" id="toc-identification">3
+Identification</a></li>
+<li><a href="#estimation" id="toc-estimation">4 Estimation</a></li>
+<li><a href="#anchor-papers" id="toc-anchor-papers">5 Anchor
+Papers</a></li>
+<li><a href="#a-full-walkthrough-on-aster-data"
+id="toc-a-full-walkthrough-on-aster-data">6 A Full Walkthrough on Aster
+Data</a></li>
+<li><a href="#failure-modes-and-robustness"
+id="toc-failure-modes-and-robustness">7 Failure Modes and
+Robustness</a></li>
+<li><a href="#further-reading" id="toc-further-reading">8 Further
+Reading</a></li>
+</ul>
+    </div>
+    <div class="file-nav">
+      <div class="nav-label">This series</div>
+      <a href="index.html">Home · Overview</a>
+      <a href="introduction.html">Introduction · How to Use</a>
+      <a href="01_consumer_producer_welfare.html">01 Consumer, Producer &amp; Welfare</a>
+      <a href="02_game_theory.html">02 Game Theory</a>
+      <a href="03_information_mechanism_design.html">03 Information &amp; Mechanism Design</a>
+      <a href="04_pricing_imperfect_competition.html">04 Pricing &amp; Imperfect Competition</a>
+      <a href="05_estimation_mle_gmm.html">05 Estimation: MLE &amp; GMM</a>
+      <a href="06_inference.html">06 Inference: Bootstrap &amp; Clustering</a>
+      <a href="07_panel_dynamic_panel.html">07 Panel &amp; Dynamic Panel</a>
+      <a href="08_nonparametrics.html">08 Nonparametrics &amp; Semiparametrics</a>
+      <a href="09_potential_outcomes.html">09 Potential Outcomes &amp; Selection</a>
+      <a href="10_research_design_architecture.html">10 Research Design</a>
+      <a href="11_measurement_digital_traces.html">11 Measurement &amp; Digital Traces</a>
+      <a href="12_iv_late_mte.html">12 IV: LATE &amp; MTE</a>
+      <a href="13_did_event_studies.html">13 DiD &amp; Event Studies</a>
+      <a href="14_rdd_synthetic_control.html">14 RDD &amp; Synthetic Control</a>
+      <a href="15_sensitivity_partial_identification.html">15 Sensitivity &amp; Partial Identification</a>
+      <a href="16_causal_ml_dml.html">16 Causal ML &amp; DML</a>
+      <a href="17_digital_experimentation.html">17 Digital Experimentation</a>
+      <a href="18_interference_marketplace_experiments.html">18 Interference &amp; Marketplace Experiments</a>
+      <a href="19_discrete_choice.html">19 Discrete Choice &amp; Mixed Logit</a>
+      <a href="20_demand_blp.html">20 Demand Estimation &amp; BLP</a>
+      <a href="21_supply_markups_mergers.html">21 Supply, Markups &amp; Mergers</a>
+      <a href="22_entry_partial_id.html">22 Entry &amp; Partial Identification</a>
+      <a href="23_dynamic_structural.html">23 Dynamic Structural Models</a>
+      <a href="24_platforms_networks.html">24 Platforms &amp; Network Effects</a>
+      <a href="25_search_advertising.html">25 Search, Advertising &amp; Information Goods</a>
+      <a href="26_ai_algorithms_data.html">26 AI, Adoption &amp; Data Economics</a>
+      <a href="27_quick_reference.html">27 Quick Reference &amp; Tools</a>
+    </div>
+  </nav>
+  <main class="main-content" id="top">
+    <header class="page-header">
+      <h1>RDD &amp; Synthetic Control</h1>
+      <div class="subtitle">From the Cutoff to the Synthetic
+Counterfactual</div>
+      <div class="meta">Foundations of Information Systems Economics · Chapter 14</div>
+    </header>
+<h2 id="introduction">Introduction</h2>
+<p>The Aster marketplace hands out a “Preferred” badge to sellers whose
+rating just clears a line. It is no surprise that badged sellers sell
+more online: highly rated sellers were probably already better to begin
+with. What is genuinely useful is a narrower picture: compare the
+sellers who fell just short of the badge, on the left of the threshold,
+with those who just cleared it, on the right. If nothing other than the
+badge jumps discontinuously near the threshold, the break in sales
+carries a causal meaning.</p>
+<p>The same platform is separately piloting a fee reform in a single
+city. Here there is no threshold, and no natural “identical twin city”
+to serve as a control. Synthetic control takes another route: it lets
+several untreated cities, combined by weights, jointly play the role of
+the counterfactual city that does not exist. Whether the pre-treatment
+path can be stitched together closely enough decides whether the gap
+that opens up after treatment is worth believing.</p>
+<p>RDD and synthetic control seem to share no common estimating
+equation, yet they share a research habit: identifying power comes from
+the concrete texture of institutions. The former leans on continuity
+near a threshold and answers only a local effect; the latter leans on
+pre-treatment fit and a donor pool, and answers only the counterfactual
+for the treated unit. Badges, tiers, and eligibility lines on a platform
+do not automatically make a discontinuity design, and a single-city
+pilot does not automatically come with a synthetic control. This chapter
+follows Aster’s two storylines and presses on three questions: whether
+the threshold can be manipulated, what else jumps at the cutoff, and
+when a weighted set of cities can truly stand in for “Aster without the
+reform.”</p>
+<h2 id="two-numbers-that-look-wrong">1 Two Numbers That Look Wrong</h2>
+<div class="case">
+<p>Aster is a fictional two-sided online marketplace. We use simulated
+data to tell two design stories, and the payoff is that the
+data-generating process is fully known, so every estimator can be
+reconciled against the truth.</p>
+<p>The first storyline is the Preferred badge. Aster gives a “Preferred”
+badge, displayed on the storefront page, to sellers whose quality score
+reaches 80. Management wants to know how large the causal effect of this
+badge is on a seller’s monthly sales (log GMV). The most natural
+calculation is to subtract the average log GMV of unbadged sellers from
+that of badged ones, and this difference is <strong>1.891</strong>. Put
+into a growth deck, it says the badge lifts sales by nearly 1.9 log
+points, a number juicy enough for a team to claim credit.</p>
+<p>The second storyline is the single-city fee reform. Aster rolls out a
+seller fee reform in one metro only, with the reform date recorded as
+<span class="math inline">T_0</span>, while twenty other metros carry on
+as usual. Management wants the effect of this city-level policy on that
+metro’s log GMV. The most natural calculation is a two-period, two-group
+DiD: the change in the treated city before and after the reform, minus
+the average change over the twenty donor cities over the same window, a
+number equal to <strong>0.244</strong>.</p>
+</div>
+<p>Neither number is credible, and the direction of the trouble is
+something earlier chapters have already taught. The badge’s 1.891 mixes
+in the selection bias of Chapter 9: high-scoring sellers were already
+selling more, and even with no badge at all, stores above 80 have far
+higher log GMV than stores below 80. Because the badge happens to go
+only to high-scoring sellers, the “badged vs. unbadged” comparison
+tangles the effect of the badge together with the difference that
+“high-scoring sellers were simply stronger.” Because this is a
+simulation, we know the true causal jump of the badge at the threshold
+is only <strong>0.200</strong>, so that 1.891 is about 9.5 times the
+truth, of which nearly nine-tenths is selection bias.</p>
+<p>The fee reform’s 0.244 stumbles on the parallel trends of Chapter 13.
+In this DGP the cities differ in their growth trends to begin with: the
+treated city’s pre-reform monthly log-GMV trend slope is
+<strong>0.131</strong>, while the donor cities average only
+<strong>0.117</strong>. The simple average of twenty cities is not the
+path the treated city would have taken had it not reformed, and using it
+as the counterfactual folds the pre-existing trend difference into the
+policy effect. The true post-reform average effect is only
+<strong>0.095</strong>, so that 0.244 is about 2.6 times the truth.</p>
+<p>Each of the two designs offers its own way around the trap. RDD says:
+do not compare all high-scoring sellers against all low-scoring ones,
+look only at a very narrow band around the 80-point line, where sellers
+at 79 and 81 barely differ in ability, category, or operations, and who
+happens to clear the line versus who just misses it is nearly random.
+The small log-GMV difference between those just above and just below the
+line is the badge’s clean effect.</p>
+<figure>
+<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' viewBox='0 0 518.40 331.20' role="img" aria-label="Aster’s Preferred badge discontinuity: the horizontal axis is quality score, the vertical axis is log GMV. Sellers below 80 are binned by score and averaged (blue dots), and those at or above 80 (orange dots); each side gets a local-linear fit within the CCT-optimal bandwidth, and the dashed line marks the cutoff. The vertical jump at the threshold is the badge effect, labeled RDD jump = 0.200 (truth 0.200). Note how log GMV rises steeply with score overall, which is exactly why the naive comparison is absurdly high, while the jump at the discontinuity is far smaller than this steep slope." style="max-width:100%;height:auto;display:block;margin:0 auto">
+<g class='svglite'>
+<defs>
+  <style type='text/css'><![CDATA[
+    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {
+      fill: none;
+      stroke: #000000;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-miterlimit: 10.00;
+    }
+    .svglite text {
+      white-space: pre;
+    }
+    .svglite g.glyphgroup path {
+      fill: inherit;
+      stroke: none;
+    }
+  ]]></style>
+</defs>
+<rect width='100%' height='100%' style='stroke: none; fill: #FFFFFF;'/>
+<defs>
+  <clipPath id='g1_cpMC4wMHw1MTguNDB8MC4wMHwzMzEuMjA='>
+    <rect x='0.00' y='0.00' width='518.40' height='331.20' />
+  </clipPath>
+</defs>
+<g clip-path='url(#g1_cpMC4wMHw1MTguNDB8MC4wMHwzMzEuMjA=)'>
+<rect x='0.00' y='0.00' width='518.40' height='331.20' style='stroke-width: 1.16; stroke: none; fill: #FFFFFF;' />
+</g>
+<defs>
+  <clipPath id='g1_cpMzAuNzl8NTEyLjQyfDQxLjEwfDI5Ni44NQ=='>
+    <rect x='30.79' y='41.10' width='481.63' height='255.76' />
+  </clipPath>
+</defs>
+<g clip-path='url(#g1_cpMzAuNzl8NTEyLjQyfDQxLjEwfDI5Ni44NQ==)'>
+<polyline points='30.79,286.30 512.42,286.30 ' style='stroke-width: 1.16; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='30.79,239.59 512.42,239.59 ' style='stroke-width: 1.16; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='30.79,192.88 512.42,192.88 ' style='stroke-width: 1.16; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='30.79,146.17 512.42,146.17 ' style='stroke-width: 1.16; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='30.79,99.46 512.42,99.46 ' style='stroke-width: 1.16; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='30.79,52.75 512.42,52.75 ' style='stroke-width: 1.16; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='155.71,296.85 155.71,41.10 ' style='stroke-width: 1.16; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='284.48,296.85 284.48,41.10 ' style='stroke-width: 1.16; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='413.26,296.85 413.26,41.10 ' style='stroke-width: 1.16; stroke: #EBEBEB; stroke-linecap: butt;' />
+<circle cx='-160.46' cy='273.68' r='2.14' style='stroke-width: 0.77; stroke: #2C7FB8; stroke-opacity: 0.55; fill: #2C7FB8; fill-opacity: 0.55;' />
+<circle cx='-125.49' cy='263.15' r='1.45' style='stroke-width: 0.77; stroke: #2C7FB8; stroke-opacity: 0.55; fill: #2C7FB8; fill-opacity: 0.55;' />
+<circle cx='-100.57' cy='248.74' r='2.04' style='stroke-width: 0.77; stroke: #2C7FB8; stroke-opacity: 0.55; fill: #2C7FB8; fill-opacity: 0.55;' />
+<circle cx='-75.98' cy='239.65' r='2.65' style='stroke-width: 0.77; stroke: #2C7FB8; stroke-opacity: 0.55; fill: #2C7FB8; fill-opacity: 0.55;' />
+<circle cx='-50.10' cy='242.71' r='3.07' style='stroke-width: 0.77; stroke: #2C7FB8; stroke-opacity: 0.55; fill: #2C7FB8; fill-opacity: 0.55;' />
+<circle cx='-23.82' cy='262.89' r='3.35' style='stroke-width: 0.77; stroke: #2C7FB8; stroke-opacity: 0.55; fill: #2C7FB8; fill-opacity: 0.55;' />
+<circle cx='1.84' cy='278.14' r='3.68' style='stroke-width: 0.77; stroke: #2C7FB8; stroke-opacity: 0.55; fill: #2C7FB8; fill-opacity: 0.55;' />
+<circle cx='27.90' cy='285.23' r='4.13' style='stroke-width: 0.77; stroke: #2C7FB8; stroke-opacity: 0.55; fill: #2C7FB8; fill-opacity: 0.55;' />
+<circle cx='52.85' cy='278.58' r='4.48' style='stroke-width: 0.77; stroke: #2C7FB8; stroke-opacity: 0.55; fill: #2C7FB8; fill-opacity: 0.55;' />
+<circle cx='79.01' cy='260.58' r='4.71' style='stroke-width: 0.77; stroke: #2C7FB8; stroke-opacity: 0.55; fill: #2C7FB8; fill-opacity: 0.55;' />
+<circle cx='104.01' cy='241.15' r='5.22' style='stroke-width: 0.77; stroke: #2C7FB8; stroke-opacity: 0.55; fill: #2C7FB8; fill-opacity: 0.55;' />
+<circle cx='130.51' cy='228.43' r='5.24' style='stroke-width: 0.77; stroke: #2C7FB8; stroke-opacity: 0.55; fill: #2C7FB8; fill-opacity: 0.55;' />
+<circle cx='155.84' cy='229.36' r='5.62' style='stroke-width: 0.77; stroke: #2C7FB8; stroke-opacity: 0.55; fill: #2C7FB8; fill-opacity: 0.55;' />
+<circle cx='181.24' cy='239.17' r='5.72' style='stroke-width: 0.77; stroke: #2C7FB8; stroke-opacity: 0.55; fill: #2C7FB8; fill-opacity: 0.55;' />
+<circle cx='206.34' cy='249.80' r='5.72' style='stroke-width: 0.77; stroke: #2C7FB8; stroke-opacity: 0.55; fill: #2C7FB8; fill-opacity: 0.55;' />
+<circle cx='232.75' cy='250.73' r='5.59' style='stroke-width: 0.77; stroke: #2C7FB8; stroke-opacity: 0.55; fill: #2C7FB8; fill-opacity: 0.55;' />
+<circle cx='258.65' cy='236.77' r='5.45' style='stroke-width: 0.77; stroke: #2C7FB8; stroke-opacity: 0.55; fill: #2C7FB8; fill-opacity: 0.55;' />
+<circle cx='284.46' cy='207.57' r='5.25' style='stroke-width: 0.77; stroke: #2C7FB8; stroke-opacity: 0.55; fill: #2C7FB8; fill-opacity: 0.55;' />
+<circle cx='309.40' cy='176.92' r='5.12' style='stroke-width: 0.77; stroke: #D95F0E; stroke-opacity: 0.55; fill: #D95F0E; fill-opacity: 0.55;' />
+<circle cx='335.80' cy='160.93' r='4.84' style='stroke-width: 0.77; stroke: #D95F0E; stroke-opacity: 0.55; fill: #D95F0E; fill-opacity: 0.55;' />
+<circle cx='361.21' cy='156.49' r='4.61' style='stroke-width: 0.77; stroke: #D95F0E; stroke-opacity: 0.55; fill: #D95F0E; fill-opacity: 0.55;' />
+<circle cx='387.49' cy='161.24' r='4.17' style='stroke-width: 0.77; stroke: #D95F0E; stroke-opacity: 0.55; fill: #D95F0E; fill-opacity: 0.55;' />
+<circle cx='412.13' cy='166.99' r='3.78' style='stroke-width: 0.77; stroke: #D95F0E; stroke-opacity: 0.55; fill: #D95F0E; fill-opacity: 0.55;' />
+<circle cx='438.26' cy='157.37' r='3.43' style='stroke-width: 0.77; stroke: #D95F0E; stroke-opacity: 0.55; fill: #D95F0E; fill-opacity: 0.55;' />
+<circle cx='463.97' cy='138.22' r='3.07' style='stroke-width: 0.77; stroke: #D95F0E; stroke-opacity: 0.55; fill: #D95F0E; fill-opacity: 0.55;' />
+<circle cx='487.49' cy='108.30' r='2.50' style='stroke-width: 0.77; stroke: #D95F0E; stroke-opacity: 0.55; fill: #D95F0E; fill-opacity: 0.55;' />
+<circle cx='515.74' cy='72.63' r='2.30' style='stroke-width: 0.77; stroke: #D95F0E; stroke-opacity: 0.55; fill: #D95F0E; fill-opacity: 0.55;' />
+<circle cx='540.72' cy='52.72' r='2.78' style='stroke-width: 0.77; stroke: #D95F0E; stroke-opacity: 0.55; fill: #D95F0E; fill-opacity: 0.55;' />
+<polyline points='260.33,235.89 260.82,235.42 261.31,234.94 261.81,234.47 262.30,234.00 262.79,233.52 263.29,233.05 263.78,232.57 264.27,232.10 264.76,231.62 265.26,231.15 265.75,230.67 266.24,230.20 266.74,229.73 267.23,229.25 267.72,228.78 268.22,228.30 268.71,227.83 269.20,227.35 269.69,226.88 270.19,226.40 270.68,225.93 271.17,225.46 271.67,224.98 272.16,224.51 272.65,224.03 273.15,223.56 273.64,223.08 274.13,222.61 274.62,222.14 275.12,221.66 275.61,221.19 276.10,220.71 276.60,220.24 277.09,219.76 277.58,219.29 278.08,218.81 278.57,218.34 279.06,217.87 279.55,217.39 280.05,216.92 280.54,216.44 281.03,215.97 281.53,215.49 282.02,215.02 282.51,214.54 283.01,214.07 283.50,213.60 283.99,213.12 284.48,212.65 ' style='stroke-width: 2.56; stroke: #2C7FB8; stroke-linecap: butt;' />
+<polyline points='284.48,203.15 284.98,202.62 285.47,202.09 285.96,201.55 286.46,201.02 286.95,200.49 287.44,199.96 287.94,199.42 288.43,198.89 288.92,198.36 289.41,197.83 289.91,197.29 290.40,196.76 290.89,196.23 291.39,195.70 291.88,195.16 292.37,194.63 292.87,194.10 293.36,193.56 293.85,193.03 294.34,192.50 294.84,191.97 295.33,191.43 295.82,190.90 296.32,190.37 296.81,189.84 297.30,189.30 297.80,188.77 298.29,188.24 298.78,187.71 299.27,187.17 299.77,186.64 300.26,186.11 300.75,185.57 301.25,185.04 301.74,184.51 302.23,183.98 302.73,183.44 303.22,182.91 303.71,182.38 304.20,181.85 304.70,181.31 305.19,180.78 305.68,180.25 306.18,179.72 306.67,179.18 307.16,178.65 307.66,178.12 308.15,177.59 308.64,177.05 ' style='stroke-width: 2.56; stroke: #D95F0E; stroke-linecap: butt;' />
+<line x1='284.48' y1='296.85' x2='284.48' y2='41.10' style='stroke-width: 1.16; stroke: #666666; stroke-dasharray: 6.21,6.21; stroke-linecap: butt;' />
+<line x1='284.48' y1='212.65' x2='284.48' y2='203.15' style='stroke-width: 2.35; stroke-linecap: butt;' />
+<polyline points='282.36,208.96 284.48,212.65 286.61,208.96 ' style='stroke-width: 2.35; stroke-linecap: butt;' />
+<polyline points='286.61,206.84 284.48,203.15 282.36,206.84 ' style='stroke-width: 2.35; stroke-linecap: butt;' />
+<polygon points='363.60,222.01 450.52,222.01 450.45,222.01 450.74,222.00 451.04,221.94 451.31,221.83 451.57,221.68 451.80,221.49 452.00,221.27 452.16,221.02 452.27,220.75 452.34,220.46 452.37,220.17 452.37,220.17 452.37,195.63 452.37,195.63 452.34,195.34 452.27,195.05 452.16,194.78 452.00,194.53 451.80,194.30 451.57,194.12 451.31,193.97 451.04,193.86 450.74,193.80 450.52,193.79 363.60,193.79 363.82,193.80 363.52,193.79 363.23,193.83 362.94,193.91 362.67,194.04 362.43,194.21 362.22,194.41 362.04,194.65 361.90,194.91 361.81,195.19 361.76,195.49 361.75,195.63 361.75,220.17 361.76,220.02 361.76,220.31 361.81,220.61 361.90,220.89 362.04,221.15 362.22,221.39 362.43,221.59 362.67,221.76 362.94,221.89 363.23,221.97 363.52,222.01 ' style='stroke-width: 0.58; fill: #FFFFFF;' />
+<text x='364.82' y='204.19' style='font-size: 10.24px; font-family: "Arial";' textLength='84.47px' lengthAdjust='spacingAndGlyphs'>RDD jump = 0.200</text>
+<text x='364.82' y='218.94' style='font-size: 10.24px; font-family: "Arial";' textLength='52.88px' lengthAdjust='spacingAndGlyphs'>(true 0.200)</text>
+</g>
+<g clip-path='url(#g1_cpMC4wMHw1MTguNDB8MC4wMHwzMzEuMjA=)'>
+<text x='25.41' y='289.74' text-anchor='end' style='font-size: 9.60px;fill: #4D4D4D; font-family: "Arial";' textLength='5.33px' lengthAdjust='spacingAndGlyphs'>4</text>
+<text x='25.41' y='243.02' text-anchor='end' style='font-size: 9.60px;fill: #4D4D4D; font-family: "Arial";' textLength='5.33px' lengthAdjust='spacingAndGlyphs'>5</text>
+<text x='25.41' y='196.31' text-anchor='end' style='font-size: 9.60px;fill: #4D4D4D; font-family: "Arial";' textLength='5.33px' lengthAdjust='spacingAndGlyphs'>6</text>
+<text x='25.41' y='149.60' text-anchor='end' style='font-size: 9.60px;fill: #4D4D4D; font-family: "Arial";' textLength='5.33px' lengthAdjust='spacingAndGlyphs'>7</text>
+<text x='25.41' y='102.89' text-anchor='end' style='font-size: 9.60px;fill: #4D4D4D; font-family: "Arial";' textLength='5.33px' lengthAdjust='spacingAndGlyphs'>8</text>
+<text x='25.41' y='56.18' text-anchor='end' style='font-size: 9.60px;fill: #4D4D4D; font-family: "Arial";' textLength='5.33px' lengthAdjust='spacingAndGlyphs'>9</text>
+<text x='155.71' y='309.10' text-anchor='middle' style='font-size: 9.60px;fill: #4D4D4D; font-family: "Arial";' textLength='10.66px' lengthAdjust='spacingAndGlyphs'>70</text>
+<text x='284.48' y='309.10' text-anchor='middle' style='font-size: 9.60px;fill: #4D4D4D; font-family: "Arial";' textLength='10.66px' lengthAdjust='spacingAndGlyphs'>80</text>
+<text x='413.26' y='309.10' text-anchor='middle' style='font-size: 9.60px;fill: #4D4D4D; font-family: "Arial";' textLength='10.66px' lengthAdjust='spacingAndGlyphs'>90</text>
+<text x='271.61' y='322.70' text-anchor='middle' style='font-size: 12.00px; font-family: "Arial";' textLength='166.73px' lengthAdjust='spacingAndGlyphs'>Quality score (running variable)</text>
+<text transform='translate(14.57,168.97) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Arial";' textLength='46.67px' lengthAdjust='spacingAndGlyphs'>log GMV</text>
+<text x='30.79' y='32.60' style='font-size: 12.00px; font-family: "Arial";' textLength='371.92px' lengthAdjust='spacingAndGlyphs'>Binned means; local-linear fits inside the CCT bandwidth on each side</text>
+<text x='30.79' y='15.29' style='font-size: 13.00px; font-weight: bold; font-family: "Arial";' textLength='311.02px' lengthAdjust='spacingAndGlyphs'>Preferred badge at the quality-score cutoff (c = 80)</text>
+</g>
+</g>
+</svg>
+<figcaption aria-hidden="true">Aster’s Preferred badge discontinuity:
+the horizontal axis is quality score, the vertical axis is log GMV.
+Sellers below 80 are binned by score and averaged (blue dots), and those
+at or above 80 (orange dots); each side gets a local-linear fit within
+the CCT-optimal bandwidth, and the dashed line marks the cutoff. The
+vertical jump at the threshold is the badge effect, labeled RDD jump =
+0.200 (truth 0.200). Note how log GMV rises steeply with score overall,
+which is exactly why the naive comparison is absurdly high, while the
+jump at the discontinuity is far smaller than this steep
+slope.</figcaption>
+</figure>
+<p>SC says: do not use the simple average of twenty cities as the
+counterfactual, but pick a convex combination from the donors that
+reproduces the treated city’s log-GMV trajectory before the reform as
+closely as possible; the closer the pre-reform fit, the more the gap
+that opens after the reform between the treated city’s actual path and
+this synthetic version looks like the net effect of the policy.</p>
+<p>These two ideas are the spine of the chapter. On what grounds they
+hold, and where each of them fails, are the questions the next seven
+sections answer.</p>
+<h2 id="the-economic-model-and-the-estimand">2 The Economic Model and
+the Estimand</h2>
+<p>Before estimating anything, let us be clear about two things: exactly
+which causal quantity each design is after, and what notation writes it
+down. Both storylines are built on the potential outcomes of Chapter 9,
+but the target estimands have very different shapes.</p>
+<p>Start with RDD. Write the seller’s quality score as the running
+variable (also called the forcing variable) <span
+class="math inline">X_i</span>, with cutoff <span
+class="math inline">c</span>, here <span class="math inline">c =
+80</span>. The treatment indicator <span class="math inline">D_i</span>
+records whether the seller got the badge. The defining feature of RDD is
+that the treatment probability jumps at <span
+class="math inline">c</span>:</p>
+<p><span class="math display">\lim_{x\downarrow c}\Pr(D_i = 1 \mid X_i =
+x) \ \neq\ \lim_{x\uparrow c}\Pr(D_i = 1 \mid X_i = x).</span></p>
+<p>A <strong>sharp RD</strong> is the special case where this jump goes
+exactly from 0 to 1, that is, clearing the line guarantees a badge and
+missing it guarantees none, <span class="math inline">D_i =
+\mathbf{1}[X_i \geq c]</span>. Each seller has two potential outcomes
+<span class="math inline">Y_i(1), Y_i(0)</span>, with observed outcome
+<span class="math inline">Y_i = D_i Y_i(1) + (1 - D_i) Y_i(0)</span>.
+The structural picture behind RDD is this: the untreated outcome is a
+smooth function of the running variable, and the only jump at <span
+class="math inline">c</span> comes from treatment,</p>
+<p><span class="math display">Y_i = Y_i(0) + \tau_i \cdot \mathbf{1}[X_i
+\geq c], \qquad Y_i(0) = f(X_i) + \varepsilon_i, \ \ f \text{
+smooth}.</span></p>
+<p>The RDD estimand is not the average treatment effect over everyone,
+but the local average effect at that one point, the cutoff:</p>
+<p><span class="math display">\tau_{\mathrm{RD}} =
+\mathbb{E}\big[\,Y_i(1) - Y_i(0) \mid X_i = c\,\big].</span></p>
+<p>This has to be made plain from the outset: without extra assumptions,
+RDD can only learn the effect at the single point <span
+class="math inline">X = c</span>. How much a seller on the 80-point line
+gains from getting the badge, it can answer; what would happen if you
+gave the badge to a 60-point seller, it cannot. This is RDD’s built-in
+limitation, and the price it pays for strong internal validity,
+discussed formally in Section 3.3.</p>
+<p>Now SC. Here there is a single treated unit (write it <span
+class="math inline">i = 1</span>, the reform city Aster-Metro), treated
+for <span class="math inline">t &gt; T_0</span>; another <span
+class="math inline">j = 2, \dots, J+1</span> donor cities are never
+treated. The treatment indicator <span class="math inline">D_{it} =
+1</span> if and only if <span class="math inline">i = 1</span> and <span
+class="math inline">t &gt; T_0</span> (with <span
+class="math inline">T_0</span> the last untreated period, here month
+24). In potential outcomes,</p>
+<p><span class="math display">Y_{it} = Y_{it}(0) + \tau_{it}
+D_{it}.</span></p>
+<p>The SC estimand is the ATT path of the treated unit, an effect curve
+that varies over time:</p>
+<p><span class="math display">\tau_{1t} = Y_{1t}(1) - Y_{1t}(0) =
+\underbrace{Y_{1t}}_{\text{observed}} -
+\underbrace{Y_{1t}(0)}_{\text{counterfactual}}, \qquad t &gt;
+T_0.</span></p>
+<p><span class="math inline">Y_{1t}</span> is observed, and all of the
+difficulty lands on <span class="math inline">Y_{1t}(0)</span>, the log
+GMV the reform city would have realized had it not reformed. The whole
+machinery of SC does one thing: it constructs this unobserved
+counterfactual path.</p>
+<p>To sum up: the RDD target is the local effect at the cutoff, <span
+class="math inline">\tau_{\mathrm{RD}}</span>, a single number pinned to
+<span class="math inline">X = c</span>; the SC target is the ATT path of
+a single treated unit, <span class="math inline">\tau_{1t}</span>, a
+curve that opens over time. Both are local, one local at the cutoff, the
+other local at the treated unit. The next section makes clear the
+assumptions under which each of these quantities is identified.</p>
+<h2 id="identification">3 Identification</h2>
+<p>Identification logically precedes estimation. Identification asks
+whether, under a set of assumptions about the counterfactual world, the
+desired causal quantity can be written as a function of the observable
+data distribution; this question depends only on the design and the
+institutional background, and has nothing to do with which estimator or
+how large a sample you use afterward. This is the most fine-grained
+analytical section in the chapter, and it deliberately builds from
+simple to hard: first it makes the continuity assumption fully clear in
+sharp RDD, then discusses the one testable shadow it leaves and its
+local limitation, then connects fuzzy RD back to the IV of Chapter 12,
+and finally turns to SC, running from the intuition of a factor model
+all the way through the core algebra of “matching the pre-period is
+matching the unobserved loadings,” and laying out where SC parts ways
+from DiD and the conditions under which it is credible.</p>
+<h3 id="a-break-on-a-line-the-continuity-assumption-of-sharp-rdd">3.1 A
+Break on a Line: The Continuity Assumption of Sharp RDD</h3>
+<p>Start with an example anyone understands. Suppose the government
+rules that households with annual income below $25{,}000 can collect a
+subsidy. To estimate the subsidy’s effect on household consumption,
+directly comparing households that collect it against those that do not
+will not do, because poor households simply consume less to begin with.
+But turn it around: a household earning $24{,}999 and one earning
+$25{,}001 barely differ in anything except that one just qualifies for
+the subsidy and the other just misses. Within a very narrow neighborhood
+of this threshold, who lands above the line and who below is nearly a
+matter of luck. So the consumption difference between those thin layers
+of households on either side of the threshold can be attributed cleanly
+to the subsidy. That is the whole intuition of RDD, in one sentence:
+near the cutoff, treatment is as good as randomly assigned.</p>
+<p>Aster’s badge is the same idea. Sellers at 79 and 81 are almost
+identical in category, inventory, and operations, and the only
+difference is that one just cleared the 80-point line and got the badge
+while the other just missed. Turning this intuition into a formal
+identifying assumption rests on continuity.</p>
+<div class="assumption">
+<p><strong>Continuity</strong> The conditional expectation functions of
+both potential outcomes are continuous at the cutoff:</p>
+<p><span class="math display">x \mapsto \mathbb{E}[Y_i(0) \mid X_i = x]
+\ \text{ and } \ x \mapsto \mathbb{E}[Y_i(1) \mid X_i = x] \ \text{ are
+continuous at } x = c.</span></p>
+</div>
+<p>What this sentence constrains is worth reading word by word. It says
+that if you took the badge away, the seller’s log GMV as a function of
+score should pass smoothly through the 80-point line, and should not
+sprout a step out of nowhere at exactly 80. In other words, nothing
+other than the badge jumps at this one point, 80. It allows <span
+class="math inline">\mathbb{E}[Y(0) \mid X]</span> to climb steeply with
+score, allows it to bend and be nonlinear, allows high-scoring and
+low-scoring sellers to be worlds apart; the one thing it forbids is a
+break unrelated to the badge at the cutoff itself. Precisely because it
+is continuous, the sellers who just miss the line on the left are a
+legitimate counterfactual for those who just clear it on the right:
+their <span class="math inline">\mathbb{E}[Y(0)]</span> joins up
+seamlessly at the threshold.</p>
+<p>With continuity, identification is one step of taking a limit. The
+jump in the observed conditional mean at the cutoff equals exactly the
+local treatment effect at the cutoff:</p>
+<p><span class="math display">\tau_{\mathrm{RD}} = \lim_{x\downarrow
+c}\mathbb{E}[Y_i \mid X_i = x] - \lim_{x\uparrow c}\mathbb{E}[Y_i \mid
+X_i = x] = \mathbb{E}[\tau_i \mid X_i = c].</span></p>
+<p>The derivation is only three lines. Approaching from the right of the
+cutoff (<span class="math inline">x \downarrow c</span>), these sellers
+all have the badge, <span class="math inline">D_i = 1</span>, so <span
+class="math inline">\mathbb{E}[Y_i \mid X_i = x] \to \mathbb{E}[Y_i(1)
+\mid X_i = c]</span>, using the continuity of <span
+class="math inline">\mathbb{E}[Y(1) \mid X]</span>. Approaching from the
+left (<span class="math inline">x \uparrow c</span>), these sellers all
+lack the badge, <span class="math inline">D_i = 0</span>, so <span
+class="math inline">\mathbb{E}[Y_i \mid X_i = x] \to \mathbb{E}[Y_i(0)
+\mid X_i = c]</span>, using the continuity of <span
+class="math inline">\mathbb{E}[Y(0) \mid X]</span>. Subtracting the two,
+the pile of confounding terms on the right cancels because it joins up
+continuously, leaving only <span class="math inline">\mathbb{E}[Y_i(1) -
+Y_i(0) \mid X_i = c]</span>, exactly the local treatment effect at the
+cutoff. This limit difference is all that RDD sets out to estimate.</p>
+<div class="intuition">
+<p>The continuity assumption has a reassuring property: it shifts the
+burden of identification from “I controlled for all the confounders
+correctly” to “nothing else jumps at this one point.” You do not need to
+observe the seller’s ability, category, or operational quality, nor do
+they need to be balanced across the two sides of the threshold. You only
+need to believe that, apart from the badge, no second thing switches on
+at exactly 80. This is far easier to check than the “I controlled for
+everything I should have” faith of selection on observables, because
+whether something else jumps at the threshold can often be seen from a
+plot and argued from the institutions. The credibility of RDD is, to a
+large extent, the credibility of “this cutoff triggers only the one
+thing, the badge.”</p>
+</div>
+<p>It bears emphasizing that continuity itself is not testable. It
+constrains the counterfactual <span class="math inline">\mathbb{E}[Y(0)
+\mid X = c]</span>, and at that point we observe only the badged side,
+never what those units would look like without the badge. So the right
+attitude is not to “test continuity” but to plot and to argue. In a
+word, this is not a testable assumption, go plot it.</p>
+<p>Continuity is not the only framework that makes RDD clear. A parallel
+line of thought is called local randomization: instead of talking about
+whether the conditional expectation is continuous at the cutoff, it
+directly assumes that within a very narrow window <span
+class="math inline">W</span> around the cutoff, who lands above the line
+and who below is nearly randomly assigned, as if that thin layer of
+units on either side of the threshold took part in a tiny randomized
+experiment. This assumption is stronger than continuity and more local,
+in that it concerns only within the window <span
+class="math inline">W</span> and does not constrain the limiting
+behavior of the whole curve. What it buys is more direct estimation and
+inference: within the window, the mean difference between treated and
+control units is the effect estimate, and inference can go the Fisher
+route of randomization inference, repeatedly permuting the treatment
+labels within the window to compute a p-value, yielding finite-sample
+exact conclusions without leaning on large-sample limits. When should
+you reach for it? When there are very few observations near the cutoff,
+or when the running variable is discrete with obvious integer heaping,
+the smooth approximation that the continuity framework relies on is
+shaky, and local randomization paired with randomization inference is
+often more robust. The main line of this chapter stays with the
+continuity framework, but keep in mind that this second route is
+available.</p>
+<h3 id="no-manipulation-the-one-assumption-that-leaves-a-shadow">3.2
+No-Manipulation: The One Assumption That Leaves a Shadow</h3>
+<p>Continuity has one concrete behavioral premise worth singling out,
+because it is one of the few things in RDD that can be indirectly
+tested. This premise is no-manipulation, or no-sorting: sellers cannot
+precisely control which side of the threshold they land on.</p>
+<p>Why manipulation kills identification is clearest back in the subsidy
+example. If a household can precisely under-report its income to slip
+below $25{,}000 and collect the subsidy, then just below the threshold
+you get a crowd of households whose income was actually higher but who
+deliberately dialed down their filing, and they are no longer comparable
+in other respects to the un-manipulating households just above the
+threshold. Worse, this active sorting makes the density of the running
+variable break at the threshold, bunching just below it, and the “nearly
+random comparability across the two sides” that continuity relies on
+collapses along with it. The corresponding threat in Aster’s setting is:
+if sellers can precisely push their quality score up to 80 by tactics
+like fake orders or category changes, then just above the 80-point line
+you get a batch of sellers “on their tiptoes to reach the line,” no
+longer comparable to those just below.</p>
+<p>The observable footprint that manipulation leaves is a jump in the
+density of the running variable at the cutoff, and that gives us a
+test.</p>
+<div class="assumption">
+<p><strong>McCrary density test</strong> Estimate the density of the
+running variable separately on each side of the cutoff, and test whether
+they are continuous at <span class="math inline">c</span>:</p>
+<p><span class="math display">\theta = \ln\Big(\lim_{x\downarrow c}\hat
+f_X(x)\Big) - \ln\Big(\lim_{x\uparrow c}\hat f_X(x)\Big), \qquad H_0:\
+\theta = 0.</span></p>
+</div>
+<p>A sudden lift in the density above the threshold (bunching) is
+evidence of sorting, showing that someone succeeded in moving from below
+the line to above it. McCrary (2008) gave the original implementation of
+this test, and the modern default is Cattaneo, Jansson and Ma’s
+<code>rddensity</code>, which estimates the density directly with a
+local polynomial, avoiding pre-binning, and delivers a bias-corrected
+robust test. The point is to place this test correctly: it is neither a
+necessary nor a sufficient condition for continuity, but essentially a
+testable implication of the behavioral no-manipulation assumption, that
+is, a falsification test. Density continuity cannot prove the potential
+outcomes are continuous (not sufficient); and the density may break for
+reasons unrelated to the outcome, such as integer heaping or
+administrative rules, so a density break by itself does not logically
+amount to identification failure (not necessary). But density bunching
+above the threshold is strong evidence of sorting, and the moment you
+see it you should be highly alert that continuity has been broken.</p>
+<p>Besides density, the RDD diagnostic checklist has a companion check
+standing alongside it: predetermined covariates <span
+class="math inline">W</span> (features fixed before the score was
+obtained, such as the seller’s tenure or historical category) should not
+jump at the cutoff. The logic is the same as above: if even these
+features, unrelated to the badge and fixed before treatment, show a step
+at 80, that says the sellers on either side of the threshold were not
+comparable to begin with, and continuity is suspect. Covariates smooth
+at the cutoff are placebo-style evidence in favor of identification.</p>
+<p>Put these two together and you get one of RDD’s standout advantages
+over other quasi-experimental designs: although its core assumption
+cannot be tested directly, it leaves two rather powerful observable
+shadows, no density jump and no jump in predetermined covariates. The
+exclusion restriction of Chapter 12 leaves no such shadow at all and can
+only be argued by storytelling. On this point RDD is much luckier.</p>
+<h3 id="rdd-is-a-local-parameter">3.3 RDD Is a Local Parameter</h3>
+<p>RDD’s strong internal validity comes with a cost there is no getting
+around: what it identifies is extremely local. It learns the effect only
+at the cutoff, on that thin layer of units near the cutoff. That a
+seller barely qualifying on the 80-point line gains <span
+class="math inline">\tau_{\mathrm{RD}}</span> from the badge tells you
+nothing directly about what would happen if you gave the badge to a
+90-point seller or a 60-point seller, because those sellers are too far
+from the threshold for RDD’s “nearly random” to cover them at all.</p>
+<p>To extrapolate <span class="math inline">\tau_{\mathrm{RD}}</span> to
+units far from the cutoff, you must additionally assume that the
+treatment effect is homogeneous across the whole score range, or assume
+a specific functional form that lets the effect vary smoothly with
+score, and RDD itself neither provides nor tests these assumptions. So
+the honest practice is to confine the wording of your conclusion to the
+neighborhood of the threshold, making clear this is “the effect for
+sellers on the 80-point line,” not “the effect of the badge for all
+sellers.” This is of a piece with the extrapolation anxiety of LATE in
+Chapter 12: there you learned the effect for compliers, here you learn
+the effect for units at the threshold, and in both the design
+illuminates only a small group. The strength of identification is bought
+precisely with the narrowness of extrapolation.</p>
+<h3 id="fuzzy-rd-iv-at-the-cutoff">3.4 Fuzzy RD: IV at the Cutoff</h3>
+<p>So far we have assumed that clearing the line guarantees the badge.
+Real platform rules are often not so clean. Aster’s actual situation is:
+among sellers who reach 80, some never activate the badge for one reason
+or another, while among sellers below 80 a few obtain it through
+appeals, special operational approval, and the like. So the treatment
+probability at the threshold does not jump from 0 to 1, but from a lower
+level to a higher level. This is fuzzy RD.</p>
+<p>Since the treatment probability does not go from 0 to 1, the jump in
+the outcome at the threshold reflects only that fraction of sellers
+whose badge status was nudged to change by the threshold. To recover
+“how much log GMV each change in badge status buys,” you divide the jump
+in the outcome by the jump in treatment, which is exactly the Wald
+ratio:</p>
+<p><span class="math display">\tau_{\mathrm{FRD}}(c) =
+\frac{\displaystyle\lim_{x\downarrow c}\mathbb{E}[Y_i \mid X_i = x] -
+\lim_{x\uparrow c}\mathbb{E}[Y_i \mid X_i =
+x]}{\displaystyle\lim_{x\downarrow c}\Pr(D_i = 1 \mid X_i = x) -
+\lim_{x\uparrow c}\Pr(D_i = 1 \mid X_i = x)} = \frac{\text{jump in
+outcome}}{\text{jump in treatment}}.</span></p>
+<p>This shape should look familiar. When Chapter 12 covered IV, the Wald
+estimator was exactly the reduced form divided by the first stage. Fuzzy
+RD just moves that IV machinery onto the cutoff: it takes the indicator
+for crossing the threshold, <span class="math inline">Z_i =
+\mathbf{1}[X_i \geq c]</span>, as the instrument, uses it to instrument
+the actual badge status <span class="math inline">D_i</span>, with the
+numerator the reduced-form effect of crossing the threshold on log GMV
+and the denominator the first-stage effect of crossing on badge status.
+The assumptions required for identification correspond to those in
+Chapter 12: crossing the threshold must genuinely change the badge
+probability (relevance, the denominator nonzero), crossing can affect
+log GMV only through the badge (a cutoff version of exclusion), and
+monotonicity at the threshold (crossing the line can only increase,
+never decrease, the probability of getting the badge, that is, no
+defiers).</p>
+<p>In sharp RD, everyone at the threshold is a complier nudged by the
+threshold, so what you estimate is the local effect at the threshold. In
+fuzzy RD, near the threshold there are also always-takers (who have the
+badge even without clearing the line) and never-takers (who do not
+activate it even after clearing), and under monotonicity, <span
+class="math inline">\tau_{\mathrm{FRD}}</span> identifies the LATE for
+compliers at the cutoff, the effect on those sellers “who got the badge
+only because they crossed the 80-point line, and would not have
+otherwise.” This is a doubly local quantity: local at the cutoff, and
+local among the compliers. The line Chapter 12 kept returning to holds
+again here: IV learns only about compliers, and fuzzy RD is no
+exception.</p>
+<div class="warning">
+<p>Fuzzy RD estimation has one detail you must hold onto, a close cousin
+of the forbidden regression of Chapter 12. When doing 2SLS you should
+include a slope for the running variable on each side of the cutoff
+(that is, use <span class="math inline">X_i - c</span> rather than <span
+class="math inline">X_i</span>, and let the slopes differ across the two
+sides), and you must enter <span class="math inline">X_i - c</span>
+rather than <span class="math inline">X_i</span> into the regression,
+that is, recenter the running variable at the cutoff. The reason is that
+if you do not recenter and use <span class="math inline">X_i</span>
+directly, the coefficient on the instrument <span
+class="math inline">Z_i</span> is no longer the pure effect of “crossing
+the threshold” on the badge, it gets tangled up with the intercept and
+slope of the polynomial at <span class="math inline">X_i = 0</span>, and
+what you estimate mixes the jump at the threshold with the level of the
+polynomial at the origin, rather than the jump at the threshold. Only
+after recentering can the coefficient on <span
+class="math inline">Z_i</span> be read cleanly as the jump in treatment
+probability at that one point, the cutoff.</p>
+</div>
+<h3
+id="the-identification-logic-of-synthetic-control-matching-unobserved-factor-loadings-with-a-convex-combination">3.5
+The Identification Logic of Synthetic Control: Matching Unobserved
+Factor Loadings with a Convex Combination</h3>
+<p>Now turn to SC. Its identification logic is entirely different from
+RDD’s, but no less elegant. Build the intuition first. When Chapter 13
+covered DiD, the counterfactual was borrowed from the change in the
+control group: however the treated group would have changed, you assumed
+it changes by the same amount as the control group. SC does this
+“borrowing” more finely: rather than using the simple average of twenty
+donor cities as the counterfactual, pick a weighted combination from
+those twenty cities so that this “synthetic city” reproduces, as closely
+as possible, each feature and each period’s outcome of the treated city
+before the reform. How closely it fits before the reform is visible and
+measurable; once it fits, you have reason to believe it keeps fitting
+after the reform, so the gap between the treated city’s actual path and
+this synthetic version is the effect.</p>
+<p>To turn “if it fits, it is credible” into an identification result,
+you need a model of how the untreated outcome is generated. What SC
+assumes is interactive fixed effects, also called a factor model:</p>
+<p><span class="math display">Y_{it}(0) = \delta_t + \boldsymbol\theta_t
+\mathbf{Z}_i + \boldsymbol\lambda_t \mathbf{F}_i + u_{it}.</span></p>
+<p>Here <span class="math inline">\delta_t</span> is a common time
+effect, <span class="math inline">\mathbf{Z}_i</span> are observable
+covariates (whose coefficients <span
+class="math inline">\boldsymbol\theta_t</span> may vary over time; here
+<span class="math inline">\boldsymbol\theta_t</span> follows the
+Abadie-Diamond-Hainmueller notation for time-varying covariate
+coefficients, unrelated to the <span class="math inline">\theta</span>
+used elsewhere in the book as a structural parameter; likewise <span
+class="math inline">\mathbf{Z}_i</span> here refers specifically to
+observable covariates, differing in meaning from the <span
+class="math inline">Z_i = \mathbf{1}[X_i \geq c]</span> used as an
+instrument in Section 3.4 and throughout the book, which merely reuses
+the same letter), <span class="math inline">\boldsymbol\lambda_t</span>
+is a set of time-varying common factors, <span
+class="math inline">\mathbf{F}_i</span> is each city’s loadings on those
+factors, and <span class="math inline">u_{it}</span> is idiosyncratic
+noise. This model is far more general than the additive two-way fixed
+effects <span class="math inline">\gamma_i + \gamma_t</span> of Chapter
+13. Additive fixed effects are a special case of it: for those
+time-varying common factors, the cities share the same loadings, so the
+trends they induce are parallel to one another, and cross-city
+heterogeneity lives only in a time-invariant intercept (equivalently, a
+constant unchanging factor paired with city-specific loadings plays the
+role of <span class="math inline">\gamma_i</span>). The genuinely
+general case is that loadings may differ, meaning different cities
+respond by different amounts to the same time-varying common shock, so
+their trends are naturally not parallel. Aster’s DGP is built exactly
+this way, which is also the root of why the two cities’ trend slopes
+differ in Section 1 and DiD fails.</p>
+<p>The key algebra is a single step. Subtract the synthetic city (a
+convex combination of donors, with weights <span
+class="math inline">w_j</span>) from the treated city, in the untreated
+state:</p>
+<p><span class="math display">Y_{1t}(0) - \sum_j w_j Y_{jt}(0) =
+\boldsymbol\theta_t\underbrace{\Big(\mathbf{Z}_1 - \sum_j w_j
+\mathbf{Z}_j\Big)}_{\text{match directly}} +
+\boldsymbol\lambda_t\underbrace{\Big(\mathbf{F}_1 - \sum_j w_j
+\mathbf{F}_j\Big)}_{\text{match indirectly}} + \sum_j w_j (u_{1t} -
+u_{jt}).</span></p>
+<p>The <span class="math inline">\mathbf{Z}</span> in the first term is
+observable, and you can require the weights to match it directly. The
+real trouble is the <span class="math inline">\mathbf{F}_i</span> in the
+second term: the factor loadings are unobservable and cannot be matched
+directly. The core insight of SC (Abadie, Diamond and Hainmueller 2010)
+is: if a set of weights can simultaneously reproduce the treated city’s
+entire pre-reform outcome path <span class="math inline">(Y_{11}, \dots,
+Y_{1T_0})</span> and its covariates, then it approximately also matches
+those unseen factor loadings, <span class="math inline">\mathbf{F}_1
+\approx \sum_j w_j \mathbf{F}_j</span>.</p>
+<div class="theorem">
+<p>(Loading matching, an approximate result) Under the factor model, if
+the weights <span class="math inline">\mathbf{w}</span> make the
+synthetic city reproduce all of the treated city’s pre-period outcomes
+and covariates, that is, for all <span class="math inline">t \leq
+T_0</span> we have <span class="math inline">Y_{1t} = \sum_j w_j
+Y_{jt}</span> and <span class="math inline">\mathbf{Z}_1 = \sum_j w_j
+\mathbf{Z}_j</span>, then when the pre-period is long enough, the
+idiosyncratic noise <span class="math inline">u_{it}</span> is small
+enough relative to the factor signal, and the pre-period fit is indeed
+good, we have approximately <span class="math inline">\mathbf{F}_1
+\approx \sum_j w_j \mathbf{F}_j</span>, with the matching error
+shrinking as the number of pre-periods grows and the noise-to-signal
+ratio falls. So for <span class="math inline">t &gt; T_0</span>, both
+the observable term and the loading term on the right-hand side above
+nearly cancel, and the gap</p>
+<p><span class="math display">\hat\tau_{1t} = Y_{1t} - \sum_{j} \hat w_j
+Y_{jt}</span></p>
+<p>estimates the treatment effect <span
+class="math inline">\tau_{1t}</span> approximately without bias, with
+the bias tending to zero as the pre-period lengthens. This is precisely
+why Section 3.6 lists “a long enough pre-period” as a credibility
+condition.</p>
+</div>
+<p>The intuition is this: the pre-reform outcome path is itself an
+information-rich fingerprint of the factor loadings. How exposed a city
+is to each common factor is imprinted entirely in the trajectory of how
+its log GMV grew and fluctuated seasonally over the years. If two cities
+track each other month by month over a long enough pre-period, their
+exposures to the common factors are nearly identical, even though we
+have never directly observed those exposures. Matching the visible
+outcome path indirectly matches the invisible loadings, and this is the
+source of all of SC’s persuasive power, which also explains why the
+quality of the pre-period fit is SC’s lifeline.</p>
+<p>The weights are not picked at random; they are pinned down by a
+constrained minimum-distance problem. Stack the covariates and
+pre-period outcomes into a predictor vector, written <span
+class="math inline">\mathbf{X}_i = (\mathbf{Z}_i, Y_{i1}, \dots,
+Y_{iT_0})</span>, where the boldface <span
+class="math inline">\mathbf{X}_i</span> refers specifically to SC’s
+stacked predictors, a different thing from the scalar running variable
+<span class="math inline">X_i</span> in the RDD half, merely reusing the
+same letter,</p>
+<p><span class="math display">\hat{\mathbf{w}} = \arg\min_{\mathbf{w}}\
+\Big(\mathbf{X}_1 - \textstyle\sum_j w_j \mathbf{X}_j\Big)&#39;
+\boldsymbol\Omega \Big(\mathbf{X}_1 - \textstyle\sum_j w_j
+\mathbf{X}_j\Big) \quad\text{s.t. } \sum_{j} w_j = 1,\ w_j \geq
+0,</span></p>
+<p>where <span class="math inline">\boldsymbol\Omega</span> is a
+positive-definite predictor weighting matrix. The two constraints are
+SC’s signature: weights nonnegative and summing to one, together called
+the simplex constraints. They guarantee that the synthetic city is a
+convex combination of donors, lying inside the donors’ convex hull, with
+no extrapolation. This is a deliberate choice of SC relative to ordinary
+regression: the implicit weights of ordinary regression can be negative
+or larger than one, which amounts to allowing extrapolation into regions
+with no donor support, whereas SC uses nonnegative-summing-to-one to
+lock itself within the support of the data, at the cost that sometimes
+the convex hull is too small to reconstruct the treated city.</p>
+<h3 id="where-sc-parts-ways-from-did-and-when-sc-is-credible">3.6 Where
+SC Parts Ways from DiD, and When SC Is Credible</h3>
+<p>SC and the DiD of Chapter 13 deserve a head-on comparison, because
+they answer the same kind of question while differing in the strictness
+of their underlying identifying assumptions. DiD’s two-way fixed effects
+model <span class="math inline">y_{it} = \delta D_{it} + \gamma_i +
+\gamma_t + u_{it}</span> assumes the fixed effects are additively
+separable: the baseline levels across cities can differ (<span
+class="math inline">\gamma_i</span>), but the time evolution treats all
+cities alike (<span class="math inline">\gamma_t</span>). The moment
+different cities respond differently to a common shock, that is, once a
+loading-varying term like <span class="math inline">\boldsymbol\lambda_t
+\mathbf{F}_i</span> is present, parallel trends breaks. SC relaxes
+exactly this layer: it allows cities to have different loadings on the
+common factors, so trends can be non-parallel, and then it matches those
+loadings away by reproducing the pre-period path. In a word, DiD
+tolerates only time-invariant confounding, while SC can tolerate
+time-varying confounding that enters through factor loadings.</p>
+<p>There is also a very practical complaint about DiD: on what grounds
+do you pick its control group? In DiD, which cities to use as controls
+is often decided by the researcher’s gut. SC turns this choice into
+data, replacing a hand-picked control group with a convex combination
+optimized from pre-period fit, and the weights are computed,
+transparent, and auditable. This is a major methodological advance of SC
+over DiD.</p>
+<p>The price is that SC has its own full set of credibility conditions,
+which a paper should put on the table one by one:</p>
+<ol type="1">
+<li><strong>The pre-period fit must be good.</strong> The synthetic city
+must hug the treated city’s pre-period path (a small pre-period MSPE).
+If the fit is poor, the loading-matching argument does not hold, and the
+later gap cannot be interpreted. This is the first-order check.</li>
+<li><strong>The treated unit must lie inside the donors’ convex
+hull.</strong> If the treated city’s features are so extreme that no
+convex combination can reach them (for instance, it is the largest
+market in the country and no donor combination can match its volume),
+the convex weight constraint refuses to extrapolate, and SC can only
+leave obvious residual imbalance and a worse pre-period fit; this is the
+extrapolation / convex-hull problem. The California example in Section
+5.3 later illustrates exactly its boundary: ADH (2010) could synthesize
+California precisely because they matched per-capita cigarette sales
+rather than total market size, sidestepping the convex-hull obstacle of
+an out-of-reach volume by using a per-capita metric. Distinguish this
+from interpolation bias: the latter refers to the bias introduced by
+using a pool of donors quite different from the treated unit and
+interpolating over a wide range of a (possibly nonlinear) response
+surface, which can happen even when the treated unit lies inside the
+convex hull, and is mitigated by restricting the donor pool to similar
+units.</li>
+<li><strong>The donor pool must be clean.</strong> Donors must be
+genuinely untreated and unaffected by spillovers from the intervention
+on the treated unit. If the reform induces sellers in neighboring cities
+to migrate across cities or diverts traffic, the donors are contaminated
+and no longer a clean counterfactual. This is interference, where
+treatment spreads from the treated unit to the control units.</li>
+<li><strong>No anticipation.</strong> The treated unit must not react
+early before <span class="math inline">T_0</span> out of foreseeing the
+reform, otherwise the pre-period is contaminated, <span
+class="math inline">T_0</span> is misdated, and the loadings that get
+fit are dirty too.</li>
+<li><strong>The pre-period must be long enough.</strong> The loadings
+are pinned down by the pre-period path, and if the pre-period is too
+short, the weights merely fit noise rather than signal, leading to
+overfitting.</li>
+</ol>
+<p>To sum up: sharp RDD uses continuity to identify the jump at the
+cutoff as a local effect, and its one behavioral premise,
+no-manipulation, leaves two testable shadows in density and covariates;
+RDD is inherently local, identifying only the effect at the cutoff;
+fuzzy RD is IV at the cutoff, identifying the LATE for compliers,
+pointing straight back to Chapter 12; SC, under a factor model,
+indirectly matches unobserved factor loadings by reproducing the
+pre-period path, and so tolerates time-varying confounding that DiD
+cannot, but it requires a good pre-period fit, the treated unit inside
+the convex hull, clean donors, no anticipation, and a long enough
+pre-period. All of these assumptions concern the counterfactual, very
+few can be tested directly, and what can be tested is only the shadows
+they cast.</p>
+<h2 id="estimation">4 Estimation</h2>
+<p>Identification has clarified what each of the two designs is
+estimating; this section covers how to estimate it. The spine is still
+“where the previous method fails is what gives rise to the next.”</p>
+<h3 id="rdd-from-naive-ols-to-local-linear">4.1 RDD: From Naive OLS to
+Local Linear</h3>
+<p>The laziest RDD estimate is a regression with the running variable,
+plugging <span class="math inline">D_i = \mathbf{1}[X_i \geq c]</span>
+straight in:</p>
+<p><span class="math display">Y_i = \beta_0 + \tau D_i + X_i \beta +
+\varepsilon_i.</span></p>
+<p>It has two flaws. First, it imposes a single global straight line on
+the entire score range, when the relationship between log GMV and score
+is not a straight line at all. Second, even if it were a straight line,
+<span class="math inline">\tau</span> still only has a clean
+interpretation at <span class="math inline">X = c</span>. The most
+dangerous consequence comes from the first flaw: if the true
+relationship between <span class="math inline">Y(0)</span> and <span
+class="math inline">X</span> is curved and you fit it with a straight
+line, then the line’s systematic deviation near the cutoff will be
+misread as a discontinuity. The warning here is blunt: otherwise you
+will mistake nonlinearity for a discontinuity.</p>
+<p>The fix is to replace the global straight line with a local, flexible
+fit. The semiparametric way to write it is</p>
+<p><span class="math display">Y_i = f(X_i) + \tau D_i +
+\varepsilon_i,</span></p>
+<p>with <span class="math inline">f</span> fit by a flexible form. The
+workhorse estimator of modern RDD is local linear regression: use only
+observations within a bandwidth <span class="math inline">h</span> of
+the cutoff, fit a straight line on each side, and take the difference of
+the two lines’ intercepts at the cutoff. Formally it is two weighted
+least squares problems, with a kernel <span
+class="math inline">K(\cdot)</span> giving smaller weight to points
+farther from the cutoff:</p>
+<p><span class="math display">\big(\hat\alpha_+, \hat\beta_+\big) =
+\arg\min_{\alpha,\beta}\sum_{i: X_i \geq c}\big(Y_i - \alpha - \beta(X_i
+- c)\big)^2 K\!\Big(\tfrac{X_i - c}{h}\Big),</span></p>
+<p><span class="math display">\big(\hat\alpha_-, \hat\beta_-\big) =
+\arg\min_{\alpha,\beta}\sum_{i: X_i &lt; c}\big(Y_i - \alpha - \beta(X_i
+- c)\big)^2 K\!\Big(\tfrac{X_i - c}{h}\Big),</span></p>
+<p>and the point estimate is <span
+class="math inline">\hat\tau_{\mathrm{RD}} = \hat\alpha_+ -
+\hat\alpha_-</span>. Why a local “line” rather than a local “average”?
+Because at the boundary of the support, a local average has severe bias.
+The cutoff is the boundary of the data on each side, and if <span
+class="math inline">f</span> has a slope there, an estimate that only
+takes averages will fold the level difference caused by the slope into
+the jump, the so-called kernel boundary problem. Fitting a local
+straight line makes the slope explicit and estimated, which removes this
+first-order boundary bias, and this is why local linear beats local
+constant. As for the kernel, the triangular kernel <span
+class="math inline">K(u) = (1 - |u|)\mathbf{1}[|u| \leq 1]</span> is
+MSE-optimal at the boundary and is the default in <code>rdrobust</code>;
+using the uniform kernel degenerates to ordinary OLS within the
+window.</p>
+<h3
+id="bandwidth-selection-and-bias-corrected-robust-confidence-intervals">4.2
+Bandwidth Selection and Bias-Corrected Robust Confidence Intervals</h3>
+<p>The bandwidth <span class="math inline">h</span> is the most
+consequential tuning parameter in local linear. It embodies a classic
+bias-variance tradeoff: the larger the bandwidth, the more points
+included and the smaller the variance, but the farther the points are
+from the cutoff, the less representative of the cutoff they are and the
+larger the bias; a smaller bandwidth does the reverse. The leading bias
+of the boundary local-linear estimate is <span
+class="math inline">O(h^2)</span> and the variance is <span
+class="math inline">O(1/(nh))</span>, so the asymptotic MSE is
+approximately</p>
+<p><span class="math display">\mathrm{MSE}(h) \approx \underbrace{C_B\,
+h^4\, f&#39;&#39;(c)^2}_{\text{bias}^2} + \underbrace{\frac{C_V\,
+\sigma^2}{n\, h}}_{\text{variance}},</span></p>
+<p>minimized at <span class="math inline">h^\ast \propto
+n^{-1/5}</span>. The approach of Imbens and Kalyanaraman (2012) is to
+estimate the unknown curvature <span
+class="math inline">f&#39;&#39;(c)</span> and error variance in the
+formula from the data, substitute them back into the MSE-optimal
+formula, and obtain a data-driven plug-in bandwidth <span
+class="math inline">h_{\mathrm{IK}}</span>.</p>
+<p>The trouble is that doing ordinary inference at exactly the
+MSE-optimal bandwidth is invalid. The interval <span
+class="math inline">\hat\tau_{\mathrm{RD}} \pm z_{1-\alpha/2}\,
+\widehat{\mathrm{se}}</span> assumes by default that the point estimate
+is asymptotically unbiased, but at the MSE-optimal bandwidth the leading
+bias and the standard error are of the same order, the center of the
+<span class="math inline">t</span>-statistic is off, and the coverage of
+the interval falls short of the nominal level. Calonico, Cattaneo and
+Titiunik (2014) provide two things to fix this. One is their own
+MSE-optimal bandwidth (<code>mserd</code>). The other is bias-corrected
+robust inference: first estimate the leading bias <span
+class="math inline">\widehat{\mathrm{Bias}}</span> using a higher-order
+polynomial on an auxiliary bandwidth and subtract it from the point
+estimate, then fold the extra uncertainty from estimating that bias
+itself into the variance,</p>
+<p><span class="math display">\text{CI}_{\text{robust}} =
+\big(\hat\tau_{\mathrm{RD}} - \widehat{\mathrm{Bias}}\big) \pm
+z_{1-\alpha/2}\sqrt{\widehat V_{\text{bc}}}, \qquad \widehat
+V_{\text{bc}} = \widehat V(\hat\tau) + \widehat
+V(\widehat{\mathrm{Bias}}) - 2\widehat{\mathrm{Cov}}(\hat\tau,
+\widehat{\mathrm{Bias}}).</span></p>
+<p>This is the Robust line in the <code>rdrobust</code> output, and the
+current default standard. Note one feature of it: the center of the
+robust interval is the bias-corrected estimate, not the ordinary point
+estimate, so the ordinary point estimate occasionally falls outside the
+robust interval; this is not a bug, it is by design, and Section 6 will
+run into an example of it.</p>
+<h3 id="do-not-use-high-order-global-polynomials">4.3 Do Not Use
+High-Order Global Polynomials</h3>
+<p>Some people, to “control the curvature of <span
+class="math inline">f</span>,” will stuff a fourth-, sixth-, or even
+higher-order global polynomial into the regression. Gelman and Imbens
+(2019) systematically argue why you should not, giving three reasons.
+First, a high-order global polynomial assigns extreme and bizarre
+weights to observations far from the cutoff, so the estimate at the
+cutoff is dragged around by distant data that ought to be irrelevant.
+Second, the point estimate is highly sensitive to the polynomial order,
+and there is no principled way to choose the order. Third, the resulting
+confidence intervals have poor coverage and are often too narrow. Beyond
+their argument, a related fact from numerical analysis is worth
+mentioning: the Runge phenomenon, where high-degree polynomials produce
+spurious wiggles near the boundary of the support and can conjure a fake
+jump at the cutoff out of thin air, which is the extreme version of
+“mistaking nonlinearity for a discontinuity” (this one is not among
+Gelman-Imbens’s three, but an independent supplement). Section 6 will
+use numbers to demonstrate this instability: on the same data, fourth-,
+sixth-, and eighth-order polynomials give wildly different jump
+estimates, one of them even negative. The right road is local linear or
+local quadratic with a bandwidth, not a global high-order
+polynomial.</p>
+<h3 id="sls-for-fuzzy-rd">4.4 2SLS for Fuzzy RD</h3>
+<p>Fuzzy RD, in estimation, is 2SLS in a window around the cutoff, using
+<span class="math inline">Z_i = \mathbf{1}[X_i \geq c]</span> to
+instrument the actual treatment <span class="math inline">D_i</span>,
+with both stages carrying the recentered running variable (a slope on
+each side). Copy over the two-equation structure of Chapter 12:</p>
+<p><span class="math display">\text{first stage: } D_i = \pi_0 + \pi_1
+Z_i + h^D(X_i - c) + \nu_i, \qquad \text{structural: } Y_i = \beta_0 +
+\beta_1 D_i + h^Y(X_i - c) + \varepsilon_i,</span></p>
+<p>where <span class="math inline">h^D, h^Y</span> are flexible
+polynomials set separately on each side of the cutoff (an independent
+slope per side). Here <span class="math inline">\beta_1</span> is
+exactly <span class="math inline">\tau_{\mathrm{FRD}}</span>, and <span
+class="math inline">\hat\beta_1</span> is the fuzzy-RD LATE at the
+cutoff. The first-stage coefficient <span
+class="math inline">\pi_1</span> is the effect of crossing the threshold
+on the probability of getting the badge, the jump in treatment; the
+coefficient on <span class="math inline">D_i</span> in the structural
+equation is the clean effect after instrumenting. <code>rdrobust</code>
+runs this in one line with the <code>fuzzy=</code> argument, internally
+doing local linear, the CCT bandwidth, and bias-corrected robust
+inference.</p>
+<h3 id="sc-weight-optimization-and-fit">4.5 SC: Weight Optimization and
+Fit</h3>
+<p>The estimation core of SC is the simplex-constrained minimum-distance
+problem of Section 3.5. In practice it goes in a few steps: first pick
+the predictors (the covariates plus the values of several pre-period
+outcomes, with a common practice being the pre-period mean plus a few
+specific-month lags), then optimize the weights <span
+class="math inline">\hat{\mathbf{w}}</span> over the pre-period so that
+the synthetic city is as close as possible to the treated city on these
+predictors, then use this set of weights to construct the synthetic path
+<span class="math inline">\sum_j \hat w_j Y_{jt}</span> over the full
+sample, with the treated city’s actual path minus it being the
+period-by-period gap <span class="math inline">\hat\tau_{1t}</span>.
+There is an interesting observation here: the weights that solve this
+constrained quadratic problem are often sparse, with only a few donors
+receiving nonzero weight. Note that this sparsity does not come from the
+<span class="math inline">\ell_1</span> shrinkage of LASSO: on the
+simplex, <span class="math inline">\sum_j |w_j| = \sum_j w_j = 1</span>
+is always constant, so the <span class="math inline">\ell_1</span> norm
+does not vary with the weights at all and provides no extra shrinkage.
+Its true source is the vertex geometry of the constraint polytope (the
+simplex), where the optimum of the quadratic objective tends to land on
+a low-dimensional face with only a few nonzero coordinates. This is good
+for interpretation: the synthetic city is stitched from a few nameable
+donors, more transparent than a twenty-city average. In R,
+<code>Synth</code> and <code>tidysynth</code> are common
+implementations, and <code>MSCMT</code> fixes some numerical issues in
+<code>Synth</code>’s optimization.</p>
+<h3 id="sc-inference-permutation-and-placebo">4.6 SC Inference:
+Permutation and Placebo</h3>
+<p>With only one treated unit, where does the standard error come from?
+The answer is that there is no analytic standard error, and SC inference
+rests entirely on permutation and placebo.</p>
+<p>The core is the in-space placebo. The procedure is to take each donor
+city in turn and pretend it is the “treated unit,” run SC on it, compute
+a gap curve, and obtain a whole family of “fake effects.” If the treated
+city truly has an effect, its post-period gap should look abnormally
+large within this family of fake effects. To quantify this
+“abnormality,” use the post/pre MSPE ratio:</p>
+<p><span class="math display">r_j =
+\frac{\mathrm{MSPE}^{\text{post}}_j}{\mathrm{MSPE}^{\text{pre}}_j},
+\qquad \mathrm{MSPE}^{\text{pre}}_j = \frac{1}{T_0}\sum_{t \leq
+T_0}\big(Y_{jt} - \hat Y_{jt}(0)\big)^2.</span></p>
+<p>The denominator is the pre-period fit error and the numerator is the
+post-period gap. A unit that truly has an effect fits well in the
+pre-period (small denominator) and has a large post-period gap (large
+numerator), so the ratio is large. Rank the treated unit’s <span
+class="math inline">r_1</span> among all units’ <span
+class="math inline">\{r_j\}</span>, and the permutation p-value is the
+fraction of units with a ratio no smaller than the treated unit’s, <span
+class="math inline">\hat p = \frac{1}{J+1}\sum_j \mathbf{1}[r_j \geq
+r_1]</span>. Placebos that fit poorly in the pre-period to begin with
+will have inflated ratios, and the standard practice is to drop them
+before comparing.</p>
+<p>Another diagnostic is the in-time placebo: assume the treatment date
+is some period before the actual reform and re-estimate. A design that
+holds up should show no gap around this fake, not-yet-reformed date. It
+tests not the size of the effect but the timing: if a gap appears before
+the actual reform, that says the fit is capturing something else, not
+the policy.</p>
+<h3 id="two-modern-extensions">4.7 Two Modern Extensions</h3>
+<p>SC has two modern extensions worth knowing, which this chapter treats
+only at the conceptual level.</p>
+<p>Augmented SC (Ben-Michael, Feller and Rothstein 2021) targets the
+case where the pre-period fit is imperfect. When the treated unit lies
+outside the donors’ convex hull and residual imbalance remains no matter
+how you stitch, plain SC is biased. ASC adds a bias-correction term: use
+an outcome model (commonly a ridge-penalized regression) to fit that
+residual imbalance and subtract it out of the estimate,</p>
+<p><span class="math display">\hat Y_{1t}^{\text{aug}}(0) = \sum_j \hat
+w_j Y_{jt} + \underbrace{\Big(\hat m_t(\mathbf{X}_1) - \sum_j \hat w_j
+\hat m_t(\mathbf{X}_j)\Big)}_{\text{correction for residual pre-period
+imbalance}}.</span></p>
+<p>The ridge version of ASC allows small negative weights and limited
+extrapolation, trading a little interpretability for smaller bias, the
+same idea as the bias-corrected matching of Chapter 9.</p>
+<p>Synthetic DiD (Arkhangelsky, Athey, Hirshberg, Imbens and Wager 2021)
+blends SC and DiD. It estimates two sets of weights at once: SC-style
+unit weights <span class="math inline">\hat\omega_j</span> (making
+donors match the treated unit’s pre-period trend) and time weights <span
+class="math inline">\hat\lambda_t</span> (giving larger weight to
+pre-periods that look more like the post-period), then runs a weighted
+two-way fixed effects regression:</p>
+<p><span class="math display">(\hat\tau, \cdot) = \arg\min_{\tau, \mu,
+\alpha_i, \beta_t}\sum_{i,t}\big(Y_{it} - \mu - \alpha_i - \beta_t -
+\tau D_{it}\big)^2\, \hat\omega_i\, \hat\lambda_t.</span></p>
+<p>Unlike pure SC, it keeps DiD-style unit fixed effects, so it does not
+require an exact match in levels, only parallel trends after weighting;
+unlike DiD, it does not give all donors and all periods equal weight. It
+is doubly robust and also supports formal jackknife/bootstrap inference.
+The three-way comparison of these two extensions is in the table
+below.</p>
+<div class="table-scroll">
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr>
+<th>Dimension</th>
+<th>Classic SC</th>
+<th>Augmented SC</th>
+<th>Synthetic DiD</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Weight constraint</td>
+<td>Nonnegative, sum to one</td>
+<td>Small negative weights, limited extrapolation</td>
+<td>Unit weights plus time weights</td>
+</tr>
+<tr>
+<td>Unit fixed effects</td>
+<td>None (requires level matching)</td>
+<td>None (with bias correction)</td>
+<td>Yes (relaxes level matching)</td>
+</tr>
+<tr>
+<td>When pre-period fit is poor</td>
+<td>Biased</td>
+<td>Corrected by outcome model</td>
+<td>Buffered by DiD structure</td>
+</tr>
+<tr>
+<td>Inference</td>
+<td>Permutation/placebo</td>
+<td>Permutation plus correction</td>
+<td>Analytic jackknife/bootstrap</td>
+</tr>
+<tr>
+<td>R implementation</td>
+<td>Synth / tidysynth</td>
+<td>augsynth</td>
+<td>synthdid</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>To sum up: RDD estimation moves from naive global regression to local
+linear, using local lines to remove boundary bias, choosing the
+bandwidth data-drivenly with IK/CCT, giving robust intervals with bias
+correction, and firmly avoiding high-order global polynomials; fuzzy RD
+is 2SLS at the cutoff, and you must recenter. SC estimation is a
+simplex-constrained minimum-distance weight optimization, its lifeline
+in the pre-period fit, and its inference can only lean on in-space and
+in-time placebos; augmented SC and synthetic DiD are two modern ways out
+when the fit is inadequate.</p>
+<h2 id="anchor-papers">5 Anchor Papers</h2>
+<p>A method only stands up when it lands in real research. Three anchor
+papers: one is the methodological history and classic vehicle of RDD,
+one is a leading RDD work in a platform setting, and one is the founding
+application of SC. Each is laid out along five elements, paper, method,
+data, results, and limitations, with the focus on how the assumptions
+get defended.</p>
+<h3 id="thistlethwaite-and-campbell-1960-and-lee-2008">5.1
+Thistlethwaite and Campbell (1960) and Lee (2008)</h3>
+<div class="case">
+<p>The starting point of the methodological history: Thistlethwaite and
+Campbell (1960) first proposed the discontinuity idea, using a
+scholarship award score cutoff to study the effect of the award on
+students’ later performance, the origin of RDD. The classic vehicle that
+turned it into a modern workhorse of causal identification is Lee
+(2008).</p>
+<p>Paper: Lee, D. S. (2008). Randomized experiments from non-random
+selection in U.S. House elections. Journal of Econometrics, 142(2),
+675-697. The question is incumbency advantage: does a party winning a
+House seat this time raise the probability that it wins again next
+time.</p>
+<p>Method: the difficulty is that “good candidates simply get more
+votes,” so directly comparing winners and losers mixes in candidate
+quality. Lee’s running variable is the Democratic vote share in the
+previous election, with cutoff 50%. Districts that narrowly won by just
+clearing 50% and those that narrowly lost by just missing it are nearly
+randomly comparable in voter composition and candidate quality, and who
+lands above the line and who below depends on the chance of the last few
+votes. Sharp RD: crossing 50% delivers the seat.</p>
+<p>Data: district-level data from U.S. House elections, vote share and
+next-election outcomes.</p>
+<p>Results: districts that narrowly won have a significantly higher win
+probability and vote share for that party in the next election, so
+incumbency advantage is a real causal effect, not merely a reflection of
+candidate quality. Lee also showed this design satisfies the RDD
+diagnostics: the density is smooth at 50% and predetermined covariates
+do not jump.</p>
+<p>Limitations: the estimate is local, identifying only the effect in
+evenly matched districts with vote shares close to 50%, and it does not
+extrapolate to safe, one-party-dominant districts. This is the classic
+embodiment of RDD’s strong internal validity and narrow external
+validity.</p>
+</div>
+<p>This paper’s defense strategy is the RDD template: not by piling
+control variables into a regression, but by arguing the thing itself,
+that “the threshold is nearly random,” with the density test and
+covariate smoothness as corroborating evidence.</p>
+<h3 id="luca-2016">5.2 Luca (2016)</h3>
+<div class="case">
+<p>Paper: Luca, M. (2016). Reviews, reputation, and revenue: The case of
+Yelp.com (Harvard Business School Working Paper 12-016). It is a leading
+RDD work in a platform setting, sharing a core with Aster’s badge case:
+the platform rounds a continuous rating to a discrete tier,
+manufacturing an artificial discontinuity.</p>
+<p>Method: Yelp rounds a restaurant’s average star rating to the nearest
+half star, so a restaurant with a true average of 4.24 displays as 4.0
+stars and one at 4.26 displays as 4.5 stars, two restaurants of almost
+identical underlying quality yet a half star apart in displayed rating.
+Luca uses this rounding threshold to run RDD, comparing the revenue of
+restaurants just rounded up to the higher half star with those just
+rounded down to the lower half star, separating the causal effect of
+“half a star more” from “quality was already higher.”</p>
+<p>Data: Yelp.com restaurant rating data matched to restaurant revenue
+records from the Washington State Department of Revenue.</p>
+<p>Results: holding underlying quality fixed, an extra half star brings
+about a 4.5% rise in that quarter’s revenue; more generally, each
+additional star raises revenue by about 5% to 9%. The effect
+concentrates in independent restaurants, while chains are almost
+unaffected by stars, because consumers already have stable expectations
+of chain brands and do not rely on reviews to judge quality.</p>
+<p>Limitations: the estimate is local to restaurants near the rounding
+thresholds; whether the effect extrapolates to other parts of the rating
+range requires extra assumptions; and the external validity of a single
+platform and single category is the usual caveat.</p>
+</div>
+<p>This paper demonstrates the huge opportunity for RDD in platform
+data: platform systems are full of rounding, thresholds, and tiering
+rules, and each one is a natural discontinuity waiting to be used for
+clean causal identification.</p>
+<h3 id="abadie-diamond-and-hainmueller-2010">5.3 Abadie, Diamond and
+Hainmueller (2010)</h3>
+<div class="case">
+<p>Paper: Abadie, A., Diamond, A., &amp; Hainmueller, J. (2010).
+Synthetic control methods for comparative case studies: Estimating the
+effect of California’s tobacco control program. Journal of the American
+Statistical Association, 105(490), 493-505. It is the founding
+application of the synthetic control method and the direct prototype of
+this chapter’s SC line.</p>
+<p>Method: in 1988 California passed Proposition 99, raising the
+cigarette excise tax by 25 cents per pack along with a tobacco control
+program. To estimate this policy’s effect on per-capita cigarette sales,
+the difficulty is that there is only one treated unit, California, and
+no single state can serve as California’s counterfactual on its own.
+SC’s solution is to use a convex combination of other states to
+synthesize a “synthetic California,” making it reproduce California’s
+per-capita cigarette sales and several predictors as closely as possible
+before 1988, so that after the policy the gap that opens between
+synthetic California and real California is the policy effect.</p>
+<p>Data: a state-level panel of U.S. states from 1970 to 2000,
+per-capita cigarette sales and a set of predictors. The donor pool takes
+the remaining U.S. states, and after excluding states that during the
+same period launched their own large tobacco control programs or sharply
+raised cigarette taxes (such as Massachusetts, Arizona, Oregon,
+Florida), yields 38 states.</p>
+<p>Results: synthetic California is a weighted combination of a few
+states, and after the policy real California’s per-capita cigarette
+sales stay persistently below synthetic California, about 26 packs lower
+(per person per year) by 2000. Using the in-space placebo, taking each
+donor state in turn as the treated unit, California’s gap looks
+abnormally large within the whole placebo distribution, and permutation
+inference is given on that basis.</p>
+<p>Limitations: with only one treated unit, inference rests entirely on
+the permutation logic, with no analytic standard error; and the
+credibility of the conclusion hinges on the quality of the pre-period
+fit and the cleanliness of the donor pool.</p>
+</div>
+<p>This paper set up SC’s entire operational workflow,
+convex-combination weights, pre-period fit, and in-space placebo
+inference, and nearly all later SC studies follow this template,
+including the Aster case in Section 6.</p>
+<h2 id="a-full-walkthrough-on-aster-data">6 A Full Walkthrough on Aster
+Data</h2>
+<p>Now run the earlier tools end to end on Aster’s two design lines. The
+code below uses R 4.5.3, and every number cited in the text comes from
+the actual run output of this code. RDD uses <code>rdrobust</code> and
+<code>rddensity</code>, and SC uses <code>tidysynth</code>.</p>
+<h3 id="the-data-generating-process-for-rdd">6.1 The Data-Generating
+Process for RDD</h3>
+<p>The design parameters are as follows: fix <code>set.seed(101)</code>,
+with <span class="math inline">N = 12000</span> sellers. The running
+variable is a continuous quality score drawn from a smooth truncated
+normal, guaranteeing the density is continuous at 80 (that is, no
+manipulation). <span class="math inline">Y(0)</span> is a smooth
+nonlinear function of score, rising steeply with score (high-scoring
+sellers simply sell more), with a sinusoidal wiggle that is smooth at
+the cutoff yet forces a global polynomial to bend across the whole
+range. The true sharp jump is 0.20.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">101</span>); N <span class="ot">&lt;-</span> <span class="dv">12000</span>; c_cut <span class="ot">&lt;-</span> <span class="dv">80</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>score <span class="ot">&lt;-</span> <span class="fu">pmin</span>(<span class="fu">pmax</span>(<span class="fu">rnorm</span>(N, <span class="dv">74</span>, <span class="dv">11</span>), <span class="dv">45</span>), <span class="dv">100</span>)     <span class="co"># smooth truncation, density continuous at cutoff</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>s     <span class="ot">&lt;-</span> (score <span class="sc">-</span> c_cut) <span class="sc">/</span> <span class="dv">10</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>mu0   <span class="ot">&lt;-</span> <span class="fl">5.60</span> <span class="sc">+</span> <span class="fl">0.95</span> <span class="sc">*</span> s <span class="sc">+</span> <span class="fl">0.20</span> <span class="sc">*</span> s<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> <span class="fl">0.50</span> <span class="sc">*</span> <span class="fu">sin</span>(<span class="dv">4</span> <span class="sc">*</span> s)  <span class="co"># Y(0): rises with score, smooth wiggle</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>tau_true <span class="ot">&lt;-</span> <span class="fl">0.20</span>                                   <span class="co"># true jump at cutoff</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>D_sharp  <span class="ot">&lt;-</span> <span class="fu">as.integer</span>(score <span class="sc">&gt;=</span> c_cut)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>y_sharp  <span class="ot">&lt;-</span> mu0 <span class="sc">+</span> tau_true <span class="sc">*</span> D_sharp <span class="sc">+</span> <span class="fu">rnorm</span>(N, <span class="dv">0</span>, <span class="fl">0.30</span>)</span></code></pre></div>
+<p>The fuzzy variant lets the badge probability jump from 0.10 to 0.85
+at the threshold (not from 0 to 1), with the structural badge effect
+still the same 0.20:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>p_badge <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(score <span class="sc">&gt;=</span> c_cut, <span class="fl">0.85</span>, <span class="fl">0.10</span>)      <span class="co"># badge prob jumps at 80, not 0 to 1</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>D_fuzzy <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(N, <span class="dv">1</span>, p_badge)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>y_fuzzy <span class="ot">&lt;-</span> mu0 <span class="sc">+</span> tau_true <span class="sc">*</span> D_fuzzy <span class="sc">+</span> <span class="fu">rnorm</span>(N, <span class="dv">0</span>, <span class="fl">0.30</span>)</span></code></pre></div>
+<p>The naive “badged vs. unbadged” difference is 1.891, about 9.5 times
+the truth of 0.200, confirming the absurdly high number from Section 1,
+of which nearly nine-tenths is selection bias.</p>
+<h3
+id="rdd-estimation-local-linear-bandwidth-polynomials-density-fuzzy">6.2
+RDD Estimation: Local Linear, Bandwidth, Polynomials, Density,
+Fuzzy</h3>
+<p>Sharp RD uses <code>rdrobust</code>’s local-linear with the CCT
+bandwidth:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(rdrobust); <span class="fu">library</span>(rddensity)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>rd <span class="ot">&lt;-</span> <span class="fu">rdrobust</span>(<span class="at">y =</span> y_sharp, <span class="at">x =</span> score, <span class="at">c =</span> <span class="dv">80</span>,</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>               <span class="at">kernel =</span> <span class="st">&quot;triangular&quot;</span>, <span class="at">p =</span> <span class="dv">1</span>, <span class="at">bwselect =</span> <span class="st">&quot;mserd&quot;</span>)</span></code></pre></div>
+<p>The conventional point estimate is 0.200, the conventional 95%
+interval is [0.133, 0.267]; the bias-corrected robust 95% interval is
+[0.111, 0.261], with p-value 1.26e-06. The CCT/MSE-optimal bandwidth is
+1.876, meaning it uses only sellers between 78.124 and 81.876, with
+effective sample sizes of 695 and 689 on the two sides. Local linear
+lands cleanly on the truth of 0.200, while the naive comparison of 1.891
+is nearly ten times too high.</p>
+<p>One reminder: in this DGP the badge effect is the same 0.20 for all
+sellers (<span class="math inline">\tau_i</span> does not vary with
+score), so here the local effect at the cutoff happens to equal the ATE
+over everyone, and <span class="math inline">\tau_{\mathrm{RD}}</span>
+coincides numerically with the ATE, which is only a convenience of the
+simulation for clean reconciliation. In the real world the effect almost
+always varies with score, and then what local-linear can cleanly recover
+is still only the effect at that one point, the cutoff, not the average
+effect of giving the badge to a seller at any arbitrary score. The local
+nature emphasized in Section 3.3 shows up numerically only in that case
+of heterogeneous effects.</p>
+<p>Bandwidth sensitivity is a mandatory robustness check. Re-estimate at
+half and double the bandwidth:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>rd_half <span class="ot">&lt;-</span> <span class="fu">rdrobust</span>(<span class="at">y =</span> y_sharp, <span class="at">x =</span> score, <span class="at">c =</span> <span class="dv">80</span>, <span class="at">kernel =</span> <span class="st">&quot;triangular&quot;</span>, <span class="at">p =</span> <span class="dv">1</span>, <span class="at">h =</span> <span class="fl">1.876</span> <span class="sc">/</span> <span class="dv">2</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>rd_dbl  <span class="ot">&lt;-</span> <span class="fu">rdrobust</span>(<span class="at">y =</span> y_sharp, <span class="at">x =</span> score, <span class="at">c =</span> <span class="dv">80</span>, <span class="at">kernel =</span> <span class="st">&quot;triangular&quot;</span>, <span class="at">p =</span> <span class="dv">1</span>, <span class="at">h =</span> <span class="fl">1.876</span> <span class="sc">*</span> <span class="dv">2</span>)</span></code></pre></div>
+<p>The half bandwidth gives 0.186 and the double bandwidth gives 0.237,
+both floating modestly around the truth, showing the estimate is
+insensitive to the bandwidth, a good sign.</p>
+<p>Now demonstrate why you cannot use a high-order global polynomial.
+Rescale the running variable to <span class="math inline">[-1, 1]</span>
+and use raw powers (so that all powers are zero at the cutoff and the
+coefficient on <span class="math inline">D</span> is exactly the jump),
+fitting fourth-, sixth-, and eighth-order:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>sc_c <span class="ot">&lt;-</span> (score <span class="sc">-</span> <span class="dv">80</span>) <span class="sc">/</span> <span class="fu">max</span>(<span class="fu">abs</span>(score <span class="sc">-</span> <span class="dv">80</span>))        <span class="co"># rescale to [-1,1]</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>poly_jump <span class="ot">&lt;-</span> <span class="cf">function</span>(k) <span class="fu">coef</span>(<span class="fu">lm</span>(y_sharp <span class="sc">~</span> D_sharp <span class="sc">*</span> <span class="fu">poly</span>(sc_c, k, <span class="at">raw =</span> <span class="cn">TRUE</span>)))[<span class="st">&quot;D_sharp&quot;</span>]</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">poly_jump</span>(<span class="dv">4</span>); <span class="fu">poly_jump</span>(<span class="dv">6</span>); <span class="fu">poly_jump</span>(<span class="dv">8</span>)</span></code></pre></div>
+<p>The three estimates are 0.556, -0.215, 0.254, swinging violently,
+with the sixth-order giving a meaningless negative number. This is
+Gelman-Imbens’s warning made flesh: change the order and the estimate at
+the cutoff flips upside down, and can conjure a reversed fake jump out
+of nothing.</p>
+<p>The manipulation test uses <code>rddensity</code>:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rddensity</span>(<span class="at">X =</span> score, <span class="at">c =</span> <span class="dv">80</span>)                        <span class="co"># manipulation test</span></span></code></pre></div>
+<p>The p-value of the density jump is 0.250 (T = 1.151), far from
+significant, so the density is continuous at 80, there is no evidence
+that sellers pushed their scores over the line, and no-manipulation
+holds up.</p>
+<p>Last is fuzzy RD, instrumenting the badge as an imperfect
+treatment:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>rd_fz <span class="ot">&lt;-</span> <span class="fu">rdrobust</span>(<span class="at">y =</span> y_fuzzy, <span class="at">x =</span> score, <span class="at">c =</span> <span class="dv">80</span>, <span class="at">fuzzy =</span> D_fuzzy,</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>                  <span class="at">kernel =</span> <span class="st">&quot;triangular&quot;</span>, <span class="at">p =</span> <span class="dv">1</span>, <span class="at">bwselect =</span> <span class="st">&quot;mserd&quot;</span>)</span></code></pre></div>
+<p>The first-stage jump estimate is 0.749 (truth 0.750), so crossing the
+threshold lifts the probability of getting the badge by about
+three-quarters. The reduced-form jump is 0.170. The hand-computed Wald
+ratio is <span class="math inline">0.170 / 0.749 = 0.227</span>.
+<code>rdrobust</code>’s fuzzy-RD LATE point estimate is 0.241, with
+robust 95% interval [0.071, 0.236]. Here there is a detail to be honest
+about: the fuzzy estimate (0.241) is a bit higher than the sharp one
+(0.200), because fuzzy’s auto-selected bandwidth (3.333) is wider than
+sharp’s (1.876), sweeping in more of the wiggly region and picking up a
+bit of curvature bias; also note that the conventional point estimate
+0.241 falls just outside the robust interval’s upper bound 0.236, which
+is exactly the behavior Section 4.2 described of the robust interval
+being centered on the bias-corrected estimate rather than the
+conventional point estimate, not an error. Overall, whether the
+hand-computed ratio 0.227 or <code>rdrobust</code>’s local-linear fuzzy
+estimate, both land near the true structural effect of 0.20.</p>
+<div class="intuition">
+<p>This bit of roughness in fuzzy RD is not an error but its normal
+state. Sharp RD only needs to estimate one jump in the outcome, while
+fuzzy RD must estimate two jumps, in the outcome and in treatment, and
+then divide them, and the auto-selected bandwidth is usually wider too,
+so the point estimate is more easily pushed off the truth by curvature
+and noise. As for the conventional point estimate falling outside the
+robust interval, that too is by design: the robust interval is centered
+on the bias-corrected estimate and should not be expected to hold the
+conventional point estimate neatly inside. When reading a fuzzy RD
+conclusion, focus on the robust interval centered on the bias-corrected
+estimate, not on the last few decimals of the conventional point
+estimate. Fuzzy RD on real data mostly looks just like this.</p>
+</div>
+<h3 id="the-data-generating-process-for-sc">6.3 The Data-Generating
+Process for SC</h3>
+<p>The design parameters are as follows: fix
+<code>set.seed(12021)</code>, with 20 donor metros plus 1 treated metro
+(Aster-Metro), 36 months, and the reform launching in month 25, the
+first month after the text’s <span class="math inline">T_0</span>, so
+the post-period is months 25 through 36, 12 months in all (the
+<code>T0</code> variable in the code below refers to this first treated
+month, 25). The data are generated by a factor model, two common factors
+plus city-specific loadings, with very small noise (<span
+class="math inline">\sigma = 0.02</span>). The treated city’s loadings
+are a convex combination of four donors’ loadings (numbers 3, 7, 12,
+18), with weights 0.35/0.30/0.20/0.15, which guarantees it lies inside
+the donors’ convex hull and SC can reproduce its factor exposure.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">12021</span>)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>n_donors <span class="ot">&lt;-</span> <span class="dv">20</span>; Tt <span class="ot">&lt;-</span> <span class="dv">36</span>; T0 <span class="ot">&lt;-</span> <span class="dv">25</span>; t_idx <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">:</span>Tt</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>f1 <span class="ot">&lt;-</span> <span class="fl">2.0</span> <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> <span class="fu">exp</span>(<span class="sc">-</span>t_idx <span class="sc">/</span> <span class="dv">12</span>)) <span class="sc">+</span> <span class="fl">0.05</span> <span class="sc">*</span> t_idx  <span class="co"># common factor 1: platform adoption trend (concave)</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>f2 <span class="ot">&lt;-</span> <span class="fu">sin</span>(<span class="dv">2</span> <span class="sc">*</span> pi <span class="sc">*</span> t_idx <span class="sc">/</span> <span class="dv">12</span>) <span class="sc">+</span> <span class="fl">0.02</span> <span class="sc">*</span> t_idx       <span class="co"># common factor 2: seasonal term</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>tau_path <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(t_idx <span class="sc">&gt;=</span> T0, <span class="fl">0.12</span> <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> <span class="fu">exp</span>(<span class="sc">-</span>(t_idx <span class="sc">-</span> T0 <span class="sc">+</span> <span class="dv">1</span>) <span class="sc">/</span> <span class="dv">3</span>)), <span class="dv">0</span>)  <span class="co"># true effect: smooth ramp</span></span></code></pre></div>
+<p>Because the cities have different loadings and their trends are
+naturally non-parallel, DiD’s parallel trends fails: the treated city’s
+pre-period slope is 0.131 and the donor average is 0.117. The naive
+two-period, two-group DiD (treated city against the twenty-city simple
+average) gives 0.244, while the true post-period average effect is only
+0.095, about 2.6 times too high. The wrong-looking 0.244 from Section 1
+is confirmed here.</p>
+<h3 id="sc-estimation-weights-fit-and-the-gap">6.4 SC Estimation:
+Weights, Fit, and the Gap</h3>
+<p>Build the synthetic control with <code>tidysynth</code>, taking as
+predictors the pre-period mean plus the lags at months 6, 12, 18, and
+24, with weights optimized over months 1 through 24:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidysynth)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>sc <span class="ot">&lt;-</span> panel <span class="sc">%&gt;%</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">synthetic_control</span>(<span class="at">outcome =</span> log_gmv, <span class="at">unit =</span> metro, <span class="at">time =</span> month,</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>                    <span class="at">i_unit =</span> <span class="st">&quot;Aster-Metro&quot;</span>, <span class="at">i_time =</span> <span class="dv">25</span>, <span class="at">generate_placebos =</span> <span class="cn">TRUE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">generate_predictor</span>(<span class="at">time_window =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">24</span>, <span class="at">mean_pre =</span> <span class="fu">mean</span>(log_gmv)) <span class="sc">%&gt;%</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">generate_predictor</span>(<span class="at">time_window =</span> <span class="dv">6</span>,  <span class="at">gmv_m06 =</span> log_gmv) <span class="sc">%&gt;%</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">generate_predictor</span>(<span class="at">time_window =</span> <span class="dv">12</span>, <span class="at">gmv_m12 =</span> log_gmv) <span class="sc">%&gt;%</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">generate_predictor</span>(<span class="at">time_window =</span> <span class="dv">18</span>, <span class="at">gmv_m18 =</span> log_gmv) <span class="sc">%&gt;%</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">generate_predictor</span>(<span class="at">time_window =</span> <span class="dv">24</span>, <span class="at">gmv_m24 =</span> log_gmv) <span class="sc">%&gt;%</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">generate_weights</span>(<span class="at">optimization_window =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">24</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">generate_control</span>()</span></code></pre></div>
+<p>The pre-period RMSPE is 0.017, hugging the 0.02 noise floor, an
+excellent fit, so the loading-matching argument holds. The post-period
+average gap is 0.086, which is SC’s effect estimate, already quite close
+to the truth of 0.095 and far better than the naive DiD’s 0.244; the
+last month’s gap is 0.103, against the truth of 0.118. The donors with
+the largest weights in the synthetic city are Donor-10 (0.240), Donor-02
+(0.155), Donor-04 (0.108), Donor-08 (0.059), Donor-12 (0.039), and
+Donor-13 (0.037).</p>
+<div class="warning">
+<p>A teaching point that must be spelled out: the weights SC estimates
+do not correspond to the four anchors used to generate the data (numbers
+3, 7, 12, 18). The reason is that with only two factors plus a level,
+many different convex combinations can reproduce the treated city’s
+factor exposure, so the weights are not unique. This is not a bug. What
+SC delivers is a good pre-period fit and a credible counterfactual, not
+an exact recovery of the weights, so do not read the weights as “the
+true control group.”</p>
+</div>
+<h3 id="sc-placebo-inference">6.5 SC Placebo Inference</h3>
+<p>Inference leans on placebos. The in-space placebo takes each donor in
+turn as the treated unit and computes the post/pre MSPE ratio, and the
+treated city’s ratio reaches 32.777, ranking first among all 21 units,
+with permutation p-value 0.048. Note that 0.048 is the strongest result
+21 units can give (<span class="math inline">1/21 = 0.048</span>),
+meaning the treated city has the single largest MSPE ratio of all. For
+inference with a single treated unit, all the force rests on this
+ranking.</p>
+<p>The in-time placebo assumes the reform date is 8 months before the
+actual reform and re-estimates:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>sc_time <span class="ot">&lt;-</span> panel <span class="sc">%&gt;%</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">synthetic_control</span>(<span class="at">outcome =</span> log_gmv, <span class="at">unit =</span> metro, <span class="at">time =</span> month,</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>                    <span class="at">i_unit =</span> <span class="st">&quot;Aster-Metro&quot;</span>, <span class="at">i_time =</span> <span class="dv">25</span> <span class="sc">-</span> <span class="dv">8</span>, <span class="at">generate_placebos =</span> <span class="cn">FALSE</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">generate_predictor</span>(<span class="at">time_window =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">16</span>, <span class="at">mean_pre =</span> <span class="fu">mean</span>(log_gmv)) <span class="sc">%&gt;%</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">generate_predictor</span>(<span class="at">time_window =</span> <span class="dv">6</span>,  <span class="at">gmv_m06 =</span> log_gmv) <span class="sc">%&gt;%</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">generate_predictor</span>(<span class="at">time_window =</span> <span class="dv">12</span>, <span class="at">gmv_m12 =</span> log_gmv) <span class="sc">%&gt;%</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">generate_weights</span>(<span class="at">optimization_window =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">16</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">generate_control</span>()</span></code></pre></div>
+<p>In the window after this fake, not-yet-reformed date and before the
+actual reform, the average gap is only -0.019, about zero, showing that
+the gap really does open only at the actual reform date and is not an
+artifact of the design.</p>
+<figure>
+<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' viewBox='0 0 518.40 460.80' role="img" aria-label="Synthetic control for Aster’s single-city fee reform. Top panel: the actual log-GMV trajectory of the treated city Aster-Metro (orange) versus the synthetic city (blue dashed), with a vertical line marking the reform date T_0; before the reform the two lines nearly overlap (pre-period RMSPE 0.017), and after the reform a gap opens. Bottom panel: gap plot, where the treated city’s gap (orange) hugs zero before the reform and opens to about 0.10 after, with the gray background lines the in-space placebo gaps from taking each donor in turn as the treated unit (placebos whose pre-period fit is more than five times worse than the treated city’s have been dropped per standard practice), and the treated city’s gap looks abnormally large within the whole placebo family." style="max-width:100%;height:auto;display:block;margin:0 auto">
+<g class='svglite'>
+<defs>
+  <style type='text/css'><![CDATA[
+    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {
+      fill: none;
+      stroke: #000000;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-miterlimit: 10.00;
+    }
+    .svglite text {
+      white-space: pre;
+    }
+    .svglite g.glyphgroup path {
+      fill: inherit;
+      stroke: none;
+    }
+  ]]></style>
+</defs>
+<rect width='100%' height='100%' style='stroke: none; fill: #FFFFFF;'/>
+<defs>
+  <clipPath id='g2_cpMC4wMHw1MTguNDB8MC4wMHw0NjAuODA='>
+    <rect x='0.00' y='0.00' width='518.40' height='460.80' />
+  </clipPath>
+</defs>
+<g clip-path='url(#g2_cpMC4wMHw1MTguNDB8MC4wMHw0NjAuODA=)'>
+<rect x='0.00' y='0.00' width='518.40' height='460.80' style='stroke-width: 1.16; stroke: none; fill: #FFFFFF;' />
+</g>
+<defs>
+  <clipPath id='g2_cpNTMuMjh8NTA2LjQ0fDcxLjE3fDQyMC40Nw=='>
+    <rect x='53.28' y='71.17' width='453.16' height='349.31' />
+  </clipPath>
+</defs>
+<g clip-path='url(#g2_cpNTMuMjh8NTA2LjQ0fDcxLjE3fDQyMC40Nw==)'>
+</g>
+<g clip-path='url(#g2_cpMC4wMHw1MTguNDB8MC4wMHw0NjAuODA=)'>
+</g>
+<defs>
+  <clipPath id='g2_cpNS45OHw1MTIuNDJ8NS45OHwyNDMuOTQ='>
+    <rect x='5.98' y='5.98' width='506.44' height='237.96' />
+  </clipPath>
+</defs>
+<g clip-path='url(#g2_cpNS45OHw1MTIuNDJ8NS45OHwyNDMuOTQ=)'>
+<rect x='5.98' y='5.98' width='506.44' height='237.96' style='stroke-width: 1.16; stroke: none; fill: #FFFFFF;' />
+</g>
+<g clip-path='url(#g2_cpMC4wMHw1MTguNDB8MC4wMHw0NjAuODA=)'>
+</g>
+<defs>
+  <clipPath id='g2_cpNS45OHw1MTIuNDJ8MjQzLjk0fDQ1NC44Mg=='>
+    <rect x='5.98' y='243.94' width='506.44' height='210.88' />
+  </clipPath>
+</defs>
+<g clip-path='url(#g2_cpNS45OHw1MTIuNDJ8MjQzLjk0fDQ1NC44Mg==)'>
+<rect x='5.98' y='243.94' width='506.44' height='210.88' style='stroke-width: 1.16; stroke: none; fill: #FFFFFF;' />
+</g>
+<g clip-path='url(#g2_cpMC4wMHw1MTguNDB8MC4wMHw0NjAuODA=)'>
+</g>
+<defs>
+  <clipPath id='g2_cpNTMuMjh8NTA2LjQ0fDcxLjE3fDIyMy43MA=='>
+    <rect x='53.28' y='71.17' width='453.16' height='152.53' />
+  </clipPath>
+</defs>
+<g clip-path='url(#g2_cpNTMuMjh8NTA2LjQ0fDcxLjE3fDIyMy43MA==)'>
+<polyline points='53.28,191.14 506.44,191.14 ' style='stroke-width: 1.16; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='53.28,156.34 506.44,156.34 ' style='stroke-width: 1.16; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='53.28,121.55 506.44,121.55 ' style='stroke-width: 1.16; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='53.28,86.75 506.44,86.75 ' style='stroke-width: 1.16; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='62.11,223.70 62.11,71.17 ' style='stroke-width: 1.16; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='179.82,223.70 179.82,71.17 ' style='stroke-width: 1.16; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='297.52,223.70 297.52,71.17 ' style='stroke-width: 1.16; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='415.22,223.70 415.22,71.17 ' style='stroke-width: 1.16; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='73.88,216.77 85.65,211.15 97.42,204.16 109.19,197.76 120.96,188.80 132.73,180.40 144.50,173.83 156.28,166.89 168.05,161.64 179.82,156.94 191.59,153.89 203.36,151.09 215.13,149.36 226.90,146.75 238.67,143.72 250.44,139.81 262.21,134.41 273.98,130.18 285.75,123.14 297.52,120.88 309.29,114.88 321.06,113.57 332.83,111.32 344.60,110.25 356.37,109.60 368.14,108.67 379.91,103.76 391.68,100.88 403.45,98.27 415.22,93.26 426.99,87.47 438.77,83.66 450.54,82.29 462.31,79.52 474.08,78.10 485.85,79.00 ' style='stroke-width: 2.35; stroke: #D95F0E; stroke-linecap: butt;' />
+<polyline points='73.88,216.49 85.65,210.76 97.42,203.98 109.19,196.91 120.96,188.78 132.73,181.08 144.50,173.50 156.28,166.51 168.05,161.17 179.82,156.59 191.59,153.71 203.36,151.44 215.13,149.24 226.90,146.61 238.67,143.92 250.44,139.07 262.21,134.24 273.98,129.49 285.75,123.84 297.52,119.19 309.29,115.33 321.06,113.40 332.83,111.70 344.60,111.21 356.37,110.41 368.14,109.53 379.91,107.63 391.68,104.85 403.45,100.20 415.22,95.79 426.99,91.50 438.77,87.65 450.54,84.95 462.31,83.06 474.08,82.32 485.85,82.57 ' style='stroke-width: 2.35; stroke: #2C7FB8; stroke-dasharray: 6.26,6.26; stroke-linecap: butt;' />
+<line x1='356.37' y1='223.70' x2='356.37' y2='71.17' style='stroke-width: 1.16; stroke: #666666; stroke-dasharray: 6.21,6.21; stroke-linecap: butt;' />
+<text x='350.49' y='220.02' text-anchor='end' style='font-size: 9.10px;fill: #4D4D4D; font-family: "Arial";' textLength='41.48px' lengthAdjust='spacingAndGlyphs'>fee reform</text>
+</g>
+<g clip-path='url(#g2_cpMC4wMHw1MTguNDB8MC4wMHw0NjAuODA=)'>
+<text x='47.90' y='194.57' text-anchor='end' style='font-size: 9.60px;fill: #4D4D4D; font-family: "Arial";' textLength='5.33px' lengthAdjust='spacingAndGlyphs'>6</text>
+<text x='47.90' y='159.78' text-anchor='end' style='font-size: 9.60px;fill: #4D4D4D; font-family: "Arial";' textLength='5.33px' lengthAdjust='spacingAndGlyphs'>7</text>
+<text x='47.90' y='124.98' text-anchor='end' style='font-size: 9.60px;fill: #4D4D4D; font-family: "Arial";' textLength='5.33px' lengthAdjust='spacingAndGlyphs'>8</text>
+<text x='47.90' y='90.19' text-anchor='end' style='font-size: 9.60px;fill: #4D4D4D; font-family: "Arial";' textLength='5.33px' lengthAdjust='spacingAndGlyphs'>9</text>
+<text x='62.11' y='235.95' text-anchor='middle' style='font-size: 9.60px;fill: #4D4D4D; font-family: "Arial";' textLength='5.33px' lengthAdjust='spacingAndGlyphs'>0</text>
+<text x='179.82' y='235.95' text-anchor='middle' style='font-size: 9.60px;fill: #4D4D4D; font-family: "Arial";' textLength='10.66px' lengthAdjust='spacingAndGlyphs'>10</text>
+<text x='297.52' y='235.95' text-anchor='middle' style='font-size: 9.60px;fill: #4D4D4D; font-family: "Arial";' textLength='10.66px' lengthAdjust='spacingAndGlyphs'>20</text>
+<text x='415.22' y='235.95' text-anchor='middle' style='font-size: 9.60px;fill: #4D4D4D; font-family: "Arial";' textLength='10.66px' lengthAdjust='spacingAndGlyphs'>30</text>
+<text transform='translate(20.55,147.43) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Arial";' textLength='46.67px' lengthAdjust='spacingAndGlyphs'>log GMV</text>
+<line x1='160.24' y1='44.60' x2='174.06' y2='44.60' style='stroke-width: 2.35; stroke: #D95F0E; stroke-linecap: butt;' />
+<line x1='288.02' y1='44.60' x2='301.84' y2='44.60' style='stroke-width: 2.35; stroke: #2C7FB8; stroke-dasharray: 6.26,6.26; stroke-linecap: butt;' />
+<text x='181.77' y='48.03' style='font-size: 9.60px; font-family: "Arial";' textLength='98.55px' lengthAdjust='spacingAndGlyphs'>Aster-Metro (observed)</text>
+<text x='309.55' y='48.03' style='font-size: 9.60px; font-family: "Arial";' textLength='91.67px' lengthAdjust='spacingAndGlyphs'>Synthetic Aster-Metro</text>
+<text x='53.28' y='21.26' style='font-size: 13.00px; font-weight: bold; font-family: "Arial";' textLength='231.19px' lengthAdjust='spacingAndGlyphs'>Treated metro vs its synthetic control</text>
+</g>
+<defs>
+  <clipPath id='g2_cpNTMuMjh8NTA2LjQ0fDI2Ny45NHw0MjAuNDc='>
+    <rect x='53.28' y='267.94' width='453.16' height='152.53' />
+  </clipPath>
+</defs>
+<g clip-path='url(#g2_cpNTMuMjh8NTA2LjQ0fDI2Ny45NHw0MjAuNDc=)'>
+<polyline points='53.28,417.61 506.44,417.61 ' style='stroke-width: 1.16; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='53.28,391.30 506.44,391.30 ' style='stroke-width: 1.16; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='53.28,364.98 506.44,364.98 ' style='stroke-width: 1.16; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='53.28,338.67 506.44,338.67 ' style='stroke-width: 1.16; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='53.28,312.35 506.44,312.35 ' style='stroke-width: 1.16; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='53.28,286.03 506.44,286.03 ' style='stroke-width: 1.16; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='62.11,420.47 62.11,267.94 ' style='stroke-width: 1.16; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='179.82,420.47 179.82,267.94 ' style='stroke-width: 1.16; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='297.52,420.47 297.52,267.94 ' style='stroke-width: 1.16; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='415.22,420.47 415.22,267.94 ' style='stroke-width: 1.16; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='73.88,406.77 85.65,413.54 97.42,388.29 109.19,377.82 120.96,377.07 132.73,347.45 144.50,357.17 156.28,327.10 168.05,351.80 179.82,341.72 191.59,356.01 203.36,339.86 215.13,343.66 226.90,340.25 238.67,345.14 250.44,321.21 262.21,350.45 273.98,329.68 285.75,333.91 297.52,298.67 309.29,321.39 321.06,302.20 332.83,287.30 344.60,327.71 356.37,312.03 368.14,320.41 379.91,352.33 391.68,348.19 403.45,311.64 415.22,299.89 426.99,296.79 438.77,283.72 450.54,307.86 462.31,290.16 474.08,291.56 485.85,314.29 ' style='stroke-width: 0.85; stroke: #BFBFBF; stroke-opacity: 0.80; stroke-linecap: butt;' />
+<polyline points='73.88,353.34 85.65,325.58 97.42,339.56 109.19,335.51 120.96,339.83 132.73,336.31 144.50,359.84 156.28,365.56 168.05,357.59 179.82,356.18 191.59,358.92 203.36,318.98 215.13,344.64 226.90,320.28 238.67,335.64 250.44,330.44 262.21,333.28 273.98,329.60 285.75,356.90 297.52,357.95 309.29,354.73 321.06,353.55 332.83,338.97 344.60,340.25 356.37,342.79 368.14,345.27 379.91,327.45 391.68,329.32 403.45,323.14 415.22,329.54 426.99,384.86 438.77,353.22 450.54,356.11 462.31,355.03 474.08,340.71 485.85,344.38 ' style='stroke-width: 0.85; stroke: #BFBFBF; stroke-opacity: 0.80; stroke-linecap: butt;' />
+<polyline points='73.88,371.96 85.65,375.41 97.42,373.91 109.19,371.48 120.96,344.05 132.73,340.71 144.50,335.09 156.28,293.82 168.05,285.95 179.82,306.51 191.59,333.98 203.36,360.58 215.13,347.02 226.90,365.86 238.67,387.02 250.44,343.96 262.21,354.09 273.98,347.52 285.75,307.10 297.52,298.21 309.29,282.95 321.06,283.02 332.83,309.22 344.60,331.89 356.37,345.41 368.14,375.42 379.91,367.83 391.68,370.00 403.45,357.22 415.22,336.49 426.99,307.61 438.77,295.71 450.54,284.18 462.31,293.17 474.08,304.26 485.85,314.63 ' style='stroke-width: 0.85; stroke: #BFBFBF; stroke-opacity: 0.80; stroke-linecap: butt;' />
+<polyline points='73.88,342.87 85.65,344.60 97.42,341.34 109.19,351.59 120.96,339.02 132.73,328.37 144.50,343.77 156.28,344.44 168.05,345.65 179.82,343.88 191.59,341.47 203.36,333.46 215.13,340.50 226.90,340.87 238.67,335.54 250.44,349.75 262.21,341.26 273.98,349.09 285.75,328.07 297.52,364.15 309.29,331.93 321.06,341.37 332.83,333.03 344.60,324.10 356.37,326.42 368.14,325.67 379.91,280.24 391.68,278.57 403.45,309.44 415.22,300.27 426.99,277.58 438.77,278.25 450.54,298.43 462.31,285.12 474.08,274.88 485.85,284.60 ' style='stroke-width: 2.56; stroke: #D95F0E; stroke-linecap: butt;' />
+<line x1='53.28' y1='338.67' x2='506.44' y2='338.67' style='stroke-width: 1.16; stroke: #666666; stroke-linecap: butt;' />
+<line x1='356.37' y1='420.47' x2='356.37' y2='267.94' style='stroke-width: 1.16; stroke: #666666; stroke-dasharray: 6.21,6.21; stroke-linecap: butt;' />
+<text x='362.26' y='278.13' style='font-size: 9.10px;fill: #D95F0E; font-family: "Arial";' textLength='78.53px' lengthAdjust='spacingAndGlyphs'>treated gap = effect</text>
+</g>
+<g clip-path='url(#g2_cpMC4wMHw1MTguNDB8MC4wMHw0NjAuODA=)'>
+<text x='47.90' y='421.05' text-anchor='end' style='font-size: 9.60px;fill: #4D4D4D; font-family: "Arial";' textLength='21.84px' lengthAdjust='spacingAndGlyphs'>-0.15</text>
+<text x='47.90' y='394.73' text-anchor='end' style='font-size: 9.60px;fill: #4D4D4D; font-family: "Arial";' textLength='21.84px' lengthAdjust='spacingAndGlyphs'>-0.10</text>
+<text x='47.90' y='368.42' text-anchor='end' style='font-size: 9.60px;fill: #4D4D4D; font-family: "Arial";' textLength='21.84px' lengthAdjust='spacingAndGlyphs'>-0.05</text>
+<text x='47.90' y='342.10' text-anchor='end' style='font-size: 9.60px;fill: #4D4D4D; font-family: "Arial";' textLength='18.66px' lengthAdjust='spacingAndGlyphs'>0.00</text>
+<text x='47.90' y='315.78' text-anchor='end' style='font-size: 9.60px;fill: #4D4D4D; font-family: "Arial";' textLength='18.66px' lengthAdjust='spacingAndGlyphs'>0.05</text>
+<text x='47.90' y='289.47' text-anchor='end' style='font-size: 9.60px;fill: #4D4D4D; font-family: "Arial";' textLength='18.66px' lengthAdjust='spacingAndGlyphs'>0.10</text>
+<text x='62.11' y='432.72' text-anchor='middle' style='font-size: 9.60px;fill: #4D4D4D; font-family: "Arial";' textLength='5.33px' lengthAdjust='spacingAndGlyphs'>0</text>
+<text x='179.82' y='432.72' text-anchor='middle' style='font-size: 9.60px;fill: #4D4D4D; font-family: "Arial";' textLength='10.66px' lengthAdjust='spacingAndGlyphs'>10</text>
+<text x='297.52' y='432.72' text-anchor='middle' style='font-size: 9.60px;fill: #4D4D4D; font-family: "Arial";' textLength='10.66px' lengthAdjust='spacingAndGlyphs'>20</text>
+<text x='415.22' y='432.72' text-anchor='middle' style='font-size: 9.60px;fill: #4D4D4D; font-family: "Arial";' textLength='10.66px' lengthAdjust='spacingAndGlyphs'>30</text>
+<text x='279.86' y='446.32' text-anchor='middle' style='font-size: 12.00px; font-family: "Arial";' textLength='33.34px' lengthAdjust='spacingAndGlyphs'>Month</text>
+<text transform='translate(20.55,344.21) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Arial";' textLength='70.02px' lengthAdjust='spacingAndGlyphs'>log GMV gap</text>
+<text x='53.28' y='259.23' style='font-size: 13.00px; font-weight: bold; font-family: "Arial";' textLength='290.39px' lengthAdjust='spacingAndGlyphs'>Gap: treated (orange) vs donor placebos (grey)</text>
+</g>
+</g>
+</svg>
+<figcaption aria-hidden="true">Synthetic control for Aster’s single-city
+fee reform. Top panel: the actual log-GMV trajectory of the treated city
+Aster-Metro (orange) versus the synthetic city (blue dashed), with a
+vertical line marking the reform date <span
+class="math inline">T_0</span>; before the reform the two lines nearly
+overlap (pre-period RMSPE 0.017), and after the reform a gap opens.
+Bottom panel: gap plot, where the treated city’s gap (orange) hugs zero
+before the reform and opens to about 0.10 after, with the gray
+background lines the in-space placebo gaps from taking each donor in
+turn as the treated unit (placebos whose pre-period fit is more than
+five times worse than the treated city’s have been dropped per standard
+practice), and the treated city’s gap looks abnormally large within the
+whole placebo family.</figcaption>
+</figure>
+<p>The reconciliation of this section can be summarized as follows: on
+the RDD line, the naive comparison of 1.891 is inflated by selection to
+nearly ten times the truth of 0.200, local-linear cleanly recovers 0.200
+and gives a robust interval covering the truth, the bandwidth is robust
+and the density does not jump, and the fuzzy variant instruments the
+badge to land the LATE near 0.20; on the SC line, the naive DiD of 0.244
+overstates by 2.6 times because trends are not parallel, and synthetic
+control uses the tight pre-period fit of 0.017 to pull the estimate back
+to 0.086, close to the truth of 0.095, with the in-space and in-time
+placebos together confirming this gap as the effect of the reform.</p>
+<h2 id="failure-modes-and-robustness">7 Failure Modes and
+Robustness</h2>
+<p>In a simulation the identifying assumptions are built in, but in real
+research they can fail at any time. This section lays out the most
+common ways each of the two designs fails and the actionable
+responses.</p>
+<p>Start with RDD. The number-one threat is manipulation and sorting.
+Once units can precisely control which side of the cutoff they land on,
+the two sides of the threshold are no longer comparable and continuity
+fails along with it. Diagnose it with the McCrary/<code>rddensity</code>
+density test to see whether the running variable bunches at the cutoff,
+and at the same time check whether predetermined covariates pass
+smoothly through the threshold. If there is obvious integer heaping at
+the threshold (for instance, scores artificially rounded up to 80), a
+common remedy is the donut RD, dropping the observations in a band <span
+class="math inline">[c - \delta, c + \delta]</span> right at the cutoff
+and using only the slightly outer points to extrapolate, sidestepping
+the most suspect heaping zone.</p>
+<p>The second class of threat is bandwidth sensitivity and polynomial
+overfitting. The bandwidth is the linchpin of RDD results, so you must
+report the curve of the estimate as the bandwidth varies, and the
+standard checklist explicitly requires robustness to different windows.
+On polynomials, keep in mind Gelman-Imbens’s lesson: never use a global
+polynomial above fourth order, and instead use local linear or local
+quadratic with a bandwidth; the set of estimates in Section 6 that swing
+violently with order and even turn negative is a living
+counterexample.</p>
+<p>The third class is other policies co-jumping at the cutoff, that is,
+compound treatment. If some other program also hangs on the same
+threshold, for instance if 80 not only awards the badge but
+simultaneously unlocks a lower fee or more traffic slots, then the jump
+at the threshold mixes these several things together, and RDD estimates
+their joint force rather than the badge’s effect alone. This is not a
+statistical problem but an institutional one, and can only be ruled out
+by pinning down exactly which treatments the threshold triggers.
+Adjacent to it is covariates jumping at the cutoff: if predetermined
+covariates are not smooth, that is a signal that the two sides of the
+threshold were not comparable to begin with, and should be taken
+seriously as falsifying evidence. Remember too RDD’s local nature: the
+estimate is valid only for units near the cutoff, and extrapolating it
+far away requires additional, usually untested, homogeneity assumptions.
+A last purely technical but common point is plotting: RDD plots use an
+equal-count binned binscatter, and drawing one casually with covariates
+will draw it wrong, so the right practice is to treat the binscatter as
+a semiparametric regression <span class="math inline">y_i = \mu(x_i) +
+\mathbf{w}_i&#39;\gamma + \varepsilon_i</span> (<code>binsreg</code>),
+which is a plotting-diagnostic issue and does not affect the estimator
+itself.</p>
+<p>Now SC. The first-order failure is a poor pre-period fit. If the
+synthetic city cannot hug the treated city before the reform, the
+loading-matching argument collapses and the post-period gap cannot be
+interpreted. Check the pre-period RMSPE, and if the fit is poor consider
+augmented SC to patch the residual imbalance with an outcome model. The
+second class is interpolation bias and convex-hull violation: the
+treated unit’s features are too extreme and lie outside the donors’
+convex hull, no convex combination can reconstruct it, and under the
+simplex constraint SC can only give a suboptimal fit clinging to the
+edge of the hull. The third class is donor pool contamination: if a
+donor is actually treated too, or splashed by spillovers from the
+intervention on the treated unit, or hit by the same shock in the same
+period, it is no longer clean. In a platform setting this is especially
+real, as the reform city’s lower fees may draw in sellers from
+neighboring cities and prompt buyers to order across cities, sweeping
+donors into the same change, which is interference, treatment spreading
+from the treated unit to the control units. The response is to exclude
+the obviously entangled donors from the pool, or redefine the market
+boundary.</p>
+<p>SC has two more subtle problems. One is too few or too many donors:
+too few and you cannot assemble a good convex combination, too many and
+you tend to overfit noise in the pre-period, stitching a synthetic city
+that resembles the treated one only in the pre-period and falls apart in
+the post-period. The other is overfitting the pre-period path itself,
+where a long and flexible fit may be matching idiosyncratic noise rather
+than the factor structure, and the in-time placebo is exactly the
+diagnostic against this: if a gap appears before the fake date, it is
+most likely overfitting. Finally, inference with a single treated unit
+can inherently only lean on permutation, with no analytic standard
+error, and the resolution of the permutation p-value is capped by the
+number of units, so in Section 6, 21 units can at best reach 0.048. When
+donors are too few, even this permutation inference runs out of power,
+and this is an inborn limitation of SC, to be admitted honestly in a
+paper rather than papered over with a spuriously precise-looking
+asterisk.</p>
+<p>Stringing together the failure modes of the two designs, the common
+lesson is: their credibility lies not in the mechanics of the estimator
+but in the design and the institutions. RDD’s success or failure hinges
+on “does this cutoff trigger only one thing, and can units manipulate
+it,” while SC’s hinges on “is the pre-period fit really good, and are
+the donors really clean.” The density test, bandwidth curve, covariate
+smoothness, pre-period RMSPE, and in-space and in-time placebos are all
+evidence offered around these two questions, and none of them can
+substitute for a substantive judgment about the institutional
+background.</p>
+<h2 id="further-reading">8 Further Reading</h2>
+<div class="readings">
+<p>Required reading, in suggested order:</p>
+<ul>
+<li>Lee and Lemieux (2010, Journal of Economic Literature). The most
+readable RDD survey, covering continuity, bandwidth, and the diagnostic
+checklist in one sweep, the main model for this chapter’s RDD half, and
+the first read for beginners.</li>
+<li>Imbens and Lemieux (2008, Journal of Econometrics). Another
+cornerstone of the RDD practical guide, complementary to Lee-Lemieux,
+with a focus on the discussion of bandwidth and functional form.</li>
+<li>Calonico, Cattaneo and Titiunik (2014, Econometrica). Bias-corrected
+robust inference and the MSE-optimal bandwidth, the theory behind
+<code>rdrobust</code>, the full version of this chapter’s Section
+4.2.</li>
+<li>Cattaneo, Idrobo and Titiunik (2020, Cambridge booklet). The
+practical manual for <code>rdrobust</code> and <code>rddensity</code>,
+walking step by step from plotting to estimation to testing, the
+operating checklist to have before writing an RDD paper.</li>
+<li>Abadie, Diamond and Hainmueller (2010, JASA). The founding
+application of synthetic control, California Proposition 99, the direct
+prototype of this chapter’s SC line, with a focus on the in-space
+placebo and weight optimization.</li>
+<li>Abadie (2021, Journal of Economic Literature). The authoritative
+survey of the SC method, mapping the convex hull, loading matching,
+inference, and extensions into a single chart, the first read for an
+overview of the SC half.</li>
+</ul>
+<p>Further reading:</p>
+<ul>
+<li>McCrary (2008, Journal of Econometrics). The original manipulation
+test, to understand why a density break is evidence of sorting.</li>
+<li>Gelman and Imbens (2019, Journal of Business &amp; Economic
+Statistics). Why you should not use high-order global polynomials, the
+full argument of this chapter’s Section 4.3, short and forceful.</li>
+<li>Imbens and Kalyanaraman (2012, Review of Economic Studies). The
+original data-driven optimal bandwidth, the derivation of the
+MSE-optimal bandwidth.</li>
+<li>Thistlethwaite and Campbell (1960, Journal of Educational
+Psychology). The historical origin of the RDD idea, worth a read to know
+where it came from.</li>
+<li>Lee (2008, Journal of Econometrics) and Luca (2016, HBS working
+paper). The former is the classic political-science vehicle of RDD, the
+latter a leading work in the platform setting, and reading the two
+together conveys how the same design is used across different
+fields.</li>
+<li>Abadie and Gardeazabal (2003, American Economic Review). The
+methodological origin of synthetic control, the effect of terrorism on
+the economy of the Basque Country.</li>
+<li>Ben-Michael, Feller and Rothstein (2021, JASA). Augmented SC, bias
+correction when the pre-period fit is imperfect.</li>
+<li>Arkhangelsky, Athey, Hirshberg, Imbens and Wager (2021, American
+Economic Review). Synthetic DiD, blending SC and DiD and providing
+formal inference.</li>
+</ul>
+</div>
+<div class="apa-refs">
+<ul>
+<li>Abadie, A. (2021). Using synthetic controls: Feasibility, data
+requirements, and methodological aspects. <em>Journal of Economic
+Literature, 59</em>(2), 391-425. <a
+href="https://doi.org/10.1257/jel.20191450"
+class="uri">https://doi.org/10.1257/jel.20191450</a></li>
+<li>Abadie, A., Diamond, A., &amp; Hainmueller, J. (2010). Synthetic
+control methods for comparative case studies: Estimating the effect of
+California’s tobacco control program. <em>Journal of the American
+Statistical Association, 105</em>(490), 493-505. <a
+href="https://doi.org/10.1198/jasa.2009.ap08746"
+class="uri">https://doi.org/10.1198/jasa.2009.ap08746</a></li>
+<li>Abadie, A., &amp; Gardeazabal, J. (2003). The economic costs of
+conflict: A case study of the Basque Country. <em>American Economic
+Review, 93</em>(1), 113-132. <a
+href="https://doi.org/10.1257/000282803321455188"
+class="uri">https://doi.org/10.1257/000282803321455188</a></li>
+<li>Arkhangelsky, D., Athey, S., Hirshberg, D. A., Imbens, G. W., &amp;
+Wager, S. (2021). Synthetic difference-in-differences. <em>American
+Economic Review, 111</em>(12), 4088-4118. <a
+href="https://doi.org/10.1257/aer.20190159"
+class="uri">https://doi.org/10.1257/aer.20190159</a></li>
+<li>Ben-Michael, E., Feller, A., &amp; Rothstein, J. (2021). The
+augmented synthetic control method. <em>Journal of the American
+Statistical Association, 116</em>(536), 1789-1803. <a
+href="https://doi.org/10.1080/01621459.2021.1929245"
+class="uri">https://doi.org/10.1080/01621459.2021.1929245</a></li>
+<li>Calonico, S., Cattaneo, M. D., &amp; Titiunik, R. (2014). Robust
+nonparametric confidence intervals for regression-discontinuity designs.
+<em>Econometrica, 82</em>(6), 2295-2326. <a
+href="https://doi.org/10.3982/ECTA11757"
+class="uri">https://doi.org/10.3982/ECTA11757</a></li>
+<li>Cattaneo, M. D., Idrobo, N., &amp; Titiunik, R. (2020). <em>A
+practical introduction to regression discontinuity designs:
+Foundations</em>. Cambridge University Press. <a
+href="https://doi.org/10.1017/9781108684606"
+class="uri">https://doi.org/10.1017/9781108684606</a></li>
+<li>Cattaneo, M. D., Jansson, M., &amp; Ma, X. (2018). Manipulation
+testing based on density discontinuity. <em>The Stata Journal,
+18</em>(1), 234-261. <a
+href="https://doi.org/10.1177/1536867X1801800115"
+class="uri">https://doi.org/10.1177/1536867X1801800115</a></li>
+<li>Gelman, A., &amp; Imbens, G. (2019). Why high-order polynomials
+should not be used in regression discontinuity designs. <em>Journal of
+Business &amp; Economic Statistics, 37</em>(3), 447-456. <a
+href="https://doi.org/10.1080/07350015.2017.1366909"
+class="uri">https://doi.org/10.1080/07350015.2017.1366909</a></li>
+<li>Imbens, G. W., &amp; Kalyanaraman, K. (2012). Optimal bandwidth
+choice for the regression discontinuity estimator. <em>The Review of
+Economic Studies, 79</em>(3), 933-959. <a
+href="https://doi.org/10.1093/restud/rdr043"
+class="uri">https://doi.org/10.1093/restud/rdr043</a></li>
+<li>Imbens, G. W., &amp; Lemieux, T. (2008). Regression discontinuity
+designs: A guide to practice. <em>Journal of Econometrics, 142</em>(2),
+615-635. <a href="https://doi.org/10.1016/j.jeconom.2007.05.001"
+class="uri">https://doi.org/10.1016/j.jeconom.2007.05.001</a></li>
+<li>Lee, D. S. (2008). Randomized experiments from non-random selection
+in U.S. House elections. <em>Journal of Econometrics, 142</em>(2),
+675-697. <a href="https://doi.org/10.1016/j.jeconom.2007.05.004"
+class="uri">https://doi.org/10.1016/j.jeconom.2007.05.004</a></li>
+<li>Lee, D. S., &amp; Lemieux, T. (2010). Regression discontinuity
+designs in economics. <em>Journal of Economic Literature, 48</em>(2),
+281-355. <a href="https://doi.org/10.1257/jel.48.2.281"
+class="uri">https://doi.org/10.1257/jel.48.2.281</a></li>
+<li>Luca, M. (2016). <em>Reviews, reputation, and revenue: The case of
+Yelp.com</em> (Harvard Business School Working Paper No. 12-016).
+Harvard Business School.</li>
+<li>McCrary, J. (2008). Manipulation of the running variable in the
+regression discontinuity design: A density test. <em>Journal of
+Econometrics, 142</em>(2), 698-714. <a
+href="https://doi.org/10.1016/j.jeconom.2007.05.005"
+class="uri">https://doi.org/10.1016/j.jeconom.2007.05.005</a></li>
+<li>Thistlethwaite, D. L., &amp; Campbell, D. T. (1960).
+Regression-discontinuity analysis: An alternative to the ex post facto
+experiment. <em>Journal of Educational Psychology, 51</em>(6), 309-317.
+<a href="https://doi.org/10.1037/h0044319"
+class="uri">https://doi.org/10.1037/h0044319</a></li>
+</ul>
+</div>
+    <footer class="page-footer">
+<span>Foundations of Information Systems Economics: Empirical Methods for Information Systems Economics</span>
+    </footer>
+  </main>
+</div>
+<script>
+(function(){var p=(location.pathname.split('/').pop()||'index.html');document.querySelectorAll('.file-nav a').forEach(function(a){if(a.getAttribute('href')===p)a.classList.add('current');});})();
+
+/* Preserve complete formulas without internal scrollbars. Only formulas whose
+   natural width exceeds their text column are reduced, and resize restores the
+   largest size that fits. */
+(function () {
+  function fitMath() {
+    document.querySelectorAll('span.math').forEach(function (host) {
+      var katex = host.querySelector('.katex');
+      if (!katex) return;
+      katex.style.fontSize = '';
+      var parent = host.classList.contains('display') ? host : host.parentElement;
+      var available = Math.max(1, parent.clientWidth);
+      /* KaTeX's box can be clipped to the host before measurement; scrollWidth
+         retains the full typeset width and is therefore the correct basis. */
+      var needed = Math.max(katex.scrollWidth, katex.getBoundingClientRect().width);
+      /* Keep a small safety margin for KaTeX glyph overhangs and browser
+         sub-pixel rounding, so the last radical/bar is never clipped. */
+      var target = available * 0.98;
+      if (needed > target) {
+        katex.style.fontSize = Math.max(0.34, target / needed) + 'em';
+      }
+    });
+  }
+  document.addEventListener('DOMContentLoaded', function () {
+    requestAnimationFrame(fitMath);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitMath);
+  });
+  window.addEventListener('resize', fitMath);
+}());
+</script>
+<script defer src="assets/notes.js"></script>
+</body>
+</html>

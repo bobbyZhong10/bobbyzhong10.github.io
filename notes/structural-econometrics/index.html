@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script>(function(){try{var t=localStorage.getItem('theme');if(t==='dark'||t==='light')document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <title>From Choices to Counterfactuals: Structural Estimation for Digital Platform Research</title>
+  <link rel="stylesheet" href="assets/style.css">
+  <style>
+    .cover-wrapper { max-width: 1000px; margin: 0 auto; padding: 64px 36px 80px; }
+    .cover-header { text-align: center; margin-bottom: 20px; }
+    .cover-header h1 {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+      font-size: 2.6rem;
+      color: var(--primary);
+      font-weight: 800;
+      letter-spacing: 1px;
+      margin-bottom: 14px;
+    }
+    .cover-header .cover-sub {
+      font-size: 17px;
+      color: var(--text);
+      margin-bottom: 6px;
+    }
+    .cover-header .cover-sub-en {
+      font-size: 13px;
+      color: var(--text-light);
+      font-style: italic;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+    }
+    .cover-rule {
+      width: 72px; height: 4px; background: var(--accent);
+      margin: 26px auto 34px; border-radius: 2px;
+    }
+    .cover-intro { max-width: 720px; margin: 0 auto 44px; font-size: 15.5px; }
+    .chapter-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .chapter-card {
+      display: block;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 18px 20px;
+      text-decoration: none;
+      color: var(--text);
+      transition: border-color .15s, transform .15s, box-shadow .15s;
+    }
+    .chapter-card:hover {
+      text-decoration: none;
+      border-color: var(--primary);
+      transform: translateY(-2px);
+      box-shadow: 0 4px 14px rgba(26,54,93,0.08);
+    }
+    .chapter-card .ch-no {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft YaHei", "Noto Sans SC", sans-serif;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--accent);
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+    .chapter-card .ch-title {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--primary);
+      margin: 4px 0 6px;
+    }
+    .chapter-card .ch-desc { font-size: 13px; color: var(--text-light); line-height: 1.7; }
+    .chapter-card.pending { opacity: .55; pointer-events: none; }
+    .ch-status {
+      display: inline-block;
+      margin-left: 8px;
+      padding: 1px 8px;
+      border-radius: 999px;
+      font-size: 11px;
+      font-weight: 600;
+      vertical-align: middle;
+      background: rgba(56,161,105,0.12);
+      color: #276749;
+      border: 1px solid rgba(56,161,105,0.35);
+    }
+    .ch-status.building {
+      background: rgba(214,158,46,0.12);
+      color: #975a16;
+      border-color: rgba(214,158,46,0.4);
+    }
+    .cover-footer {
+      margin-top: 54px; text-align: center;
+      font-size: 12px; color: var(--text-light);
+    }
+    @media (max-width: 700px) {
+      .chapter-grid { grid-template-columns: 1fr; }
+      .cover-header h1 { font-size: 1.9rem; }
+    }
+  </style>
+</head>
+<body>
+<div class="cover-wrapper">
+
+  <header class="cover-header">
+    <h1>From Choices to Counterfactuals</h1>
+    <div class="cover-sub">Structural Estimation for Digital Platform Research</div>
+    <div class="cover-sub-en">Discrete choice, demand estimation, and counterfactuals</div>
+    <div class="cover-rule"></div>
+  </header>
+
+  <div class="cover-intro">
+    <p>These notes are written for empirical researchers who study digital platforms and information systems. They follow one continuous thread: what a user's discrete-choice data reveals about preferences, how to estimate those preferences, and how to use the estimated model to answer questions that experiments and regressions cannot. What would a policy that has never been tried actually do? Where do churned users go? How much welfare does a design change give a user, or take away?</p>
+    <p>The nine chapters follow that thread. The first two explain when a structural model is really needed and give a framework for choosing one. From there the series starts with random utility and logit, gradually relaxes the restrictions on substitution and admits preference heterogeneity, works through the numerical details of simulation-based estimation, tackles price endogeneity and BLP, and reaches dynamic discrete choice. It closes with close readings of canonical platform-research papers and a workflow that runs from research question to finished paper, model validation included. The cases and data used for illustration are not real; each is marked as such in the text.</p>
+  </div>
+
+  <div class="chapter-grid">
+    <a class="chapter-card" href="01_overview_roadmap.html">
+      <span class="ch-no">Chapter 01</span>
+      <div class="ch-title">Overview &amp; Decision Framework</div>
+      <div class="ch-desc">Series roadmap: the model map, when you need a structural model, the model-selection decision framework, and notation.</div>
+    </a>
+    <a class="chapter-card" href="02_why_structural.html">
+      <span class="ch-no">Chapter 02</span>
+      <div class="ch-title">Why Structural Models</div>
+      <div class="ch-desc">Policy invariance, the DGP view, Marschak's Maxim, the twelve modeling decisions, and the philosophy of identification and validation.</div>
+    </a>
+    <a class="chapter-card" href="03_rum_logit.html">
+      <span class="ch-no">Chapter 03</span>
+      <div class="ch-title">RUM and Logit</div>
+      <div class="ch-desc">Random utility, the logit derivation, IIA, elasticities and consumer surplus, and maximum likelihood.</div>
+    </a>
+    <a class="chapter-card" href="04_gev_mixed_logit.html">
+      <span class="ch-no">Chapter 04</span>
+      <div class="ch-title">Nested and Mixed Logit</div>
+      <div class="ch-desc">Breaking IIA: nesting, the GEV family, random coefficients, and preference heterogeneity.</div>
+    </a>
+    <a class="chapter-card" href="05_simulation_estimation.html">
+      <span class="ch-no">Chapter 05</span>
+      <div class="ch-title">Simulation and Numerical Estimation</div>
+      <div class="ch-desc">Numerical optimization, sampling and low-discrepancy sequences, simulated maximum likelihood (MSL/MSM), and convergence diagnostics.</div>
+    </a>
+    <a class="chapter-card" href="06_endogeneity_blp.html">
+      <span class="ch-no">Chapter 06</span>
+      <div class="ch-title">Endogeneity and BLP</div>
+      <div class="ch-desc">Price endogeneity, the Berry inversion, the contraction mapping, GMM and instruments, and Nevo's cereal study.</div>
+    </a>
+    <a class="chapter-card" href="07_dynamic_choice.html">
+      <span class="ch-no">Chapter 07</span>
+      <div class="ch-title">Dynamic Discrete Choice</div>
+      <div class="ch-desc">Rust's bus-engine model, the Bellman equation, a worked numerical example, CCP, and a menu of estimators.</div>
+    </a>
+    <a class="chapter-card" href="08_applications.html">
+      <span class="ch-no">Chapter 08</span>
+      <div class="ch-title">Platform Research Applications</div>
+      <div class="ch-desc">Close readings of canonical papers: app demand, search ranking, two-sided markets, reviews and reputation, pricing and welfare.</div>
+    </a>
+    <a class="chapter-card" href="09_workflow_reference.html">
+      <span class="ch-no">Chapter 09</span>
+      <div class="ch-title">Workflow, Validation, and Reference</div>
+      <div class="ch-desc">From research question to paper: the full workflow, model validation, defending specification and identification, plus formula and software references.</div>
+    </a>
+  </div>
+
+  <footer class="cover-footer">
+    From Choices to Counterfactuals: Structural Estimation for Digital Platform Research
+  </footer>
+
+</div>
+<script defer src="assets/notes.js"></script>
+</body>
+</html>

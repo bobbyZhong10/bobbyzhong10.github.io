@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script>(function(){try{var t=localStorage.getItem('theme');if(t==='dark'||t==='light')document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <title>04 Nested and Mixed Logit | From Choices to Counterfactuals</title>
+  <link rel="stylesheet" href="assets/katex/katex.min.css">
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="page-wrapper">
+
+  <!-- ==================== SIDEBAR ==================== -->
+  <nav class="sidebar">
+    <div class="sidebar-title">From Choices to Counterfactuals: Structural Estimation for Digital Platform Research</div>
+    <div class="sidebar-subtitle">Chapter 04 · Nested and Mixed Logit</div>
+
+    <div class="toc-section-label">Contents</div>
+    <div class="toc">
+      <a href="#why-relax-iia">4.1 From Proportional to Realistic Substitution</a>
+      <a href="#nested-logit">4.2 Nested Logit</a>
+      <a href="#gev-family" class="level-3">The GEV Family at a Glance</a>
+      <a href="#probit">4.3 Probit in Brief</a>
+      <a href="#mixed-logit">4.4 Mixed Logit</a>
+      <a href="#mixed-panel" class="level-3">Panel Data and the WTP Distribution</a>
+      <a href="#latent-class">4.5 Latent Class Logit</a>
+      <a href="#model-ladder">4.6 The Model Ladder and Model Choice</a>
+      <a href="#variations">4.7 A Quick Tour of Variants</a>
+      <a href="#code">4.8 Code</a>
+      <a href="#misconceptions">4.9 Common Pitfalls</a>
+      <a href="#summary">4.10 Chapter Summary</a>
+      <a href="#readings">Further Reading</a>
+    </div>
+
+    <div class="file-nav">
+      <div class="nav-label">Chapters</div>
+      <a href="01_overview_roadmap.html">01 Overview & Decision Framework</a>
+      <a href="02_why_structural.html">02 Why Structural Models</a>
+      <a href="03_rum_logit.html">03 RUM and Logit</a>
+      <a href="04_gev_mixed_logit.html" class="current">04 Nested and Mixed Logit</a>
+      <a href="05_simulation_estimation.html">05 Simulation and Numerical Estimation</a>
+      <a href="06_endogeneity_blp.html">06 Endogeneity and BLP</a>
+      <a href="07_dynamic_choice.html">07 Dynamic Discrete Choice</a>
+      <a href="08_applications.html">08 Platform Research Applications</a>
+      <a href="09_workflow_reference.html">09 Workflow, Validation, and Reference</a>
+    </div>
+  </nav>
+
+  <!-- ==================== MAIN ==================== -->
+  <main class="main-content">
+
+    <header class="page-header">
+      <h1>Nested and Mixed Logit</h1>
+      <div class="subtitle">Breaking IIA: Nesting, GEV, and Random Coefficients</div>
+      <div class="meta">From Choices to Counterfactuals: Structural Estimation for Digital Platform Research · Chapter 04</div>
+    </header>
+
+    <div class="global-legend">
+      <span class="legend-label">Variable colors</span>
+      <span><span class="dot dot-observed"></span>Observed in data</span>
+      <span><span class="dot dot-estimated"></span>Parameters to estimate</span>
+      <span><span class="dot dot-researcher"></span>Set by the researcher</span>
+    </div>
+
+    <p>The logit of Chapter 03 is compact and easy to compute, but it comes with a cost you cannot dodge: it treats IIA (independence of irrelevant alternatives) as a hard constraint, forcing all options to divide substituted share in proportion to their overall shares. Real substitution almost never behaves so obediently. This chapter answers one very concrete question: <strong>how can we make the model capture substitution patterns closer to reality without giving up the computability of logit?</strong> Relaxing IIA runs along two paths, and both run through the whole chapter. Correlate the errors, and you get nested logit and the more general GEV, along with probit as a point of comparison; let the coefficients vary from person to person, and you get mixed logit and latent class logit. By the end of the chapter you will be able to pick an appropriate model tier for the problem in front of you and articulate the reasons for specifying it that way.</p>
+
+    <div class="info-box">
+      <div class="box-title">Continuing with the Subscription Example from Chapter 03</div>
+      <p style="margin-bottom:0">A user chooses one of four options: general-interest platform A, general-interest platform B, niche documentary platform C, and not subscribing and watching only free content (the outside option, with utility normalized to <span class="var-researcher">$V_{\text{out}}=0$</span>). The attributes are the monthly fee (yuan), the weekly ad time (minutes), and the content rating. The parameters are <span class="var-estimated">$\beta_{\text{price}}=-0.1$</span>, a marginal disutility per weekly ad minute of <span class="var-estimated">$\beta_{\text{ad}}=-0.05$</span>, <span class="var-estimated">$\beta_{\text{content}}=0.8$</span>, and a differentiation premium for the niche platform of <span class="var-estimated">$\text{ASC}_C=0.3$</span>. From the attributes the deterministic utilities work out to $V_A=-0.90$, $V_B=-1.11$, $V_C=-2.44$, and the MNL choice probabilities are approximately $P_A=22.3\%$, $P_B=18.1\%$, $P_C=4.8\%$, $P_{\text{out}}=54.8\%$. Every number in this chapter marked <span class="demo-badge">illustrative data</span> rests on this setup and can be recomputed.</p>
+    </div>
+
+    <!-- ============================================================ -->
+    <h2 id="why-relax-iia">4.1 From Proportional to Realistic Substitution</h2>
+
+    <p>Chapter 03 ended with an unresolved question: platform A exits the market over a licensing dispute, and where do its original 22.3% of share go? Before rushing to compute, guess from common sense. MNL gives only one answer to this question, and that answer is dictated entirely by IIA. Under IIA, the ratio in which any two options are chosen depends only on those two options and not on any third party; so once A exits, the remaining three carve up the share it vacates in their existing proportions. Run it once with the illustrative parameters: <span class="demo-badge">illustrative data</span></p>
+
+    <div class="table-scroll">
+    <table>
+      <thead>
+        <tr><th>Option</th><th>Baseline probability</th><th>After A exits</th><th>Change</th><th>Share of A's share captured</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>General platform B</td><td>18.07%</td><td>23.26%</td><td>+5.19pp</td><td>23.3%</td></tr>
+        <tr><td>Niche platform C</td><td>4.78%</td><td>6.15%</td><td>+1.37pp</td><td>6.2%</td></tr>
+        <tr><td>Not subscribing</td><td>54.85%</td><td>70.59%</td><td>+15.74pp</td><td>70.6%</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <p>What would intuition expect? A and B are both general-interest video platforms. A user who already preferred general-interest content and has now lost A would most naturally move to platform B, also general-interest, rather than retreat all the way to watching only free content. Yet the last column of the table paints the opposite picture: of the share A loses, seventy percent flows to not subscribing, and fewer than a quarter switch to B. What is off here?</p>
+
+    <p>The problem is not that MNL judges users to genuinely abandon their subscriptions en masse. It divides the share this way only because it has no tool other than "apportion in proportion to baseline shares," and the baseline share of not subscribing happens to be the largest. Trace it one level deeper and the crux is that the model has no sense whatsoever that "the two general-interest platforms are especially similar." It sets the unobserved part of the four options as mutually independent errors with equal variance, so in its eyes any two options are equally far apart, and the kinship between A and B of "both being general-interest platforms" has nowhere to live.</p>
+
+    <p>To make substitution match reality, we have to loosen this i.i.d. assumption and leave the model an outlet to say "which options are more alike." There are two paths for loosening it, and this chapter follows both.</p>
+
+    <div class="table-scroll">
+    <table>
+      <thead>
+        <tr><th>Path</th><th>What assumption is relaxed</th><th>Source of the substitution pattern</th><th>Representative models</th><th>Main cost</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Correlate the errors</strong></td>
+          <td>$\varepsilon$ is no longer i.i.d.; options in the same group share an unobserved component</td>
+          <td>Grouping structure or covariance matrix</td>
+          <td>nested logit, GEV, probit</td>
+          <td>requires an a priori grouping (GEV), or high-dimensional integration (probit)</td>
+        </tr>
+        <tr>
+          <td><strong>Make the coefficients heterogeneous</strong></td>
+          <td>$\beta$ varies across people and follows a distribution</td>
+          <td>the distribution of preferences in the population</td>
+          <td>mixed logit, latent class logit</td>
+          <td>the choice probability is an integral with no closed-form solution (addressed in Chapter 05)</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+
+    <p>The two paths look like separate branches, but they are not mutually exclusive, and mathematically they quietly meet at one point: a sufficiently flexible mixed logit can approximate to any accuracy the random-utility choice probabilities of any model, nested logit included, and therefore the same within-nest correlation patterns. That said, a simple set of normal random coefficients does not automatically equal some nesting structure; obtaining the corresponding correlation pattern still requires the right random terms and distributional specification. We will make good on this shared origin when we reach mixed logit; for now just remember that these are not two techniques that keep to their own turf. Let us first take the most direct of them.</p>
+
+    <div class="takeaway-box">
+      <div class="box-title">Bottom Line</div>
+      IIA insists that substitution happen in proportion to overall shares, yet that almost never holds. To fix it, either correlate the errors of options in the same group (nested/GEV/probit), or let the preference coefficients follow a distribution across the population (mixed logit/latent class). Which path to take depends on which way your prior leans: whether you believe "the options have a natural grouping" or "the population holds different tastes."
+    </div>
+
+    <!-- ============================================================ -->
+    <h2 id="nested-logit">4.2 Nested Logit</h2>
+
+    <p>The idea of nested logit is plain: cut the choice set into several non-overlapping groups (nests), assume that options within the same group share part of their unobserved utility, and within-group substitution naturally becomes stronger than across-group. Behind it is a two-stage picture of the decision: the user first decides which group to step into, then picks a specific option within the group. In the subscription example, the most natural split is to first decide "whether to subscribe," and once willing to pay, to choose among A, B, and C. The three platforms share the unobserved utility of "being willing to pay for content," and it is precisely through this that the model recognizes the three as near substitutes for one another.</p>
+
+    <div class="figure">
+    <svg viewBox="0 0 660 300" role="img" aria-label="Nested logit decision tree: the user first chooses between subscribing and not subscribing, and the subscribe nest contains platforms A, B, and C">
+      <line x1="360" y1="58" x2="212" y2="120" style="stroke:var(--fig-axis);stroke-width:1.4"></line>
+      <line x1="360" y1="58" x2="518" y2="120" style="stroke:var(--fig-axis);stroke-width:1.4"></line>
+      <line x1="210" y1="168" x2="102" y2="240" style="stroke:var(--fig-axis);stroke-width:1.4"></line>
+      <line x1="210" y1="168" x2="210" y2="240" style="stroke:var(--fig-axis);stroke-width:1.4"></line>
+      <line x1="210" y1="168" x2="320" y2="240" style="stroke:var(--fig-axis);stroke-width:1.4"></line>
+
+      <rect x="300" y="20" width="120" height="38" rx="8" class="bx"></rect>
+      <text x="360" y="44" text-anchor="middle" class="ink lbl">User's choice</text>
+
+      <rect x="120" y="120" width="180" height="48" rx="8" style="fill:var(--fig-1-soft);stroke:var(--fig-1);stroke-width:1.8"></rect>
+      <text x="210" y="140" text-anchor="middle" class="ink lbl" style="font-weight:700">Subscribe nest</text>
+      <text x="210" y="159" text-anchor="middle" class="lbl-s" style="fill:var(--fig-1);font-weight:700">λ_S = 0.6 (within-nest corr.)</text>
+
+      <rect x="430" y="120" width="180" height="48" rx="8" class="bx"></rect>
+      <text x="520" y="140" text-anchor="middle" class="ink lbl" style="font-weight:700">Not subscribing</text>
+      <text x="520" y="159" text-anchor="middle" class="mut lbl-s">outside option · one alt. λ=1</text>
+
+      <rect x="48" y="240" width="104" height="40" rx="6" class="bx"></rect>
+      <text x="100" y="264" text-anchor="middle" class="ink lbl-s" style="font-size:10px">General platform A</text>
+      <rect x="158" y="240" width="104" height="40" rx="6" class="bx"></rect>
+      <text x="210" y="264" text-anchor="middle" class="ink lbl-s" style="font-size:10px">General platform B</text>
+      <rect x="268" y="240" width="104" height="40" rx="6" class="bx"></rect>
+      <text x="320" y="264" text-anchor="middle" class="ink lbl-s" style="font-size:10px">Documentary C</text>
+    </svg>
+    <div class="figcaption"><span class="fig-label">Figure 4.1</span>The nesting structure for the subscription example. The user first weighs subscribing against not subscribing, and having chosen to subscribe then picks among A, B, and C within the nest. The three platforms belong to a single nest and share the unobserved utility of "being willing to pay for content"; the smaller the dissimilarity parameter λ_S, the closer they act as near substitutes within the nest. IIA is preserved intact within the nest; what gets relaxed is IIA across nests, so that after A exits more of its share stays with B inside the nest.</div>
+    </div>
+
+    <p>A word of caution first: this two-stage story is only here to build your intuition. Nested logit does not truly require the user to decide in two steps; at heart it is merely a mathematical structure that lets the within-group errors correlate. How strong that correlation is rests with each group's dissimilarity parameter <span class="var-estimated">$\lambda_k$</span>. The set of formulas below reads as three lines, but says something quite plain: the probability that a person chooses a given option equals the product of two step probabilities, that of first landing in this group and then picking this option within the group.</p>
+
+    <div class="formula-box">
+      <div class="formula-title">Nested Logit Choice Probability</div>
+      <div class="formula-math">$$P_{ni} = \underbrace{P_{ni\mid B_k}}_{\text{within-nest}} \times \underbrace{P_{nB_k}}_{\text{nest choice}}$$</div>
+      <div class="formula-math">$$P_{ni\mid B_k} = \frac{e^{V_{ni}/\lambda_k}}{\sum_{j\in B_k} e^{V_{nj}/\lambda_k}},\qquad I_{nk} = \ln\!\sum_{j\in B_k} e^{V_{nj}/\lambda_k},\qquad P_{nB_k} = \frac{e^{\lambda_k I_{nk}}}{\sum_{l} e^{\lambda_l I_{nl}}}$$</div>
+      <div class="formula-explain">
+        <table>
+          <tr><td class="var-observed">$V_{ni}$</td><td>the deterministic utility of option $i$ (computed from observed attributes)</td></tr>
+          <tr><td class="var-researcher">$B_k$</td><td>group $k$, defined by the researcher according to the decision logic</td></tr>
+          <tr><td class="var-estimated">$\lambda_k$</td><td>the dissimilarity parameter of group $k$; a value $\lambda_k\in(0,1]$ is globally consistent with RUM</td></tr>
+          <tr><td class="var-estimated">$I_{nk}$</td><td>the inclusive value, the log-summed attractiveness of group $k$, aggregating within-group information up to the upper level</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <p>The inclusive value $I_{nk}$ is the linchpin for understanding the whole structure. It compresses the attractiveness of an entire group of options into a single number, representing whether the group as a whole is worth entering, then multiplies it by $\lambda_k$ and feeds it into the upper-level nest-choice probability. So $\lambda_k$ plays two roles at once: within the group it is a temperature parameter that flattens or amplifies the within-group utility differences; at the upper level it weights the inclusive value. The key is that the two levels share the same $\lambda_k$. Precisely because it is shared, nested logit is not the same as "splitting the within-group and upper levels into two unrelated logits and estimating each separately." And it is this parameter, shared across the two levels, that carries the structure of within-group correlation.</p>
+
+    <p>Once this structure is cast in terms of IIA, its meaning is clear: nested logit does not throw IIA out entirely; it loosens it only at the across-group level. Within a group, IIA remains untouched: the ratio in which any two options of the same group are chosen depends only on those two options, is unchanged by other options entering or leaving, and within-group substitution still happens in proportion to shares. What is truly broken is IIA across groups, and in return we get exactly the within-group priority we wanted: options within a group cannibalize each other more fiercely, across-group substitution is suppressed, and after platform A exits more of the share stays in its own group rather than scattering in proportion to overall shares. Across groups, a weaker property takes over, called independence from irrelevant nests (IIN): for two options belonging to different groups, which is favored and by what probability ratio is determined only by the two groups they respectively sit in, and adding or removing options in a third group cannot budge this ratio.</p>
+
+    <h3>Interpreting the Dissimilarity Parameter $\lambda$</h3>
+
+    <p>$\lambda$ shows its face twice in the formula, but we have not yet said what it actually corresponds to in reality. No rush: first pin it down with two extremes. Imagine that A and B in the subscribe group are really two signboards hung on the same thing, and users' unobserved preferences for them are identical in every way: then once A is lost, every last person who used to choose A would fall to B. That is one end. At the other end, A and B share no extra connection at all, their relationship is no different from each's relationship to "not subscribing," and being grouped together is pure coincidence. What $\lambda$ measures is where the true situation lands between these two ends.</p>
+
+    <p>In other words, $\lambda$ measures how alike the options in the same group are in the places you cannot see. The closer $\lambda$ is to 0, the more the two within-group options resemble a pair of indistinguishable twins: any unobserved factor (not wanting to pay for video tonight, being more hooked on binge-watching lately) bears on both almost identically, users sort within the group only by the visible attribute differences, and once one is lost they switch to the other almost intact. $\lambda=1$ is the other end: options in the same group are no closer than options across groups, and the grouping brings no extra commonality.</p>
+
+    <p>To turn this intuition into a rough scale: it is customary to use $1-\lambda_k$ as a directional indicator of the strength of within-group correlation, with a smaller $\lambda_k$ meaning stronger correlation, so $\lambda_k=0.6$ corresponds to about 0.4. The exact correlation of the within-group errors has no simple closed-form expression, and this is only a directional scale that is easy to remember. That gives $\hat\lambda$ a precise reading depending on which band it falls into.</p>
+
+    <ul>
+      <li><span class="var-estimated">$\lambda_k=1$</span>: no extra within-group correlation, the nest collapses to ordinary MNL, and this group introduces no extra structure.</li>
+      <li><span class="var-estimated">$\lambda_k\in(0,1)$</span>: positive within-group correlation, and the closer to 0 the stronger the correlation and the closer the within-group options are to perfect substitutes. This is the range a nesting specification should fall in when it is sound.</li>
+      <li><span class="var-estimated">$\lambda_k\le 0$ or $\lambda_k\gt 1$</span>: cause for caution, usually a sign of improper grouping; go back and re-examine the decision logic rather than forcing an interpretation on it.</li>
+    </ul>
+
+    <p>The next question is the one most easily glossed over, yet exactly the one to take slowly: $\lambda$ is not something the researcher picks off the top of the head; it is recognized bit by bit by the data. But what exactly does the data use to recognize it? The same old method: break it into three questions.</p>
+
+    <ul>
+      <li><strong>What are we trying to estimate</strong>: how strong that unobserved within-group correlation actually is, that is, $\lambda$ itself.</li>
+      <li><strong>Which variation identifies it</strong>: the substitution pattern revealed by the relative changes in within-group attributes, prices, and choice sets across different choice situations. When the attractiveness of one within-group option falls and the shares of the other options in the same group rise relatively more, the model needs a smaller $\lambda$ to fit this within-group priority. What is meant here is substitution inferred from cross-situation variation, not a demand that the data observe, person by person, the counterfactual flow after some option exits; without this kind of within-group relative variation, the shares of a single cross-section are not enough on their own to identify $\lambda$.</li>
+      <li><strong>When does identification fail</strong>: when the data hold little within-group substitution to see in the first place (the within-group options' attributes rarely move on their own, or few people in the sample actually switch back and forth within the group), $\lambda$ is weakly identified, and the point estimate drifts back toward 1. Here the cases "grouping is useless" and "grouping is useful but the data cannot see it" cannot be told apart, and $\lambda$ must be reported together with its confidence interval; otherwise it is easy to misread "could not be identified" as "there truly is no correlation."</li>
+    </ul>
+
+    <p>In a sentence: $\lambda$ is a scale of within-group similarity, and the data recognize it by "how far substitution departs from proportionality": the greater the departure, the smaller the $\lambda$.</p>
+
+    <p>$\lambda=1$ is both a degeneracy point and a null hypothesis you can interrogate head-on: whether the data support within-group correlation can be tested directly. The <strong>LR test</strong> compares the log-likelihoods of the nested model and MNL, the <strong>Wald test</strong> looks directly at how far $\hat\lambda_k$ departs from 1, and both judge under $H_0:\lambda_k=1$ whether this step of relaxation is worth it. One thing is easy to miss: $\lambda=1$ sits right on the boundary of the parameter space $(0,1]$, so a point estimate slightly above 1 (say $\hat\lambda=1.05$) is most likely statistically indistinguishable from 1, and whether it truly crosses the boundary is a matter for the interval and the test, not the literal value of the point estimate.</p>
+
+    <details>
+      <summary>Going deeper: the range of $\lambda$ and testing at the boundary</summary>
+      <div class="detail-content">
+        <p>Why the reasonable range is drawn at $(0,1]$. $\lambda_k\in(0,1]$ is a sufficient condition for the nested model to be consistent with random-utility maximization over the entire range of values; when $\lambda_k\gt 1$, the model may still be consistent over a local region, but this usually means the grouping itself has a problem and should not be read literally as some kind of within-group complementarity.</p>
+        <p>The technical detail on the testing side: the LR statistic is $\text{LR}=2(\mathcal{L}_{\text{nested}}-\mathcal{L}_{\text{MNL}})$, with degrees of freedom equal to the number of $\lambda$'s freed. Because $\lambda=1$ falls on the boundary of the parameter space, the standard $\chi^2$ critical value is conservative and tends not to reject; a rigorous treatment switches to a mixed $\chi^2$ distribution, whose critical values can be found in the tables of Kodde and Palm (1986).</p>
+      </div>
+    </details>
+
+    <h3>Estimation: FIML Is the Standard</h3>
+
+    <p>The standard practice today is full-information maximum likelihood (FIML): estimate $\{\beta,\lambda_k\}$ all at once, using every constraint of the nesting structure to the full, with the corresponding asymptotic efficiency when the model is correct. The starting values usually take MNL's $\hat\beta$ as a base, with $\lambda$ set to a value slightly below 1 (say 0.7), and you then try several sets of starting values to check whether they converge to the same solution. Agreement across starting values can only increase confidence in the numerical solution; it cannot prove that the global optimum has been found.</p>
+
+    <p>Historically there is also a two-step approach (sequential estimation): first estimate an ordinary logit separately within each group, which yields coefficients $\beta/\lambda$ scaled by $\lambda$; from these compute the inclusive value, then use the inclusive value as an explanatory variable to estimate the upper-level logit, where the coefficient on the inclusive value is $\lambda$, and only the two steps together recover the structural coefficient $\beta$. Its standing needs to be stated clearly, because many materials get this point twisted. <strong>When the model is correctly specified, the two-step approach is consistent</strong>, not inconsistent; its real shortcomings lie in two places: first, it is less efficient than FIML; second, the standard errors in the second step must be corrected, because the inclusive value is a generated regressor computed from the first-step estimator, and plugging directly into the ordinary logit standard errors understates the uncertainty. In today's software environment there is no longer any reason to skirt FIML, and the two-step approach mainly retains two uses: as a teaching ladder for understanding the structure, and as a supplier of starting values for FIML.</p>
+
+    <h3>How to Determine the Nesting Structure</h3>
+
+    <p>The grouping is the decision in nested logit you most need to stand up and defend, and the order matters too: economic logic leads, statistical comparison sits in the middle, and parameter plausibility guards the exit.</p>
+
+    <ol>
+      <li><strong>Economic logic first</strong>. Start from the real decision process and ask: on which dimension does the user make the first coarse split? For travel modes, split first into public and private, then choose a specific tool; for streaming, split first into subscribing or not, then choose which platform. The grouping must clearly explain why these options belong in one class.</li>
+      <li><strong>Statistical comparison of candidate structures</strong>. When the logic is not unique, list 2 to 3 reasonable candidates, estimate each, and use AIC/BIC to weigh the trade-off between fit and complexity.</li>
+      <li><strong>Checking the plausibility of $\lambda$</strong>. Only a structure whose $\lambda$ falls in $(0,1)$ and admits a reasonable interpretation is credible; a candidate that pushes $\lambda$ near 1 or past the boundary is evidence that it does not hold.</li>
+    </ol>
+
+    <p>Below we run this whole procedure through the subscription example. The AIC/BIC are all computed on the same illustrative sample (1500 choices), with the number of parameters and the values consistent with one another: <span class="demo-badge">illustrative data</span></p>
+
+    <div class="table-scroll">
+    <table>
+      <thead>
+        <tr><th>Candidate structure</th><th>Number of parameters</th><th>$\mathcal{L}$</th><th>AIC</th><th>BIC</th><th>$\hat\lambda$ of the main nest</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>MNL baseline</td><td>4</td><td>-1210</td><td>2428</td><td>2449</td><td>—</td></tr>
+        <tr><td><strong>Structure 1</strong>: subscribe {A,B,C} vs. not subscribing</td><td>5</td><td>-1198</td><td><strong>2406</strong></td><td><strong>2433</strong></td><td>0.63</td></tr>
+        <tr><td>Structure 2: general {A,B} vs. niche {C} vs. not subscribing</td><td>5</td><td>-1205</td><td>2420</td><td>2447</td><td>0.71</td></tr>
+        <tr><td>Structure 3: cheap {A,B} vs. expensive {C} vs. not subscribing</td><td>5</td><td>-1207</td><td>2424</td><td>2451</td><td>0.86</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <p>Structure 1 (split first on subscribing or not) gives the lowest AIC and BIC, and $\hat\lambda=0.63$ sits firmly in the reasonable range. Its LR statistic relative to MNL is $=2\times(1210-1198)=24$. Using the conventional $\chi^2(1)$ critical value of 3.84 here is already on the strict side ($\lambda=1$ falls on the boundary of the parameter space $(0,1]$, and strictly one should switch to a smaller mixed $\chi^2$ critical value), yet LR=24 far exceeds both, so the nesting does significantly improve the fit. Structure 3 groups A and B by price, and $\hat\lambda=0.86$ is already close to 1, showing that the "cheap" dimension picks up almost no extra correlation and is a rather weak split.</p>
+
+    <div class="worked-example">
+      <div class="worked-title">Worked example: how nesting improves the substitution pattern</div>
+      <p>Using the grouping of Structure 1, take the dissimilarity parameter <span class="var-estimated">$\lambda_S=0.6$</span> for the subscribe group; the not-subscribing group has only one option, so $\lambda$ is normalized to 1. The utilities are the same four: $V_A=-0.90$, $V_B=-1.11$, $V_C=-2.44$, $V_{\text{out}}=0$. <span class="demo-badge">illustrative data</span></p>
+
+      <div class="worked-step">Step 1: within-nest conditional probabilities</div>
+      <p>Divide each of the subscribe group's utilities by $\lambda_S=0.6$ and then take the logit: $e^{-0.90/0.6}=e^{-1.5}$, $e^{-1.11/0.6}=e^{-1.85}$, $e^{-2.44/0.6}=e^{-4.067}$. Normalizing gives the within-nest conditional probabilities $P(A\mid S)=56.1\%$, $P(B\mid S)=39.6\%$, $P(C\mid S)=4.3\%$. Compared with $\lambda=1$, dividing by 0.6 amplifies the within-group utility differences, making the already-strong A and B stand out even more within the group.</p>
+
+      <div class="worked-step">Step 2: the inclusive value and the nest-choice probability</div>
+      <p>The subscribe group's inclusive value is $I_S=\ln(e^{-1.5}+e^{-1.85}+e^{-4.067})=-0.923$. At the upper level, compare $e^{\lambda_S I_S}=e^{0.6\times(-0.923)}=e^{-0.554}$ with the not-subscribing group's $e^{1\times 0}=1$, giving $P(S)=36.5\%$, $P(\text{out})=63.5\%$.</p>
+
+      <div class="worked-step">Step 3: compose the marginal probabilities</div>
+      <p>$P_i=P(S)\times P(i\mid S)$, so $P_A=20.5\%$, $P_B=14.4\%$, $P_C=1.6\%$, $P_{\text{out}}=63.5\%$. The baseline shares differ slightly from MNL, which is normal once $\lambda\lt 1$ is introduced; the real point of interest is the substitution in the next step.</p>
+
+      <div class="worked-step">Step 4: platform A exits the market, compare the flows</div>
+      <p>After A exits over a licensing dispute, the subscribe group is left with only {B,C}, and recomputing gives $P_B=23.4\%$, $P_C=2.6\%$, $P_{\text{out}}=74.0\%$. Decompose the share A loses and set it side by side with MNL:</p>
+      <div class="table-scroll">
+      <table>
+        <thead>
+          <tr><th>Where A's share goes</th><th>MNL</th><th>Nested logit ($\lambda_S=0.6$)</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>To general platform B</td><td>23.3%</td><td>43.8%</td></tr>
+          <tr><td>To niche platform C</td><td>6.2%</td><td>4.8%</td></tr>
+          <tr><td>To not subscribing</td><td>70.6%</td><td>51.4%</td></tr>
+          <tr><td><strong>Stays in the subscribe nest (B+C)</strong></td><td><strong>29.4%</strong></td><td><strong>48.6%</strong></td></tr>
+        </tbody>
+      </table>
+      </div>
+      <p>The nested model lifts the share staying in the subscribe nest from 29.4% to 48.6%, and the increment lands mainly on B (43.8%), because substitution happens within the group first, and B's within-group utility is far higher than C's. This is exactly the result the intuition in Section 4.1 hoped for: users who lose A stay more in the subscribe nest, turning to B with the highest within-group utility rather than retreating to free content. With the same set of utilities and only the error structure changed, the substitution pattern flips from "carving up by shares" to "within-group priority."</p>
+    </div>
+
+    <div class="figure">
+    <svg viewBox="0 0 700 322" role="img" aria-label="Where platform A's share goes after it exits: MNL versus nested logit, with nesting keeping more share in the subscribe nest, especially flowing to B">
+      <line class="gr dash" x1="70" y1="282.0" x2="660" y2="282.0"></line><text x="62" y="286.0" text-anchor="end" class="mut lbl-s">0</text><line class="gr dash" x1="70" y1="224.0" x2="660" y2="224.0"></line><text x="62" y="228.0" text-anchor="end" class="mut lbl-s">20</text><line class="gr dash" x1="70" y1="166.0" x2="660" y2="166.0"></line><text x="62" y="170.0" text-anchor="end" class="mut lbl-s">40</text><line class="gr dash" x1="70" y1="108.0" x2="660" y2="108.0"></line><text x="62" y="112.0" text-anchor="end" class="mut lbl-s">60</text><line class="gr dash" x1="70" y1="50.0" x2="660" y2="50.0"></line><text x="62" y="54.0" text-anchor="end" class="mut lbl-s">80</text>
+      <line class="ax" x1="70" y1="282" x2="660" y2="282"></line>
+      <line class="ax" x1="70" y1="44" x2="70" y2="282"></line>
+      <rect x="130" y="214.4" width="46" height="67.6" rx="3" style="fill:var(--fig-2)"></rect><text x="153" y="208.4" text-anchor="middle" class="ink lbl-s">23.3%</text><rect x="184" y="155.0" width="46" height="127.0" rx="3" style="fill:var(--fig-1)"></rect><text x="207" y="149.0" text-anchor="middle" class="ink lbl-s">43.8%</text><text x="180" y="300" text-anchor="middle" class="mut lbl-s">To general platform B</text><rect x="320" y="264.0" width="46" height="18.0" rx="3" style="fill:var(--fig-2)"></rect><text x="343" y="258.0" text-anchor="middle" class="ink lbl-s">6.2%</text><rect x="374" y="268.1" width="46" height="13.9" rx="3" style="fill:var(--fig-1)"></rect><text x="397" y="262.1" text-anchor="middle" class="ink lbl-s">4.8%</text><text x="370" y="300" text-anchor="middle" class="mut lbl-s">To niche platform C</text><rect x="510" y="77.3" width="46" height="204.7" rx="3" style="fill:var(--fig-2)"></rect><text x="533" y="71.3" text-anchor="middle" class="ink lbl-s">70.6%</text><rect x="564" y="132.9" width="46" height="149.1" rx="3" style="fill:var(--fig-1)"></rect><text x="587" y="126.9" text-anchor="middle" class="ink lbl-s">51.4%</text><text x="560" y="300" text-anchor="middle" class="mut lbl-s">To not subscribing</text>
+      <rect x="150" y="48" width="12" height="12" rx="2" style="fill:var(--fig-2)"></rect><text x="168" y="58" class="lbl-s">MNL</text>
+      <rect x="150" y="68" width="12" height="12" rx="2" style="fill:var(--fig-1)"></rect><text x="168" y="78" class="lbl-s">Nested logit (λ_S=0.6)</text>
+      <text x="20" y="163" text-anchor="middle" transform="rotate(-90 20 163)" class="mut lbl-s">Share of A's share captured (%)</text>
+    </svg>
+    <div class="figcaption"><span class="fig-label">Figure 4.2</span>Where platform A's original share flows after it exits (<span class="demo-badge">illustrative data</span>; each bar is relative to A's own share under that model, 22.3% for MNL and 20.5% for the nested model). MNL apportions in proportion to overall shares, and the largest piece (70.6%) flows to not subscribing, which already had the largest share. Nested logit suppresses across-group substitution and opens up within-group substitution, lifting the share that stays in the subscribe nest from 29.4% to 48.6%, with the increment landing mainly on B, in the same group and with higher utility (23.3%→43.8%). With the same utilities and only the error structure changed, the substitution pattern flips from carving up by shares to within-group priority.</div>
+    </div>
+
+    <h3>Multi-Level Nesting and Overlap</h3>
+
+    <p>In principle nesting can be stacked level upon level, for instance subdividing by region, city, store, and product in turn, but in practice two levels are usually the safest. At three levels and above the parameters grow fast, the sample requirement climbs steeply, and numerical optimization is more prone to getting stuck in local optima, so unless there is a very hard economic reason, going further up is not recommended. Standard nesting also requires each option to belong to exactly one group; yet some options naturally straddle several groups (a T-shirt is both summer wear and sportswear), and then one has to allow the more general structure with overlap, stepping right into the GEV family.</p>
+
+    <h3 id="gev-family">The GEV Family at a Glance</h3>
+
+    <p>McFadden (1978) proved a beautiful unifying result: as long as the generator $G$ satisfies a few specific conditions, the choice models it induces all have closed-form logit-type probabilities, and this broad class of models is collectively called the generalized extreme value (GEV) family. Nested logit, overlapping nests, and several variants below are all members of it, differing only in the shape of $G$. The generator corresponding to standard nested logit is</p>
+
+    <div class="formula-box">
+      <div class="formula-title">The GEV Generator for Nested Logit</div>
+      <div class="formula-math">$$G(y_1,\dots,y_J) = \sum_{k=1}^{K}\Big(\sum_{i\in B_k} y_i^{1/\lambda_k}\Big)^{\lambda_k},\qquad y_i = e^{V_i}$$</div>
+      <div class="formula-explain">
+        <table>
+          <tr><td class="var-researcher">$G$</td><td>the generator, whose shape encodes the correlation structure among options</td></tr>
+          <tr><td class="var-estimated">$\lambda_k$</td><td>the dissimilarity parameter of group $k$; the inner and outer exponents of $G$ are reciprocals of each other</td></tr>
+          <tr><td class="var-observed">$y_i$</td><td>the exponentiated utility of option $i$, $y_i=e^{V_i}$</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <p>The choice probability is given by $P_i = y_i\, G_i / G$ (where $G_i$ is the partial derivative of $G$ with respect to $y_i$), and substituting the expression above recovers the earlier nested probability. Swap in a different $G$ and you swap in a different correlation structure. Two common extensions are worth mentioning: <strong>PCL</strong> (Paired Combinatorial Logit, introduced by Chu (1989), with Koppelman and Wen (2000) studying its properties and estimation systematically) makes each pair of options its own binary nest, capturing finer pairwise substitution; <strong>GNL</strong> (Generalized Nested Logit, Wen and Koppelman 2001) allows one option to belong to several groups at once with different weights, and is the general form of overlapping nests. Flexible as they are, both are paid for with more parameters and larger samples, and in practice PCL is often already enough, while GNL is more common in methodological research.</p>
+
+    <details>
+      <summary>The four properties of the GEV generator (optional)</summary>
+      <div class="detail-content">
+        <p>A function $G(y_1,\dots,y_J)$ generates a well-defined GEV choice model as long as it satisfies the following four conditions (McFadden 1978):</p>
+        <ol>
+          <li><strong>Nonnegative</strong>: $G\ge 0$ for all $y_i\ge 0$.</li>
+          <li><strong>Homogeneous of degree one</strong>: $G(ty_1,\dots,ty_J)=t\,G(y_1,\dots,y_J)$ holds for all $t\gt 0$. (McFadden's original statement took degree-one homogeneity; Ben-Akiva and Francois (1983) proved it can be relaxed to any positive degree of homogeneity.)</li>
+          <li><strong>Tends to infinity</strong>: $G\to+\infty$ as any $y_i\to+\infty$.</li>
+          <li><strong>Alternating partial derivatives</strong>: the $m$-th mixed partial derivative with respect to $m$ distinct variables is nonnegative when $m$ is odd and nonpositive when $m$ is even. This condition guarantees the induced choice probabilities fall in $[0,1]$.</li>
+        </ol>
+        <p>Verifying that the nested generator is homogeneous of degree one: $G(ty)=\sum_k\big(\sum_i (ty_i)^{1/\lambda_k}\big)^{\lambda_k}=\sum_k\big(t^{1/\lambda_k}\sum_i y_i^{1/\lambda_k}\big)^{\lambda_k}=t\sum_k\big(\sum_i y_i^{1/\lambda_k}\big)^{\lambda_k}=t\,G(y)$.</p>
+      </div>
+    </details>
+
+    <div class="takeaway-box">
+      <div class="box-title">Bottom Line</div>
+      Nested logit uses the dissimilarity parameter $\lambda$ to correlate the errors of within-group options, changing substitution from "carving up by shares" to "within-group priority." The grouping must have economic logic first, then be validated with AIC/BIC and the plausibility of $\lambda$. Estimate with FIML, report $\hat\lambda$ together with its interval, and compare against MNL with an LR test.
+    </div>
+
+    <!-- ============================================================ -->
+    <h2 id="probit">4.3 Probit in Brief</h2>
+
+    <p>Nested logit trades grouping for correlation, at the cost of having to draw the groups in advance. Probit goes to the other extreme: simply assume the utility errors follow a multivariate normal $\varepsilon_n\sim N(0,\Sigma)$, and let the covariance matrix $\Sigma$ single-handedly carry any correlation structure, with no groups presupposed at all.</p>
+
+    <div class="formula-box">
+      <div class="formula-title">Probit Choice Probability</div>
+      <div class="formula-math">$$P_{ni} = \int \mathbf{1}\big[V_{ni}+\varepsilon_{ni} \ge V_{nj}+\varepsilon_{nj},\ \forall j\big]\,\phi(\varepsilon_n;\,\Sigma)\,d\varepsilon_n,\qquad \varepsilon_n\sim N(0,\Sigma)$$</div>
+      <div class="formula-explain">
+        <table>
+          <tr><td class="var-estimated">$\Sigma$</td><td>the error covariance matrix, able to carry any substitution pattern (to be estimated)</td></tr>
+          <tr><td class="var-observed">$\phi$</td><td>the multivariate normal density</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <p>This flexibility comes at a double cost, one in computation and one in identification. On the computation side it is straightforward: this integral is a $J-1$-dimensional normal integral with no closed-form solution, and must be handed to numerical methods, the standard tool being the GHK simulator. On the identification side you need to be more careful, because not every element of $\Sigma$ can be recognized by the data. Discrete choice only reads utility differences, not the absolute level of utility, so what can truly be identified is always the covariance after differencing, not the original $\Sigma$. Differencing compresses the $J$ errors into $J-1$, whose covariance is a $(J-1)\times(J-1)$ symmetric matrix with $J(J-1)/2$ independent elements; subtract one for the normalization that fixes the scale, and the number of free parameters that can truly be identified is</p>
+
+    <div class="formula-box">
+      <div class="formula-title">Number of Identifiable Covariance Parameters</div>
+      <div class="formula-math">$$\frac{J(J-1)}{2}-1$$</div>
+      <div class="formula-explain">
+        <table>
+          <tr><td class="var-researcher">$J$</td><td>the number of options (including the outside option)</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <p>In the subscription example $J=4$, so $\tfrac{4\times 3}{2}-1=5$ covariance parameters can be identified; with $J=3$ only 2 remain. If you want to estimate a fully free $\Sigma$, the number of parameters shoots up with the square of $J$ and soon exceeds what the data can support, so in practice one usually has to add some structure to $\Sigma$ (constraining it by a factor model or random effects, say) to keep it stable.</p>
+
+    <div class="warn-box">
+      <div class="box-title">Correcting a Common Misremembering</div>
+      <p style="margin-bottom:0">Some materials write the number of identifiable covariance parameters as $\tfrac{(J-1)(J-2)}{2}$, which is too small. The correct count is the $J(J-1)/2$ elements of the post-differencing $(J-1)\times(J-1)$ symmetric matrix minus one for scale, that is, $\tfrac{J(J-1)}{2}-1$. With $J=3$ the correct answer is 2, not 1, which can be double-checked with the intuition from binary choice.</p>
+    </div>
+
+    <p>So when should you choose probit over mixed logit? Both can build flexible substitution patterns, and in practice the conclusions they give are often close. Probit's distinctive feature is that it describes correlation directly with a covariance matrix, suiting settings where "the error correlation structure is itself the object of study," or where a very general panel correlation is needed. Its shortcomings are real too: the covariance parameters have weak economic meaning, high-dimensional integration is slow, and once the choice set is large (empirically $J$ beyond 5 to 6), the variance of the GHK simulation rises noticeably. In most platform settings the number of options is not small, and you also want willingness to pay and elasticities, so mixed logit is the more natural default and probit is kept more as a robustness comparison.</p>
+
+    <p>With this, the path of "correlating the errors" is complete. Looking back, nested logit, GEV, and probit share a common undertone: they all encode the substitution pattern into the correlation structure of the errors, while the preference coefficients remain throughout a single constant shared by everyone, with everyone's price sensitivity pressed into the same number. The second half of this chapter climbs over a rise and turns to the second path promised in Section 4.1: simply let the preference coefficients themselves vary across the population. The workhorse of this path is exactly the mixed logit of the next section.</p>
+
+    <!-- ============================================================ -->
+    <h2 id="mixed-logit">4.4 Mixed Logit</h2>
+
+    <p>Mixed logit (random coefficients logit) is the workhorse model of modern discrete choice. Its thinking is exactly the reverse of the three before it: the distribution of the errors stays put, and what changes is the preference coefficient $\beta$, which is made to vary from person to person and follow a distribution set by the researcher with parameters to be estimated. Integrate out this person-to-person variation and what remains is the population-level choice probability.</p>
+
+    <div class="intuition-box">
+      <div class="box-title">Intuition: Everyone Wears Glasses of a Different Prescription</div>
+      MNL assumes everyone sizes up these options through the same pair of glasses, with price sensitivity a single number. Mixed logit admits that each person has a different prescription: some haggle over every cent of price, others barely glance at the sticker. What is to be estimated is no longer any one person's prescription but the prescription distribution of the whole population, with the mean describing the average taste and the spread describing how far tastes differ. The inner logit answers "who gets chosen while wearing a given pair of glasses," and the outer integral sweeps through all prescriptions in turn, then aggregates them weighted by population proportion. This intuition also explains a phenomenon in the illustration that looks anomalous at first: the share of niche platform C rises rather than falls, precisely because the price-insensitive segment of the population does not care that it is expensive and instead lifts its overall share.
+    </div>
+
+    <div class="formula-box">
+      <div class="formula-title">Mixed Logit Choice Probability</div>
+      <div class="formula-math">$$P_{ni} = \int L_{ni}(\beta)\,f(\beta\mid\theta)\,d\beta,\qquad L_{ni}(\beta)=\frac{e^{V_{ni}(\beta)}}{\sum_j e^{V_{nj}(\beta)}}$$</div>
+      <div class="formula-explain">
+        <table>
+          <tr><td class="var-observed">$L_{ni}(\beta)$</td><td>the ordinary logit probability for a given set of coefficients $\beta$ (the inner layer)</td></tr>
+          <tr><td class="var-estimated">$f(\beta\mid\theta)$</td><td>the mixing distribution of the coefficients, whose parameters $\theta=\{\mu,\Sigma,\dots\}$ are to be estimated</td></tr>
+          <tr><td class="var-estimated">$\theta$</td><td>the mean vector, covariance, and so on of the distribution, which are the true objects of estimation</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <p>McFadden and Train (2000) proved a result that carries real weight: as long as the distribution $f$ is flexible enough, mixed logit can approximate to any accuracy the choice probabilities induced by any random-utility model. Any substitution pattern probit can express, it can in principle express too, and that is where the name "universal approximator" comes from.</p>
+
+    <h3>Two Equivalent Interpretations</h3>
+
+    <p>The same mixed logit admits two readings. They are mathematically equivalent but serve different purposes.</p>
+
+    <ul>
+      <li><strong>Random coefficients</strong>: expand $\beta_n=\mu+L\zeta_n$, where $\zeta_n$ follows a standard distribution (such as the standard normal), $\mu$ is the average preference, and $L$ (the Cholesky factor of the covariance) describes the scale of the heterogeneity. This view corresponds directly to "one set of $\beta$ per person" and is convenient for reading off willingness to pay and elasticities.</li>
+      <li><strong>Error components</strong>: fold the random part into the error, writing $U_{ni}=\alpha' x_{ni}+\eta_n' z_{ni}+\varepsilon_{ni}$, where $\eta_n' z_{ni}$ is a random term shared across options and $\varepsilon_{ni}$ is still an i.i.d. extreme-value error. Let $z_{ni}$ be the indicator for options in the same group, and the shared random term induces positive correlation within the group. <strong>Error-components mixed logit can approximate the substitution pattern of nested logit to any accuracy</strong>, and this is the precise meaning of the two paths from Section 4.1 meeting here.</li>
+    </ul>
+
+    <h3>Choosing the Distribution for Random Coefficients</h3>
+
+    <p>Which distribution to pick for a random coefficient is by no means an inconsequential technical detail; it bears directly on whether the conclusions hold up. The commonly used ones each have their own trade-offs.</p>
+
+    <div class="table-scroll">
+    <table>
+      <thead>
+        <tr><th>Distribution</th><th>Support</th><th>Advantages</th><th>Costs and pitfalls</th><th>Typical use</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Normal</td><td>$(-\infty,+\infty)$</td><td>few parameters, fast to compute, can be positive or negative</td><td>lets some individuals have a positive price coefficient, contradicting economic common sense</td><td>preferences over attributes that can be positive or negative (such as some feature)</td></tr>
+        <tr><td>Lognormal</td><td>fixed sign</td><td>forces the coefficient to keep one sign; suited to cost terms such as price and time whose sign should be fixed a priori</td><td>long-tailed, with the mean pulled by a few extreme values; parameters live in exponential space, making both interpretation and convergence harder</td><td>cost-type coefficients (sign-preserving)</td></tr>
+        <tr><td>Triangular / uniform</td><td>bounded</td><td>finite support, rules out extreme values, numerically stable</td><td>fixed shape, limited flexibility</td><td>when you need boundedness but do not want to use the lognormal</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <p>The one to watch most is the cost-type coefficient. The coefficients on attributes like price and time should, in theory, share one sign; but if you describe them with a normal that has no edge on either side, a batch of people with positive price coefficients will inevitably emerge in the population, that is, people who want to buy more the more expensive it gets, which cuts against economic common sense. The safe approach is to block off this possibility at the parameterization stage: use a sign-preserving distribution for cost terms, for instance negating the cost variable and then specifying it as lognormal, which forces the coefficient to be negative. If you insist on the normal, you then have to report the fraction of the population on the wrong-sign side and argue that it can be ignored, but switching the distribution is usually the cleaner treatment. A common but untenable defense is "the wrong-sign people are only a small fraction, so just ignore them": in a sample of hundreds of thousands of users, a few percentage points is still thousands upon thousands of people. Rather than patching up an anomalous sign after estimation, write the economic constraint into the parameterization from the start.</p>
+
+    <div class="figure">
+    <svg viewBox="0 0 700 312" role="img" aria-label="Random distribution of the price coefficient: the normal has a slice in the wrong-sign region where beta exceeds zero, while the lognormal forces the entire mass to keep the correct sign">
+      <line class="ax" x1="70" y1="268" x2="660" y2="268"></line>
+      <line class="gr dash" x1="525.9" y1="40" x2="525.9" y2="268"></line>
+      <text x="525.9" y="284" text-anchor="middle" class="mut lbl-s">β = 0</text>
+      <polygon points="525.9,268 525.9,215.1 531.3,220.8 536.6,226.0 542.0,230.9 547.4,235.3 552.7,239.3 558.1,242.9 563.5,246.2 568.8,249.1 574.2,251.8 579.5,254.1 584.9,256.1 590.3,257.9 595.6,259.4 601.0,260.8 606.4,261.9 611.7,262.9 617.1,263.8 622.5,264.5 627.8,265.1 633.2,265.6 638.5,266.1 643.9,266.4 649.3,266.7 654.6,267.0 660.0,267.2 660.0,268" style="fill:var(--fig-2);opacity:0.28"></polygon>
+      <polyline points="70.0,267.9 75.4,267.9 80.7,267.9 86.1,267.8 91.5,267.8 96.8,267.7 102.2,267.7 107.5,267.6 112.9,267.5 118.3,267.3 123.6,267.2 129.0,267.0 134.4,266.7 139.7,266.4 145.1,266.1 150.5,265.6 155.8,265.1 161.2,264.5 166.5,263.8 171.9,262.9 177.3,261.9 182.6,260.8 188.0,259.4 193.4,257.9 198.7,256.1 204.1,254.1 209.5,251.8 214.8,249.1 220.2,246.2 225.5,242.9 230.9,239.3 236.3,235.3 241.6,230.9 247.0,226.0 252.4,220.8 257.7,215.1 263.1,209.1 268.5,202.6 273.8,195.7 279.2,188.4 284.5,180.8 289.9,173.0 295.3,164.8 300.6,156.5 306.0,148.0 311.4,139.4 316.7,130.9 322.1,122.4 327.5,114.1 332.8,106.0 338.2,98.2 343.5,90.9 348.9,84.1 354.3,77.9 359.6,72.3 365.0,67.5 370.4,63.4 375.7,60.2 381.1,57.9 386.5,56.5 391.8,56.0 397.2,56.5 402.5,57.9 407.9,60.2 413.3,63.4 418.6,67.5 424.0,72.3 429.4,77.9 434.7,84.1 440.1,90.9 445.5,98.2 450.8,106.0 456.2,114.1 461.5,122.4 466.9,130.9 472.3,139.4 477.6,148.0 483.0,156.5 488.4,164.8 493.7,173.0 499.1,180.8 504.5,188.4 509.8,195.7 515.2,202.6 520.5,209.1 525.9,215.1 531.3,220.8 536.6,226.0 542.0,230.9 547.4,235.3 552.7,239.3 558.1,242.9 563.5,246.2 568.8,249.1 574.2,251.8 579.5,254.1 584.9,256.1 590.3,257.9 595.6,259.4 601.0,260.8 606.4,261.9 611.7,262.9 617.1,263.8 622.5,264.5 627.8,265.1 633.2,265.6 638.5,266.1 643.9,266.4 649.3,266.7 654.6,267.0 660.0,267.2" style="fill:none;stroke:var(--fig-2);stroke-width:2.5"></polyline>
+      <polyline points="70.0,265.2 75.4,265.0 80.7,264.8 86.1,264.6 91.5,264.4 96.8,264.1 102.2,263.8 107.5,263.5 112.9,263.2 118.3,262.8 123.6,262.4 129.0,262.0 134.4,261.5 139.7,261.1 145.1,260.5 150.5,260.0 155.8,259.4 161.2,258.7 166.5,258.0 171.9,257.2 177.3,256.4 182.6,255.5 188.0,254.5 193.4,253.5 198.7,252.4 204.1,251.1 209.5,249.8 214.8,248.4 220.2,246.9 225.5,245.2 230.9,243.4 236.3,241.5 241.6,239.4 247.0,237.2 252.4,234.8 257.7,232.2 263.1,229.4 268.5,226.3 273.8,223.1 279.2,219.6 284.5,215.9 289.9,211.8 295.3,207.5 300.6,202.9 306.0,198.0 311.4,192.7 316.7,187.1 322.1,181.2 327.5,174.9 332.8,168.3 338.2,161.3 343.5,154.0 348.9,146.4 354.3,138.5 359.6,130.3 365.0,121.9 370.4,113.5 375.7,105.0 381.1,96.6 386.5,88.4 391.8,80.7 397.2,73.5 402.5,67.2 407.9,62.0 413.3,58.2 418.6,56.1 424.0,56.0 429.4,58.3 434.7,63.4 440.1,71.5 445.5,82.7 450.8,97.2 456.2,114.8 461.5,135.1 466.9,157.4 472.3,180.7 477.6,203.5 483.0,224.4 488.4,241.8 493.7,254.7 499.1,262.7 504.5,266.6 509.8,267.8 515.2,268.0 520.5,268.0 525.9,268.0 531.3,268.0 536.6,268.0 542.0,268.0 547.4,268.0 552.7,268.0 558.1,268.0 563.5,268.0 568.8,268.0 574.2,268.0 579.5,268.0 584.9,268.0 590.3,268.0 595.6,268.0 601.0,268.0 606.4,268.0 611.7,268.0 617.1,268.0 622.5,268.0 627.8,268.0 633.2,268.0 638.5,268.0 643.9,268.0 649.3,268.0 654.6,268.0 660.0,268.0" style="fill:none;stroke:var(--fig-1);stroke-width:2.5"></polyline>
+      <rect x="90" y="48" width="12" height="12" rx="2" style="fill:var(--fig-2)"></rect><text x="108" y="58" class="lbl-s">Normal (schematic)</text>
+      <rect x="90" y="68" width="12" height="12" rx="2" style="fill:var(--fig-1)"></rect><text x="108" y="78" class="lbl-s">Lognormal (sign-preserving)</text>
+      <text x="586.2" y="150" text-anchor="middle" class="lbl-s" style="fill:var(--fig-2);font-weight:700">β&gt;0</text>
+      <text x="595.6" y="166" text-anchor="middle" class="mut lbl-s">positive price utility</text>
+      <text x="362" y="304" text-anchor="middle" class="mut lbl-s">Price coefficient β →</text>
+    </svg>
+    <div class="figcaption"><span class="fig-label">Figure 4.3</span>Why cost-type coefficients should use a sign-preserving distribution (<span class="demo-badge">illustrative data</span>). Describing the price coefficient with a normal that has no edge on either side inevitably produces a batch of people with β&gt;0 (the shaded region on the right), that is, people who want to buy more the more expensive it gets, cutting against economic common sense. The lognormal negates the cost variable and forces the coefficient to keep one sign, so the entire density lies on the β&lt;0 side. The spread of the normal shown here is slightly larger than the N(−0.1, 0.05²) in the Section 4.4 worked example, only so that the β&gt;0 tail is visible. Rather than patching up the wrong sign after estimation, write the economic constraint in at the parameterization stage.</div>
+    </div>
+
+    <h3>Which Coefficients to Make Random</h3>
+
+    <p>The laziest idea is to make every coefficient random in one sweep and let the model discover the heterogeneity by itself. Unfortunately this path does not work, and it is worth spelling out why, because it steps on both the identification and the computation traps at once: freeing a coefficient from fixed to random turns its estimands from one (the mean) into two (the mean plus the standard deviation), so each one freed adds only one net standard deviation; with many coefficients, the various standard deviations become entangled with one another, and the model both struggles to tell heterogeneity apart and grows ever more prone to failing to converge.</p>
+
+    <p>To judge whether a coefficient should be made random, you first have to work out: what exactly does the data use to recognize its heterogeneity? The identification question, again, breaks into three.</p>
+
+    <ul>
+      <li><strong>What are we trying to estimate</strong>: the spread of a coefficient across the population, that is, its standard deviation $\sigma_k$, not just the mean.</li>
+      <li><strong>Which variation identifies it</strong>: mainly the regularity in one person's repeated choices. If a user consistently avoids high-priced options across many choices, to a degree beyond what the attribute differences can explain, the data are saying that this person's price sensitivity is high at the individual level, different from the population mean; aggregating this kind of personal tendency over many people traces out $\sigma_k$. This is exactly why panel data matter: repeated observation is the most direct evidence of heterogeneity.</li>
+      <li><strong>When does identification fail</strong>: when a person is observed only once, or the attributes they face barely change, the cases "everyone equals the mean" and "people differ but it cannot be seen" cannot be told apart, and $\sigma_k$ is weakly identified. The alternative-specific constant (ASC) is the easiest place to slip here: with cross-sectional data and each person observed only once, a random ASC becomes entangled with the scale of that option's error and cannot be separated, and it also needs an extra normalization, so under this setup it genuinely cannot be identified. But this should not be stated too absolutely: once you enter a panel and the same person chooses repeatedly, option-specific random effects become identifiable and are often actually estimated; keeping the ASC fixed then is mostly for parsimony, not because it truly cannot be identified.</li>
+    </ul>
+
+    <p>The identification question also dictates the order of practice: theory first, verified one at a time. First let theory pick out the coefficients you have good reason to believe vary greatly across the population and free them, price sensitivity almost always being the first choice, while keeping the rest fixed. Once freed, use LR tests added one at a time ($H_0:\sigma_k=0$) to confirm whether each random coefficient is truly supported by the data; this too is a boundary test ($\sigma=0$ sits at the lower bound), and the critical values need to be adjusted accordingly. As for letting random coefficients correlate with one another (estimating the full Cholesky factor), it is worth it only when the random coefficients are few (two or three) and theory clearly points to correlation; with many random coefficients, the covariance parameters expand quickly, identification is weaker, and convergence is harder.</p>
+
+    <h3 id="mixed-panel">Panel Data and the WTP Distribution</h3>
+
+    <p>Platform data are panel by nature: for the same user, you can watch them make choice after choice. Mixed logit handles panels in a natural way, assuming an individual's $\beta_n$ stays constant across their successive choices, first multiplying together the logit probabilities across that individual's periods, then integrating over $\beta$ at the individual level.</p>
+
+    <div class="formula-box">
+      <div class="formula-title">The Joint Probability for Panel Mixed Logit</div>
+      <div class="formula-math">$$P_n = \int \Big[\prod_{t=1}^{T_n} L_{ni_t}(\beta)\Big] f(\beta\mid\theta)\,d\beta$$</div>
+      <div class="formula-explain">
+        <table>
+          <tr><td class="var-observed">$i_t$</td><td>the option individual $n$ actually chose in period $t$</td></tr>
+          <tr><td class="var-researcher">$T_n$</td><td>the number of choices observed for individual $n$</td></tr>
+          <tr><td class="var-estimated">$\beta$</td><td>the individual's random coefficient, fixed across their choices over periods</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <p>There is one position here you must never get wrong: the product must stay inside the integral and cannot be moved outside. Kept inside, it corresponds to "one person carrying a fixed set of tastes through all their choices"; moved outside, it amounts to assuming they swap in a fresh set of tastes at each choice, splitting the panel into a heap of cross-sections, losing the within-individual persistence and understating the heterogeneity. Revelt and Train (1998) used repeated-choice data on appliance efficiency choice to establish this panel mixed logit approach.</p>
+
+    <p>After estimating $\theta$, one quantity is often pressed for: willingness to pay (WTP), that is, the ratio of an attribute's coefficient to the price coefficient, $-\beta_{\text{attr}}/\beta_{\text{price}}$. In mixed logit both numerator and denominator are random, so WTP is the ratio of two random quantities, its distribution often dragging a long tail, and you should report the median and quantiles rather than the mean alone, since the mean is too easily pulled off by a few extreme individuals. If the price coefficient uses a normal, the denominator may also take values close to 0, so that the moments of the ratio distribution may not even exist, which is another reason to prefer the lognormal for cost terms. There is also an alternative approach: rather than estimating $\beta$ in preference space and then dividing, parameterize each attribute's willingness to pay directly in WTP space, and Train and Weeks (2005) show this often yields a tidier WTP distribution.</p>
+
+    <div class="worked-example">
+      <div class="worked-title">Worked example: adding heterogeneity to the price coefficient</div>
+      <p>Still the subscription example, with the four options' attributes carried over from the book's setup (monthly fees of 30 for A, 28 for B, 45 for C in yuan; weekly ads of 30 for A, 35 for B, 40 for C in minutes; content ratings of 4.5 for A, 4.3 for B, 4.7 for C; the outside option's utility normalized to 0). This time only the price coefficient is random: <span class="var-estimated">$\beta_{\text{price}}\sim N(-0.1,\,0.05^2)$</span>, the other coefficients stay fixed as before, and each draw of the price coefficient shifts each option's utility according to its own monthly fee. The choice probability $P_i=\int L_i(\beta_{\text{price}})\,f\,d\beta_{\text{price}}$ has no closed-form solution, and is approximated by Monte Carlo with 500 Halton draws (Halton is a low-discrepancy sequence that fills the range more evenly than the same number of pure random draws, and therefore needs fewer draws). <span class="demo-badge">illustrative data</span></p>
+
+      <div class="worked-step">Step 1: simulated shares</div>
+      <p>For each draw $\beta^{(r)}$ recompute the four options' logit probabilities and then average: $\hat P_i=\tfrac{1}{R}\sum_r L_i(\beta^{(r)})$. This gives $P_A=21.75\%$, $P_B=16.83\%$, $P_C=8.11\%$, $P_{\text{out}}=53.30\%$. Compared with MNL, the most striking change is niche platform C, rising all the way from 4.8% to 8.1%. Why is it the highest-priced C that rises the most? The key is that C sits at one end of the price axis: the random price coefficient makes its choice probability convex in the price coefficient over this stretch, and as the coefficient fluctuates up and down and is then averaged over the population, convexity pushes its average share up (this is a direct consequence of Jensen's inequality), because the segment that barely feels price does not mind that it is expensive. C's baseline share was only 4.8% to begin with and it stands at one end of the price axis, so convexity is most pronounced here, and heterogeneity therefore lifts its share the most. This is a real consequence of heterogeneity, not numerical noise.</p>
+
+      <div class="worked-step">Step 2: own-price elasticity</div>
+      <p>Platform A's own-fee elasticity is, under MNL, $\beta_{\text{price}}\,p_A(1-P_A)=-0.1\times 30\times(1-0.223)=-2.33$. Under mixed logit you instead average over draws, $\tfrac{1}{R}\sum_r \beta^{(r)} L_A^{(r)}(1-L_A^{(r)})$, and convert, giving $-1.72$. Heterogeneity pulls the aggregate elasticity down, and the reason is not hard to see: the segment most sensitive to price stopped choosing A long ago, and those who remain are mostly people who do not much mind price.</p>
+
+      <div class="worked-step">Step 3: IIA breaks, look at the cross-elasticities</div>
+      <p>Let platform B raise its monthly fee and look at the cross-price elasticities of the other options. MNL, held down by IIA, requires all non-B options to have equal cross-elasticities, uniformly $-\beta_{\text{price}}\,p_B P_B=0.1\times 28\times 0.1807=0.506$. Mixed logit instead gives uneven values: platform A's cross-elasticity is 0.385, the outside option's is 0.364. A reacts more strongly to B's fee increase than the outside option does, because in a setup where only the price coefficient is random, A and B with their similar monthly fees rise and fall together with a person's price sensitivity and are closer substitutes for each other; when B raises its price, more share flows to the price-adjacent A rather than to the free option far from B in the price structure. The same price increase draws different reactions, and IIA is broken here.</p>
+
+      <div class="worked-step">Step 4: stability with respect to the number of draws</div>
+      <p>Recompute A's share with different numbers of Halton draws: it is 21.50% at $R=100$, 21.75% at $R=500$, and 21.77% at $R=1000$. 500 draws are already stable enough for the precision this example needs. As for how to set the number of draws, how to lay out the Halton sequence, and how to watch convergence, these estimation details are all left to Chapter 05.</p>
+    </div>
+
+    <div class="takeaway-box">
+      <div class="box-title">Bottom Line</div>
+      Mixed logit equips the coefficients with a distribution, breaking IIA and approximating any substitution pattern in one stroke, and is the default workhorse of platform research. The choice of distribution directly determines whether the conclusions are credible, and cost terms should use a sign-preserving distribution; the product for panel data must go inside the integral; WTP is a ratio distribution, so report the median and quantiles. The choice probability has no closed-form solution, and the mechanics of simulated estimation are in Chapter 05.
+    </div>
+
+    <!-- ============================================================ -->
+    <h2 id="latent-class">4.5 Latent Class Logit</h2>
+
+    <p>Mixed logit assumes preferences spread out continuously across the population. Latent class logit swaps in a different assumption: the population consists of a finite $K$ classes of people, within a class sharing one set of coefficients $\beta_k$, and differing only from class to class. It thinks of heterogeneity as a few discrete types rather than a single continuous distribution.</p>
+
+    <div class="formula-box">
+      <div class="formula-title">Latent Class Logit Choice Probability</div>
+      <div class="formula-math">$$P_{ni} = \sum_{k=1}^{K} \pi_k(z_n)\, L_{ni}(\beta_k),\qquad \pi_k(z_n)=\frac{e^{\gamma_k' z_n}}{\sum_{l} e^{\gamma_l' z_n}}$$</div>
+      <div class="formula-explain">
+        <table>
+          <tr><td class="var-estimated">$\beta_k$</td><td>the choice coefficients of class $k$</td></tr>
+          <tr><td class="var-estimated">$\pi_k(z_n)$</td><td>the probability that individual $n$ belongs to class $k$, which can be modeled on demographic characteristics $z_n$</td></tr>
+          <tr><td class="var-observed">$z_n$</td><td>individual characteristics (income, age, and so on), or just a constant</td></tr>
+          <tr><td class="var-researcher">$K$</td><td>the number of classes, which must be set in advance</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <p>The class probability $\pi_k$ can be just a constant, or it can be made to depend on demographic characteristics, the latter able to answer "what kind of person is more likely to belong to the price-sensitive type," which is especially useful for market segmentation. Latent class and mixed logit each have their strengths:</p>
+
+    <div class="table-scroll">
+    <table>
+      <thead>
+        <tr><th>Dimension</th><th>Latent class logit</th><th>Mixed logit</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Form of heterogeneity</td><td>Discrete ($K$ types)</td><td>Continuous (coefficients follow a distribution)</td></tr>
+        <tr><td>Interpretability</td><td>High; each class has a clear preference profile that can be named</td><td>Medium; gives only the mean and the spread</td></tr>
+        <tr><td>Number of parameters</td><td>grows with $K$ (one set per class plus class-probability parameters)</td><td>compact (two parameters per random coefficient)</td></tr>
+        <tr><td>Computation</td><td>no integral, just a sum, fast</td><td>requires simulated integration</td></tr>
+        <tr><td>Typical use</td><td>user segmentation, market segmentation, product design</td><td>elasticities, WTP, flexible substitution</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <p>Determining $K$ is the core decision: too small and it fails to capture the heterogeneity, too large and it overfits while the classes become hard to interpret. The standard practice is to estimate for each of $K=1,2,3,\dots$ and select using BIC or CAIC, BIC penalizing parameters more heavily and usually being more robust. Beyond the information criteria, also look at whether the posterior classification is sharp: compute each person's posterior probability of belonging to each class, the ideal being that most people are close to 1 for some class; if the posteriors are generally flattened across classes, it often means $K$ is set too large. Below is a self-consistent illustration on a sample of 2000 choices: <span class="demo-badge">illustrative data</span></p>
+
+    <div class="table-scroll">
+    <table>
+      <thead>
+        <tr><th>$K$</th><th>Number of parameters</th><th>$\mathcal{L}$</th><th>AIC</th><th>BIC</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>1 (i.e., MNL)</td><td>4</td><td>-2450</td><td>4908</td><td>4930</td></tr>
+        <tr><td>2</td><td>9</td><td>-2180</td><td>4378</td><td>4428</td></tr>
+        <tr><td><strong>3</strong></td><td>14</td><td>-2095</td><td>4218</td><td><strong>4296</strong></td></tr>
+        <tr><td>4</td><td>19</td><td>-2088</td><td><strong>4214</strong></td><td>4320</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <p>From $K=1$ to $K=3$, AIC and BIC both fall sharply; but at $K=4$, AIC moves only a touch further (4218 to 4214), while BIC rises back (4296 to 4320). BIC, penalizing more heavily, bottoms out at $K=3$, while AIC leans slightly toward $K=4$. When the two criteria clash, one usually listens to the more conservative BIC, then checks whether the fourth class really has a nameable, distinct profile to settle it. Once estimation is done, use the posterior probabilities to softly classify each user, tally the demographic makeup and choice patterns of each class, and you can name the classes (price-sensitive type, content-preferring type, ad-averse type), which is exactly the signature advantage of latent class over mixed logit.</p>
+
+    <!-- ============================================================ -->
+    <h2 id="model-ladder">4.6 The Model Ladder and Model Choice</h2>
+
+    <p>Arrange the models of this chapter and adjacent chapters into a ladder of increasing capability: each rung up buys a measure of new ability and also costs a measure more in computation and data.</p>
+
+    <div class="table-scroll">
+    <table>
+      <thead>
+        <tr><th>Model</th><th>Assumption relaxed</th><th>Substitution pattern</th><th>Data requirement</th><th>Computational cost</th><th>Typical use</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>MNL (Chapter 03)</td><td>baseline</td><td>constrained by IIA, proportional substitution</td><td>low</td><td>very low</td><td>baseline, quick description</td></tr>
+        <tr><td>Nested logit</td><td>within-nest errors correlated</td><td>proportional substitution within the nest under IIA (within-nest IIA still holds), IIA broken across nests (within-nest priority, across-nest suppressed, obeying the weaker IIN)</td><td>requires an a priori grouping</td><td>medium-low</td><td>clear hierarchical decisions</td></tr>
+        <tr><td>Probit</td><td>errors arbitrarily normally correlated</td><td>arbitrary (described by the covariance)</td><td>demanding covariance identification</td><td>high (high-dimensional integration)</td><td>the correlation structure itself is the object of study</td></tr>
+        <tr><td>Mixed / latent class</td><td>heterogeneous coefficients</td><td>arbitrary (derived from the preference distribution)</td><td>usually needs panel data</td><td>medium (simulated integration)</td><td>elasticities, WTP, segmentation (the workhorse)</td></tr>
+        <tr><td>BLP (Chapter 06)</td><td>attributes correlated with the error (endogeneity)</td><td>arbitrary, and handles endogenous prices</td><td>market-level data plus instruments</td><td>high</td><td>endogeneity, equilibrium counterfactuals</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <p>There is a discipline to climbing this ladder: go from simple to complex, one rung at a time, and do not reach for the most complex model at the outset. First estimate MNL to get a baseline with sensible signs and starting values, and run an IIA test (Hausman and McFadden's 1984 specification test is the classic tool) to judge whether relaxation is needed at all. With a clear grouping, try nesting and report $\hat\lambda$ and the LR test; if you suspect preference heterogeneity, move to mixed logit, starting from one or two key random coefficients and adding them one at a time with LR tests. Complexity has to match the sample size: each additional parameter roughly requires another batch of effective observations to support it, and random coefficients are especially hungry for sample. Writing this upgrade path into the paper together with the test results at each step is more persuasive than simply throwing out a complex model, because it lets readers see that every rung of complexity has passed the test of the data and earned the data's endorsement.</p>
+
+    <div class="takeaway-box">
+      <div class="box-title">Bottom Line</div>
+      Start from MNL and use an IIA test to decide whether to relax: with a grouping go to nesting, with heterogeneity go to mixed, and to handle endogeneity go to BLP. At each rung up, report the corresponding nested test ($\lambda=1$ or $\sigma=0$), letting the data endorse the complexity rather than piling it up out of personal preference.
+    </div>
+
+    <!-- ============================================================ -->
+    <h2 id="variations">4.7 A Quick Tour of Variants</h2>
+
+    <p>Beyond the standard framework there are a few commonly used variants, each dealing with a particular kind of special data. For each below we give only a placement in a platform setting and one core reference; look up the details as needed.</p>
+
+    <h3>Joint SP/RP Estimation</h3>
+    <p>Stated preference (SP, hypothetical choices in a survey) is flexible to design but carries hypothetical bias, while revealed preference (RP, real purchases) is genuine but limited in variation. The two can be estimated jointly, sharing the same set of preference coefficients $\beta$, with a scale parameter absorbing the difference in noise between the two data types. In a platform setting, this framework applies when jointly estimating choices from in-interface A/B tests (SP-like in nature) together with real order data (RP). The source is Ben-Akiva and Morikawa's (1990) treatment of jointly estimating RP data and SP intentions data.</p>
+
+    <h3>Exploded Logit (Ranking Data)</h3>
+    <p>When the data are not merely "who was chosen" but a full ranking (first, second, third preference), a ranking can be decomposed into a string of conditional choices: first choose the best from the full set, remove it and choose the next best from what remains, and so on, multiplying the step probabilities together. This makes full use of the ranking information and is more sample-efficient, and it applies to settings such as ranking preferences over recommendation slots and multiple-choice scoring on platforms. The source is Beggs, Cardell, and Hausman's (1981) study of the demand for electric cars.</p>
+
+    <h3>Ordered Logit / Probit (Rating Data)</h3>
+    <p>Responses like ratings (1 to 5 stars) and satisfaction take ordered values but are not mutually substitutable options, and should use an ordered model: assume a single continuous latent utility, and which interval it falls into is determined by a set of cut points to be estimated. Its key assumption is proportional odds (parallel regressions), namely that the same set of coefficients applies to all cut points, which can be checked with the Brant test; when rejected, switch to a partial proportional model that lets the coefficients vary by level. Predicting listing ratings and content scores on platforms are typical settings. The standard source for ordered response models is McKelvey and Zavoina (1975), and the check for parallel regressions is in Brant (1990).</p>
+
+    <!-- ============================================================ -->
+    <h2 id="code">4.8 Code</h2>
+
+    <p>With the model chosen, the next step is to estimate it. Below are two minimal runnable skeletons for the subscription-example structure, one for nested logit and one for mixed logit. The data are in long format: each row corresponds to one "individual × option × period," carrying the chosen indicator and the option attributes price, ads, and rating. R uses <code>mlogit</code>, and Python's mixed logit uses <code>xlogit</code>.</p>
+
+    <div class="code-tabs">
+      <div class="tab-bar">
+        <button class="tab-btn active">R (mlogit)</button>
+        <button class="tab-btn">Python (xlogit)</button>
+      </div>
+      <div class="tab-panel active">
+<pre><code>library(mlogit)
+
+# Long to indexed: id is the individual, alt the option label, choice a logical column
+subs$negprice &lt;- -subs$price      # Negate the cost term so a lognormal random coefficient keeps the negative sign
+mdata &lt;- dfidx(subs, choice = "choice", idx = c("id", "alt"))
+
+# --- Nested logit: subscribe group {A,B,C} vs. not subscribing ---
+nl &lt;- mlogit(choice ~ price + ads + rating | 1, data = mdata,
+             nests = list(subscribe = c("A", "B", "C"),
+                          none      = c("outside")),
+             un.nest.el = TRUE)   # All nests share one lambda; the not-subscribing nest is degenerate (single option), so only the subscribe nest's lambda is actually identified
+summary(nl)                       # Focus on the estimate and interval of iv (i.e., lambda)
+
+# --- Mixed logit: price coefficient random, panel aggregated by id ---
+ml &lt;- mlogit(choice ~ negprice + ads + rating | 1, data = mdata,
+             rpar = c(negprice = "ln"), # Lognormal has positive support, so negate the cost term first and then set 'ln'
+             R = 500, halton = NA,     # 500 Halton draws
+             panel = TRUE, correlation = FALSE)
+summary(ml)</code></pre>
+      </div>
+      <div class="tab-panel">
+<pre><code>from xlogit import MixedLogit
+
+# Long-format columns: choice_id (each choice), alt, choice, price, ads, rating, id (individual)
+df["negprice"] = -df["price"]     # Negate the cost term so a lognormal random coefficient keeps the negative sign
+model = MixedLogit()
+model.fit(
+    X=df[["negprice", "ads", "rating"]],
+    y=df["choice"],
+    varnames=["negprice", "ads", "rating"],
+    ids=df["choice_id"],
+    alts=df["alt"],
+    panels=df["id"],              # Panel: multiple choices of the same id are integrated at the individual level
+    randvars={"negprice": "ln"},  # Lognormal has positive support, so negate the cost term first and then set 'ln'
+    n_draws=500, halton=True, random_state=2026)
+model.summary()
+
+# Nested logit is outside xlogit's scope;
+# in Python use biogeme or pylogit; R's mlogit supports both.</code></pre>
+      </div>
+    </div>
+
+    <p>Three reminders. First, the <code>iv</code> that <code>mlogit</code> reports is exactly the dissimilarity parameter $\lambda$, so remember to look at its point estimate and interval to judge whether it departs significantly from 1. Second, always declare the individual identifier correctly for panels (R's <code>panel=TRUE</code>, xlogit's <code>panels</code>), or the product falls outside the integral and the panel is treated as a cross-section. Third, two parameterizations of nested logit are in circulation: the one used in this chapter and by <code>mlogit</code> divides the within-group utility uniformly by $\lambda$ and is globally consistent with RUM; the other skips this division and only attaches a coefficient to the inclusive value. These two differ in more than convention: there is also a hard-constraint difference, that when a coefficient is shared across several groups (for instance two groups of options sharing the same price coefficient), the version that does not divide by $\lambda$ is no longer consistent with utility maximization, and loses its behavioral interpretation, so the two are equivalent only when there are no coefficients shared across groups. Before comparing results across software, or reading older literature, first check which one the other side uses and whether the within-group utility is $\lambda$-scaled, so as not to read the same model's $\lambda$ and $\beta$ crookedly. Simulation details like the number of draws, the type of sequence, and convergence diagnostics are all developed in Chapter 05.</p>
+
+    <!-- ============================================================ -->
+    <h2 id="misconceptions">4.9 Common Pitfalls</h2>
+
+    <div class="table-scroll">
+    <table>
+      <thead>
+        <tr><th>Pitfall</th><th>Why it's wrong</th><th>What to do instead</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Repeatedly probing nesting structures by goodness of fit alone, keeping the one with the highest log-likelihood</td>
+          <td>Grouping is a behavioral assumption; relying on fit alone yields a structure that lacks behavioral meaning and is not robust</td>
+          <td>Put economic logic first, then choose among candidates using AIC/BIC and the plausibility of $\lambda$ (Section 4.2)</td>
+        </tr>
+        <tr>
+          <td>Forcing an interpretation on $\hat\lambda\gt 1$</td>
+          <td>An out-of-range $\lambda$ is essentially a diagnostic signal about the grouping specification, not interpretable within-nest complementarity</td>
+          <td>Report the interval, test whether it significantly crosses the boundary, and go back to the decision logic to rearrange the nesting (Section 4.2)</td>
+        </tr>
+        <tr>
+          <td>Using a normal for the price coefficient and not even checking for positive price coefficients</td>
+          <td>The normal is unbounded on both sides, so some fraction of people necessarily have a positive price coefficient, defying common sense</td>
+          <td>Use a sign-preserving distribution such as the lognormal for cost terms, ruling it out at the parameterization stage (Section 4.4)</td>
+        </tr>
+        <tr>
+          <td>Making every coefficient random</td>
+          <td>Each random coefficient adds only one parameter (its standard deviation) over a fixed one, but making them all random still over-parameterizes the model, hurting identification and convergence</td>
+          <td>Start from one or two key coefficients chosen by theory, adding them one at a time with LR tests (Section 4.4)</td>
+        </tr>
+        <tr>
+          <td>Treating the number of latent classes $K$ as objective truth</td>
+          <td>$K$ is a modeling choice; different criteria can give different answers, and boundary testing has its pitfalls</td>
+          <td>Judge using BIC or CAIC together with the sharpness of posterior classification, and report the sensitivity (Section 4.5)</td>
+        </tr>
+        <tr>
+          <td>With panel data, failing to integrate at the individual level and moving the product outside the integral</td>
+          <td>This amounts to assuming a fresh set of tastes at each choice, discarding within-individual persistence and understating heterogeneity</td>
+          <td>Keep the product inside the integral and declare the individual identifier correctly (Sections 4.4 and 4.8)</td>
+        </tr>
+        <tr>
+          <td>Putting video-platform subscriptions and ride-hailing service tiers into the same choice set and nesting them</td>
+          <td>Subscribing to streaming and hailing a ride are not the same decision; mixing them into one nest has no behavioral meaning</td>
+          <td>Both the choice set and the nesting must correspond to a single, real decision context</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+
+    <!-- ============================================================ -->
+    <h2 id="summary">4.10 Chapter Summary</h2>
+
+    <p>This chapter loosened logit's IIA along two paths. Correlate the errors and you get nested logit: the dissimilarity parameter $\lambda$ makes within-group options near substitutes for one another, changing the substitution pattern from proportional carving-up to within-group priority, so that in the subscription example users who lose platform A turn more to the same-kind general-interest platform B. Nesting is a member of the GEV family, with overlap and more complex correlation structures left to different generators to express. Probit expresses arbitrary correlation with a free normal covariance matrix, at the cost of high-dimensional integration and demanding identification, with the number of identifiable covariance parameters being $\tfrac{J(J-1)}{2}-1$. Make the coefficients heterogeneous and you get mixed logit: equip the coefficients with a distribution and integrate it out, breaking IIA and approximating any random-utility model, the default workhorse of platform research; the choice of distribution determines the credibility of the conclusions, the product for panels must go inside the integral, and WTP, as a ratio distribution, should be reported with the median and quantiles. Latent class logit trades discrete types for nameable market segmentation, with $K$ set jointly by BIC and the sharpness of posterior classification. In the end, the discipline of choice modeling is always from simple to complex, with every rung of complexity having to pass the test of a nested test and win the data's nod of approval.</p>
+
+    <p>The several relaxations in this chapter all run into the same wall in the end: mixed logit's choice probability, the panel joint probability, and probit's high-dimensional integral all have no closed-form solution. Chapter 05 takes this wall down head-on, laying out Monte Carlo simulation, low-discrepancy sequences like Halton, maximum simulated likelihood (MSL), and convergence diagnostics, filling in all at once the estimation details this chapter kept pushing back. Further on, Chapter 06 handles the endogeneity that arises when attributes correlate with the error, connecting the demand model to supply and equilibrium, and formally entering BLP.</p>
+
+    <!-- ============================================================ -->
+    <h2 id="readings">Further Reading</h2>
+
+    <h4>Direct sources for this chapter</h4>
+    <ul>
+      <li>Train, K. E. (2009). <em>Discrete Choice Methods with Simulation</em> (2nd ed.). Cambridge University Press. (Chapter 4 on GEV/nested, Chapter 5 on probit, Chapter 6 on mixed logit)</li>
+      <li>McFadden, D. (1978). Modelling the choice of residential location. In A. Karlqvist, L. Lundqvist, F. Snickars, &amp; J. Weibull (Eds.), <em>Spatial Interaction Theory and Planning Models</em> (pp. 75–96). North-Holland. (the source of the GEV family and the generator)</li>
+      <li>McFadden, D., &amp; Train, K. (2000). Mixed MNL models for discrete response. <em>Journal of Applied Econometrics</em>, <em>15</em>(5), 447–470. <a href="https://doi.org/10.1002/1099-1255(200009/10)15:5&lt;447::AID-JAE570&gt;3.0.CO;2-1">https://doi.org/10.1002/1099-1255(200009/10)15:5&lt;447::AID-JAE570&gt;3.0.CO;2-1</a> (the universal approximation theorem for mixed logit)</li>
+    </ul>
+
+    <h4>Nesting, panels, and testing</h4>
+    <ul>
+      <li>Revelt, D., &amp; Train, K. (1998). Mixed logit with repeated choices: Households' choices of appliance efficiency level. <em>Review of Economics and Statistics</em>, <em>80</em>(4), 647–657. <a href="https://doi.org/10.1162/003465398557735">https://doi.org/10.1162/003465398557735</a> (panel mixed logit)</li>
+      <li>Hausman, J. A., &amp; McFadden, D. (1984). Specification tests for the multinomial logit model. <em>Econometrica</em>, <em>52</em>(5), 1219–1240. <a href="https://doi.org/10.2307/1910997">https://doi.org/10.2307/1910997</a> (the IIA specification test)</li>
+      <li>Kodde, D. A., &amp; Palm, F. C. (1986). Wald criteria for jointly testing equality and inequality restrictions. <em>Econometrica</em>, <em>54</em>(5), 1243–1248. <a href="https://doi.org/10.2307/1912331">https://doi.org/10.2307/1912331</a> (critical values for tests with boundary constraints)</li>
+    </ul>
+
+    <h4>GEV extensions, latent class, and WTP</h4>
+    <ul>
+      <li>Chu, C. (1989). A paired combinatorial logit model for travel demand analysis. In <em>Proceedings of the Fifth World Conference on Transportation Research</em> (Vol. 4, pp. 295–309). Western Periodicals. (the introduction of PCL)</li>
+      <li>Ben-Akiva, M., &amp; François, B. (1983). <em>μ-homogeneous generalized extreme value model</em> [Working paper]. Department of Civil Engineering, MIT. (the proof that the GEV degree of homogeneity can be relaxed)</li>
+      <li>Koppelman, F. S., &amp; Wen, C.-H. (2000). The paired combinatorial logit model: Properties, estimation and application. <em>Transportation Research Part B: Methodological</em>, <em>34</em>(2), 75–89. <a href="https://doi.org/10.1016/S0191-2615(99)00012-0">https://doi.org/10.1016/S0191-2615(99)00012-0</a> (PCL)</li>
+      <li>Wen, C.-H., &amp; Koppelman, F. S. (2001). The generalized nested logit model. <em>Transportation Research Part B: Methodological</em>, <em>35</em>(7), 627–641. <a href="https://doi.org/10.1016/S0191-2615(00)00045-X">https://doi.org/10.1016/S0191-2615(00)00045-X</a> (GNL)</li>
+      <li>Greene, W. H., &amp; Hensher, D. A. (2003). A latent class model for discrete choice analysis: Contrasts with mixed logit. <em>Transportation Research Part B: Methodological</em>, <em>37</em>(8), 681–698. <a href="https://doi.org/10.1016/S0191-2615(02)00046-2">https://doi.org/10.1016/S0191-2615(02)00046-2</a> (latent class versus mixed logit)</li>
+      <li>Train, K., &amp; Weeks, M. (2005). Discrete choice models in preference space and willingness-to-pay space. In R. Scarpa &amp; A. Alberini (Eds.), <em>Applications of Simulation Methods in Environmental and Resource Economics</em> (pp. 1–16). Springer. <a href="https://doi.org/10.1007/1-4020-3684-1_1">https://doi.org/10.1007/1-4020-3684-1_1</a> (WTP space)</li>
+    </ul>
+
+    <h4>Variants</h4>
+    <ul>
+      <li>Ben-Akiva, M., &amp; Morikawa, T. (1990). Estimation of switching models from revealed preferences and stated intentions. <em>Transportation Research Part A: General</em>, <em>24</em>(6), 485–495. <a href="https://doi.org/10.1016/0191-2607(90)90037-7">https://doi.org/10.1016/0191-2607(90)90037-7</a> (joint SP/RP estimation)</li>
+      <li>Beggs, S., Cardell, S., &amp; Hausman, J. (1981). Assessing the potential demand for electric cars. <em>Journal of Econometrics</em>, <em>17</em>(1), 1–19. <a href="https://doi.org/10.1016/0304-4076(81)90056-7">https://doi.org/10.1016/0304-4076(81)90056-7</a> (exploded logit)</li>
+      <li>McFadden, D. (1974). Conditional logit analysis of qualitative choice behavior. In P. Zarembka (Ed.), <em>Frontiers in Econometrics</em> (pp. 105–142). Academic Press. (the foundation of conditional logit)</li>
+      <li>McKelvey, R. D., &amp; Zavoina, W. (1975). A statistical model for the analysis of ordinal level dependent variables. <em>Journal of Mathematical Sociology</em>, <em>4</em>(1), 103–120. <a href="https://doi.org/10.1080/0022250X.1975.9989847">https://doi.org/10.1080/0022250X.1975.9989847</a> (ordered logit/probit)</li>
+      <li>Brant, R. (1990). Assessing proportionality in the proportional odds model for ordinal logistic regression. <em>Biometrics</em>, <em>46</em>(4), 1171–1178. <a href="https://doi.org/10.2307/2532457">https://doi.org/10.2307/2532457</a> (the Brant test for parallel regressions)</li>
+    </ul>
+
+    <footer class="page-footer">
+      From Choices to Counterfactuals: Structural Estimation for Digital Platform Research · 04 Nested and Mixed Logit
+    </footer>
+
+  </main>
+</div>
+
+<script defer src="assets/katex/katex.min.js"></script>
+<script defer src="assets/katex/auto-render.min.js"></script>
+<script defer src="assets/notes.js"></script>
+</body>
+</html>

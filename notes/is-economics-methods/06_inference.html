@@ -1,0 +1,1942 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Inference: Delta Method, Bootstrap, Clustering &amp;
+Testing | Foundations of Information Systems Economics</title>
+  <link rel="stylesheet" href="assets/style.css" />
+  <script defer="" src="assets/katex/katex.min.js"></script>
+  <script>document.addEventListener("DOMContentLoaded", function () {
+ var mathElements = document.getElementsByClassName("math");
+ var macros = [];
+ for (var i = 0; i < mathElements.length; i++) {
+  var texText = mathElements[i].firstChild;
+  if (mathElements[i].tagName == "SPAN") {
+   katex.render(texText.data, mathElements[i], {
+    displayMode: mathElements[i].classList.contains('display'),
+    throwOnError: false,
+    macros: macros,
+    fleqn: false
+   });
+}}});
+  </script>
+  <link rel="stylesheet" href="assets/katex/katex.min.css" />
+</head>
+<body>
+<div class="page-wrapper">
+  <nav class="sidebar">
+    <div class="sidebar-title">Foundations of Information Systems Economics</div>
+    <div class="sidebar-subtitle">Theory · Methods · Applications</div>
+    <div class="toc-section-label">On this page</div>
+    <div class="toc">
+<ul>
+<li><a href="#introduction" id="toc-introduction">Introduction</a></li>
+<li><a href="#a-t-value-of-13.76" id="toc-a-t-value-of-13.76">1 A t
+Value of 13.76</a></li>
+<li><a href="#economic-model-and-estimand"
+id="toc-economic-model-and-estimand">2 Economic Model and
+Estimand</a></li>
+<li><a
+href="#the-theory-of-the-standard-error-delta-bootstrap-and-correlation"
+id="toc-the-theory-of-the-standard-error-delta-bootstrap-and-correlation">3
+The Theory of the Standard Error: Delta, Bootstrap, and
+Correlation</a></li>
+<li><a href="#testing-and-practice" id="toc-testing-and-practice">4
+Testing and Practice</a></li>
+<li><a href="#anchoring-papers" id="toc-anchoring-papers">5 Anchoring
+Papers</a></li>
+<li><a href="#a-full-walkthrough-on-halcyon-data"
+id="toc-a-full-walkthrough-on-halcyon-data">6 A Full Walkthrough on
+Halcyon Data</a></li>
+<li><a href="#failure-modes-and-robustness"
+id="toc-failure-modes-and-robustness">7 Failure Modes and
+Robustness</a></li>
+<li><a href="#further-reading" id="toc-further-reading">8 Further
+Reading</a></li>
+</ul>
+    </div>
+    <div class="file-nav">
+      <div class="nav-label">This series</div>
+      <a href="index.html">Home · Overview</a>
+      <a href="introduction.html">Introduction · How to Use</a>
+      <a href="01_consumer_producer_welfare.html">01 Consumer, Producer &amp; Welfare</a>
+      <a href="02_game_theory.html">02 Game Theory</a>
+      <a href="03_information_mechanism_design.html">03 Information &amp; Mechanism Design</a>
+      <a href="04_pricing_imperfect_competition.html">04 Pricing &amp; Imperfect Competition</a>
+      <a href="05_estimation_mle_gmm.html">05 Estimation: MLE &amp; GMM</a>
+      <a href="06_inference.html">06 Inference: Bootstrap &amp; Clustering</a>
+      <a href="07_panel_dynamic_panel.html">07 Panel &amp; Dynamic Panel</a>
+      <a href="08_nonparametrics.html">08 Nonparametrics &amp; Semiparametrics</a>
+      <a href="09_potential_outcomes.html">09 Potential Outcomes &amp; Selection</a>
+      <a href="10_research_design_architecture.html">10 Research Design</a>
+      <a href="11_measurement_digital_traces.html">11 Measurement &amp; Digital Traces</a>
+      <a href="12_iv_late_mte.html">12 IV: LATE &amp; MTE</a>
+      <a href="13_did_event_studies.html">13 DiD &amp; Event Studies</a>
+      <a href="14_rdd_synthetic_control.html">14 RDD &amp; Synthetic Control</a>
+      <a href="15_sensitivity_partial_identification.html">15 Sensitivity &amp; Partial Identification</a>
+      <a href="16_causal_ml_dml.html">16 Causal ML &amp; DML</a>
+      <a href="17_digital_experimentation.html">17 Digital Experimentation</a>
+      <a href="18_interference_marketplace_experiments.html">18 Interference &amp; Marketplace Experiments</a>
+      <a href="19_discrete_choice.html">19 Discrete Choice &amp; Mixed Logit</a>
+      <a href="20_demand_blp.html">20 Demand Estimation &amp; BLP</a>
+      <a href="21_supply_markups_mergers.html">21 Supply, Markups &amp; Mergers</a>
+      <a href="22_entry_partial_id.html">22 Entry &amp; Partial Identification</a>
+      <a href="23_dynamic_structural.html">23 Dynamic Structural Models</a>
+      <a href="24_platforms_networks.html">24 Platforms &amp; Network Effects</a>
+      <a href="25_search_advertising.html">25 Search, Advertising &amp; Information Goods</a>
+      <a href="26_ai_algorithms_data.html">26 AI, Adoption &amp; Data Economics</a>
+      <a href="27_quick_reference.html">27 Quick Reference &amp; Tools</a>
+    </div>
+  </nav>
+  <main class="main-content" id="top">
+    <header class="page-header">
+      <h1>Inference: Delta Method, Bootstrap, Clustering &amp;
+Testing</h1>
+      <div class="subtitle">Honest Standard Errors</div>
+      <div class="meta">Foundations of Information Systems Economics · Chapter 6</div>
+    </header>
+<h2 id="introduction">Introduction</h2>
+<p>Halcyon’s city experiment delivered a result so clean it was almost
+reassuring: <span class="math inline">t=13.76</span>. The point estimate
+is fine and the regression converged without complaint. The trouble is
+that once you treat orders that are correlated within a city as if they
+were independent observations, the sample looks like it carries far more
+information than it actually does. Cluster by city, and the <span
+class="math inline">t</span> value falls to 3.50. Worse still, in a
+placebo experiment where the true effect is exactly zero, that seemingly
+precise iid standard error produces a “significant” result about two
+thirds of the time.</p>
+<p>Inference errors have a dangerous kind of politeness: they leave the
+point estimate untouched and quietly shrink the number in parentheses.
+Nonlinear quantities require the Delta method or the bootstrap to
+propagate parameter uncertainty; correlation within cities, firms, or
+users demands cluster-robust variances, and correlation over time
+demands the corresponding long-run variance estimators; and when there
+are only a few clusters, when estimation happens in two steps, or when a
+test is reparameterized, the familiar asymptotic approximations keep
+breaking down. The fact that Wald, likelihood ratio, and Lagrange
+multiplier tests all converge to the same thing in large samples is no
+guarantee that they will agree in the finite sample sitting in front of
+you.</p>
+<p>This chapter is organized around one question: what does a standard
+error actually promise? Halcyon’s willingness-to-pay ratio, its city
+experiment, and a time series will each show, in turn, that a variance
+is not decoration that the regression command hands you for free, but
+part of the research design and the dependence structure of the data. A
+credible empirical result does not need the largest possible <span
+class="math inline">t</span> value; it needs a <span
+class="math inline">t</span> value that survives interpretation even
+after you have fully acknowledged the uncertainty.</p>
+<h2 id="a-t-value-of-13.76">1 A t Value of 13.76</h2>
+<div class="case">
+<p>Halcyon is a fictional food-delivery platform. We tell this case with
+simulated data, which buys us something real data can never offer as a
+teaching device: the data-generating process is fully known, so every
+standard error can be reconciled against the truth. The platform
+operates in 40 cities and wants to evaluate the causal effect of a
+city-level operating policy (say, a new delivery-pricing scheme) on how
+users place orders. The policy launches in a randomly chosen half of the
+cities, with the other half as controls, and the outcome is measured at
+the level of the user session, with about 200 sessions per city.
+Management’s question is direct: how much did the policy raise the
+outcome metric, and can we believe the number?</p>
+<p>The platform’s analyst ran the most direct regression, regressing the
+session-level outcome <span class="math inline">y</span> on an indicator
+<span class="math inline">D</span> for whether the city launched the
+policy, <span class="math inline">y_{ic} = \mu + \tau D_c +
+\varepsilon_{ic}</span>, where <span class="math inline">i</span>
+indexes the session and <span class="math inline">c</span> the city. The
+estimated treatment effect is <span class="math inline">\hat\tau =
+0.318</span>. She computed the standard error the regression reports by
+default: the SE is 0.0231, so the <span class="math inline">t</span>
+value comes out to <span class="math inline">0.318 / 0.0231 =
+13.76</span>, with a <span class="math inline">p</span> value of <span
+class="math inline">4 \times 10^{-43}</span>. That number says that if
+the policy truly had no effect, the chance of seeing a <span
+class="math inline">\hat\tau</span> this large would be unimaginably
+small. She was ready to write the ironclad conclusion into her
+report.</p>
+</div>
+<p>That 13.76 is the first bad number of this chapter, and it is bad in
+a way that runs deeper than plain absurdity: the arithmetic is not
+wrong, the regression coefficient is not biased, and <span
+class="math inline">\hat\tau = 0.318</span> is a reasonable estimate of
+the true value 0.25. What is wrong is that 0.0231 standard error, which
+rests on an assumption that simply does not hold here: 40 cities <span
+class="math inline">\times</span> 200 sessions <span
+class="math inline">=</span> 8000 sessions, each one a separate piece of
+information.</p>
+<p>They are not separate. The 200 sessions inside a single city share
+everything about that city in that period: local demand highs and lows,
+the weather, what competitors are doing. Once you count those common
+shocks, sessions within a city are strongly positively correlated.
+Positive correlation means redundant information: the 200th session in a
+city does not bring a fresh piece of information the way the 1st one
+did, it mostly just repeats the city’s common state. So the effective
+information contained in 8000 sessions is far less than 8000 independent
+observations, and much closer to 40 cities. The iid standard error
+treats each session as an independent vote, which amounts to conjuring
+thousands of extra votes out of thin air, and naturally computes the
+uncertainty as far too small.</p>
+<p>Getting the correlation into the standard error correctly is the job
+of the cluster-robust variance, which Section 3 derives. On Halcyon it
+gives a standard error of 0.0908, nearly four times the iid 0.0231, and
+the <span class="math inline">t</span> value collapses accordingly from
+13.76 to <span class="math inline">0.318 / 0.0908 = 3.50</span>. The
+effect is still significant, but it has dropped from “unbelievably
+certain” to “reasonably solid,” and those are entirely different things
+to report.</p>
+<div class="warning">
+<p>There is a misconception worth puncturing on the spot. Many people
+believe that swapping the standard error for a heteroskedasticity-robust
+one (the so-called robust or White standard error) fixes everything. On
+Halcyon, the heteroskedasticity-robust HC1 standard error is 0.0231,
+identical to the iid one, with no improvement whatsoever. The reason was
+planted in the previous chapter: heteroskedasticity-robust standard
+errors correct only for the single fact that observations have unequal
+variances, and they still assume zero correlation between different
+observations. The disease here is not unequal variance, it is
+correlation among sessions in the same city. Robust standard errors and
+cluster standard errors are two different things, one handles variance
+and the other handles correlation, and treating the former as a cure-all
+is one of the most common errors in applied work.</p>
+</div>
+<p>The shrinkage of one estimate’s standard error is only the tip of the
+iceberg. What is truly alarming is a health check on the reliability of
+this iid inference. Suppose the policy in fact does nothing (<span
+class="math inline">\tau = 0</span>). We repeatedly generate placebo
+data of this kind and each time use the iid standard error to test the
+correct null hypothesis “the effect is zero” at the 5% level. An honest
+5% test should reject it by mistake only 5% of the time. Yet the actual
+rejection rate of the iid inference is 64.5%: two thirds of the time it
+“discovers” a significant effect that does not exist, out of pure noise.
+With cluster-robust standard errors this false-positive rate returns to
+7.0%, close to the 5% it should be. This is the lesson the chapter
+hammers on: when the standard error is wrong, what suffers is not the
+precision of any single estimate but the credibility of your entire
+significance verdict, and it will show you a whole sky of signal where
+there is none.</p>
+<h2 id="economic-model-and-estimand">2 Economic Model and Estimand</h2>
+<p>Inference does not change what you estimate, it only cares about how
+the thing you estimated fluctuates around the truth. So this section
+first picks up the deliverables of the previous chapter, then makes
+clear which quantities this chapter will attach standard errors to.</p>
+<p>The previous chapter delivered a batch of consistent point estimates
+together with their sandwich variances. For an extremum estimator <span
+class="math inline">\hat\theta</span>, we already know that <span
+class="math inline">\sqrt{n}(\hat\theta - \theta_0)</span> is
+asymptotically normal with variance <span class="math inline">A^{-1} B
+A^{-1}</span>, where <span class="math inline">A</span> is the curvature
+of the objective function and <span class="math inline">B</span> is the
+variance of the gradient. The standard error of one coefficient <span
+class="math inline">\hat\theta_k</span> is the square root of the
+corresponding diagonal element of this asymptotic variance matrix
+divided by <span class="math inline">\sqrt n</span>, and the confidence
+interval is <span class="math inline">\hat\theta_k \pm 1.96\,
+\mathrm{SE}</span>. This machinery is already enough for a single
+coefficient. What this chapter handles are the three kinds of estimand
+for which it is not enough.</p>
+<p>The first kind is a nonlinear function of the coefficients. Besides
+the city experiment, Halcyon also ran an analysis of delivery pricing: a
+user’s satisfaction <span class="math inline">sat</span> with an order
+falls with the delivery time <span class="math inline">time</span> and
+the delivery fee <span class="math inline">fee</span>, <span
+class="math inline">sat = \beta_0 + \beta_{time}\, time + \beta_{fee}\,
+fee + \varepsilon</span>. Management wants to know how users value time,
+that is, how much extra delivery fee a user is willing to pay to save
+one minute of waiting. This quantity is a ratio of two coefficients,
+<span class="math inline">\mathrm{WTP} = \beta_{time} /
+\beta_{fee}</span>, in units of currency per minute. The regression
+gives the variance of <span class="math inline">\beta_{time}</span> and
+<span class="math inline">\beta_{fee}</span> each, but the variance of
+the ratio is not a simple combination of them, and this is exactly what
+the Delta method and the bootstrap are for.</p>
+<p>The second kind is a treatment effect on correlated data. The <span
+class="math inline">\tau</span> in the city experiment of Section 1 has
+a fine point estimate, but its standard error must fold in the
+correlation among same-city sessions, or else you get a mirage like the
+13.76.</p>
+<p>The third kind is a hypothesis itself. Often we want not just an
+interval for a coefficient but a test of a specific proposition: does
+delivery time affect repurchase at all, are two coefficients jointly
+zero. There are several ways to construct a test, and whether they agree
+or disagree is itself a question at the level of the estimand.</p>
+<p>Before working through these three kinds, we need to think clearly
+about what a standard error actually promises, otherwise all the
+corrections that follow will read like a pile of technical detail. That
+is the task of the opening of the next section. The key points of this
+section can be summarized as follows: inference does not change the
+point estimate, it only characterizes its sampling fluctuation; this
+chapter attaches honest uncertainty to three kinds of quantity, namely a
+nonlinear function of coefficients (the ratio WTP), a treatment effect
+on correlated data (the <span class="math inline">\tau</span> of the
+city experiment), and hypothesis testing itself.</p>
+<h2
+id="the-theory-of-the-standard-error-delta-bootstrap-and-correlation">3
+The Theory of the Standard Error: Delta, Bootstrap, and Correlation</h2>
+<p>This is the most finely analyzed section of the chapter. It answers a
+question that looks simple but is in fact deep: what does a standard
+error actually say, and how do you get it right in the three common
+situations? We first make clear what a standard error promises (3.1),
+then cover the two routes for a nonlinear function, the Delta method
+(3.2) and the bootstrap (3.3), then how correlation shatters the iid
+standard error and how the cluster-robust variance fixes it (3.4), and
+finally the counterpart in time series, HAC (3.5).</p>
+<h3 id="what-a-standard-error-promises">3.1 What a Standard Error
+Promises</h3>
+<p>Let us first take apart this word we say every day. Imagine we could
+redo Halcyon’s entire experiment a thousand times under exactly the same
+conditions, each time obtaining a slightly different <span
+class="math inline">\hat\tau</span> because of randomness. These
+thousand values of <span class="math inline">\hat\tau</span> form a
+distribution called the sampling distribution, which has a center (near
+the truth, if the estimator is consistent) and a width. The standard
+error is an estimate of that width, the standard deviation of the
+sampling distribution. It is not a statement about “whether this
+particular estimate is right,” but about “how spread out the estimate
+would be if we redid it many times.”</p>
+<div class="intuition">
+<p>The promise of a 95% confidence interval can be understood this way,
+and it is often misread, so it is worth stating precisely. It does not
+say “there is a 95% probability that the truth lies in this interval,”
+because the truth is a fixed number, either inside or not. It speaks
+about the procedure that builds the interval: if you redid the
+experiment many times, and built an interval each time by the same
+rules, about 95% of these intervals would cover the truth. The interval
+is random, the truth is fixed, and what is being resampled is the
+interval, not the truth. This “95% of the intervals cover the truth” is
+called coverage, and it is the gold standard for whether a standard
+error is honest. The disease of the iid inference in Section 1, put in
+the language of coverage, is that its nominally 95% intervals actually
+cover the truth far less than 95% of the time, and Section 6 will
+measure several such coverage rates.</p>
+</div>
+<p>The previous chapter already gave the source of the standard error,
+namely the sandwich variance. But inside that sandwich there is one
+inconspicuous assumption that decides everything, and this chapter
+watches it specifically: the variance of the gradient <span
+class="math inline">B = \mathbb{E}[\nabla q\, \nabla q&#39;]</span> is
+estimated by <span class="math inline">\frac{1}{n}\sum_i \nabla q_i\,
+\nabla q_i&#39;</span> under the assumption that different observations
+are independent. That sum adds each observation’s contribution as if it
+were an independent piece of information. When observations are
+correlated, this estimate is wrong, and the direction of the error is
+almost always downward, which is the subject of Section 3.4. And when
+the quantity we want is a nonlinear function of the estimate, even
+getting the variance of <span class="math inline">g(\hat\theta)</span>
+from the variance of <span class="math inline">\hat\theta</span> becomes
+a problem, which is the subject of the next two subsections.</p>
+<h3 id="the-delta-method-a-variance-for-a-nonlinear-function">3.2 The
+Delta Method: A Variance for a Nonlinear Function</h3>
+<p>We have <span class="math inline">\hat\theta</span> and its variance
+matrix <span class="math inline">\hat V</span>, and we want the variance
+of <span class="math inline">g(\hat\theta)</span>, where <span
+class="math inline">g</span> is a nonlinear function, for example the
+ratio <span class="math inline">\beta_{time}/\beta_{fee}</span>. The
+most direct idea is to straighten <span class="math inline">g</span>
+into a line near the truth, because a line is the only function that
+lets the “variance of the input” translate simply into the “variance of
+the output.” This is the Delta method.</p>
+<p>Linearize <span class="math inline">g</span> at <span
+class="math inline">\theta_0</span> with a first-order Taylor expansion,
+<span class="math inline">g(\hat\theta) \approx g(\theta_0) + \nabla
+g(\theta_0)&#39;\,(\hat\theta - \theta_0)</span>. The second term on the
+right is a known vector <span class="math inline">\nabla g</span> times
+an asymptotically normal random vector <span
+class="math inline">\hat\theta - \theta_0</span>, and the variance of a
+linear combination is standard, so:</p>
+<div class="theorem">
+<p><strong>(Delta method)</strong> If <span
+class="math inline">\sqrt{n}(\hat\theta - \theta_0) \xrightarrow{d}
+\mathcal{N}(0, \Sigma)</span>, and <span class="math inline">g</span> is
+continuously differentiable at <span class="math inline">\theta_0</span>
+with gradient <span class="math inline">\nabla g(\theta_0) \neq
+0</span>, then</p>
+<p><span class="math display">\sqrt{n}\big(g(\hat\theta) -
+g(\theta_0)\big) \xrightarrow{d} \mathcal{N}\big(0,\ \nabla
+g(\theta_0)&#39;\, \Sigma\, \nabla g(\theta_0)\big).</span></p>
+</div>
+<p>The intuition of this formula lives entirely in the gradient <span
+class="math inline">\nabla g</span>. It is an amplification factor: the
+steeper <span class="math inline">g</span> is at the truth (the larger
+<span class="math inline">\nabla g</span>), the more the same amount of
+jitter in the input <span class="math inline">\hat\theta</span> gets
+amplified by <span class="math inline">g</span> into jitter in the
+output. The variance formula <span class="math inline">\nabla
+g&#39;\Sigma \nabla g</span> just sandwiches the input variance matrix
+<span class="math inline">\Sigma</span> between this amplification
+factor front and back, another sandwich shape.</p>
+<p>Applied to a ratio it is very concrete. <span
+class="math inline">\mathrm{WTP} = g(\beta_{time}, \beta_{fee}) =
+\beta_{time}/\beta_{fee}</span>, with gradient <span
+class="math inline">\nabla g = \big(1/\beta_{fee},\
+-\beta_{time}/\beta_{fee}^2\big)&#39;</span>. Substituting into the
+formula, the variance of the ratio is</p>
+<p><span class="math display">\mathrm{Var}(\mathrm{WTP}) \approx
+\frac{1}{\beta_{fee}^2}\, V_{tt} -
+2\,\frac{\beta_{time}}{\beta_{fee}^3}\, V_{tf} +
+\frac{\beta_{time}^2}{\beta_{fee}^4}\, V_{ff},</span></p>
+<p>where <span class="math inline">V_{tt}, V_{ff}, V_{tf}</span> are the
+variances and covariance of the two coefficients. Section 6 will show
+that when the delivery fee varies enough in the data so that <span
+class="math inline">\beta_{fee}</span> is estimated precisely, the
+standard error from this formula agrees almost exactly with the true
+sampling fluctuation.</p>
+<div class="warning">
+<p>The Delta method has a fatal weakness hidden right inside that
+gradient. Look at the ratio-variance formula: the denominator carries
+<span class="math inline">\beta_{fee}^2</span> and <span
+class="math inline">\beta_{fee}^4</span> (the gradient itself carries
+<span class="math inline">\beta_{fee}</span> and <span
+class="math inline">\beta_{fee}^2</span>). When <span
+class="math inline">\beta_{fee}</span> is close to zero, that is, when
+the delivery fee does not really affect satisfaction and the coefficient
+is estimated very imprecisely, the gradient explodes and the
+linearization is completely distorted. The more fundamental problem is
+that in this case the true sampling distribution of the ratio <span
+class="math inline">\beta_{time}/\beta_{fee}</span> is severely skewed
+and may not even have a finite variance (the denominator occasionally
+grazes zero, and the ratio flies off to infinity), while the Delta
+method mechanically spits out a symmetric normal interval that erases
+the skew entirely. This “near-zero denominator” disease is called the
+Fieller problem, and it is the same ghost as the weak identification we
+will meet later in this series when we cover instrumental variables, and
+as the weak-denominator variant in Section 6. Moreover, the Delta method
+also fails when <span class="math inline">g</span> is not differentiable
+at the expansion point (as with an absolute value) or when the gradient
+happens to be zero. In these cases you need a method that does not rely
+on linearization, and that is the bootstrap.</p>
+</div>
+<h3 id="the-bootstrap-simulating-the-sampling-distribution-directly">3.3
+The Bootstrap: Simulating the Sampling Distribution Directly</h3>
+<p>The Delta method relies on an analytic linear approximation. The
+bootstrap takes an entirely different road: it does not approximate, it
+rebuilds the sampling distribution itself on the computer. The idea
+looks like a magic trick at first and turns out to be startlingly plain
+on reflection.</p>
+<p>The difficulty is that the sampling distribution normally requires
+“redoing the experiment many times” to be observed, yet we have only one
+dataset. The bootstrap’s core move is to use the empirical distribution
+of the sample in hand to impersonate the population: since the real
+population is out of reach, assume the population looks exactly like the
+sample, with each observation carrying <span
+class="math inline">1/n</span> of the probability mass. To “resample”
+from this impersonated population is to draw <span
+class="math inline">n</span> observations with replacement from the
+original sample, forming one bootstrap sample. Drawing with replacement
+is the key, because it makes each bootstrap sample slightly different
+from the original (some observations are drawn more than once, some not
+at all), which reproduces exactly the randomness of “redoing the
+experiment once.”</p>
+<div class="intuition">
+<p>Think of the bootstrap as a photocopier. It has no population as the
+original printing press, so it treats the one sample in hand as the
+master copy and, by rearranging the observations on that master with
+replacement, prints out thousands of “parallel samples.” Each parallel
+sample recomputes the statistic you care about, and the spread of those
+thousands of statistics is a portrait of the sampling distribution. Its
+magic is that it needs to know nothing about the analytic form of the
+statistic: whether what you compute is a ratio, a quantile, or a complex
+object that first estimates game parameters and then solves for a Nash
+equilibrium, the bootstrap treats them all the same and simply
+recomputes. This is also why it is so popular in structural estimation,
+where many quantities have no closed-form variance at all.</p>
+</div>
+<p>The algorithm is just three steps: draw a bootstrap sample of the
+same size with replacement from the original sample, recompute the
+statistic <span class="math inline">\hat\theta^*</span> on it, and
+repeat <span class="math inline">B</span> times (<span
+class="math inline">B</span> is often a few thousand). The spread of
+these <span class="math inline">B</span> values of <span
+class="math inline">\hat\theta^*</span> is the estimate of the sampling
+distribution. With it in hand, there are several ways to construct a
+confidence interval, increasing in refinement. The most naive is the
+percentile interval, which simply takes the 2.5% and 97.5% quantiles of
+these <span class="math inline">B</span> values. The second is the basic
+or pivotal interval, which reflects around <span
+class="math inline">\hat\theta</span> to correct for the shift of the
+bootstrap distribution relative to <span
+class="math inline">\hat\theta</span>. The most careful is the
+percentile-t (studentized) interval: for each bootstrap sample it
+computes not just <span class="math inline">\hat\theta^*</span> but also
+its own standard error, constructs a studentized <span
+class="math inline">t^* = (\hat\theta^* -
+\hat\theta)/\mathrm{SE}^*</span>, and then uses the quantiles of <span
+class="math inline">t^*</span> to build the interval.</p>
+<div class="theorem">
+<p><strong>(Higher-order refinement of the bootstrap)</strong> For an
+asymptotically normal, studentized statistic, and for a one-sided
+confidence interval, the coverage error of the percentile-t bootstrap is
+<span class="math inline">O(n^{-1})</span>, which approaches the nominal
+level faster than the <span class="math inline">O(n^{-1/2})</span> of
+the first-order normal approximation (and of the unstudentized
+percentile interval). This section constructs equal-tailed two-sided
+intervals, for which the <span class="math inline">O(n^{-1/2})</span>
+skewness errors at the two ends cancel each other, so the coverage error
+of the normal approximation is already <span
+class="math inline">O(n^{-1})</span>, and the equal-tailed percentile-t
+is likewise <span class="math inline">O(n^{-1})</span> but with a better
+constant; if instead you use a symmetric two-sided interval (taking the
+quantiles of <span class="math inline">|t^*|</span>), the <span
+class="math inline">O(n^{-1})</span> term of the percentile-t also
+cancels and the coverage error drops further to <span
+class="math inline">O(n^{-2})</span>.</p>
+</div>
+<p>This asymptotic refinement is the most charming property of the
+bootstrap, and it deserves a sentence of intuition. The first-order
+normal approximation uses only the first two moments of the sampling
+distribution (the mean and variance) and treats it as a symmetric
+normal. But the true sampling distribution often has skew (a nonzero
+third moment), and the studentized bootstrap, because it resamples
+nonparametrically, automatically captures the skew term (mathematically
+the <span class="math inline">n^{-1/2}</span> order in the Edgeworth
+expansion), so its interval can lean toward the direction it should lean
+and its coverage converges to 95% faster. The weak-denominator example
+in Section 6 will demonstrate this very plainly: when the ratio’s
+distribution is severely right-skewed, both the symmetric Delta interval
+and the percentile interval fit worse than the studentized interval.</p>
+<p>The bootstrap has several variants that must be kept apart. The
+default, the pairs bootstrap, resamples whole rows <span
+class="math inline">(y_i, x_i)</span>, is the most robust, and is immune
+to heteroskedasticity. The residual bootstrap holds <span
+class="math inline">x</span> fixed and resamples only the estimated
+residuals, is slightly more efficient but relies on homoskedasticity.
+The wild bootstrap multiplies each residual by a random sign (for
+example Rademacher weights) and is designed for heteroskedasticity, and
+it has a clustered version, the wild cluster bootstrap, which is the
+workhorse for the few-cluster problem in Section 4.</p>
+<div class="warning">
+<p>The bootstrap is not omnipotent, and its weakness is precisely its
+foothold. First, it relies on “the empirical distribution of the sample
+approximating the population,” so it requires the sample to be large
+enough and to not systematically miss some part of the population, and
+it fails in small samples. Second, it assumes by default that
+observations are independent and identically distributed (resampling
+with replacement is a simulation of iid), and once the data are
+correlated (time series, clusters) the naive bootstrap will, like the
+iid standard error, understate the uncertainty, so you must switch to
+the block bootstrap (which resamples in whole blocks to preserve
+within-block correlation) or the wild cluster bootstrap. Third, for
+statistics that are not smooth or not asymptotically normal (such as a
+parameter on the boundary of the parameter space, or an extremum
+statistic like a maximum), the bootstrap fails, and here its relative,
+subsampling (drawing smaller samples without replacement), may work
+instead. In one sentence, the bootstrap photocopies an iid sample, so if
+the sample is not iid, or the statistic is not smooth, the copy comes
+out distorted.</p>
+</div>
+<h3
+id="correlation-shatters-the-iid-standard-error-the-cluster-robust-variance">3.4
+Correlation Shatters the iid Standard Error: The Cluster-Robust
+Variance</h3>
+<p>Now back to the root of the 13.76 disease in Section 1. Where the iid
+standard error goes wrong, and how to fix it, this subsection derives
+cleanly.</p>
+<p>The problem is in the middle filling <span
+class="math inline">B</span> of the sandwich variance, that is, the
+variance of <span class="math inline">\sqrt n</span> times the sample
+gradient (for OLS this is <span class="math inline">\frac{1}{\sqrt
+n}\sum_i x_i \varepsilon_i</span>). Under the iid assumption, the
+variance of this sum equals the sum of the variances of its terms, <span
+class="math inline">\frac{1}{n}\sum_i x_i x_i&#39;
+\varepsilon_i^2</span>, because the variance of a sum of independent
+random variables has no cross-covariance terms. But when observations
+are correlated in clusters by city, the within-cluster cross-covariance
+terms <span class="math inline">\mathbb{E}[x_i x_j&#39; \varepsilon_i
+\varepsilon_j]</span> (with <span class="math inline">i, j</span> in the
+same city) are nonzero, and dropping them is exactly the understatement.
+What the cluster-robust variance does is add these within-cluster cross
+terms back.</p>
+<div class="theorem">
+<p><strong>(Cluster-robust variance)</strong> Let the observations be
+split into <span class="math inline">G</span> clusters,<a href="#fn1"
+class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>
+independent across clusters and arbitrarily correlated within a cluster.
+Stack the regressors and residuals of the <span
+class="math inline">g</span>-th cluster into <span
+class="math inline">X_g</span> and <span class="math inline">\hat
+u_g</span>. The cluster-robust variance of OLS is</p>
+<p><span class="math display">\hat V^{CR} = (X&#39;X)^{-1} \left(
+\sum_{g=1}^{G} X_g&#39;\, \hat u_g\, \hat u_g&#39;\, X_g \right)
+(X&#39;X)^{-1} = (X&#39;X)^{-1} \left( \sum_{g=1}^{G} \Big(\sum_{i \in
+g} x_i \hat u_i\Big)\Big(\sum_{i \in g} x_i \hat u_i\Big)&#39;
+\right)(X&#39;X)^{-1}.</span></p>
+</div>
+<p>Comparing the two makes the difference clear. The
+heteroskedasticity-robust (HC) filling is <span
+class="math inline">\sum_i x_i x_i&#39; \hat u_i^2</span>, which adds up
+only each observation’s own square, equivalent to assuming the
+within-cluster cross terms are zero. The cluster-robust filling is <span
+class="math inline">\sum_g (\sum_{i\in g} x_i \hat u_i)(\sum_{i\in g}
+x_i \hat u_i)&#39;</span>, which first sums <span
+class="math inline">x_i \hat u_i</span> within each cluster and then
+takes the outer product, and this step brings in all the <span
+class="math inline">i \neq j</span> cross-covariances within the
+cluster. When there is positive within-cluster correlation, these cross
+terms are positive, the filling grows, and the standard error grows with
+it. This is the mechanism behind Halcyon’s standard error rising from
+0.0231 to 0.0908. The reason the heteroskedasticity-robust HC1 stays
+stubbornly at 0.0231 is precisely that its filling contains none of
+these cross terms.</p>
+<div class="intuition">
+<p>How much information within-cluster correlation eats up has a
+beautiful rule of thumb called the Moulton factor. When the treatment
+variable varies at the cluster level, the within-cluster correlation
+coefficient is <span class="math inline">\rho</span>, and each cluster
+has on average <span class="math inline">\bar n</span> observations, the
+inflation of the correct standard error relative to the iid standard
+error is about</p>
+<p><span class="math display">\sqrt{1 + (\bar n - 1)\,\rho}.</span></p>
+<p>The intuition is “effective sample size.” When <span
+class="math inline">\rho = 0</span> (no within-cluster correlation) the
+factor is 1, and <span class="math inline">n</span> observations are
+<span class="math inline">n</span> pieces of information. When <span
+class="math inline">\rho = 1</span> (identical within the cluster) the
+factor is <span class="math inline">\sqrt{\bar n}</span>, and a whole
+cluster of <span class="math inline">\bar n</span> observations is
+really worth only one piece of information, so the effective sample size
+shrinks to the number of clusters. Reality is somewhere in between. On
+Halcyon the within-cluster correlation is about 0.083 and each cluster
+has 200 sessions, so the Moulton factor predicts an inflation of <span
+class="math inline">\sqrt{1 + 199 \times 0.083} = 4.18</span>, quite
+close to the 3.93 actually observed. Note that the <span
+class="math inline">\bar n</span> component in this factor is large:
+even if <span class="math inline">\rho</span> is a mere 0.083,
+multiplying by 199 is enough to quadruple the standard error. This
+explains why “my within-cluster correlation is tiny, so clustering
+probably does not matter” is a dangerous self-consolation, because as
+long as each cluster has many observations, even a small correlation
+gets amplified into a large bias.</p>
+</div>
+<p>A practical issue with clustering is “at which level to cluster.” The
+principle is simple and also hard: cluster at the level where you
+believe the judgment “independent across clusters, correlated within”
+holds. In the city experiment, treatment is assigned at the city level,
+so you should cluster on city; if you also worry about regional shocks
+across cities, you might cluster at the coarser regional level.
+Clustering too finely misses correlation (repeating the iid mistake),
+while clustering too coarsely leaves too few clusters (the trouble of
+the next section). A common rule of thumb is that if the model includes
+fixed effects at some level, you usually need to cluster at least at
+that level.</p>
+<h3 id="hac-the-same-thing-along-the-time-dimension">3.5 HAC: The Same
+Thing Along the Time Dimension</h3>
+<p>Clustering handles clustered correlation in the cross section. Switch
+to a time series, and the same disease appears in the guise of serial
+correlation, with a cure cut from the same cloth. Daily metrics like a
+platform’s daily active users or gross merchandise volume are strongly
+correlated between today and yesterday, so the regression residuals are
+serially correlated, and the iid standard error once again understates
+by treating correlated observations as independent.</p>
+<p>The fix is the heteroskedasticity and autocorrelation consistent
+(HAC) variance, most commonly the Newey-West estimator. On top of the
+heteroskedasticity term, its filling adds the covariance between
+residuals and their lags, giving smaller weight to more distant
+lags:</p>
+<p><span class="math display">\hat\Omega^{HAC} = \sum_{t} \hat u_t^2\,
+x_t x_t&#39; + \sum_{\ell=1}^{L} w_\ell \sum_{t=\ell+1}^{T} \hat u_t
+\hat u_{t-\ell}\big(x_t x_{t-\ell}&#39; + x_{t-\ell}
+x_t&#39;\big),\qquad w_\ell = 1 - \frac{\ell}{L+1}.</span></p>
+<p>The first term is the heteroskedasticity-robust filling, and the
+second brings in the time correlation up to lag <span
+class="math inline">L</span>, where <span
+class="math inline">w_\ell</span> is the triangular weight given by the
+Bartlett kernel, letting the covariance contribution decay linearly to
+zero with lag distance. The bandwidth <span class="math inline">L</span>
+must be chosen: too small misses long-range correlation, too large
+brings in too much noisy covariance. This is the same idea as clustering
+in two incarnations, with within-cluster correlation replaced by time
+correlation, and the “cluster” replaced by “a window of time.” Section 6
+will show that on a series with AR(1) errors, Newey-West raises the
+standard error from the iid 0.0484 to 0.0613 and lifts the confidence
+interval’s coverage from 84.9% to 92.0%, the right direction, but also
+honestly exposing the old complaint that HAC often does not fix things
+all the way in finite samples and still slightly undercovers.</p>
+<p>The key points of this section can be summarized as follows: a
+standard error is an estimate of the width of the sampling distribution,
+and whether it is honest is checked by coverage; a nonlinear function of
+coefficients is handled either by linearizing with the Delta method (the
+ratio variance has a closed form, but distorts through skew when the
+denominator is near zero) or by simulating the sampling distribution
+directly with the bootstrap (percentile-t has a higher-order refinement,
+but requires iid and smoothness); the mechanism by which correlated data
+shatter the iid standard error is that the cross-covariances in the
+sandwich filling are dropped, the cluster-robust variance adds the
+within-cluster cross terms back and its inflation is characterized by
+the Moulton factor, and HAC is its counterpart along the time
+dimension.</p>
+<h2 id="testing-and-practice">4 Testing and Practice</h2>
+<p>Once the standard error is right, the next step is to use it for
+testing, and to handle a few practical headaches you cannot avoid. This
+section covers the trinity of hypothesis testing (4.1), the few-cluster
+correction (4.2), randomization inference (4.3), and standard errors for
+two-step estimation (4.4).</p>
+<h3 id="the-trinity-of-hypothesis-testing">4.1 The Trinity of Hypothesis
+Testing</h3>
+<p>To test a hypothesis, say “delivery time does not affect repurchase”
+(some coefficient is zero), there are three classic constructions that
+approach the same problem from three different angles, asymptotically
+equivalent yet each with its own temperament.</p>
+<p>The Wald test stands at the unrestricted-estimation end: first
+estimate the parameter freely, then see how far it is from the null
+value, standardizing that distance by the estimated variance. For a
+single restriction <span class="math inline">\theta = \theta_0</span>,
+the Wald statistic is <span class="math inline">W = (\hat\theta -
+\theta_0)^2 / \widehat{\mathrm{Var}}(\hat\theta)</span>, asymptotically
+<span class="math inline">\chi^2_1</span>. The likelihood ratio (LR)
+test stands in between: estimate both the unrestricted and the
+restricted model and compare the difference in their log-likelihoods,
+<span class="math inline">LR = 2(\ell_u - \ell_r)</span>. The Lagrange
+multiplier (LM, also called the score) test stands at the restricted
+end: estimate only the restricted model and see how far its score (the
+gradient of the log-likelihood) is from zero in the unrestricted
+direction, <span class="math inline">LM = s(\hat\theta_r)&#39;\,
+I(\hat\theta_r)^{-1}\, s(\hat\theta_r)</span>. All three are
+asymptotically <span class="math inline">\chi^2</span> with degrees of
+freedom equal to the number of restrictions.</p>
+<div class="intuition">
+<p>The geometry of the three tests can be remembered by climbing a hill.
+Picture the log-likelihood as a hill whose summit is the unrestricted
+MLE, and the null hypothesis as a specified point on the slope. Wald
+asks about horizontal distance: from the summit to that point, how far
+did you walk sideways (converted by the steepness at the summit). LM
+asks about slope: standing at that specified point, how steep is the
+ground under your feet and how much does it want to slide toward the
+summit (the steeper the slope, the less reasonable it is that this point
+is the summit). LR asks about height difference: how much higher is the
+summit than that point. The same hill, the same point, measured from
+three angles of distance, slope, and height, asymptotically give the
+same answer. They just need different information: Wald needs only the
+summit, LM needs only that point on the slope, LR needs both. Use
+whichever is easiest to compute, and that is the most practical thing
+about the trinity.</p>
+</div>
+<p>Asymptotic equivalence does not mean finite-sample agreement. The
+three give different numbers in small samples, and Section 6 will show
+Wald, LR, and LM at 35.58, 36.93, and 36.47 respectively, very close but
+not identical. More worth guarding against is a distinctive flaw of
+Wald: it is not invariant to reparameterization. The same hypothesis,
+written as <span class="math inline">\theta = 0.5</span> or as <span
+class="math inline">\log\theta = \log 0.5</span>, are two logically
+equivalent statements, yet Wald gives a different statistic and a
+different <span class="math inline">p</span> value, because it depends
+on the linearization of <span class="math inline">g</span> at the
+estimate (the Delta-method machinery again), and reparameterization
+changes the gradient. Section 6 will demonstrate that two ways of
+writing the same hypothesis give <span class="math inline">p =
+0.0011</span> and <span class="math inline">p = 0.0092</span>, an order
+of magnitude apart. The LR test has no such flaw, because it looks only
+at the likelihood value and not at how the parameters are written, so
+when in doubt LR is often more reliable. There is one further layer: if
+the variance Wald uses comes from a misspecified model, it distorts
+along with the standard error, and in that case you should use the
+previous chapter’s sandwich robust variance to construct a robust
+Wald.</p>
+<h3 id="few-clusters-when-g-is-small">4.2 Few Clusters: When G Is
+Small</h3>
+<p>The good properties of the cluster-robust variance are asymptotic,
+and that asymptotics is in the sense of the number of clusters <span
+class="math inline">G \to \infty</span>, not the number of observations
+<span class="math inline">n \to \infty</span>. This is deadly: even if
+you have millions of observations, as long as they fall into very few
+clusters (say an experiment in only 10 cities), the cluster-robust
+standard error is still untrustworthy, systematically too small, and the
+test over-rejects. In the simulations of Section 6, with <span
+class="math inline">G = 10</span> the cluster test using normal critical
+values has a false-positive rate of 10.3%, clearly above 5%.</p>
+<p>There are several escalating corrections. The cheapest is to switch
+the critical value from the normal to a <span
+class="math inline">t</span> distribution with <span
+class="math inline">G - 1</span> degrees of freedom, acknowledging that
+with few clusters the tails should be fatter. In Section 6 this step
+alone pushes the <span class="math inline">G = 10</span> false-positive
+rate from 10.3% down to 6.7%. A more careful layer is to use cluster
+variances with small-sample bias corrections like CR2 or CR3 (analogous
+to HC2 and HC3 for heteroskedasticity), which work better for a few
+large clusters. The most robust layer is the wild cluster bootstrap:
+re-estimate the model under the null (that is, set the coefficient being
+tested to zero), multiply each cluster’s residuals by a random sign as a
+whole cluster to generate bootstrap samples, recompute the
+cluster-robust <span class="math inline">t</span>, and use its bootstrap
+distribution rather than the normal to set the critical value. In one
+<span class="math inline">G = 10</span> example in Section 6, for the
+same <span class="math inline">t = 2.21</span>, the normal gives <span
+class="math inline">p = 0.027</span> (looks significant), <span
+class="math inline">t(9)</span> gives 0.054, and the wild cluster
+bootstrap gives 0.073 (actually not significant), and the gap among the
+three is exactly the divide, under few clusters, between “trusting the
+normal” and “trusting the bootstrap.”</p>
+<h3
+id="randomization-inference-a-route-that-does-not-rely-on-asymptotics">4.3
+Randomization Inference: A Route That Does Not Rely on Asymptotics</h3>
+<p>All the methods above rely on asymptotic normality. When the sample
+is small, or the clusters are few, or the statistic has a strange
+distribution, the asymptotic approximation is untrustworthy to begin
+with. Randomization inference (RI) offers an entirely different route:
+it does not ask what the sampling distribution looks like, it uses only
+the fact that treatment in the experiment was assigned at random.</p>
+<p>Its logic is beautiful and thorough. Test a sharp null, for example
+“the effect of the policy on every single unit is exactly zero.” If this
+null is true, then the outcome observed for each unit, whether it was
+actually assigned to treatment or control, would not change if the
+treatment assignment changed. So you can do one thing: hold the data
+fixed, randomly permute the treatment labels across units, and each time
+recompute a treatment-effect estimate. Collect the estimates
+corresponding to all possible (or many random) permutations, and you get
+the distribution of the estimate that arises purely from random
+assignment when the null is true, called the permutation distribution.
+If the actually observed estimate lands in the extreme tail of this
+distribution, reject the null. The <span class="math inline">p</span>
+value is the fraction of permutations with an estimate more extreme than
+the actual one.</p>
+<p>The virtue of RI is that it is exact and relies on no large-sample
+approximation, holding no matter how small the sample, because what it
+tests is the design fact of randomization. It is naturally suited to
+experiments with few clusters: in the city experiment, permuting the
+treatment labels across cities (rather than across sessions) gives a
+test robust to the small number of cities. The price is that the null
+must be sharp (holding for every unit), a stronger null than one that
+only constrains the average effect; and for non-experimental data you
+also need a credible “assignment mechanism” to define how to permute.
+Later in this series, when we cover the design of digital experiments,
+we will develop RI together with design-based inference, and here you
+need only remember that it is an exact alternative outside asymptotic
+inference.</p>
+<h3 id="two-step-estimation-and-generated-regressors">4.4 Two-Step
+Estimation and Generated Regressors</h3>
+<p>The last practical headache is two-step estimation. Many empirical
+pipelines first estimate something and then feed it as data into a
+second step, for example first estimating a propensity score or a
+predicted value and then using it in a regression. If the second step
+uses ordinary standard errors directly, it misses the uncertainty
+introduced by the first-step estimate itself and computes the SE as too
+small. This class of problem is collectively called the generated
+regressors problem.</p>
+<p>The analytic fix is called the Murphy-Topel variance, which adds a
+term to the second-step variance to absorb the uncertainty transmitted
+from the first-step estimation error through the second step. But the
+analytic correction has to be rederived for each new two-step structure,
+which is tedious and error-prone. In modern practice the more convenient
+approach is to bootstrap the whole two-step pipeline as a single object:
+on each bootstrap sample, rerun the entire process from the first step
+to the second, so that the first step’s sampling fluctuation is
+naturally folded into the bootstrap distribution of the second-step
+estimate. This is the same reasoning as Section 3.3’s point that the
+bootstrap can handle complex objects that “first estimate game
+parameters and then solve for an equilibrium”: as long as you can write
+the whole pipeline as a single function, the bootstrap can give it an
+honest standard error.</p>
+<p>The key points of this section can be summarized as follows: Wald,
+LR, and LM test the same hypothesis from the three angles of distance,
+slope, and height, asymptotically equivalent but differing in finite
+samples, and Wald is additionally not invariant to reparameterization,
+so when in doubt use LR or a robust Wald; under few clusters the cluster
+variance over-rejects, corrected layer by layer with <span
+class="math inline">t(G-1)</span>, CR2, and the wild cluster bootstrap;
+randomization inference uses the design fact of random assignment to
+give an exact test that does not rely on asymptotics; and two-step
+estimation should use Murphy-Topel or bootstrap the whole pipeline
+directly to fold in the first step’s uncertainty.</p>
+<h2 id="anchoring-papers">5 Anchoring Papers</h2>
+<p>Methods only stand up when they land in real research. Three
+anchoring papers: one turned the mechanics of the clustering problem
+into a lesson, one used a placebo experiment to expose how untrustworthy
+a DiD that ignores serial correlation can be, and one carried the Delta
+method into industrial-scale online experiments. Each is laid out along
+the five elements of paper, method, data, results, and limitations.</p>
+<h3 id="moulton-1990">5.1 Moulton (1990)</h3>
+<div class="case">
+<p>Paper: “An Illustration of a Pitfall in Estimating the Effects of
+Aggregate Variables on Micro Units,” The Review of Economics and
+Statistics 72(2):334-338. It turned the clustering problem of Section
+3.4 into a lesson everyone should take, and the Moulton factor is named
+after it.</p>
+<p>Method: Moulton focuses on an extremely common setup, placing a
+variable at an aggregate level (such as state or industry) into an
+individual-level regression as an explanatory variable, for example
+explaining individual wages with a state-level policy. He points out
+that individual errors are positively correlated within an aggregate
+group, and the aggregate explanatory variable is identical within the
+group, so the two together make ordinary OLS standard errors severely
+understated. He gives the inflation factor <span
+class="math inline">\sqrt{1 + (\bar n - 1)\rho}</span>, quantifying the
+degree of understatement as a function of the within-group correlation
+<span class="math inline">\rho</span> and the group size <span
+class="math inline">\bar n</span>.</p>
+<p>Data: individual-level survey data paired with aggregate-level
+explanatory variables, exactly the most typical data structure in labor
+economics and policy evaluation.</p>
+<p>Results: the conclusion is a repeatedly cited warning: when the
+explanatory variable varies at the aggregate level, ignoring
+within-group correlation makes the standard error absurdly small, and
+even if the within-group correlation looks tiny, as long as the groups
+are large the inflation factor will be large. His demonstration is
+especially striking, throwing into the regression some obviously
+irrelevant state-level variables, and even a computer-generated random
+number at the state level, and under naive OLS standard errors they
+still appear statistically significant. This short paper made the whole
+applied field realize how easily the significance of aggregate variables
+can be an illusion.</p>
+<p>Limitations: the Moulton factor is an approximation under several
+simplifying assumptions (homogeneous within-group correlation, similar
+group sizes), and in real data with uneven group sizes and complex
+correlation structure it is only an order-of-magnitude reference, with
+precise inference still relying on the full cluster-robust variance and
+even the few-cluster corrections.</p>
+</div>
+<p>The exemplary significance of this paper is that it did not stop at
+the slogan “you should cluster,” but explained why, and by how much the
+understatement, through a single computable factor. The Moulton factor
+of Section 3.4 is its core, and the 4.18-fold predicted inflation on
+Halcyon is exactly this formula made flesh.</p>
+<h3 id="bertrand-duflo-and-mullainathan-2004">5.2 Bertrand, Duflo and
+Mullainathan (2004)</h3>
+<div class="case">
+<p>Paper: “How Much Should We Trust Differences-in-Differences
+Estimates?,” The Quarterly Journal of Economics 119(1):249-275. It used
+a carefully designed placebo experiment to nail to the table how
+untrustworthy DiD inference that ignores serial correlation is.</p>
+<p>Method: the authors did something cruel and persuasive. They took
+real wage data and randomly assigned some states and some years a “fake
+policy” that in fact does not exist, then used standard DiD with
+ordinary standard errors to test the effect of this fake policy. Because
+the policy was randomly made up and the true effect is zero, an honest
+5% test should reject only 5% of the time. They did this repeatedly and
+tallied the actual rejection rate.</p>
+<p>Data: female wage data from the U.S. Current Population Survey (CPS),
+spanning many states and many years, the typical data for DiD
+studies.</p>
+<p>Results: the actual rejection rate of ordinary DiD standard errors is
+about 45%, meaning that nearly half of the “significant policy effects”
+are fabricated out of pure noise. The root of the disease is that wages
+are strongly serially correlated within a state across years, while
+ordinary standard errors treat different years as independent
+information. They tested several remedies: clustering at the state
+level, the block bootstrap, and collapsing each state’s time series into
+two points, before and after treatment. This paper almost
+single-handedly made “clustering at the state level” the standard
+operation for DiD studies.</p>
+<p>Limitations: the clustering remedy itself needs enough clusters
+(states) to be reliable, and with few clusters it returns to the
+few-cluster problem of Section 4.2; their diagnosis is also mainly aimed
+at the single structure of serial correlation, and other forms of
+correlation need their own responses.</p>
+</div>
+<p>This paper is the real-world version of the placebo health check in
+Section 1, and its inspiration. Halcyon’s 64.5% false-positive rate
+under iid inference and Bertrand et al.’s 45% figure tell the same
+story: standard errors that ignore correlation make you see a sky full
+of signal in a field of noise. It elevated “the standard error is wrong”
+from a technical detail into a question about the credibility of an
+entire literature.</p>
+<h3 id="deng-knoblich-and-lu-2018">5.3 Deng, Knoblich and Lu (2018)</h3>
+<div class="case">
+<p>Paper: “Applying the Delta Method in Metric Analytics: A Practical
+Guide with Novel Ideas,” Proceedings of the 24th ACM SIGKDD
+International Conference on Knowledge Discovery and Data Mining (KDD
+’18), 233-242. It carried the Delta method of Section 3.2 into the daily
+work of industrial-scale online experiments, with authors from
+Microsoft’s experimentation platform team.</p>
+<p>Method: in large-platform A/B experiments, many core metrics are
+ratios (such as clicks per user, conversions per session), nonlinear
+functions of variables at the randomization-unit level, whose variance
+cannot be computed directly from the sample variance. The authors
+systematically use the Delta method to derive variances and confidence
+intervals for these ratio metrics and other nonlinear metrics, and
+handle two practical difficulties of online experiments: first, the
+within-randomization-unit (user) correlation of observations (a user’s
+multiple visits are not independent, which is essentially the clustering
+problem of this chapter), and second, computational feasibility under
+massive data.</p>
+<p>Data: large-scale A/B test metrics on Microsoft’s online
+experimentation platform, with sample sizes routinely in the tens of
+millions.</p>
+<p>Results: the paper gives a deployable Delta-method recipe that makes
+inference for ratio metrics both correct (folding within-user
+correlation into the variance) and efficient at industrial scale,
+becoming a practical reference for online experiment analysis. It
+demonstrates how the two main threads of this chapter (the Delta method
+for nonlinear functions and variance corrections for correlated data)
+converge in real platform data science.</p>
+<p>Limitations: the Delta method relies on linearization, and when a
+ratio’s denominator is near zero or a metric is highly skewed it still
+runs into the distortion of Section 3.2, where the bootstrap or a
+dedicated skewness correction is more stable; the paper’s recipe is also
+mainly aimed at randomized experiments, and identification problems in
+observational data are out of its scope.</p>
+</div>
+<p>The significance of this paper for the chapter is that it brings the
+Delta method from a textbook formula back to a high-frequency real
+setting: the platform has to compute confidence intervals for thousands
+of ratio metrics every day, and the Delta method, because it has a
+closed form and is fast, becomes the first choice, while its handling of
+within-user correlation echoes exactly the clustering thread of this
+chapter. It shows that the chapter’s two tools are not isolated tricks
+but the foundation of the modern data-science inference stack.</p>
+<p>Put the three together, and the point of anchoring becomes clear:
+Moulton explained the mechanics of clustering understatement, Bertrand,
+Duflo, and Mullainathan measured the cost of ignoring correlation with a
+placebo experiment, and Deng, Knoblich, and Lu industrialized the Delta
+method. They share the chapter’s core, that a standard error must
+honestly reflect the data’s correlation structure and the quantity’s
+nonlinearity, or else significance is only an illusion.</p>
+<h2 id="a-full-walkthrough-on-halcyon-data">6 A Full Walkthrough on
+Halcyon Data</h2>
+<p>Now let us run the earlier tools once through Halcyon from the top.
+The code below uses R 4.5.3 with the random seed fixed at 626, and every
+number cited in the text comes from the actual output of this code.</p>
+<h3 id="the-data-generating-process">6.1 The Data-Generating
+Process</h3>
+<p>Three blocks of data, one seed. Delivery-pricing data: satisfaction
+<span class="math inline">sat = \beta_0 + \beta_{time}\, time +
+\beta_{fee}\, fee + \varepsilon</span>, with <span
+class="math inline">\beta_{time} = -0.08</span> and <span
+class="math inline">\beta_{fee} = -0.40</span>, so the true WTP is <span
+class="math inline">\beta_{time}/\beta_{fee} = 0.20</span> per minute;
+the main sample has ample variation in the delivery fee, while the
+weak-denominator variant holds the delivery fee nearly constant.
+City-experiment data: <span class="math inline">G = 40</span> cities
+with 200 sessions each, <span class="math inline">y_{ic} = 2.0 + \tau
+D_c + a_c + \varepsilon_{ic}</span>, where the city shock <span
+class="math inline">a_c</span> manufactures within-cluster correlation
+and the true treatment effect is <span class="math inline">\tau =
+0.25</span>. Time-series data: <span class="math inline">T = 400</span>
+days with AR(1) errors.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">626</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="do">## Delivery pricing (WTP ratio)</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>time <span class="ot">&lt;-</span> <span class="fu">runif</span>(<span class="dv">3000</span>, <span class="dv">10</span>, <span class="dv">45</span>); fee <span class="ot">&lt;-</span> <span class="fu">runif</span>(<span class="dv">3000</span>, <span class="dv">1</span>, <span class="dv">7</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>sat  <span class="ot">&lt;-</span> <span class="fl">5.0</span> <span class="sc">-</span> <span class="fl">0.08</span><span class="sc">*</span>time <span class="sc">-</span> <span class="fl">0.40</span><span class="sc">*</span>fee <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="dv">3000</span>, <span class="dv">0</span>, <span class="fl">1.5</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="do">## City experiment (clustering)</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>a  <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">40</span>, <span class="dv">0</span>, <span class="fl">0.30</span>)                          <span class="co"># city shock -&gt; within-cluster correlation</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>D  <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="dv">0</span><span class="sc">:</span><span class="dv">1</span>, <span class="at">length.out =</span> <span class="dv">40</span>)[<span class="fu">sample</span>(<span class="dv">40</span>)]       <span class="co"># half the cities launch the policy</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>city <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">40</span>, <span class="at">each =</span> <span class="dv">200</span>)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>y  <span class="ot">&lt;-</span> <span class="fl">2.0</span> <span class="sc">+</span> <span class="fl">0.25</span><span class="sc">*</span>D[city] <span class="sc">+</span> a[city] <span class="sc">+</span> <span class="fu">rnorm</span>(<span class="dv">8000</span>, <span class="dv">0</span>, <span class="fl">1.0</span>)</span></code></pre></div>
+<p>In the city experiment the within-cluster correlation is about <span
+class="math inline">0.30^2/(0.30^2 + 1.0^2) = 0.083</span>. These few
+true values are the targets against which all later standard errors are
+reconciled: WTP 0.20, <span class="math inline">\tau</span> 0.25, and
+the width each sampling distribution should have.</p>
+<h3 id="the-wtp-ratio-delta-versus-bootstrap">6.2 The WTP Ratio: Delta
+versus Bootstrap</h3>
+<p>First estimate the delivery-pricing regression, where WTP is a ratio
+of two coefficients. The Delta method computes the variance with the
+gradient from Section 3.2, and the bootstrap resamples whole rows of
+data with replacement and recomputes the ratio each time.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>m <span class="ot">&lt;-</span> <span class="fu">lm</span>(sat <span class="sc">~</span> time <span class="sc">+</span> fee)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>wtp <span class="ot">&lt;-</span> <span class="fu">coef</span>(m)[<span class="st">&quot;time&quot;</span>] <span class="sc">/</span> <span class="fu">coef</span>(m)[<span class="st">&quot;fee&quot;</span>]           <span class="co"># point estimate</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>grad <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="dv">1</span><span class="sc">/</span><span class="fu">coef</span>(m)[<span class="st">&quot;fee&quot;</span>], <span class="sc">-</span><span class="fu">coef</span>(m)[<span class="st">&quot;time&quot;</span>]<span class="sc">/</span><span class="fu">coef</span>(m)[<span class="st">&quot;fee&quot;</span>]<span class="sc">^</span><span class="dv">2</span>)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>se_delta <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(<span class="fu">t</span>(grad) <span class="sc">%*%</span> <span class="fu">vcov</span>(m) <span class="sc">%*%</span> grad)    <span class="co"># Delta standard error</span></span></code></pre></div>
+<p>In the main sample the delivery fee varies enough, <span
+class="math inline">\beta_{fee}</span> is estimated precisely, and the
+two routes agree strongly: the point estimate WTP is 0.207 (true value
+0.20), the Delta standard error is 0.0105, and the bootstrap standard
+error is 0.0106, nearly equal. The three intervals also nearly coincide:
+Delta’s <span class="math inline">[0.186, 0.227]</span>, percentile’s
+<span class="math inline">[0.188, 0.229]</span>, and percentile-t’s
+<span class="math inline">[0.188, 0.228]</span>. When the denominator is
+strong, the Delta method is fast and accurate, and there is no need to
+bring in the bootstrap.</p>
+<p>The weak-denominator variant compresses the variation in the delivery
+fee to almost nothing, <span class="math inline">\beta_{fee}</span> is
+estimated only at <span class="math inline">-0.246</span> (standard
+error 0.105, close to insignificant), the ratio’s denominator hovers
+near zero, and the two routes immediately part ways. The Delta standard
+error is 0.138, giving a symmetric interval <span
+class="math inline">[0.05, 0.59]</span>. But the bootstrap distribution
+is severely right-skewed (skewness as high as 8.0), because in a few
+resamples <span class="math inline">\beta_{fee}</span> grazes zero and
+the ratio flies off to the sky: the percentile interval is <span
+class="math inline">[0.17, 1.51]</span>, a long right tail, and the
+percentile-t interval is <span class="math inline">[0.24, 0.82]</span>.
+Delta’s symmetric interval erases this right tail entirely, a misleading
+pretense of honesty.</p>
+<figure>
+<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' viewBox='0 0 756.00 309.60' role="img" aria-label="Left: when the delivery fee varies enough (strong denominator), the bootstrap sampling distribution of the WTP ratio (gray bars) and the Delta method’s normal approximation (navy curve) almost coincide, the two routes agreeing. Right: when the delivery fee barely varies (weak denominator), the bootstrap distribution is severely right-skewed, dragging a long tail, while Delta’s symmetric normal cannot cover that tail at all, and here only the bootstrap tells the truth. The red dashed line is the true value 0.20." style="max-width:100%;height:auto;display:block;margin:0 auto">
+<g class='svglite'>
+<defs>
+  <style type='text/css'><![CDATA[
+    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {
+      fill: none;
+      stroke: #000000;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-miterlimit: 10.00;
+    }
+    .svglite text {
+      white-space: pre;
+    }
+    .svglite g.glyphgroup path {
+      fill: inherit;
+      stroke: none;
+    }
+  ]]></style>
+</defs>
+<rect width='100%' height='100%' style='stroke: none; fill: #FAFAF9;'/>
+<defs>
+  <clipPath id='g1_cpMC4wMHw3NTYuMDB8MC4wMHwzMDkuNjA='>
+    <rect x='0.00' y='0.00' width='756.00' height='309.60' />
+  </clipPath>
+</defs>
+<g clip-path='url(#g1_cpMC4wMHw3NTYuMDB8MC4wMHwzMDkuNjA=)'>
+<rect x='0.00' y='0.00' width='756.00' height='309.60' style='stroke-width: 1.07; stroke: #FFFFFF; fill: #FFFFFF;' />
+</g>
+<defs>
+  <clipPath id='g1_cpNDEuNjB8NzQ0LjU0fDQzLjc4fDI2OS43Nw=='>
+    <rect x='41.60' y='43.78' width='702.94' height='225.99' />
+  </clipPath>
+</defs>
+<g clip-path='url(#g1_cpNDEuNjB8NzQ0LjU0fDQzLjc4fDI2OS43Nw==)'>
+</g>
+<g clip-path='url(#g1_cpMC4wMHw3NTYuMDB8MC4wMHwzMDkuNjA=)'>
+</g>
+<defs>
+  <clipPath id='g1_cpNS40OHwzODAuNjZ8NS40OHwzMDQuMTI='>
+    <rect x='5.48' y='5.48' width='375.18' height='298.64' />
+  </clipPath>
+</defs>
+<g clip-path='url(#g1_cpNS40OHwzODAuNjZ8NS40OHwzMDQuMTI=)'>
+<rect x='5.48' y='5.48' width='375.18' height='298.64' style='stroke-width: 1.16; stroke: none; fill: #FAFAF9;' />
+</g>
+<g clip-path='url(#g1_cpMC4wMHw3NTYuMDB8MC4wMHwzMDkuNjA=)'>
+</g>
+<defs>
+  <clipPath id='g1_cpMzgwLjY2fDc1MC41Mnw1LjQ4fDMwNC4xMg=='>
+    <rect x='380.66' y='5.48' width='369.86' height='298.64' />
+  </clipPath>
+</defs>
+<g clip-path='url(#g1_cpMzgwLjY2fDc1MC41Mnw1LjQ4fDMwNC4xMg==)'>
+<rect x='380.66' y='5.48' width='369.86' height='298.64' style='stroke-width: 1.16; stroke: none; fill: #FAFAF9;' />
+</g>
+<g clip-path='url(#g1_cpMC4wMHw3NTYuMDB8MC4wMHwzMDkuNjA=)'>
+</g>
+<defs>
+  <clipPath id='g1_cpNDEuNjB8Mzc0LjY5fDQzLjc4fDI2OS43Nw=='>
+    <rect x='41.60' y='43.78' width='333.09' height='225.99' />
+  </clipPath>
+</defs>
+<g clip-path='url(#g1_cpNDEuNjB8Mzc0LjY5fDQzLjc4fDI2OS43Nw==)'>
+<rect x='41.60' y='43.78' width='333.09' height='225.99' style='stroke-width: 1.16; stroke: none; fill: #FAFAF9;' />
+<polyline points='41.60,259.50 374.69,259.50 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<polyline points='41.60,206.43 374.69,206.43 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<polyline points='41.60,153.35 374.69,153.35 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<polyline points='41.60,100.28 374.69,100.28 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<polyline points='41.60,47.21 374.69,47.21 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<polyline points='117.30,269.77 117.30,43.78 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<polyline points='208.14,269.77 208.14,43.78 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<polyline points='298.98,269.77 298.98,43.78 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<rect x='53.65' y='259.50' width='6.18' height='0.00' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='59.83' y='259.50' width='6.18' height='0.00' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='66.01' y='259.50' width='6.18' height='0.00' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='72.19' y='259.50' width='6.18' height='0.00' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='78.37' y='259.50' width='6.18' height='0.00' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='84.55' y='259.50' width='6.18' height='0.00' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='90.73' y='258.85' width='6.18' height='0.65' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='96.91' y='257.55' width='6.18' height='1.95' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='103.09' y='259.50' width='6.18' height='0.00' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='109.27' y='258.20' width='6.18' height='1.30' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='115.45' y='250.40' width='6.18' height='9.10' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='121.63' y='253.65' width='6.18' height='5.85' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='127.81' y='248.45' width='6.18' height='11.05' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='133.99' y='226.34' width='6.18' height='33.16' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='140.17' y='217.89' width='6.18' height='41.61' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='146.35' y='195.14' width='6.18' height='64.36' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='152.52' y='160.68' width='6.18' height='98.82' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='158.70' y='144.42' width='6.18' height='115.08' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='164.88' y='130.77' width='6.18' height='128.73' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='171.06' y='113.22' width='6.18' height='146.28' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='177.24' y='90.46' width='6.18' height='169.04' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='183.42' y='65.76' width='6.18' height='193.74' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='189.60' y='54.05' width='6.18' height='205.45' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='195.78' y='58.60' width='6.18' height='200.90' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='201.96' y='76.16' width='6.18' height='183.34' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='208.14' y='77.46' width='6.18' height='182.04' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='214.32' y='103.46' width='6.18' height='156.04' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='220.50' y='119.07' width='6.18' height='140.43' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='226.68' y='133.37' width='6.18' height='126.13' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='232.86' y='167.83' width='6.18' height='91.67' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='239.04' y='168.48' width='6.18' height='91.02' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='245.22' y='207.49' width='6.18' height='52.01' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='251.40' y='212.04' width='6.18' height='47.46' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='257.58' y='228.29' width='6.18' height='31.21' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='263.76' y='235.44' width='6.18' height='24.06' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='269.94' y='241.30' width='6.18' height='18.20' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='276.12' y='251.05' width='6.18' height='8.45' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='282.30' y='249.75' width='6.18' height='9.75' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='288.48' y='258.20' width='6.18' height='1.30' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='294.66' y='254.95' width='6.18' height='4.55' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='300.84' y='256.25' width='6.18' height='3.25' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='307.02' y='257.55' width='6.18' height='1.95' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='313.20' y='258.85' width='6.18' height='0.65' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='319.38' y='259.50' width='6.18' height='0.00' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='325.56' y='259.50' width='6.18' height='0.00' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='331.74' y='259.50' width='6.18' height='0.00' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='337.92' y='259.50' width='6.18' height='0.00' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='344.10' y='259.50' width='6.18' height='0.00' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='350.28' y='259.50' width='6.18' height='0.00' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='356.46' y='259.50' width='6.18' height='0.00' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<polyline points='56.74,259.49 57.50,259.49 58.26,259.49 59.02,259.49 59.77,259.48 60.53,259.48 61.29,259.48 62.05,259.48 62.81,259.48 63.57,259.47 64.33,259.47 65.09,259.47 65.85,259.46 66.60,259.46 67.36,259.46 68.12,259.45 68.88,259.45 69.64,259.44 70.40,259.44 71.16,259.43 71.92,259.42 72.68,259.42 73.44,259.41 74.19,259.40 74.95,259.39 75.71,259.38 76.47,259.37 77.23,259.35 77.99,259.34 78.75,259.32 79.51,259.31 80.27,259.29 81.02,259.27 81.78,259.25 82.54,259.23 83.30,259.20 84.06,259.18 84.82,259.15 85.58,259.12 86.34,259.08 87.10,259.05 87.85,259.01 88.61,258.97 89.37,258.92 90.13,258.87 90.89,258.82 91.65,258.76 92.41,258.70 93.17,258.64 93.93,258.57 94.68,258.49 95.44,258.41 96.20,258.32 96.96,258.23 97.72,258.13 98.48,258.02 99.24,257.91 100.00,257.79 100.76,257.66 101.52,257.52 102.27,257.37 103.03,257.22 103.79,257.05 104.55,256.87 105.31,256.68 106.07,256.48 106.83,256.26 107.59,256.04 108.35,255.79 109.10,255.54 109.86,255.27 110.62,254.98 111.38,254.67 112.14,254.35 112.90,254.01 113.66,253.65 114.42,253.27 115.18,252.87 115.93,252.45 116.69,252.00 117.45,251.53 118.21,251.04 118.97,250.52 119.73,249.97 120.49,249.40 121.25,248.80 122.01,248.17 122.76,247.50 123.52,246.81 124.28,246.09 125.04,245.33 125.80,244.53 126.56,243.70 127.32,242.84 128.08,241.94 128.84,240.99 129.59,240.01 130.35,238.99 131.11,237.93 131.87,236.83 132.63,235.68 133.39,234.49 134.15,233.25 134.91,231.97 135.67,230.64 136.43,229.27 137.18,227.84 137.94,226.37 138.70,224.85 139.46,223.28 140.22,221.66 140.98,220.00 141.74,218.28 142.50,216.51 143.26,214.69 144.01,212.82 144.77,210.89 145.53,208.92 146.29,206.90 147.05,204.83 147.81,202.71 148.57,200.54 149.33,198.32 150.09,196.05 150.84,193.74 151.60,191.38 152.36,188.97 153.12,186.53 153.88,184.04 154.64,181.51 155.40,178.94 156.16,176.33 156.92,173.69 157.67,171.01 158.43,168.30 159.19,165.56 159.95,162.79 160.71,160.00 161.47,157.19 162.23,154.35 162.99,151.50 163.75,148.63 164.50,145.75 165.26,142.87 166.02,139.97 166.78,137.08 167.54,134.18 168.30,131.29 169.06,128.41 169.82,125.53 170.58,122.67 171.34,119.83 172.09,117.01 172.85,114.22 173.61,111.46 174.37,108.72 175.13,106.03 175.89,103.37 176.65,100.76 177.41,98.20 178.17,95.68 178.92,93.22 179.68,90.82 180.44,88.49 181.20,86.21 181.96,84.01 182.72,81.88 183.48,79.82 184.24,77.85 185.00,75.95 185.75,74.14 186.51,72.42 187.27,70.79 188.03,69.25 188.79,67.81 189.55,66.47 190.31,65.23 191.07,64.09 191.83,63.05 192.58,62.12 193.34,61.30 194.10,60.59 194.86,59.98 195.62,59.49 196.38,59.11 197.14,58.84 197.90,58.69 198.66,58.65 199.42,58.72 200.17,58.91 200.93,59.21 201.69,59.62 202.45,60.15 203.21,60.78 203.97,61.53 204.73,62.38 205.49,63.34 206.25,64.41 207.00,65.58 207.76,66.85 208.52,68.22 209.28,69.69 210.04,71.26 210.80,72.92 211.56,74.66 212.32,76.50 213.08,78.42 213.83,80.42 214.59,82.49 215.35,84.65 216.11,86.87 216.87,89.16 217.63,91.52 218.39,93.94 219.15,96.41 219.91,98.94 220.66,101.52 221.42,104.14 222.18,106.81 222.94,109.52 223.70,112.26 224.46,115.03 225.22,117.84 225.98,120.66 226.74,123.51 227.49,126.37 228.25,129.25 229.01,132.13 229.77,135.03 230.53,137.92 231.29,140.82 232.05,143.71 232.81,146.60 233.57,149.47 234.33,152.33 235.08,155.18 235.84,158.01 236.60,160.82 237.36,163.60 238.12,166.36 238.88,169.09 239.64,171.79 240.40,174.46 241.16,177.10 241.91,179.69 242.67,182.25 243.43,184.77 244.19,187.25 244.95,189.68 245.71,192.07 246.47,194.42 247.23,196.72 247.99,198.97 248.74,201.18 249.50,203.33 250.26,205.44 251.02,207.50 251.78,209.50 252.54,211.46 253.30,213.37 254.06,215.22 254.82,217.03 255.57,218.78 256.33,220.49 257.09,222.14 257.85,223.75 258.61,225.30 259.37,226.81 260.13,228.26 260.89,229.67 261.65,231.03 262.41,232.35 263.16,233.62 263.92,234.84 264.68,236.02 265.44,237.15 266.20,238.25 266.96,239.30 267.72,240.30 268.48,241.27 269.24,242.20 269.99,243.10 270.75,243.95 271.51,244.77 272.27,245.55 273.03,246.30 273.79,247.02 274.55,247.70 275.31,248.35 276.07,248.98 276.82,249.57 277.58,250.13 278.34,250.67 279.10,251.18 279.86,251.67 280.62,252.13 281.38,252.57 282.14,252.99 282.90,253.38 283.65,253.76 284.41,254.11 285.17,254.45 285.93,254.76 286.69,255.06 287.45,255.35 288.21,255.61 288.97,255.87 289.73,256.10 290.48,256.33 291.24,256.54 292.00,256.74 292.76,256.92 293.52,257.10 294.28,257.26 295.04,257.42 295.80,257.56 296.56,257.70 297.32,257.83 298.07,257.94 298.83,258.06 299.59,258.16 300.35,258.26 301.11,258.35 301.87,258.43 302.63,258.51 303.39,258.59 304.15,258.66 304.90,258.72 305.66,258.78 306.42,258.84 307.18,258.89 307.94,258.93 308.70,258.98 309.46,259.02 310.22,259.06 310.98,259.09 311.73,259.13 312.49,259.16 313.25,259.18 314.01,259.21 314.77,259.23 315.53,259.26 316.29,259.28 317.05,259.30 317.81,259.31 318.56,259.33 319.32,259.34 320.08,259.36 320.84,259.37 321.60,259.38 322.36,259.39 323.12,259.40 323.88,259.41 324.64,259.42 325.39,259.43 326.15,259.43 326.91,259.44 327.67,259.44 328.43,259.45 329.19,259.45 329.95,259.46 330.71,259.46 331.47,259.47 332.23,259.47 332.98,259.47 333.74,259.47 334.50,259.48 335.26,259.48 336.02,259.48 336.78,259.48 337.54,259.49 338.30,259.49 339.06,259.49 339.81,259.49 340.57,259.49 341.33,259.49 342.09,259.49 342.85,259.49 343.61,259.49 344.37,259.49 345.13,259.50 345.89,259.50 346.64,259.50 347.40,259.50 348.16,259.50 348.92,259.50 349.68,259.50 350.44,259.50 351.20,259.50 351.96,259.50 352.72,259.50 353.47,259.50 354.23,259.50 354.99,259.50 355.75,259.50 356.51,259.50 357.27,259.50 358.03,259.50 358.79,259.50 359.55,259.50 ' style='stroke-width: 2.13; stroke: #1A365D; stroke-linecap: butt;' />
+<line x1='177.86' y1='269.77' x2='177.86' y2='43.78' style='stroke-width: 1.28; stroke: #C53030; stroke-dasharray: 6.83,6.83; stroke-linecap: butt;' />
+<text x='179.73' y='256.35' style='font-size: 8.82px;fill: #C53030; font-family: "Arial";' textLength='37.28px' lengthAdjust='spacingAndGlyphs'>truth 0.20</text>
+</g>
+<g clip-path='url(#g1_cpMC4wMHw3NTYuMDB8MC4wMHwzMDkuNjA=)'>
+<text x='36.22' y='262.93' text-anchor='end' style='font-size: 9.60px;fill: #2D3748; font-family: "Arial";' textLength='5.33px' lengthAdjust='spacingAndGlyphs'>0</text>
+<text x='36.22' y='209.86' text-anchor='end' style='font-size: 9.60px;fill: #2D3748; font-family: "Arial";' textLength='10.66px' lengthAdjust='spacingAndGlyphs'>10</text>
+<text x='36.22' y='156.79' text-anchor='end' style='font-size: 9.60px;fill: #2D3748; font-family: "Arial";' textLength='10.66px' lengthAdjust='spacingAndGlyphs'>20</text>
+<text x='36.22' y='103.71' text-anchor='end' style='font-size: 9.60px;fill: #2D3748; font-family: "Arial";' textLength='10.66px' lengthAdjust='spacingAndGlyphs'>30</text>
+<text x='36.22' y='50.64' text-anchor='end' style='font-size: 9.60px;fill: #2D3748; font-family: "Arial";' textLength='10.66px' lengthAdjust='spacingAndGlyphs'>40</text>
+<text x='117.30' y='282.02' text-anchor='middle' style='font-size: 9.60px;fill: #2D3748; font-family: "Arial";' textLength='18.66px' lengthAdjust='spacingAndGlyphs'>0.18</text>
+<text x='208.14' y='282.02' text-anchor='middle' style='font-size: 9.60px;fill: #2D3748; font-family: "Arial";' textLength='18.66px' lengthAdjust='spacingAndGlyphs'>0.21</text>
+<text x='298.98' y='282.02' text-anchor='middle' style='font-size: 9.60px;fill: #2D3748; font-family: "Arial";' textLength='18.66px' lengthAdjust='spacingAndGlyphs'>0.24</text>
+<text x='208.14' y='295.62' text-anchor='middle' style='font-size: 12.00px;fill: #2D3748; font-family: "Arial";' textLength='116.12px' lengthAdjust='spacingAndGlyphs'>WTP = b_time / b_fee</text>
+<text transform='translate(20.05,156.78) rotate(-90)' text-anchor='middle' style='font-size: 12.00px;fill: #2D3748; font-family: "Arial";' textLength='38.02px' lengthAdjust='spacingAndGlyphs'>density</text>
+<text x='41.60' y='35.81' style='font-size: 9.50px;fill: #718096; font-family: "Arial";' textLength='186.86px' lengthAdjust='spacingAndGlyphs'>navy = Delta normal; bars = bootstrap draws</text>
+<text x='41.60' y='20.41' style='font-size: 12.50px; font-weight: bold;fill: #1A365D; font-family: "Arial";' textLength='229.52px' lengthAdjust='spacingAndGlyphs'>Strong denominator: Delta = bootstrap</text>
+</g>
+<defs>
+  <clipPath id='g1_cpNDExLjQ2fDc0NC41NHw0My43OHwyNjkuNzc='>
+    <rect x='411.46' y='43.78' width='333.09' height='225.99' />
+  </clipPath>
+</defs>
+<g clip-path='url(#g1_cpNDExLjQ2fDc0NC41NHw0My43OHwyNjkuNzc=)'>
+<rect x='411.46' y='43.78' width='333.09' height='225.99' style='stroke-width: 1.16; stroke: none; fill: #FAFAF9;' />
+<polyline points='411.46,259.50 744.54,259.50 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<polyline points='411.46,206.57 744.54,206.57 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<polyline points='411.46,153.63 744.54,153.63 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<polyline points='411.46,100.69 744.54,100.69 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<polyline points='411.46,47.76 744.54,47.76 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<polyline points='480.03,269.77 480.03,43.78 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<polyline points='569.09,269.77 569.09,43.78 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<polyline points='658.15,269.77 658.15,43.78 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<rect x='423.51' y='259.50' width='6.18' height='0.00' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='429.69' y='259.50' width='6.18' height='0.00' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='435.87' y='259.50' width='6.18' height='0.00' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='442.04' y='259.50' width='6.18' height='0.00' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='448.22' y='259.50' width='6.18' height='0.00' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='454.40' y='259.50' width='6.18' height='0.00' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='460.58' y='259.50' width='6.18' height='0.00' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='466.76' y='259.50' width='6.18' height='0.00' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='472.94' y='259.50' width='6.18' height='0.00' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='479.12' y='259.50' width='6.18' height='0.00' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='485.30' y='259.50' width='6.18' height='0.00' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='491.48' y='259.50' width='6.18' height='0.00' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='497.66' y='258.31' width='6.18' height='1.19' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='503.84' y='233.32' width='6.18' height='26.18' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='510.02' y='137.74' width='6.18' height='121.76' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='516.20' y='72.30' width='6.18' height='187.20' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='522.38' y='54.05' width='6.18' height='205.45' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='528.56' y='74.68' width='6.18' height='184.82' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='534.74' y='102.04' width='6.18' height='157.46' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='540.92' y='138.53' width='6.18' height='120.97' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='547.10' y='168.28' width='6.18' height='91.22' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='553.28' y='177.80' width='6.18' height='81.70' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='559.46' y='191.68' width='6.18' height='67.82' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='565.64' y='217.06' width='6.18' height='42.44' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='571.82' y='221.43' width='6.18' height='38.08' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='578.00' y='231.74' width='6.18' height='27.76' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='584.18' y='239.27' width='6.18' height='20.23' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='590.36' y='236.10' width='6.18' height='23.40' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='596.54' y='238.08' width='6.18' height='21.42' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='602.72' y='243.24' width='6.18' height='16.26' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='608.90' y='245.62' width='6.18' height='13.88' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='615.08' y='247.21' width='6.18' height='12.30' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='621.26' y='252.76' width='6.18' height='6.74' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='627.44' y='253.15' width='6.18' height='6.35' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='633.62' y='255.14' width='6.18' height='4.36' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='639.80' y='253.95' width='6.18' height='5.55' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='645.98' y='253.95' width='6.18' height='5.55' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='652.16' y='255.14' width='6.18' height='4.36' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='658.34' y='255.14' width='6.18' height='4.36' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='664.52' y='257.12' width='6.18' height='2.38' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='670.70' y='254.34' width='6.18' height='5.16' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='676.87' y='257.12' width='6.18' height='2.38' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='683.05' y='257.12' width='6.18' height='2.38' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='689.23' y='254.74' width='6.18' height='4.76' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='695.41' y='257.91' width='6.18' height='1.59' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='701.59' y='257.91' width='6.18' height='1.59' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='707.77' y='257.12' width='6.18' height='2.38' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='713.95' y='257.12' width='6.18' height='2.38' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='720.13' y='258.31' width='6.18' height='1.19' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<rect x='726.31' y='258.71' width='6.18' height='0.79' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D9D5CC;' />
+<polyline points='426.60,259.49 427.35,259.49 428.11,259.49 428.87,259.49 429.63,259.49 430.39,259.49 431.15,259.49 431.91,259.48 432.67,259.48 433.43,259.48 434.18,259.48 434.94,259.47 435.70,259.47 436.46,259.47 437.22,259.46 437.98,259.46 438.74,259.45 439.50,259.44 440.26,259.44 441.01,259.43 441.77,259.42 442.53,259.41 443.29,259.40 444.05,259.38 444.81,259.37 445.57,259.35 446.33,259.34 447.09,259.32 447.85,259.30 448.60,259.27 449.36,259.24 450.12,259.21 450.88,259.18 451.64,259.15 452.40,259.11 453.16,259.06 453.92,259.01 454.68,258.96 455.43,258.90 456.19,258.84 456.95,258.77 457.71,258.69 458.47,258.60 459.23,258.51 459.99,258.41 460.75,258.30 461.51,258.18 462.26,258.05 463.02,257.90 463.78,257.75 464.54,257.58 465.30,257.40 466.06,257.20 466.82,256.99 467.58,256.76 468.34,256.51 469.09,256.24 469.85,255.95 470.61,255.64 471.37,255.30 472.13,254.94 472.89,254.56 473.65,254.14 474.41,253.70 475.17,253.23 475.93,252.72 476.68,252.19 477.44,251.61 478.20,251.00 478.96,250.35 479.72,249.66 480.48,248.93 481.24,248.16 482.00,247.34 482.76,246.47 483.51,245.55 484.27,244.59 485.03,243.57 485.79,242.50 486.55,241.37 487.31,240.19 488.07,238.95 488.83,237.65 489.59,236.29 490.34,234.87 491.10,233.39 491.86,231.85 492.62,230.24 493.38,228.57 494.14,226.83 494.90,225.03 495.66,223.16 496.42,221.23 497.17,219.24 497.93,217.18 498.69,215.06 499.45,212.87 500.21,210.63 500.97,208.32 501.73,205.96 502.49,203.54 503.25,201.07 504.00,198.55 504.76,195.98 505.52,193.36 506.28,190.70 507.04,188.01 507.80,185.27 508.56,182.51 509.32,179.72 510.08,176.90 510.84,174.07 511.59,171.22 512.35,168.37 513.11,165.51 513.87,162.66 514.63,159.81 515.39,156.98 516.15,154.17 516.91,151.38 517.67,148.63 518.42,145.91 519.18,143.24 519.94,140.61 520.70,138.05 521.46,135.54 522.22,133.11 522.98,130.75 523.74,128.46 524.50,126.27 525.25,124.17 526.01,122.16 526.77,120.26 527.53,118.46 528.29,116.78 529.05,115.22 529.81,113.77 530.57,112.45 531.33,111.26 532.08,110.21 532.84,109.28 533.60,108.50 534.36,107.85 535.12,107.35 535.88,106.99 536.64,106.78 537.40,106.71 538.16,106.78 538.91,107.01 539.67,107.37 540.43,107.88 541.19,108.53 541.95,109.32 542.71,110.25 543.47,111.31 544.23,112.50 544.99,113.83 545.75,115.28 546.50,116.85 547.26,118.53 548.02,120.33 548.78,122.24 549.54,124.25 550.30,126.36 551.06,128.55 551.82,130.84 552.58,133.20 553.33,135.64 554.09,138.15 554.85,140.72 555.61,143.34 556.37,146.02 557.13,148.74 557.89,151.49 558.65,154.28 559.41,157.09 560.16,159.93 560.92,162.77 561.68,165.63 562.44,168.48 563.20,171.34 563.96,174.18 564.72,177.01 565.48,179.83 566.24,182.62 566.99,185.38 567.75,188.11 568.51,190.81 569.27,193.47 570.03,196.08 570.79,198.65 571.55,201.17 572.31,203.64 573.07,206.06 573.83,208.42 574.58,210.72 575.34,212.96 576.10,215.14 576.86,217.26 577.62,219.32 578.38,221.31 579.14,223.24 579.90,225.10 580.66,226.90 581.41,228.63 582.17,230.30 582.93,231.91 583.69,233.45 584.45,234.93 585.21,236.35 585.97,237.70 586.73,239.00 587.49,240.24 588.24,241.42 589.00,242.54 589.76,243.61 590.52,244.63 591.28,245.59 592.04,246.50 592.80,247.37 593.56,248.19 594.32,248.96 595.07,249.69 595.83,250.38 596.59,251.03 597.35,251.64 598.11,252.21 598.87,252.75 599.63,253.25 600.39,253.72 601.15,254.16 601.90,254.57 602.66,254.96 603.42,255.32 604.18,255.65 604.94,255.96 605.70,256.25 606.46,256.52 607.22,256.77 607.98,257.00 608.74,257.21 609.49,257.41 610.25,257.59 611.01,257.76 611.77,257.91 612.53,258.05 613.29,258.18 614.05,258.30 614.81,258.41 615.57,258.51 616.32,258.61 617.08,258.69 617.84,258.77 618.60,258.84 619.36,258.90 620.12,258.96 620.88,259.01 621.64,259.06 622.40,259.11 623.15,259.15 623.91,259.18 624.67,259.22 625.43,259.25 626.19,259.27 626.95,259.30 627.71,259.32 628.47,259.34 629.23,259.36 629.98,259.37 630.74,259.39 631.50,259.40 632.26,259.41 633.02,259.42 633.78,259.43 634.54,259.44 635.30,259.44 636.06,259.45 636.81,259.46 637.57,259.46 638.33,259.47 639.09,259.47 639.85,259.47 640.61,259.48 641.37,259.48 642.13,259.48 642.89,259.48 643.65,259.49 644.40,259.49 645.16,259.49 645.92,259.49 646.68,259.49 647.44,259.49 648.20,259.49 648.96,259.50 649.72,259.50 650.48,259.50 651.23,259.50 651.99,259.50 652.75,259.50 653.51,259.50 654.27,259.50 655.03,259.50 655.79,259.50 656.55,259.50 657.31,259.50 658.06,259.50 658.82,259.50 659.58,259.50 660.34,259.50 661.10,259.50 661.86,259.50 662.62,259.50 663.38,259.50 664.14,259.50 664.89,259.50 665.65,259.50 666.41,259.50 667.17,259.50 667.93,259.50 668.69,259.50 669.45,259.50 670.21,259.50 670.97,259.50 671.73,259.50 672.48,259.50 673.24,259.50 674.00,259.50 674.76,259.50 675.52,259.50 676.28,259.50 677.04,259.50 677.80,259.50 678.56,259.50 679.31,259.50 680.07,259.50 680.83,259.50 681.59,259.50 682.35,259.50 683.11,259.50 683.87,259.50 684.63,259.50 685.39,259.50 686.14,259.50 686.90,259.50 687.66,259.50 688.42,259.50 689.18,259.50 689.94,259.50 690.70,259.50 691.46,259.50 692.22,259.50 692.97,259.50 693.73,259.50 694.49,259.50 695.25,259.50 696.01,259.50 696.77,259.50 697.53,259.50 698.29,259.50 699.05,259.50 699.80,259.50 700.56,259.50 701.32,259.50 702.08,259.50 702.84,259.50 703.60,259.50 704.36,259.50 705.12,259.50 705.88,259.50 706.64,259.50 707.39,259.50 708.15,259.50 708.91,259.50 709.67,259.50 710.43,259.50 711.19,259.50 711.95,259.50 712.71,259.50 713.47,259.50 714.22,259.50 714.98,259.50 715.74,259.50 716.50,259.50 717.26,259.50 718.02,259.50 718.78,259.50 719.54,259.50 720.30,259.50 721.05,259.50 721.81,259.50 722.57,259.50 723.33,259.50 724.09,259.50 724.85,259.50 725.61,259.50 726.37,259.50 727.13,259.50 727.88,259.50 728.64,259.50 729.40,259.50 ' style='stroke-width: 2.13; stroke: #1A365D; stroke-linecap: butt;' />
+<line x1='515.66' y1='269.77' x2='515.66' y2='43.78' style='stroke-width: 1.28; stroke: #C53030; stroke-dasharray: 6.83,6.83; stroke-linecap: butt;' />
+<text x='517.52' y='256.35' style='font-size: 8.82px;fill: #C53030; font-family: "Arial";' textLength='37.28px' lengthAdjust='spacingAndGlyphs'>truth 0.20</text>
+</g>
+<g clip-path='url(#g1_cpMC4wMHw3NTYuMDB8MC4wMHwzMDkuNjA=)'>
+<text x='406.08' y='262.93' text-anchor='end' style='font-size: 9.60px;fill: #2D3748; font-family: "Arial";' textLength='5.33px' lengthAdjust='spacingAndGlyphs'>0</text>
+<text x='406.08' y='210.00' text-anchor='end' style='font-size: 9.60px;fill: #2D3748; font-family: "Arial";' textLength='5.33px' lengthAdjust='spacingAndGlyphs'>1</text>
+<text x='406.08' y='157.06' text-anchor='end' style='font-size: 9.60px;fill: #2D3748; font-family: "Arial";' textLength='5.33px' lengthAdjust='spacingAndGlyphs'>2</text>
+<text x='406.08' y='104.13' text-anchor='end' style='font-size: 9.60px;fill: #2D3748; font-family: "Arial";' textLength='5.33px' lengthAdjust='spacingAndGlyphs'>3</text>
+<text x='406.08' y='51.19' text-anchor='end' style='font-size: 9.60px;fill: #2D3748; font-family: "Arial";' textLength='5.33px' lengthAdjust='spacingAndGlyphs'>4</text>
+<text x='480.03' y='282.02' text-anchor='middle' style='font-size: 9.60px;fill: #2D3748; font-family: "Arial";' textLength='13.33px' lengthAdjust='spacingAndGlyphs'>0.0</text>
+<text x='569.09' y='282.02' text-anchor='middle' style='font-size: 9.60px;fill: #2D3748; font-family: "Arial";' textLength='13.33px' lengthAdjust='spacingAndGlyphs'>0.5</text>
+<text x='658.15' y='282.02' text-anchor='middle' style='font-size: 9.60px;fill: #2D3748; font-family: "Arial";' textLength='13.33px' lengthAdjust='spacingAndGlyphs'>1.0</text>
+<text x='578.00' y='295.62' text-anchor='middle' style='font-size: 12.00px;fill: #2D3748; font-family: "Arial";' textLength='116.12px' lengthAdjust='spacingAndGlyphs'>WTP = b_time / b_fee</text>
+<text transform='translate(395.24,156.78) rotate(-90)' text-anchor='middle' style='font-size: 12.00px;fill: #2D3748; font-family: "Arial";' textLength='38.02px' lengthAdjust='spacingAndGlyphs'>density</text>
+<text x='411.46' y='35.81' style='font-size: 9.50px;fill: #718096; font-family: "Arial";' textLength='198.97px' lengthAdjust='spacingAndGlyphs'>the symmetric Delta normal misses the long tail</text>
+<text x='411.46' y='20.41' style='font-size: 12.50px; font-weight: bold;fill: #1A365D; font-family: "Arial";' textLength='249.11px' lengthAdjust='spacingAndGlyphs'>Weak denominator: bootstrap skews right</text>
+</g>
+</g>
+</svg>
+<figcaption aria-hidden="true">Left: when the delivery fee varies enough
+(strong denominator), the bootstrap sampling distribution of the WTP
+ratio (gray bars) and the Delta method’s normal approximation (navy
+curve) almost coincide, the two routes agreeing. Right: when the
+delivery fee barely varies (weak denominator), the bootstrap
+distribution is severely right-skewed, dragging a long tail, while
+Delta’s symmetric normal cannot cover that tail at all, and here only
+the bootstrap tells the truth. The red dashed line is the true value
+0.20.</figcaption>
+</figure>
+<h3 id="clustering-how-a-t-value-of-13.76-shrinks">6.3 Clustering: How a
+t Value of 13.76 Shrinks</h3>
+<p>The city-experiment regression, comparing four standard errors.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sandwich)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>m <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> D)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>se_iid <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(<span class="fu">vcov</span>(m)[<span class="st">&quot;D&quot;</span>,<span class="st">&quot;D&quot;</span>])                          <span class="co"># iid default</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>se_hc1 <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(<span class="fu">vcovHC</span>(m, <span class="at">type =</span> <span class="st">&quot;HC1&quot;</span>)[<span class="st">&quot;D&quot;</span>,<span class="st">&quot;D&quot;</span>])          <span class="co"># heteroskedasticity-robust</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>se_cr1 <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(<span class="fu">vcovCL</span>(m, <span class="at">cluster =</span> <span class="sc">~</span>city)[<span class="st">&quot;D&quot;</span>,<span class="st">&quot;D&quot;</span>])       <span class="co"># city cluster</span></span></code></pre></div>
+<p>The treatment-effect estimate is <span class="math inline">\hat\tau =
+0.318</span> (true value 0.25). The four standard errors tell a complete
+story: the iid default is 0.0231 (<span class="math inline">t =
+13.76</span>), the heteroskedasticity-robust HC1 is also 0.0231 (<span
+class="math inline">t = 13.76</span>, unmoved), the city cluster CR1 is
+0.0908 (<span class="math inline">t = 3.50</span>), and the
+small-sample-corrected CR2 is 0.0920. Clustering inflates the standard
+error 3.93-fold relative to iid, quite close to the Moulton factor’s
+predicted 4.18-fold. The reason HC1 offers no improvement is exactly
+what Section 3.4 says, that it only fixes unequal variance and not
+within-cluster correlation, and the disease here is precisely the
+latter. From 13.76 to 3.50, an order-of-magnitude difference in
+significance, all in this one step of the standard error.</p>
+<p>The real health check is to look at the false-positive rate.
+Repeatedly generate placebo data with <span class="math inline">\tau =
+0</span> and test the correct null “the effect is zero” at the 5%
+level:</p>
+<div class="table-scroll">
+<table>
+<thead>
+<tr>
+<th>Test method</th>
+<th><span class="math inline">G = 40</span> cities</th>
+<th><span class="math inline">G = 10</span> cities</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>naive iid</td>
+<td>0.645</td>
+<td>0.636</td>
+</tr>
+<tr>
+<td>cluster (normal critical value)</td>
+<td>0.070</td>
+<td>0.103</td>
+</tr>
+<tr>
+<td>cluster <span class="math inline">t(G-1)</span></td>
+<td>0.064</td>
+<td>0.067</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The iid inference has a false-positive rate of about two thirds in
+both cases, more than ten times the nominal 5%, confirming the alarming
+conclusion of Section 1. City clustering pulls it back to near 5%, but
+with <span class="math inline">G = 10</span> the normal critical value
+is still too high (10.3%), and only switching to <span
+class="math inline">t(G-1)</span> presses it back to 6.7%, which is the
+lead-in to the few-cluster problem of the next subsection.</p>
+<figure>
+<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' viewBox='0 0 792.00 316.80' role="img" aria-label="Left: when repeatedly testing a null that is in fact true (the policy has no effect), the actual rejection rate of each method at the nominal 5% level. Naive iid inference has a false-positive rate of about two thirds at both G=40 and G=10 (gold bars), far above the 5% target marked by the red dashed line; city clustering (blue, navy) pulls it back near 5%. Right: the treatment-effect estimate from the same city experiment, with confidence intervals from three standard errors. The iid and heteroskedasticity-robust HC1 intervals are almost identically narrow, and only the city-cluster interval is honestly wide." style="max-width:100%;height:auto;display:block;margin:0 auto">
+<g class='svglite'>
+<defs>
+  <style type='text/css'><![CDATA[
+    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {
+      fill: none;
+      stroke: #000000;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-miterlimit: 10.00;
+    }
+    .svglite text {
+      white-space: pre;
+    }
+    .svglite g.glyphgroup path {
+      fill: inherit;
+      stroke: none;
+    }
+  ]]></style>
+</defs>
+<rect width='100%' height='100%' style='stroke: none; fill: #FAFAF9;'/>
+<defs>
+  <clipPath id='g2_cpMC4wMHw3OTIuMDB8MC4wMHwzMTYuODA='>
+    <rect x='0.00' y='0.00' width='792.00' height='316.80' />
+  </clipPath>
+</defs>
+<g clip-path='url(#g2_cpMC4wMHw3OTIuMDB8MC4wMHwzMTYuODA=)'>
+<rect x='0.00' y='-0.000000000000057' width='792.00' height='316.80' style='stroke-width: 1.07; stroke: #FFFFFF; fill: #FFFFFF;' />
+</g>
+<defs>
+  <clipPath id='g2_cpNDQuMjd8NzgwLjU0fDYyLjIzfDI5Mi4wOA=='>
+    <rect x='44.27' y='62.23' width='736.27' height='229.85' />
+  </clipPath>
+</defs>
+<g clip-path='url(#g2_cpNDQuMjd8NzgwLjU0fDYyLjIzfDI5Mi4wOA==)'>
+</g>
+<g clip-path='url(#g2_cpMC4wMHw3OTIuMDB8MC4wMHwzMTYuODA=)'>
+</g>
+<defs>
+  <clipPath id='g2_cpNS40OHw0NDUuOTF8NS40OHwzMTEuMzI='>
+    <rect x='5.48' y='5.48' width='440.43' height='305.84' />
+  </clipPath>
+</defs>
+<g clip-path='url(#g2_cpNS40OHw0NDUuOTF8NS40OHwzMTEuMzI=)'>
+<rect x='5.48' y='5.48' width='440.43' height='305.84' style='stroke-width: 1.16; stroke: none; fill: #FAFAF9;' />
+</g>
+<g clip-path='url(#g2_cpMC4wMHw3OTIuMDB8MC4wMHwzMTYuODA=)'>
+</g>
+<defs>
+  <clipPath id='g2_cpNDQ1LjkxfDc4Ni41Mnw1LjQ4fDMxMS4zMg=='>
+    <rect x='445.91' y='5.48' width='340.62' height='305.84' />
+  </clipPath>
+</defs>
+<g clip-path='url(#g2_cpNDQ1LjkxfDc4Ni41Mnw1LjQ4fDMxMS4zMg==)'>
+<rect x='445.91' y='5.48' width='340.62' height='305.84' style='stroke-width: 1.16; stroke: none; fill: #FAFAF9;' />
+</g>
+<g clip-path='url(#g2_cpMC4wMHw3OTIuMDB8MC4wMHwzMTYuODA=)'>
+</g>
+<defs>
+  <clipPath id='g2_cpNDQuMjd8MjM5LjExfDYyLjIzfDI5Mi4wOA=='>
+    <rect x='44.27' y='62.23' width='194.84' height='229.85' />
+  </clipPath>
+</defs>
+<g clip-path='url(#g2_cpNDQuMjd8MjM5LjExfDYyLjIzfDI5Mi4wOA==)'>
+<rect x='44.27' y='62.23' width='194.84' height='229.85' style='stroke-width: 1.16; stroke: none; fill: #FAFAF9;' />
+<polyline points='44.27,292.08 239.11,292.08 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<polyline points='44.27,228.23 239.11,228.23 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<polyline points='44.27,164.39 239.11,164.39 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<polyline points='44.27,100.54 239.11,100.54 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<polyline points='80.80,292.08 80.80,62.23 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<polyline points='141.69,292.08 141.69,62.23 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<polyline points='202.58,292.08 202.58,62.23 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<rect x='61.01' y='86.17' width='39.58' height='205.91' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #B7791F;' />
+<rect x='121.90' y='269.73' width='39.58' height='22.35' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #2B6CB0;' />
+<rect x='182.79' y='271.65' width='39.58' height='20.43' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #1A365D;' />
+<line x1='44.27' y1='276.12' x2='239.11' y2='276.12' style='stroke-width: 1.28; stroke: #C53030; stroke-dasharray: 6.83,6.83; stroke-linecap: butt;' />
+<text x='80.80' y='83.73' text-anchor='middle' style='font-size: 8.54px;fill: #2D3748; font-family: "Arial";' textLength='16.62px' lengthAdjust='spacingAndGlyphs'>0.65</text>
+<text x='141.69' y='267.29' text-anchor='middle' style='font-size: 8.54px;fill: #2D3748; font-family: "Arial";' textLength='16.62px' lengthAdjust='spacingAndGlyphs'>0.07</text>
+<text x='202.58' y='269.20' text-anchor='middle' style='font-size: 8.54px;fill: #2D3748; font-family: "Arial";' textLength='16.62px' lengthAdjust='spacingAndGlyphs'>0.06</text>
+</g>
+<g clip-path='url(#g2_cpMC4wMHw3OTIuMDB8MC4wMHwzMTYuODA=)'>
+</g>
+<defs>
+  <clipPath id='g2_cpMjQ1LjA5fDQzOS45M3w2Mi4yM3wyOTIuMDg='>
+    <rect x='245.09' y='62.23' width='194.84' height='229.85' />
+  </clipPath>
+</defs>
+<g clip-path='url(#g2_cpMjQ1LjA5fDQzOS45M3w2Mi4yM3wyOTIuMDg=)'>
+<rect x='245.09' y='62.23' width='194.84' height='229.85' style='stroke-width: 1.16; stroke: none; fill: #FAFAF9;' />
+<polyline points='245.09,292.08 439.93,292.08 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<polyline points='245.09,228.23 439.93,228.23 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<polyline points='245.09,164.39 439.93,164.39 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<polyline points='245.09,100.54 439.93,100.54 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<polyline points='281.62,292.08 281.62,62.23 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<polyline points='342.51,292.08 342.51,62.23 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<polyline points='403.39,292.08 403.39,62.23 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<rect x='261.83' y='89.05' width='39.58' height='203.03' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #B7791F;' />
+<rect x='322.72' y='259.20' width='39.58' height='32.88' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #2B6CB0;' />
+<rect x='383.61' y='270.69' width='39.58' height='21.39' style='stroke-width: 1.16; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #1A365D;' />
+<line x1='245.09' y1='276.12' x2='439.93' y2='276.12' style='stroke-width: 1.28; stroke: #C53030; stroke-dasharray: 6.83,6.83; stroke-linecap: butt;' />
+<text x='281.62' y='86.60' text-anchor='middle' style='font-size: 8.54px;fill: #2D3748; font-family: "Arial";' textLength='16.62px' lengthAdjust='spacingAndGlyphs'>0.64</text>
+<text x='342.51' y='256.75' text-anchor='middle' style='font-size: 8.54px;fill: #2D3748; font-family: "Arial";' textLength='16.62px' lengthAdjust='spacingAndGlyphs'>0.10</text>
+<text x='403.39' y='268.25' text-anchor='middle' style='font-size: 8.54px;fill: #2D3748; font-family: "Arial";' textLength='16.62px' lengthAdjust='spacingAndGlyphs'>0.07</text>
+</g>
+<g clip-path='url(#g2_cpMC4wMHw3OTIuMDB8MC4wMHwzMTYuODA=)'>
+</g>
+<defs>
+  <clipPath id='g2_cpNDQuMjd8MjM5LjExfDQzLjc4fDYyLjIz'>
+    <rect x='44.27' y='43.78' width='194.84' height='18.45' />
+  </clipPath>
+</defs>
+<g clip-path='url(#g2_cpNDQuMjd8MjM5LjExfDQzLjc4fDYyLjIz)'>
+<text x='141.69' y='56.44' text-anchor='middle' style='font-size: 9.60px;fill: #1A1A1A; font-family: "Arial";' textLength='53.59px' lengthAdjust='spacingAndGlyphs'>G = 40 cities</text>
+</g>
+<g clip-path='url(#g2_cpMC4wMHw3OTIuMDB8MC4wMHwzMTYuODA=)'>
+</g>
+<defs>
+  <clipPath id='g2_cpMjQ1LjA5fDQzOS45M3w0My43OHw2Mi4yMw=='>
+    <rect x='245.09' y='43.78' width='194.84' height='18.45' />
+  </clipPath>
+</defs>
+<g clip-path='url(#g2_cpMjQ1LjA5fDQzOS45M3w0My43OHw2Mi4yMw==)'>
+<text x='342.51' y='56.44' text-anchor='middle' style='font-size: 9.60px;fill: #1A1A1A; font-family: "Arial";' textLength='53.59px' lengthAdjust='spacingAndGlyphs'>G = 10 cities</text>
+</g>
+<g clip-path='url(#g2_cpMC4wMHw3OTIuMDB8MC4wMHwzMTYuODA=)'>
+<text x='80.80' y='303.19' text-anchor='middle' style='font-size: 8.00px;fill: #2D3748; font-family: "Arial";' textLength='36.03px' lengthAdjust='spacingAndGlyphs'>naive i.i.d.</text>
+<text x='141.69' y='303.19' text-anchor='middle' style='font-size: 8.00px;fill: #2D3748; font-family: "Arial";' textLength='35.14px' lengthAdjust='spacingAndGlyphs'>cluster (z)</text>
+<text x='202.58' y='303.19' text-anchor='middle' style='font-size: 8.00px;fill: #2D3748; font-family: "Arial";' textLength='46.70px' lengthAdjust='spacingAndGlyphs'>cluster t(G-1)</text>
+<text x='281.62' y='303.19' text-anchor='middle' style='font-size: 8.00px;fill: #2D3748; font-family: "Arial";' textLength='36.03px' lengthAdjust='spacingAndGlyphs'>naive i.i.d.</text>
+<text x='342.51' y='303.19' text-anchor='middle' style='font-size: 8.00px;fill: #2D3748; font-family: "Arial";' textLength='35.14px' lengthAdjust='spacingAndGlyphs'>cluster (z)</text>
+<text x='403.39' y='303.19' text-anchor='middle' style='font-size: 8.00px;fill: #2D3748; font-family: "Arial";' textLength='46.70px' lengthAdjust='spacingAndGlyphs'>cluster t(G-1)</text>
+<text x='38.89' y='295.51' text-anchor='end' style='font-size: 9.60px;fill: #2D3748; font-family: "Arial";' textLength='13.33px' lengthAdjust='spacingAndGlyphs'>0.0</text>
+<text x='38.89' y='231.67' text-anchor='end' style='font-size: 9.60px;fill: #2D3748; font-family: "Arial";' textLength='13.33px' lengthAdjust='spacingAndGlyphs'>0.2</text>
+<text x='38.89' y='167.82' text-anchor='end' style='font-size: 9.60px;fill: #2D3748; font-family: "Arial";' textLength='13.33px' lengthAdjust='spacingAndGlyphs'>0.4</text>
+<text x='38.89' y='103.97' text-anchor='end' style='font-size: 9.60px;fill: #2D3748; font-family: "Arial";' textLength='13.33px' lengthAdjust='spacingAndGlyphs'>0.6</text>
+<text transform='translate(20.05,177.15) rotate(-90)' text-anchor='middle' style='font-size: 12.00px;fill: #2D3748; font-family: "Arial";' textLength='94.03px' lengthAdjust='spacingAndGlyphs'>false-positive rate</text>
+<text x='44.27' y='35.81' style='font-size: 9.50px;fill: #718096; font-family: "Arial";' textLength='300.89px' lengthAdjust='spacingAndGlyphs'>naive i.i.d. inference fires two-thirds of the time; red line is the 5% target</text>
+<text x='44.27' y='20.41' style='font-size: 12.50px; font-weight: bold;fill: #1A365D; font-family: "Arial";' textLength='217.39px' lengthAdjust='spacingAndGlyphs'>Rejecting a TRUE null at nominal 5%</text>
+</g>
+<defs>
+  <clipPath id='g2_cpNDg3LjQ2fDc4MC41NHw2Mi4yM3wyOTIuMDg='>
+    <rect x='487.46' y='62.23' width='293.08' height='229.85' />
+  </clipPath>
+</defs>
+<g clip-path='url(#g2_cpNDg3LjQ2fDc4MC41NHw2Mi4yM3wyOTIuMDg=)'>
+<rect x='487.46' y='62.23' width='293.08' height='229.85' style='stroke-width: 1.16; stroke: none; fill: #FAFAF9;' />
+<polyline points='487.46,281.63 780.54,281.63 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<polyline points='487.46,239.53 780.54,239.53 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<polyline points='487.46,197.42 780.54,197.42 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<polyline points='487.46,155.32 780.54,155.32 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<polyline points='487.46,113.21 780.54,113.21 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<polyline points='487.46,71.11 780.54,71.11 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<polyline points='542.42,292.08 542.42,62.23 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<polyline points='634.00,292.08 634.00,62.23 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<polyline points='725.59,292.08 725.59,62.23 ' style='stroke-width: 0.64; stroke: #E6E3DD; stroke-linecap: butt;' />
+<line x1='487.46' y1='281.63' x2='780.54' y2='281.63' style='stroke-width: 0.64; stroke: #718096; stroke-linecap: butt;' />
+<polyline points='534.17,128.54 550.66,128.54 ' style='stroke-width: 2.13; stroke: #B7791F; stroke-linecap: butt;' />
+<polyline points='542.42,128.54 542.42,166.71 ' style='stroke-width: 2.13; stroke: #B7791F; stroke-linecap: butt;' />
+<polyline points='534.17,166.71 550.66,166.71 ' style='stroke-width: 2.13; stroke: #B7791F; stroke-linecap: butt;' />
+<polyline points='625.76,128.54 642.25,128.54 ' style='stroke-width: 2.13; stroke: #6B7C3A; stroke-linecap: butt;' />
+<polyline points='634.00,128.54 634.00,166.71 ' style='stroke-width: 2.13; stroke: #6B7C3A; stroke-linecap: butt;' />
+<polyline points='625.76,166.71 642.25,166.71 ' style='stroke-width: 2.13; stroke: #6B7C3A; stroke-linecap: butt;' />
+<polyline points='717.35,72.68 733.83,72.68 ' style='stroke-width: 2.13; stroke: #1A365D; stroke-linecap: butt;' />
+<polyline points='725.59,72.68 725.59,222.58 ' style='stroke-width: 2.13; stroke: #1A365D; stroke-linecap: butt;' />
+<polyline points='717.35,222.58 733.83,222.58 ' style='stroke-width: 2.13; stroke: #1A365D; stroke-linecap: butt;' />
+<circle cx='542.42' cy='147.63' r='2.52' style='stroke-width: 0.77; stroke: #2D3748; fill: #2D3748;' />
+<circle cx='634.00' cy='147.63' r='2.52' style='stroke-width: 0.77; stroke: #2D3748; fill: #2D3748;' />
+<circle cx='725.59' cy='147.63' r='2.52' style='stroke-width: 0.77; stroke: #2D3748; fill: #2D3748;' />
+</g>
+<g clip-path='url(#g2_cpMC4wMHw3OTIuMDB8MC4wMHwzMTYuODA=)'>
+<text x='482.08' y='285.07' text-anchor='end' style='font-size: 9.60px;fill: #2D3748; font-family: "Arial";' textLength='13.33px' lengthAdjust='spacingAndGlyphs'>0.0</text>
+<text x='482.08' y='242.96' text-anchor='end' style='font-size: 9.60px;fill: #2D3748; font-family: "Arial";' textLength='13.33px' lengthAdjust='spacingAndGlyphs'>0.1</text>
+<text x='482.08' y='200.86' text-anchor='end' style='font-size: 9.60px;fill: #2D3748; font-family: "Arial";' textLength='13.33px' lengthAdjust='spacingAndGlyphs'>0.2</text>
+<text x='482.08' y='158.75' text-anchor='end' style='font-size: 9.60px;fill: #2D3748; font-family: "Arial";' textLength='13.33px' lengthAdjust='spacingAndGlyphs'>0.3</text>
+<text x='482.08' y='116.65' text-anchor='end' style='font-size: 9.60px;fill: #2D3748; font-family: "Arial";' textLength='13.33px' lengthAdjust='spacingAndGlyphs'>0.4</text>
+<text x='482.08' y='74.54' text-anchor='end' style='font-size: 9.60px;fill: #2D3748; font-family: "Arial";' textLength='13.33px' lengthAdjust='spacingAndGlyphs'>0.5</text>
+<text x='542.42' y='303.55' text-anchor='middle' style='font-size: 8.50px;fill: #2D3748; font-family: "Arial";' textLength='38.30px' lengthAdjust='spacingAndGlyphs'>naive i.i.d.</text>
+<text x='634.00' y='303.55' text-anchor='middle' style='font-size: 8.50px;fill: #2D3748; font-family: "Arial";' textLength='43.02px' lengthAdjust='spacingAndGlyphs'>HC1 robust</text>
+<text x='725.59' y='303.55' text-anchor='middle' style='font-size: 8.50px;fill: #2D3748; font-family: "Arial";' textLength='44.42px' lengthAdjust='spacingAndGlyphs'>cluster CR1</text>
+<text transform='translate(463.10,206.49) rotate(-90)' style='font-size: 12.00px;fill: #2D3748; font-family: "Symbol";' textLength='5.27px' lengthAdjust='spacingAndGlyphs'>τ</text>
+<text transform='translate(460.62,206.67) rotate(-90)' style='font-size: 12.00px;fill: #2D3748; font-family: "Arial";' textLength='5.62px' lengthAdjust='spacingAndGlyphs'>^</text>
+<text transform='translate(463.10,198.81) rotate(-90)' style='font-size: 12.00px;fill: #2D3748; font-family: "Symbol";' textLength='6.59px' lengthAdjust='spacingAndGlyphs'>±</text>
+<text transform='translate(463.10,190.00) rotate(-90)' style='font-size: 12.00px;fill: #2D3748; font-family: "Arial";' textLength='23.34px' lengthAdjust='spacingAndGlyphs'>1.96</text>
+<text transform='translate(463.10,166.66) rotate(-90)' style='font-size: 12.00px;fill: #2D3748; font-family: "Symbol";' textLength='3.00px' lengthAdjust='spacingAndGlyphs'> </text>
+<text transform='translate(463.10,163.66) rotate(-90)' style='font-size: 12.00px;fill: #2D3748; font-family: "Arial";' textLength='8.00px' lengthAdjust='spacingAndGlyphs'>S</text>
+<text transform='translate(463.10,155.65) rotate(-90)' style='font-size: 12.00px;fill: #2D3748; font-family: "Arial";' textLength='8.00px' lengthAdjust='spacingAndGlyphs'>E</text>
+<text x='487.46' y='35.81' style='font-size: 9.50px;fill: #718096; font-family: "Arial";' textLength='289.61px' lengthAdjust='spacingAndGlyphs'>heteroskedasticity-robust HC1 barely differs; only clustering widens it</text>
+<text x='487.46' y='20.41' style='font-size: 12.50px; font-weight: bold;fill: #1A365D; font-family: "Arial";' textLength='243.06px' lengthAdjust='spacingAndGlyphs'>One rollout: the same estimate, three CIs</text>
+</g>
+</g>
+</svg>
+<figcaption aria-hidden="true">Left: when repeatedly testing a null that
+is in fact true (the policy has no effect), the actual rejection rate of
+each method at the nominal 5% level. Naive iid inference has a
+false-positive rate of about two thirds at both G=40 and G=10 (gold
+bars), far above the 5% target marked by the red dashed line; city
+clustering (blue, navy) pulls it back near 5%. Right: the
+treatment-effect estimate from the same city experiment, with confidence
+intervals from three standard errors. The iid and
+heteroskedasticity-robust HC1 intervals are almost identically narrow,
+and only the city-cluster interval is honestly wide.</figcaption>
+</figure>
+<h3 id="few-clusters-trust-the-normal-or-trust-the-bootstrap">6.4 Few
+Clusters: Trust the Normal or Trust the Bootstrap</h3>
+<p>When <span class="math inline">G</span> is small, even the cluster
+standard error is not enough, because its asymptotic validity is in the
+number of clusters <span class="math inline">G \to \infty</span>. Take a
+<span class="math inline">G = 10</span> city experiment with a true
+effect. For the same cluster <span class="math inline">t</span>
+statistic (<span class="math inline">t = 2.21</span>), three ways of
+setting the <span class="math inline">p</span> value give different
+answers:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>t10 <span class="ot">&lt;-</span> <span class="fu">coef</span>(m10)[<span class="st">&quot;D&quot;</span>] <span class="sc">/</span> <span class="fu">sqrt</span>(<span class="fu">vcovCL</span>(m10, <span class="sc">~</span>city)[<span class="st">&quot;D&quot;</span>,<span class="st">&quot;D&quot;</span>])</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>p_z   <span class="ot">&lt;-</span> <span class="dv">2</span> <span class="sc">*</span> <span class="fu">pnorm</span>(<span class="sc">-</span><span class="fu">abs</span>(t10))                     <span class="co"># normal critical value</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>p_t   <span class="ot">&lt;-</span> <span class="dv">2</span> <span class="sc">*</span> <span class="fu">pt</span>(<span class="sc">-</span><span class="fu">abs</span>(t10), <span class="at">df =</span> <span class="dv">9</span>)                <span class="co"># t(G-1)</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co"># wild cluster bootstrap: under the null, multiply each whole cluster by a random sign, recompute the distribution of t</span></span></code></pre></div>
+<p>The normal critical value gives <span class="math inline">p =
+0.027</span>, looking significant; <span class="math inline">t(9)</span>
+gives <span class="math inline">p = 0.054</span>, already on the edge;
+the wild cluster bootstrap gives <span class="math inline">p =
+0.073</span>, not significant. The three <span
+class="math inline">p</span> values for the same <span
+class="math inline">t</span> differ entirely because of “how fat the
+tails should be when there are few clusters.” The wild cluster
+bootstrap, because it simulates the distribution of <span
+class="math inline">t</span> directly from the cluster structure of the
+data without assuming normality, is the most trustworthy under few
+clusters, and its “actually not significant” is the honest
+conclusion.</p>
+<h3 id="hac-the-same-lesson-in-time-series">6.5 HAC: The Same Lesson in
+Time Series</h3>
+<p>A daily-series regression, comparing iid and Newey-West standard
+errors.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(sandwich)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>m <span class="ot">&lt;-</span> <span class="fu">lm</span>(yt <span class="sc">~</span> xt)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>se_iid <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(<span class="fu">vcov</span>(m)[<span class="st">&quot;xt&quot;</span>,<span class="st">&quot;xt&quot;</span>])</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>se_nw  <span class="ot">&lt;-</span> <span class="fu">sqrt</span>(<span class="fu">NeweyWest</span>(m, <span class="at">lag =</span> <span class="dv">5</span>, <span class="at">prewhite =</span> <span class="cn">FALSE</span>, <span class="at">adjust =</span> <span class="cn">TRUE</span>)[<span class="st">&quot;xt&quot;</span>,<span class="st">&quot;xt&quot;</span>])</span></code></pre></div>
+<p>The slope estimate is 0.189. The iid standard error is 0.0484 (<span
+class="math inline">t = 3.91</span>), and the Newey-West standard error
+is 0.0613 (<span class="math inline">t = 3.08</span>, with lag <span
+class="math inline">L = 5</span>), an inflation of 1.27-fold. Looking at
+coverage under repeated sampling is clearer: for a nominal 95% interval,
+iid actually covers only 84.9% and Newey-West lifts it to 92.0%. The
+direction is right, serial correlation does make iid undercover and HAC
+pulls it back some; but 92.0% is still short of 95%, honestly exposing
+the old complaint that HAC often does not fix things all the way in
+finite samples, which is also why people still consider the block
+bootstrap under strong serial correlation.</p>
+<h3 id="the-trinity-of-tests-and-walds-reparameterization-trap">6.6 The
+Trinity of Tests and Wald’s Reparameterization Trap</h3>
+<p>Use a Halcyon repurchase logit to test “user tenure does not affect
+repurchase” (some coefficient is zero), with the three tests side by
+side.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>mu <span class="ot">&lt;-</span> <span class="fu">glm</span>(rep_order <span class="sc">~</span> tenure, <span class="at">family =</span> <span class="fu">binomial</span>())  <span class="co"># unrestricted</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>mr <span class="ot">&lt;-</span> <span class="fu">glm</span>(rep_order <span class="sc">~</span> <span class="dv">1</span>,      <span class="at">family =</span> <span class="fu">binomial</span>())  <span class="co"># restricted</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>W  <span class="ot">&lt;-</span> <span class="fu">coef</span>(mu)[<span class="st">&quot;tenure&quot;</span>]<span class="sc">^</span><span class="dv">2</span> <span class="sc">/</span> <span class="fu">vcov</span>(mu)[<span class="st">&quot;tenure&quot;</span>,<span class="st">&quot;tenure&quot;</span>]      <span class="co"># Wald</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>LR <span class="ot">&lt;-</span> <span class="dv">2</span> <span class="sc">*</span> (<span class="fu">logLik</span>(mu) <span class="sc">-</span> <span class="fu">logLik</span>(mr))                          <span class="co"># likelihood ratio</span></span></code></pre></div>
+<p>The three statistics agree strongly: Wald 35.58, LR 36.93, LM 36.47,
+all far above the <span class="math inline">\chi^2_1</span> critical
+value, with <span class="math inline">p</span> values nearly zero,
+unanimously rejecting. Their tiny differences are exactly the
+finite-sample divergence Section 4.1 mentioned.</p>
+<p>Wald’s reparameterization trap can be demonstrated directly. Testing
+the same hypothesis “the coefficient equals 0.5,” written in terms of
+the coefficient itself the Wald statistic is 10.68 (<span
+class="math inline">p = 0.0011</span>), and written in terms of the
+<span class="math inline">\log</span> of the coefficient it is 6.79
+(<span class="math inline">p = 0.0092</span>). Two equivalent ways of
+writing the same statement, and the <span class="math inline">p</span>
+values differ by nearly an order of magnitude, simply because Wald
+relies on linearization and reparameterization changes the gradient. The
+LR test is immune, because it looks only at the likelihood value.</p>
+<h3 id="grand-reconciliation">6.7 Grand Reconciliation</h3>
+<p>Put the key numbers together:</p>
+<div class="table-scroll">
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr>
+<th>Quantity</th>
+<th>Method</th>
+<th>Result</th>
+<th>Note</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>WTP (strong denominator)</td>
+<td>Delta / bootstrap SE</td>
+<td>0.0105 / 0.0106</td>
+<td>true value 0.20, two routes agree</td>
+</tr>
+<tr>
+<td>WTP (weak denominator)</td>
+<td>Delta / bootstrap SE</td>
+<td>0.138 / skewness 8.0</td>
+<td>Delta’s symmetric interval erases the right tail</td>
+</tr>
+<tr>
+<td><span class="math inline">\tau</span> (city experiment)</td>
+<td>iid / HC1 / cluster SE</td>
+<td>0.0231 / 0.0231 / 0.0908</td>
+<td><span class="math inline">t</span> from 13.76 to 3.50</td>
+</tr>
+<tr>
+<td>false-positive rate <span class="math inline">G=40</span></td>
+<td>iid / cluster</td>
+<td>0.645 / 0.070</td>
+<td>nominal 5%</td>
+</tr>
+<tr>
+<td>few clusters <span class="math inline">G=10</span></td>
+<td>normal / <span class="math inline">t(9)</span> / wild boot <span
+class="math inline">p</span></td>
+<td>0.027 / 0.054 / 0.073</td>
+<td>same <span class="math inline">t=2.21</span></td>
+</tr>
+<tr>
+<td>HAC coverage</td>
+<td>iid / Newey-West</td>
+<td>0.849 / 0.920</td>
+<td>nominal 95%</td>
+</tr>
+<tr>
+<td>trinity</td>
+<td>Wald / LR / LM</td>
+<td>35.58 / 36.93 / 36.47</td>
+<td>asymptotically equivalent</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>The reconciliation of this section can be summarized as follows: when
+the denominator is strong, Delta and the bootstrap give almost identical
+standard errors, and when the denominator is weak only the bootstrap
+captures the right skew of the ratio’s distribution; in the city
+experiment the iid standard error props the <span
+class="math inline">t</span> up to 13.76 and the
+heteroskedasticity-robust standard error is no help at all, and only
+clustering honestly lowers it to 3.50, while the iid inference reports a
+false positive two thirds of the time in the placebo test; with few
+clusters even clustering over-rejects, and <span
+class="math inline">t(G-1)</span> and the wild cluster bootstrap correct
+it back layer by layer; under serial correlation Newey-West raises the
+coverage from 84.9% toward 92.0%; and Wald, LR, and LM asymptotically
+give the same answer, but Wald changes with how the hypothesis is
+written.</p>
+<h2 id="failure-modes-and-robustness">7 Failure Modes and
+Robustness</h2>
+<p>The correlation structures in the simulations were manufactured, and
+in real data they hide deeper. This section works through the most
+common failure modes and their responses.</p>
+<p>The choice of the level of the standard error is the first and most
+consequential judgment. The default standard error is almost always too
+small, because it assumes independence and homoskedasticity.
+Heteroskedasticity-robust standard errors correct for unequal variance
+but are powerless against correlation, which is the lesson of the
+unmoved HC1 in Section 1. Cluster-robust standard errors correct
+within-cluster correlation, but you have to pick the right level to
+cluster on, and the basis for picking is not a statistical test but a
+substantive judgment about the design: at which level do you believe
+“independent across clusters.” When treatment is assigned at some level,
+or the model includes fixed effects at some level, you usually should
+cluster at that level or coarser. Better to cluster a bit coarsely
+(conservative, standard errors a bit large) than to cluster finely and
+miss correlation. This judgment has no automatic transmission, and the
+researcher must shoulder it head on.</p>
+<p>Few clusters is the trap that follows immediately. Cluster-robust
+asymptotics is in the number of clusters, and with few clusters
+(empirically fewer than thirty or forty) it systematically over-rejects.
+Here you cannot just report a cluster standard error and be done, you
+should use <span class="math inline">t(G-1)</span> critical values, the
+CR2 correction, or the wild cluster bootstrap, and with very few or very
+unbalanced clusters the last is nearly required. A common mistake is
+thinking that millions of observations mean a large sample and stable
+inference, when in fact what decides the reliability of inference is the
+number of clusters, not the number of observations.</p>
+<p>The Delta method for nonlinear functions distorts when the
+denominator is near zero, as warned repeatedly above. The signal to
+watch is whether the coefficient in the denominator is itself estimated
+precisely: if it is close to insignificant, the ratio’s distribution is
+probably severely skewed, and you should abandon the symmetric Delta
+interval for the bootstrap’s percentile-t or a dedicated Fieller
+interval. Likewise, any quantity on the boundary of the parameter space,
+or involving a maximum or an absolute value, should raise the alarm that
+the Delta method and the naive bootstrap fail together, and subsampling
+or a dedicated method is reliable.</p>
+<p>The bootstrap itself can also deceive, especially on correlated data.
+Doing a naive bootstrap with replacement directly on time series or
+clustered data pretends the data are iid and, like the iid standard
+error, understates. Correlated data need the block bootstrap or the wild
+cluster bootstrap, preserving the correlation structure in the
+resampling. Moreover the number of bootstrap replications must be enough
+(a few thousand to start), because too few will let the interval
+endpoints themselves carry appreciable simulation noise.</p>
+<p>At the testing level there are two things to watch. First, Wald is
+not invariant to reparameterization and relies on a variance that may be
+misspecified, so when in doubt use LR or a robust Wald based on a robust
+variance. Second, when you run many tests (a platform watching dozens of
+metrics at once), the 5% single-test false-positive rate accumulates
+into a high overall false-positive rate, and you need multiple-testing
+corrections (such as Bonferroni or controlling the false discovery
+rate), or you will always “discover” some significance that is purely
+accidental. More broadly, repeatedly testing until you get significance
+(p-hacking) systematically destroys the meaning of inference, and
+pre-registering the analysis plan and honestly reporting all tests is
+the prerequisite for a <span class="math inline">p</span> value to earn
+its literal meaning.</p>
+<p>Stringing these failure modes together, the robustness of this
+chapter ultimately rests on one thing: think clearly about what
+correlations are in your data and how nonlinear your quantity is, and
+choose the variance algorithm and the test construction accordingly. The
+credibility of a standard error never lies in the number the software
+spits out by default, but in whether you have honestly told it the
+dependence structure of the data. Get this right, and significance is
+truly significant; get it wrong, and even the smallest <span
+class="math inline">p</span> value is only a byproduct of a miscomputed
+variance.</p>
+<h2 id="further-reading">8 Further Reading</h2>
+<div class="readings">
+<p>Required reading, in suggested order:</p>
+<ul>
+<li>Angrist and Pischke (2009, <em>Mostly Harmless Econometrics</em>),
+Chapter 8. The most readable introduction to clustering, serial
+correlation, and robust standard errors, and the source of this
+chapter’s tone that “ignoring correlation is the same as overstating
+significance.”</li>
+<li>Bertrand, Duflo and Mullainathan (2004, <em>QJE</em>). A placebo
+experiment exposing DiD that ignores serial correlation, the real-world
+version of the false-positive health check in Section 1, required.</li>
+<li>Moulton (1990, <em>RESTAT</em>). The original source of the
+clustering trap in aggregate-variable regressions and of the Moulton
+factor, short and far-reaching.</li>
+<li>Cameron and Miller (2015, <em>Journal of Human Resources</em>). A
+comprehensive practical guide to cluster-robust inference, from the
+level of clustering to few-cluster corrections, a self-check list to run
+before doing empirical work.</li>
+</ul>
+<p>Further reading:</p>
+<ul>
+<li>Efron (1979, <em>Annals of Statistics</em>). The founding work of
+the bootstrap, for understanding the source of the resampling idea.</li>
+<li>White (1980, <em>Econometrica</em>) and Newey and West (1987,
+<em>Econometrica</em>). The original sources of the
+heteroskedasticity-robust and HAC variances, the two cornerstones of
+this chapter’s sandwich filling.</li>
+<li>Cameron, Gelbach and Miller (2008, <em>RESTAT</em>) and MacKinnon
+and Webb (2017, <em>Journal of Applied Econometrics</em>). The wild
+cluster bootstrap and its behavior under unbalanced clusters, the modern
+workhorse of few-cluster inference.</li>
+<li>Imbens and Kolesár (2016, <em>RESTAT</em>). Practical advice on
+robust standard errors in small samples, the source of the CR2 and <span
+class="math inline">t(G-1)</span> corrections, the technical backing for
+the few-cluster section.</li>
+<li>Abadie, Athey, Imbens and Wooldridge (2023, <em>QJE</em>).
+Re-answering “should you cluster at all, and at which level” from the
+design perspective, upgrading clustering from a convention into a
+defensible judgment.</li>
+<li>Horowitz (2001, <em>Handbook of Econometrics</em> Vol. 5). The
+authoritative survey of the bootstrap, with a complete technical
+treatment of higher-order refinement and failure cases.</li>
+<li>Deng, Knoblich and Lu (2018, <em>KDD</em>). The deployment of the
+Delta method in industrial-scale online experiments, the interface
+between this chapter’s methods and platform data science.</li>
+</ul>
+</div>
+<div class="apa-refs">
+<ul>
+<li>Abadie, A., Athey, S., Imbens, G. W., &amp; Wooldridge, J. M.
+(2023). When should you adjust standard errors for clustering? <em>The
+Quarterly Journal of Economics, 138</em>(1), 1-35. <a
+href="https://doi.org/10.1093/qje/qjac038"
+class="uri">https://doi.org/10.1093/qje/qjac038</a></li>
+<li>Angrist, J. D., &amp; Pischke, J.-S. (2009). <em>Mostly harmless
+econometrics: An empiricist’s companion</em>. Princeton University
+Press. <a href="https://doi.org/10.1515/9781400829828"
+class="uri">https://doi.org/10.1515/9781400829828</a></li>
+<li>Bertrand, M., Duflo, E., &amp; Mullainathan, S. (2004). How much
+should we trust differences-in-differences estimates? <em>The Quarterly
+Journal of Economics, 119</em>(1), 249-275. <a
+href="https://doi.org/10.1162/003355304772839588"
+class="uri">https://doi.org/10.1162/003355304772839588</a></li>
+<li>Cameron, A. C., Gelbach, J. B., &amp; Miller, D. L. (2008).
+Bootstrap-based improvements for inference with clustered errors.
+<em>The Review of Economics and Statistics, 90</em>(3), 414-427. <a
+href="https://doi.org/10.1162/rest.90.3.414"
+class="uri">https://doi.org/10.1162/rest.90.3.414</a></li>
+<li>Cameron, A. C., &amp; Miller, D. L. (2015). A practitioner’s guide
+to cluster-robust inference. <em>Journal of Human Resources, 50</em>(2),
+317-372. <a href="https://doi.org/10.3368/jhr.50.2.317"
+class="uri">https://doi.org/10.3368/jhr.50.2.317</a></li>
+<li>Deng, A., Knoblich, U., &amp; Lu, J. (2018). Applying the Delta
+method in metric analytics: A practical guide with novel ideas. In
+<em>Proceedings of the 24th ACM SIGKDD International Conference on
+Knowledge Discovery &amp; Data Mining</em> (pp. 233-242). Association
+for Computing Machinery. <a
+href="https://doi.org/10.1145/3219819.3219919"
+class="uri">https://doi.org/10.1145/3219819.3219919</a></li>
+<li>Efron, B. (1979). Bootstrap methods: Another look at the jackknife.
+<em>The Annals of Statistics, 7</em>(1), 1-26. <a
+href="https://doi.org/10.1214/aos/1176344552"
+class="uri">https://doi.org/10.1214/aos/1176344552</a></li>
+<li>Horowitz, J. L. (2001). The bootstrap. In J. J. Heckman &amp; E.
+Leamer (Eds.), <em>Handbook of econometrics</em> (Vol. 5,
+pp. 3159-3228). Elsevier. <a
+href="https://doi.org/10.1016/S1573-4412(01)05005-X"
+class="uri">https://doi.org/10.1016/S1573-4412(01)05005-X</a></li>
+<li>Imbens, G. W., &amp; Kolesár, M. (2016). Robust standard errors in
+small samples: Some practical advice. <em>The Review of Economics and
+Statistics, 98</em>(4), 701-712. <a
+href="https://doi.org/10.1162/REST_a_00552"
+class="uri">https://doi.org/10.1162/REST_a_00552</a></li>
+<li>MacKinnon, J. G., &amp; Webb, M. D. (2017). Wild bootstrap inference
+for wildly different cluster sizes. <em>Journal of Applied Econometrics,
+32</em>(2), 233-254. <a href="https://doi.org/10.1002/jae.2508"
+class="uri">https://doi.org/10.1002/jae.2508</a></li>
+<li>Moulton, B. R. (1990). An illustration of a pitfall in estimating
+the effects of aggregate variables on micro units. <em>The Review of
+Economics and Statistics, 72</em>(2), 334-338. <a
+href="https://doi.org/10.2307/2109724"
+class="uri">https://doi.org/10.2307/2109724</a></li>
+<li>Newey, W. K., &amp; West, K. D. (1987). A simple, positive
+semi-definite, heteroskedasticity and autocorrelation consistent
+covariance matrix. <em>Econometrica, 55</em>(3), 703-708. <a
+href="https://doi.org/10.2307/1913610"
+class="uri">https://doi.org/10.2307/1913610</a></li>
+<li>White, H. (1980). A heteroskedasticity-consistent covariance matrix
+estimator and a direct test for heteroskedasticity. <em>Econometrica,
+48</em>(4), 817-838. <a href="https://doi.org/10.2307/1912934"
+class="uri">https://doi.org/10.2307/1912934</a></li>
+</ul>
+</div>
+<section id="footnotes" class="footnotes footnotes-end-of-document"
+role="doc-endnotes">
+<hr />
+<ol>
+<li id="fn1"><p>This chapter uses <span class="math inline">g</span> and
+<span class="math inline">G</span> to denote a generic cluster index and
+cluster count, valid only within this chapter, differing from the
+convention elsewhere in the book where <span
+class="math inline">g</span> denotes a cohort (a treatment-group
+cohort).<a href="#fnref1" class="footnote-back"
+role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+    <footer class="page-footer">
+<span>Foundations of Information Systems Economics: Empirical Methods for Information Systems Economics</span>
+    </footer>
+  </main>
+</div>
+<script>
+(function(){var p=(location.pathname.split('/').pop()||'index.html');document.querySelectorAll('.file-nav a').forEach(function(a){if(a.getAttribute('href')===p)a.classList.add('current');});})();
+
+/* Preserve complete formulas without internal scrollbars. Only formulas whose
+   natural width exceeds their text column are reduced, and resize restores the
+   largest size that fits. */
+(function () {
+  function fitMath() {
+    document.querySelectorAll('span.math').forEach(function (host) {
+      var katex = host.querySelector('.katex');
+      if (!katex) return;
+      katex.style.fontSize = '';
+      var parent = host.classList.contains('display') ? host : host.parentElement;
+      var available = Math.max(1, parent.clientWidth);
+      /* KaTeX's box can be clipped to the host before measurement; scrollWidth
+         retains the full typeset width and is therefore the correct basis. */
+      var needed = Math.max(katex.scrollWidth, katex.getBoundingClientRect().width);
+      /* Keep a small safety margin for KaTeX glyph overhangs and browser
+         sub-pixel rounding, so the last radical/bar is never clipped. */
+      var target = available * 0.98;
+      if (needed > target) {
+        katex.style.fontSize = Math.max(0.34, target / needed) + 'em';
+      }
+    });
+  }
+  document.addEventListener('DOMContentLoaded', function () {
+    requestAnimationFrame(fitMath);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(fitMath);
+  });
+  window.addEventListener('resize', fitMath);
+}());
+</script>
+<script defer src="assets/notes.js"></script>
+</body>
+</html>

@@ -1,0 +1,799 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script>(function(){try{var t=localStorage.getItem('theme');if(t==='dark'||t==='light')document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <title>08 Platform Research Applications | From Choices to Counterfactuals</title>
+  <link rel="stylesheet" href="assets/katex/katex.min.css">
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<div class="page-wrapper">
+
+  <!-- ==================== SIDEBAR ==================== -->
+  <nav class="sidebar">
+    <div class="sidebar-title">From Choices to Counterfactuals: Structural Estimation for Digital Platform Research</div>
+    <div class="sidebar-subtitle">Chapter 08 · Platform Research Applications</div>
+
+    <div class="toc-section-label">Contents</div>
+    <div class="toc">
+      <a href="#method-map">8.1 Mapping Methods to Questions</a>
+      <a href="#ghose-han">8.2 Close Reading 1: Demand in the App Store</a>
+      <a href="#ranking-papers">8.3 Close Reading 2: Search Ranking in Two Acts</a>
+      <a href="#blp-template">8.4 Close Reading 3: BLP as a Methodological Template</a>
+      <a href="#two-sided">8.5 Two-Sided Markets and Network Effects</a>
+      <a href="#reviews-reputation">8.6 Reviews and Reputation</a>
+      <a href="#pricing-competition">8.7 Pricing, Competition, and Market Power</a>
+      <a href="#welfare-reporting">8.8 Reporting Standards for Welfare Analysis</a>
+      <a href="#misconceptions">8.9 Common Pitfalls</a>
+      <a href="#summary">8.10 Chapter Summary</a>
+      <a href="#readings">Further Reading</a>
+    </div>
+
+    <div class="file-nav">
+      <div class="nav-label">Chapters</div>
+      <a href="01_overview_roadmap.html">01 Overview & Decision Framework</a>
+      <a href="02_why_structural.html">02 Why Structural Models</a>
+      <a href="03_rum_logit.html">03 RUM and Logit</a>
+      <a href="04_gev_mixed_logit.html">04 Nested and Mixed Logit</a>
+      <a href="05_simulation_estimation.html">05 Simulation and Numerical Estimation</a>
+      <a href="06_endogeneity_blp.html">06 Endogeneity and BLP</a>
+      <a href="07_dynamic_choice.html">07 Dynamic Discrete Choice</a>
+      <a href="08_applications.html" class="current">08 Platform Research Applications</a>
+      <a href="09_workflow_reference.html">09 Workflow, Validation, and Reference</a>
+    </div>
+  </nav>
+
+  <!-- ==================== MAIN ==================== -->
+  <main class="main-content">
+
+    <header class="page-header">
+      <h1>Platform Research Applications</h1>
+      <div class="subtitle">Structural Estimation at Work: Canonical Studies in Digital Platforms</div>
+      <div class="meta">From Choices to Counterfactuals: Structural Estimation for Digital Platform Research · Chapter 08</div>
+    </header>
+
+    <div class="global-legend">
+      <span class="legend-label">Variable colors</span>
+      <span><span class="dot dot-observed"></span>Observed in data</span>
+      <span><span class="dot dot-estimated"></span>Parameters to estimate</span>
+      <span><span class="dot dot-researcher"></span>Set by the researcher</span>
+    </div>
+
+    <p>By this chapter you have accumulated a full toolkit: logit, nested logit and mixed logit, BLP, and dynamic discrete choice. This chapter teaches no new method. Instead it carries the tools back to the research frontier of platforms and digital markets, to see how they combine inside real research designs and how each one trades off differently as the question changes. Concretely, we work through three close readings covering four classic papers, taking each apart to expose its identification strategy. The whole chapter keeps a single rule: every number quoted from a real paper has been checked line by line against the original text or the authors' public appendices, and anything whose source cannot be located is pushed back to a qualitative conclusion, with no fudging. After the three close readings come four topics (two-sided markets, reviews and reputation, pricing and competition, and welfare reporting), pitched mostly as framework discussion and landing on model specification, identification, and common traps. The pricing and welfare sections share a single illustrative example, worked all the way from setup to numbers and reproducible step by step, that ties the supply-side formulas to the welfare report as one continuous thread.</p>
+
+    <!-- ============================================ -->
+    <h2 id="method-map">8.1 Mapping Methods to Questions</h2>
+
+    <p>Before you rush to pick a model, do not reach for formulas first. Ask yourself three things: which class of research question you face, what your data look like, and which of the earlier chapters' models should take the stage. The table below lines up the five most common classes of question in platform research with their typical data forms, and the right column points straight back to the corresponding chapter of this book. Think of it as a lookup chart to navigate by.</p>
+
+    <div class="table-scroll">
+    <table>
+      <thead>
+        <tr><th>Type of research question</th><th>Typical data form</th><th>Recommended model</th><th>Chapter in this book</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Demand and pricing</strong>: how do attributes and price determine shares? What is the optimal price?</td>
+          <td>Aggregate shares by market × period, or individual transaction records</td>
+          <td>Random-coefficients logit / BLP plus supply-side pricing</td>
+          <td>03, 04, 06</td>
+        </tr>
+        <tr>
+          <td><strong>Ranking and exposure</strong>: what is the causal effect of rank position on clicks and conversion?</td>
+          <td>Session click-stream (impression-click-purchase, three event layers)</td>
+          <td>Position in utility, plus simultaneous equations or a randomized experiment for endogenous rank</td>
+          <td>03, 06, and Section 8.3 of this chapter</td>
+        </tr>
+        <tr>
+          <td><strong>Network effects</strong>: how does participation on the two sides pull on each other? How large is the effect?</td>
+          <td>Two-sided panel (participation on both sides of each platform over time)</td>
+          <td>A two-sided equilibrium model plus an identification treatment for the reflection problem</td>
+          <td>Section 8.5 of this chapter</td>
+        </tr>
+        <tr>
+          <td><strong>Reputation and information</strong>: how do ratings, review counts, and text change choices?</td>
+          <td>Individual transactions plus ratings / review counts / review text</td>
+          <td>logit / nested logit plus Bayesian learning</td>
+          <td>04, 07, and Section 8.6 of this chapter</td>
+        </tr>
+        <tr>
+          <td><strong>Dynamic behavior</strong>: subscription renewal, platform switching, technology adoption</td>
+          <td>Individual panel (repeated decisions by the same agent)</td>
+          <td>Dynamic discrete choice (Rust / CCP)</td>
+          <td>07</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+
+    <p>The lookup chart alone is not enough. Platform research keeps running into three structural difficulties, and the center of gravity of an identification strategy is usually forced into place by them. Let us meet each one.</p>
+
+    <p><strong>The first difficulty: price and ranking are both endogenous.</strong> Price on a platform is not a simple cost markup; sellers set it while watching expected demand and their rivals. Rank is even more clearly a product of the algorithm, and the algorithm itself has already folded in quality, price, and historical sales. That is the trouble: price and rank are both entangled with unobserved quality <span class="var-researcher">$\xi_j$</span>, and a raw regression that does nothing about it will blend the position effect and the quality effect into one. To pull them apart you have three routes: find an instrument, borrow a slice of randomized variation, or write rank and rating explicitly into a simultaneous system.</p>
+
+    <p><strong>The second difficulty: the data are often only aggregates, or truncated.</strong> The fine-grained things, download counts and individual purchase records, are usually out of reach; what you can see is only leaderboard rank, market shares, or a small slice of the exposure set left after the recommendation algorithm has truncated it. Ghose and Han, the close reading in Section 8.2, suffered exactly this: download counts were simply unavailable, so they had to convert leaderboard rank into sales through a power law. Trickier still, sometimes you cannot even see the choice set. You have no way to know which options were actually laid in front of the user, and the discrete choice model happens to be built on the very foundation that the choice set is known.</p>
+
+    <p><strong>The third difficulty: the equilibrium feeds back.</strong> A platform is a system where pulling one thread moves the whole cloth: change the take rate and sellers reprice at once; change the ranking and participation on both sides is reshuffled. So any serious counterfactual cannot pretend that everyone else stands still while only you move; it must solve the equilibrium all over again. This is especially glaring in two-sided markets, the subject of Section 8.5.</p>
+
+    <div class="info-box">
+      <div class="box-title">A lens for the three close readings: the three identification questions</div>
+      <p style="margin-bottom:0">The three difficulties come down to the same thing: the causal quantity you want is tangled up with the correlation in the data. As you read each close reading below, keep three questions fixed in view and you will be harder to lead by the nose with a pretty result. <strong>① What exactly are we trying to estimate?</strong> Which structural parameter, which counterfactual quantity. <strong>② Which variation in the data identifies it?</strong> Who supplies an exogenous push that is not contaminated by unobserved quality. <strong>③ When does identification fail?</strong> Which confound would make a naive regression spit out the wrong answer. The identification part of all three close readings is written around these three questions, and you can wear the same lens over your own data.</p>
+    </div>
+
+    <div class="takeaway-box">
+      <div class="box-title">Bottom Line</div>
+      What platform research lacks is not new methods but the aim of existing methods at three structural difficulties: endogenous price and ranking, data that are only aggregates or truncated, and an equilibrium that feeds back. Before you actually start, think through which class your data belong to and whether the counterfactual needs the equilibrium re-solved, and the choice of model is mostly already answered.
+    </div>
+
+    <!-- ============================================ -->
+    <h2 id="ghose-han">8.2 Close Reading 1: Demand in the App Store (Ghose &amp; Han 2014)</h2>
+
+    <p>Put yourself in the researcher's shoes for a hard problem. You want to estimate demand for mobile apps, and the first thing you need, naturally, is sales. But from its opening day the App Store has kept its lips sealed, never publishing the download count of any single app, and all you can look up is the leaderboard rank that shifts day to day. Sales are the lifeblood of demand estimation, and sales are precisely what you do not have. This is the bind that opens Ghose and Han's (2014) study of mobile-application demand in <em>Management Science</em>. It has since become a template for demand estimation in digital markets, precisely because it handles all three of the previous section's structural difficulties cleanly, not one left out.</p>
+
+    <div class="info-box">
+      <div class="box-title">Background you'll need: recovering sales and nested logit</div>
+      <p>This paper leans on two basic tools; a sentence on each, so you do not get stuck halfway through.</p>
+      <p><strong>Recovering sales from rank</strong>: rank is "what place you came in," sales are "how many you sold," two different things. When the platform will hand over rank but not sales, there is a way out: first find a batch of cases where both rank and sales are known, fit a rank-to-sales conversion curve, and then use that curve to translate rank-only products back into sales. This is exactly what the first step below does.</p>
+      <p><strong>Nested logit</strong>: nesting means the choice runs in two layers, first picking a broad category among several and then picking the specific option within the chosen category, like first deciding "free app or paid app" and then picking one within that group. Options inside the same category share part of their unobserved preference, so they are closer substitutes for one another. Chapter 04 works its mechanism out in full; here we borrow only its intuition.</p>
+    </div>
+
+    <h3>Engineering around unobserved sales</h3>
+
+    <p>The objects of study are the US Apple App Store and Google Play. The two systems are mutually incompatible: an Android user will not go download an app just because it ranks high on the iOS charts, and on that basis the authors treat the two stores as <strong>two independent markets</strong> and estimate them separately. The real hurdle was flagged above: the App Store publishes only the daily leaderboard rank and keeps download counts under wraps, yet demand estimation cannot do without sales.</p>
+
+    <p>The authors' way through is to build a ruler first, one that translates rank into sales. Rank and sales are not linearly related: the number-one app's downloads leave number ten far behind, and the further down the chart you go, the more a single place of difference opens up a gulf in sales. This "steep at the head, flat in the tail" shape is best captured by a power law. Concretely, they partnered with a large third-party app store to obtain paired rank-and-download data on 4,977 apps over 46 weeks and fit a Pareto power law.</p>
+
+    <div class="formula-box">
+      <div class="formula-title">Power-law conversion from rank to sales</div>
+      <div class="formula-math">$$\text{Sales Quantity} = b \times (\text{Sales Rank})^{-a}, \qquad \hat a = 1.09$$</div>
+      <div class="formula-explain">
+        <table>
+          <tr><td class="var-observed">$\text{Sales Rank}$</td><td>Leaderboard rank (observed)</td></tr>
+          <tr><td>$\text{Sales Quantity}$</td><td>Download count (not directly observed; the dependent variable filled in from rank via the power law)</td></tr>
+          <tr><td class="var-researcher">$\hat a = 1.09$</td><td>Shape parameter calibrated on the third party's private data, 4,977 apps over 46 weeks</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <p>The fitted shape parameter $\hat a = 1.09$ just clears 1, which in plain terms says: for every tenfold difference in rank, sales differ by more than tenfold. With this ruler in hand, the once-invisible download count becomes a usable dependent variable.</p>
+
+    <p>A word of caution here, so the sample sizes are not misread. <strong>The 4,977 apps over 46 weeks are only the auxiliary dataset used to calibrate the conversion rule, not the main estimation sample.</strong> The main estimation sample is drawn separately: the top 400 apps on each store's free and paid charts. Treating the calibration set as the main sample is a common misstatement.</p>
+
+    <h3>The model: two-level nested random-coefficients demand plus a supply side</h3>
+
+    <p>The demand side is a BLP-style aggregate model, except that the error structure does not take the ordinary Type I extreme-value form but is built as a <strong>two-level nested logit</strong>: the first level splits free versus paid, the second splits app category (games, entertainment, social, multimedia, utilities, education, with lifestyle as the base category). The price coefficient is a random coefficient and also interacts with demographics (price × age, price × gender, both signed so that older and male users are less sensitive). The supply side is modeled alongside: marginal cost is recovered from the first-order condition, and the cost shocks then enter the GMM moment conditions.</p>
+
+    <div class="formula-box">
+      <div class="formula-title">Ghose &amp; Han's demand specification (schematic)</div>
+      <div class="formula-math">$$U_{ij} = \underbrace{x_j \beta_i + \alpha_i\, p_j + \xi_j}_{\text{mean util }\delta_j + \text{ random coef.}} \; + \; \underbrace{\zeta_{i,\text{free/paid}} + \zeta_{i,\text{category}} + (1-\rho)\,\varepsilon_{ij}}_{\text{two-level nested error}}$$</div>
+      <div class="formula-explain">
+        <table>
+          <tr><td class="var-observed">$x_j,\ p_j$</td><td>App attributes and price (including IAP, in-app advertising, file size, review count, etc.)</td></tr>
+          <tr><td class="var-estimated">$\alpha_i,\ \beta_i$</td><td>Consumer-varying price and attribute coefficients (random coefficients plus demographic interactions)</td></tr>
+          <tr><td class="var-researcher">$\xi_j$</td><td>Unobserved app quality (brand, hidden features, etc.)</td></tr>
+          <tr><td class="var-estimated">$\rho$</td><td>Nesting parameter, one estimated per level (Apple store about $\rho_1=0.252,\ \rho_2=0.329$), merged into a single $\rho$ in the schematic formula</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <p>The deadliest identification problem in this model is price. The naive approach regresses observed shares directly on price, and that road is sure to be a dead end. Why? When a developer sets a price, they see the quality <span class="var-researcher">$\xi_j$</span> that the researcher does not (brand, hidden features, word of mouth); an app of solid quality dares to price high and already sells better, so price and $\xi_j$ are naturally positively correlated. A raw regression cannot separate "priced high" from "good quality," credits quality's work to price, and pushes the price coefficient toward zero or even flips it positive. Read that number at face value and you would conclude the absurd, that the pricier an app the better it sells. This is exactly the price endogeneity of Chapter 06, and it holds just as well in the app market. Look through the three-identification-questions lens of Section 8.1 and the authors' line of attack becomes clear.</p>
+
+    <p><strong>① What are we trying to estimate?</strong> The true price sensitivity <span class="var-estimated">$\alpha$</span>, that is, how much demand is lost when the price of one and the same app is nudged up on its own. It is a causal quantity, nothing like the surface correlation of "do pricier apps sell better or worse."</p>
+
+    <p><strong>② Which variation identifies it?</strong> What we want is the slice of price variation unrelated to the app's own quality $\xi_j$. The authors report two sets of instruments in one go, each manufacturing its own exogenous variation, and along wholly different lines.</p>
+
+    <ul>
+      <li><strong>BLP-type instruments (sums of other apps' attributes in the same market).</strong> The intuition runs like this: how high an app can price depends on how crowded the competition around it is. The more rivals nearby and the more alike they are, the less it can hold a high price. So rivals' attributes push the app's own price around while staying unrelated to the app's own $\xi_j$.</li>
+      <li><strong>Hausman-type instruments (the prices of comparable apps in other markets).</strong> The intuition runs like this: when costs common across markets rise, development, servers, platform rules, the prices of comparable apps everywhere rise together; meanwhile users' idiosyncratic preferences for a given app are independent across markets. So a price elsewhere can move the local price without touching the app's own demand shock.</li>
+    </ul>
+
+    <p><strong>③ When does identification fail?</strong> If these two instrument sets are secretly correlated with the app's own $\xi_j$ as well, identification collapses. Imagine a round of quality upgrades sweeping the whole industry at once: rivals' attributes and out-of-market prices all move with it, the instruments are contaminated by $\xi$, and $\alpha$ is biased all the same. The two instrument sets give fairly close price coefficients (the Apple store's mean price coefficient is <span class="var-estimated">$-0.115$</span> and $-0.126$ respectively, Google Play's is $-0.807$ and $-0.779$), which shows the result is insensitive to the choice between them, and that is useful robustness information; but it cannot prove the exclusion restriction holds, because both instrument sets may be contaminated by the same industry-wide demand shock. Instrument relevance, the exclusion restriction, and the possible channel of common failure still have to be defended separately.</p>
+
+    <h3>The verified results</h3>
+
+    <p>Every number in the table below can be checked line by line in the paper's abstract or the authors' public Online Appendix; none is invented.</p>
+
+    <div class="table-scroll">
+    <table>
+      <thead>
+        <tr><th>Finding</th><th>Number</th><th>Basis</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>In-app purchase (IAP) on demand</td><td>Significantly raises it (Apple store mean coefficient +0.506)</td><td>Sign plus coefficient</td></tr>
+        <tr><td>In-app advertising on demand</td><td>Significantly lowers it (Apple store mean coefficient −0.810)</td><td>Sign plus coefficient</td></tr>
+        <tr><td>Direct effect of IAP on app revenue</td><td>Equivalent to a <strong>28%</strong> price cut</td><td>Demand-side equivalent price change</td></tr>
+        <tr><td>Direct effect of in-app advertising on app revenue</td><td>Equivalent to an <strong>8%</strong> price increase</td><td>Demand-side equivalent price change</td></tr>
+        <tr><td>Revenue-maximizing pricing</td><td>A <strong>50% discount</strong> on paid apps</td><td>The discount that maximizes developer revenue</td></tr>
+        <tr><td>Price sensitivity across platforms</td><td>Google Play's price coefficient is about <strong>7 times</strong> Apple's (−0.807 vs −0.115)</td><td>Comparison of the two stores' mean coefficients</td></tr>
+        <tr><td>Consumer welfare</td><td>Mobile apps deliver about <strong>33.6 billion dollars</strong> of consumer surplus to US consumers each year</td><td>United States, annual, consumer surplus</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <p>Methodologically, three things here are worth learning. First, unobservable sales can be filled back in with a conversion rule calibrated on separate data. Second, estimating two incompatible platforms separately lets platform competition land on a cross-platform comparison of preference parameters and elasticities, rather than being forced into a shared choice set. Third, the counterfactuals answer how to choose pricing and business model, say whether to use IAP or advertising and how deep to discount. Within that, calling in-app advertising "equivalent to an 8% price increase" is especially deft: it renders a non-price attribute into a price equivalent that consumers can feel, far more legible than a dry statement of how much advertising lowers demand.</p>
+
+    <div class="info-box">
+      <div class="box-title">Four traps when you cite this paper</div>
+      <p style="margin-bottom:0">First, it is not standard BLP, nor a simple MNL, but random coefficients on top of a two-level nested logit, with a supply side, estimated by GMM; that nesting structure is exactly what sets it apart from textbook BLP. Second, the widely circulated average own-price elasticities "about −2 for Apple, about −3.7 for Google Play" come from an exercise adapted from this paper in a microeconomics textbook and <strong>do not appear in the original at all</strong>; the sign is right, but the numbers cannot be verified from the available paper or appendix and should not be cited as findings of the study. Third, the basis of the 33.6 billion dollars is United States, annual, consumer surplus, not a global figure, not a monthly figure, and certainly not developer revenue. Fourth, in-app advertising is equivalent to an 8% price increase, not an 8% drop in revenue.</p>
+    </div>
+
+    <div class="takeaway-box">
+      <div class="box-title">Bottom Line</div>
+      Ghose and Han (2014) is a model of demand estimation in digital markets: a power law fills back in the invisible sales, a random-coefficients nested logit captures heterogeneous preferences, two instrument sets cross-check price endogeneity, and finally IAP and advertising are rendered into price equivalents and an annual consumer surplus is computed. When you cite it, hold to the numbers that have been verified.
+    </div>
+
+    <!-- ============================================ -->
+    <h2 id="ranking-papers">8.3 Close Reading 2: Search Ranking in Two Acts (Ghose, Ipeirotis &amp; Li 2012 and 2014)</h2>
+
+    <p>Start with a question the platform side agonizes over every day: which hotel goes in the top slot of the search page? You might take it for granted and say, put the best-selling one first. But a trap hides here: good hotels already sit near the top and already sell well. Is it the top position that brings the sales, or is the hotel simply good, so that it both ranks high and sells well? The data alone cannot tell them apart. This close reading is really two papers: the same author team, the same partner (Travelocity), hotel data from adjacent periods, answering one question that builds step by step. Placing the two side by side is the best way to see how an identification strategy advances as the question does. Before reading, nail down two things: <strong>which paper the randomized experiment is actually in, and what each paper relies on for identification.</strong></p>
+
+    <div class="info-box">
+      <div class="box-title">Background you'll need: endogeneity, simultaneous equations, randomization</div>
+      <p>Both papers wrestle with the fact that rank is not handed out at random; let us first make three terms plain.</p>
+      <p><strong>Endogeneity</strong>: if an explanatory variable is correlated with the unseen error, we call it endogenous, and a raw regression credits the error's work to that variable. Rank is a live specimen: good hotels rank high by nature, so "ranks high" and "sells more" appear hand in hand, yet both may be there only because the hotel itself is good.</p>
+      <p><strong>Simultaneous equation system</strong>: when several outcomes move each other (rank affects clicks, and clicks in turn affect rank), you write one equation per outcome and solve them together, rather than singling out one to regress. Only this way can tangled causation be pulled apart.</p>
+      <p><strong>Randomization</strong>: hand the treatment (here, the ranking scheme) to users by lottery, and the treatment is cleared of any tie to the users' background, so the differences you observe can be attributed cleanly to the treatment.</p>
+    </div>
+
+    <div class="figure">
+    <svg viewBox="0 0 700 300" role="img" aria-label="Search ranking in two acts: the 2012 paper uses a structural demand model to design a ranking, the 2014 paper uses simultaneous equations plus a randomized experiment to estimate the causal effect of rank">
+      <defs><marker id="r83" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" style="fill:var(--fig-axis)"></path></marker></defs>
+      <text x="170" y="36" text-anchor="middle" class="lbl" style="fill:var(--fig-1);font-weight:700">2012 · Marketing Science</text>
+      <text x="530" y="36" text-anchor="middle" class="lbl" style="fill:var(--fig-3);font-weight:700">2014 · Management Science</text>
+      <rect x="20" y="54" width="300" height="44" rx="8" class="bx"></rect>
+      <text x="170" y="81" text-anchor="middle" class="ink lbl-s" style="font-size:10px">Observed hotel bookings (1,497 hotels, three months)</text>
+      <rect x="20" y="118" width="300" height="44" rx="8" class="bx"></rect>
+      <text x="170" y="145" text-anchor="middle" class="ink lbl-s">Structural demand model (consumer surplus)</text>
+      <rect x="20" y="182" width="300" height="44" rx="8" class="bx"></rect>
+      <text x="170" y="209" text-anchor="middle" class="ink lbl-s">Design the surplus-optimal ranking</text>
+      <line x1="170" y1="98" x2="170" y2="118" style="stroke:var(--fig-axis);stroke-width:1.4" marker-end="url(#r83)"></line>
+      <line x1="170" y1="162" x2="170" y2="182" style="stroke:var(--fig-axis);stroke-width:1.4" marker-end="url(#r83)"></line>
+      <rect x="380" y="54" width="300" height="40" rx="8" class="bx"></rect>
+      <text x="530" y="79" text-anchor="middle" class="ink lbl-s">Archival data: ~970k search sessions</text>
+      <rect x="380" y="110" width="300" height="40" rx="8" class="bx"></rect>
+      <text x="530" y="135" text-anchor="middle" class="ink lbl-s">Simultaneous equations for rank endogeneity</text>
+      <rect x="380" y="166" width="300" height="40" rx="8" class="bx"></rect>
+      <text x="530" y="191" text-anchor="middle" class="ink lbl-s">Rank up 1: clicks +10.07% · conversion +5.63%</text>
+      <rect x="380" y="222" width="300" height="40" rx="8" style="fill:var(--fig-3-soft);stroke:var(--fig-3);stroke-width:1.8"></rect>
+      <text x="530" y="247" text-anchor="middle" class="ink lbl-s" style="font-weight:700">Validated by a randomized experiment</text>
+      <line x1="530" y1="94" x2="530" y2="110" style="stroke:var(--fig-axis);stroke-width:1.4" marker-end="url(#r83)"></line>
+      <line x1="530" y1="150" x2="530" y2="166" style="stroke:var(--fig-axis);stroke-width:1.4" marker-end="url(#r83)"></line>
+      <line x1="530" y1="206" x2="530" y2="222" style="stroke:var(--fig-axis);stroke-width:1.4" marker-end="url(#r83)"></line>
+    </svg>
+    <div class="figcaption"><span class="fig-label">Figure 8.1</span>Two acts on the same team's data from the same partner. The 2012 paper (left) estimates a structural demand model on observed booking data and uses it to design the consumer-surplus-optimal ranking. The 2014 paper (right) switches to the causal effect of rank, uses simultaneous equations to handle rank endogeneity, estimates that each one-position rise in rank brings clicks +10.07% and conversion +5.63%, and then validates this with a randomized experiment on a custom-built search engine. The randomized experiment is only in the 2014 paper, not the 2012 one.</div>
+    </div>
+
+    <h3>The 2012 paper: designing a ranking system (Marketing Science 31(3), 493–520)</h3>
+
+    <p>The 2012 paper asks which attributes drive hotel demand and how hotels should be ranked accordingly. The data are three months of booking transactions for 1,497 US hotels supplied by Travelocity (November 2008 to January 2009), 8,099 hotel-market observations in all, layered with three kinds of user-generated and crowdsourced content: human attribute labeling on AMT, location attributes computed from satellite imagery and geotags, and the full text of reviews from TripAdvisor and Travelocity.</p>
+
+    <p>The model is a mixed random-coefficients structural model (a blend of BLP and a pure-attribute model), with the market defined as city-week. The roadblock to identification is, as ever, price. A hotel in a good location during peak season has high room rates and high occupancy, so price gets stirred together with the hotel's unobserved appeal, and a raw regression of demand on price will estimate price's role with bias.</p>
+
+    <p>To manufacture exogenous variation the authors use a Hausman-type instrument: <strong>the average price of same-class hotels in other cities</strong>. Why does it work? Think of it this way: a mid-tier chain hotel's per-room cost (labor, cleaning, brand standards) props up its room rate in every city at once, and that cost shock has nothing to do with how well-liked one Denver branch is locally. So the same-class average elsewhere can move the local price without touching local demand shocks. The instrument stands on one premise: once you control for the hotel's class mean and demographics, valuations of the hotel across markets are independent, and prices move together across markets only because they share a common marginal cost. When would that premise break? If a nationwide travel boom lifted room rates in every city at once, cross-market prices would co-move because of a common demand shock and the instrument would fail. This is exactly why the authors must hold down the class mean and demographics. The marginal effects in the table below all come from the paper's main text and can be checked line by line.</p>
+
+    <div class="table-scroll">
+    <table>
+      <thead>
+        <tr><th>Attribute</th><th>Marginal effect on demand</th><th>How to read it</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Beach (within 0.6 miles)</td><td>+18.23%</td><td>One of the largest location effects</td></tr>
+        <tr><td>Near public transit</td><td>+18.32%</td><td>Convenience premium</td></tr>
+        <tr><td>Lake / river (within 0.6 miles)</td><td>−12.83%</td><td>The data are winter, so waterfront appeal reverses (the sign is often miswritten as positive)</td></tr>
+        <tr><td>Star rating +1 star</td><td>+4.13%</td><td>A direct quality premium</td></tr>
+        <tr><td>SMOG readability index +1 grade</td><td>+9.3%</td><td>The largest marginal effect among review-text attributes</td></tr>
+        <tr><td>Price (log) mean coefficient</td><td>−0.149</td><td>Price × Income interaction +0.023, higher income means less sensitive</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <p>Validation goes through a crowdsourced blind test: 78 pairwise ranking comparisons across 6 cities collected <strong>7,800 user responses</strong>, and all 78 without exception significantly preferred the order ranked by consumer surplus. Trip purpose also pulls out clear heterogeneity: for a 20% price increase, business travelers' demand falls only 1.8% (the least sensitive) while tourists' falls 2.67% (the most sensitive). One thing to remember: <strong>the 2012 paper has no randomized experiment</strong>; its validation rests on a blind-test survey plus click comparisons.</p>
+
+    <h3>The 2014 paper: the causal effect of rank (Management Science 60(7), 1632–1654)</h3>
+
+    <p>The 2014 paper changes the question: how large, exactly, is the <strong>causal</strong> effect of rank position itself on clicks, conversion, and platform revenue. The difficulty is that rank is endogenous by nature, since good hotels already sit in the front row. You might think a fixed effect would just soak up quality, wouldn't it? It is not that simple: a fixed effect absorbs only the time-invariant part of quality, whereas rank endogeneity is <strong>time-varying</strong>, fluctuating along with the previous period's conversion rate and price, out of the fixed effect's reach. A naive regression will not do, and a routine patch will not do either, so we go step by step through the three identification questions, honestly.</p>
+
+    <p><strong>① What are we trying to estimate?</strong> How many more clicks and conversions you get from moving one and the same hotel up by one position while nothing else changes. Everything hinges on "nothing else changes": we want the effect of position itself, with no quality mixed in.</p>
+
+    <p><strong>② Which variation identifies it?</strong> The authors prepare two complementary sources of exogenous variation, each covering one stretch. First, on Travelocity's archival data of 969,033 online search sessions (aggregated into 29,222 hotel-weeks across 2,117 hotels), they build a hierarchical Bayesian <strong>simultaneous equation system</strong>: four equations, click-through rate, conversion rate, rank, and rating, solved together, with rank and rating as endogenous variables, identified through the triangular structure among the equations rather than through instruments. Second, and the cleverest move in the paper: the authors simply built a working hotel search engine of their own, recruited 900 AMT users, and handed different ranking schemes to them <strong>at random</strong> for simulated purchases. Once assignment is by lottery, the entanglement between rank and quality is cut on the spot, and this is the premier variation for identifying the position effect.</p>
+
+    <p><strong>③ When does identification fail?</strong> Remove these two sources of variation and regress clicks on rank alone, and position and quality can never be told apart. Results in the table below such as "a low-rated hotel jumping from position 10 to 1 raises clicks by 245%" can be read as causal only because of random assignment; without it, that number is at best a correlation. The verified results are listed below.</p>
+
+    <div class="table-scroll">
+    <table>
+      <thead>
+        <tr><th>Finding</th><th>Number</th><th>Source</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Each one-position rise in rank</td><td>Click-through rate +10.07%, conversion rate +5.63%</td><td>Archival data, simultaneous equations</td></tr>
+        <tr><td>For whom the position effect is stronger</td><td>High-star, high-price hotels are hurt more by falling to a low position; low-rated hotels gain the most from being placed at the top</td><td>Rank × quality interaction</td></tr>
+        <tr><td>A low-rated hotel rising from position 10 to 1</td><td>Clicks +245% (high-rated hotels only +83%)</td><td>Experiment, Rank × quality</td></tr>
+        <tr><td>Which ranking yields the highest total revenue</td><td>Ranking by consumer surplus (simulation 423,401 dollars &gt; default 402,349 dollars; experiment 7,162 dollars, the highest)</td><td>Policy simulation and experiment agree</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <p>Here is a counterintuitive but important detail: when ranking by consumer surplus, the revenue of <strong>the hotel at the very top</strong> is actually not the highest (the top slot under the default or price ranking earns more), and the consumer-surplus ranking wins on total revenue thanks to extra conversions from the diversity of the long tail. "Highest total revenue" and "highest top-slot revenue" are two different things; never conflate them.</p>
+
+    <div class="table-scroll">
+    <table>
+      <thead>
+        <tr><th>Dimension</th><th>2012 (Marketing Science)</th><th>2014 (Management Science)</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Data</td><td>8,099 hotel-market actual transactions, 1,497 hotels</td><td>29,222 hotel-weeks aggregated from 969k search sessions, 2,117 hotels, plus a 900-person experiment</td></tr>
+        <tr><td>Method</td><td>Mixed random-coefficients structural model, GMM with Hausman/BLP instruments</td><td>Hierarchical Bayesian simultaneous equations plus a randomized experiment</td></tr>
+        <tr><td>Question</td><td>Which attributes drive demand, and how to design a consumer-surplus ranking</td><td>How rank causally affects clicks / conversion / revenue</td></tr>
+        <tr><td>Ranking validation</td><td>AMT blind-test survey (7,800 pairwise comparisons)</td><td>Randomized experiment on a custom-built search engine (900 people)</td></tr>
+      </tbody>
+    </table>
+    </div>
+
+    <p>Methodologically, this move echoes the integration template of Section 2.8 in Chapter 02: a structural model on observed data is charged with characterizing the mechanism and computing counterfactuals, while a slice of randomized variation is charged with validating it. The 2012 paper validates the ranking with a blind-test survey, the 2014 paper validates the causal effect with a randomized experiment on a custom-built search engine; taken together, the two are a model of a structural model and an experiment reinforcing each other.</p>
+
+    <div class="info-box">
+      <div class="box-title">Don't demote the randomized experiment to a robustness check</div>
+      <p style="margin-bottom:0">Here the structural model on archival data and the randomized experiment divide labor; neither is subordinate. The former characterizes the mechanism and computes counterfactuals, the latter independently validates the causal prediction. The randomized variation is the premier sample for identifying the position effect, and to describe it in writing as "a robustness check done on the side" would undersell its true weight in identification.</p>
+    </div>
+
+    <div class="warn-box">
+      <div class="box-title">The most common misattribution: which paper the randomized experiment belongs to</div>
+      <p style="margin-bottom:0">A widely circulated claim casts the 2012 paper as "a randomized ranking experiment on an e-commerce platform, with clicks falling 7% for electronics and 3% for apparel." This is a thorough case of mistaken attribution. The 2012 paper is a <strong>design</strong> study of hotel ranking, using Travelocity's actual transaction data, with no randomized experiment and nothing to do with electronics or apparel; the paper that actually handed rankings to users at random and ran an experiment on a custom-built engine is the 2014 one. Those two numbers, −7% and −3%, have no source in either original paper and cannot be cited.</p>
+    </div>
+
+    <div class="takeaway-box">
+      <div class="box-title">Bottom Line</div>
+      The same team, the same data source: the 2012 paper designs a ranking with a structural model on observed data and validates it with a blind test; the 2014 paper handles rank endogeneity with simultaneous equations and uses a randomized experiment on a custom-built engine for causal identification and validation. When you cite them, be absolutely clear: the randomized experiment is in the 2014 paper, not the 2012 one.
+    </div>
+
+    <!-- ============================================ -->
+    <h2 id="blp-template">8.4 Close Reading 3: BLP as a Methodological Template (1995)</h2>
+
+    <p>Start with a result that makes no sense at all. Estimate automobile demand the crudest way (ignore endogeneity, run a plain OLS logit) and you reach an absurd conclusion: a large share of the car models on the market turn out to have inelastic demand, meaning that a price increase barely dents sales. But anyone who knows a little about pricing knows a profit-seeking firm would never leave its price there, because from that point another price increase would make more money. The data say one thing, common sense says another, and the two do not line up. Berry, Levinsohn, and Pakes's (1995) classic goes straight at this contradiction. It is about automobiles, not platforms, yet readers of digital markets still cannot go around it, because the four features it confronts are seamlessly isomorphic to digital markets: <strong>a large choice set, only aggregate data, endogenous price, and heterogeneous preferences</strong>. The research design it laid down is very nearly the methodological source of all later platform demand estimation. Chapter 06 has already covered BLP's technical parts (the contraction mapping, GMM, the instrument menu); this section discusses only BLP as a research design: how the data requirements are met, how the identification argument is written, and how the results are laid out.</p>
+
+    <p>First get the verified setup straight, because several numbers in it have been miscopied for years. The data come from the US new-car market, <strong>1971 to 1990, a full 20 years</strong>; one year counts as one market; the unit of observation is model × year, <strong>2,217 model/year observations in all, corresponding to 997 distinct models</strong> (not 2,217 models, and not the vague "about 2,000 models across 20 years"). Price is the list price deflated to 1983 dollars, and the demand population is taken as the number of US households.</p>
+
+    <p>BLP has one signature specification, in how price enters utility. Rather than simply hanging a random coefficient on price, it lets income generate the heterogeneity in price sensitivity through <span class="var-observed">$\ln(y_i - p_j)$</span>, where income $y_i$ is drawn from a lognormal distribution fit to the CPS.</p>
+
+    <div class="formula-box">
+      <div class="formula-title">BLP utility and income heterogeneity</div>
+      <div class="formula-math">$$u_{ij} = \alpha \ln(y_i - p_j) + x_j \bar\beta + \xi_j + \sum_k \sigma_k x_{jk}\nu_{ik} + \varepsilon_{ij}$$</div>
+      <div class="formula-explain">
+        <table>
+          <tr><td class="var-observed">$y_i$</td><td>Consumer income, drawn from a lognormal distribution fit to the CPS</td></tr>
+          <tr><td class="var-observed">$x_j,\ p_j$</td><td>Model attributes (horsepower/weight, air conditioning, fuel economy, size) and price</td></tr>
+          <tr><td class="var-estimated">$\alpha,\ \bar\beta,\ \sigma_k$</td><td>Price/income coefficient, attribute mean coefficients, random-coefficient standard deviations</td></tr>
+          <tr><td class="var-researcher">$\xi_j$</td><td>Unobserved model quality</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <p>BLP also <strong>estimates the supply side jointly</strong>: marginal cost is specified as log-linear, multiproduct firms price by Bertrand-Nash, and the demand equation and the pricing equation enter GMM together. This is one big feature that sets it apart from demand-only models. The whole estimation pipeline is identical to Chapter 06, compressed into the five steps below.</p>
+
+    <div class="pipeline-bar">
+      <span class="pipe-step">Given $\theta_2$</span>
+      <span class="pipe-arrow">→</span>
+      <span class="pipe-step">Simulate shares $s$</span>
+      <span class="pipe-arrow">→</span>
+      <span class="pipe-step">Contraction map solves $\delta$</span>
+      <span class="pipe-arrow">→</span>
+      <span class="pipe-step">Recover $\xi$</span>
+      <span class="pipe-arrow">→</span>
+      <span class="pipe-step here">GMM objective</span>
+    </div>
+
+    <div class="info-box">
+      <div class="box-title">Background you'll need: elasticity, inelastic demand, and markups</div>
+      <p>The key results of this paper all rest on "elasticity," so let us pass over three terms first; the full definitions are in Section 3.4 of Chapter 03.</p>
+      <p><strong>Own-price elasticity</strong>: when a product raises its own price by 1%, by what percentage its own sales fall. A fall of more than 1% is called <strong>elastic</strong> ($|\eta| &gt; 1$); a fall of less than 1% is called <strong>inelastic</strong> ($|\eta| &lt; 1$).</p>
+      <p><strong>Why a firm would never stay in the inelastic region</strong>: when demand is inelastic, a 1% price increase drops sales by less than 1%, so revenue rises rather than falls, cost drops because fewer units are sold, and profit necessarily goes up. Since raising the price still earns more, a profit-seeking firm keeps raising it until it steps into the elastic region. Read that in reverse and you have the key to the contradiction at the start of this section: the very fact that "a large batch of products is estimated as inelastic" amounts to shouting "the estimation has gone wrong."</p>
+      <p><strong>Markup</strong>: price minus marginal cost, the gross margin earned per unit sold. The higher the markup, the greater the market power.</p>
+    </div>
+
+    <p>What exactly does this design solve? Put the price elasticities from the naive approach and the full design side by side and it is clear at a glance, and this is also the most forceful piece of the "why we need BLP" identification argument. The naive approach ignores endogeneity and estimates a plain OLS logit, but price is positively correlated with unobserved quality <span class="var-researcher">$\xi_j$</span> and credits quality's work to price. Below we go through the three identification questions of Section 8.1, one by one, to see exactly where the full design plugs the gap.</p>
+
+    <p><strong>① What are we trying to estimate?</strong> The true price sensitivity, that is, how much demand is lost when the price of one and the same car is raised on its own. It is determined jointly by the price coefficient <span class="var-estimated">$\alpha$</span> and the random coefficients, is a causal quantity, and is nothing like the surface correlation of "do pricier cars sell better or worse."</p>
+
+    <p><strong>② Which variation identifies it?</strong> What we want is the slice of price variation unrelated to the car's own quality $\xi_j$. BLP's instruments are functions of other products' attributes: the sum of the same firm's other models' attributes, the sum of rivals' models' attributes, and cost-shifting variables. Why can these serve as instruments for price? Because the Nash markup is especially sensitive to "which cars are parked nearby": the more substitutes around a car and the closer they are, the less markup room it can hold. Other models' attributes thus push the car's own price around without burrowing into consumers' preference for that car, which makes them just the exogenous push price needs.</p>
+
+    <p><strong>③ When does identification fail?</strong> Without manufacturing this exogenous variation, estimating a plain OLS logit, the miscrediting can never be erased, and the consequence is concrete and glaring: of the 2,217 model/year observations, a full <strong>1,494</strong> are judged price-inelastic ($|\eta|&lt;1$). This is exactly the nonsensical result at the start of this section; a profit-maximizing firm would never pin its price in the inelastic region, because from there another price increase would earn more.</p>
+
+    <p>But do not rush to throw all three tools on at once; there is a very telling stop in between. Add a single instrument to the OLS logit and change nothing else, and you get IV-logit: the price coefficient grows from the OLS logit's roughly −0.089, shrunk by endogeneity, to about <strong>−0.216</strong>, and the number of inelastic observations plunges from 1,494 to <strong>22</strong>. Clearly, curing the elasticity ailment is mainly the instrument's doing: it washes out the slice of price correlation contaminated by $\xi_j$, and elasticity snaps back onto the right track at once. As for the remaining 22 stragglers, together with a substitution pattern still stuck in IIA's rigid proportional substitution, those are for the random coefficients to clean up next. Instruments mainly cure elasticity and random coefficients mainly free up the substitution pattern; the division of labor among the three tools is now laid out.</p>
+
+    <p>Switch to the full design and these symptoms all recede together. The full design is nothing more than the three tools of Chapter 06 stacked in one place:</p>
+
+    <ul>
+      <li><strong>Berry inversion</strong>: turns nonlinear shares into a linear equation with $\xi_j$ as the residual (a two-line derivation in Chapter 06);</li>
+      <li><strong>Instruments</strong>: clear away price endogeneity;</li>
+      <li><strong>Random coefficients</strong>: free up heterogeneous preferences.</li>
+    </ul>
+
+    <p>With all three on at once, two results fall into place together. First, <strong>all 2,217 model/year observations are elastic</strong> (own-price elasticities all exceed 1 in absolute value, roughly in the 3.0 to 6.5 range, with luxury cars low and the crowded low-price segment high). Second, <strong>the average markup in 1990 is about 24%</strong>, and the markup rises almost monotonically with price. The gulf between the naive approach and the full design is the example most worth learning from when you write your own identification argument later.</p>
+
+    <div class="info-box">
+      <div class="box-title">How you define the market is part of identification, not a data-cleaning afterthought</div>
+      <p style="margin-bottom:0">How the market is partitioned belongs to the identification assumptions and must be given an economic justification, not fixed as a default unit in passing while aggregating the data. BLP takes the year as the market, and platform demand studies often take city-week or platform-year as the market, all on the same basis: consumers in the same market face the same choice set, and price varies exogenously across markets. On that basis you must also spell out what the outside option actually means (not buying from the current choice set) and report whether results are stable under an alternative market definition. A study using aggregate share data that treats the market definition as a self-evident unit of aggregation, without defending it, is very nearly certain to be pressed on it in review.</p>
+    </div>
+
+    <div class="warn-box">
+      <div class="box-title">BLP (1995) did not run an import-tariff counterfactual</div>
+      <p style="margin-bottom:0">There is another widely circulated error, that BLP (1995) simulated a US import tariff on Japanese cars. Turn to Section 8 of the original and you find it only <strong>lists</strong> a few potential applications (trade policy, mergers, a gasoline tax); the actual policy simulation is left to the sister paper. The voluntary export restraint (VER) counterfactual is in Berry, Levinsohn, and Pakes (1999, <em>AER</em>), not in the 1995 paper. When you cite the counterfactual, do not get the attribution wrong.</p>
+    </div>
+
+    <div class="takeaway-box">
+      <div class="box-title">Bottom Line</div>
+      We read BLP closely not for the cars but for the research design: a large choice set, aggregate data, endogenous price, and heterogeneous preferences, isomorphic to digital markets. Three anchors to nail down: the data scale (2,217 obs, 997 models, 1971–1990), the signature result (all elastic, average markup about 24%), and the attribution of the counterfactual (VER is in the 1999 sister paper).
+    </div>
+
+    <!-- ============================================ -->
+    <h2 id="two-sided">8.5 Two-Sided Markets and Network Effects</h2>
+
+    <p>From this section on, four topics take the baton from the close readings, discussing the model specification and common traps for several classes of problem in platform research. Real papers are cited only qualitatively here, and where concrete numbers are needed a reproducible illustrative example is provided instead, tagged with the illustrative-data badge. The first topic is two-sided markets. Its core difficulty is much like "which came first, the chicken or the egg": buyers will come in only once they see sellers massed, and sellers will set up shop only once they see buyers in droves, the two sides each a precondition for the other, and neither able to move first on its own.</p>
+
+    <div class="info-box">
+      <div class="box-title">Background you'll need: two-sided markets and the reflection problem</div>
+      <p><strong>Two-sided market</strong>: a platform brings two groups together (buyers and sellers, users and merchants, readers and advertisers), and the more people on one side, the more the other side wants to join. On a general e-commerce site, plenty of buyers is what makes sellers willing to open shop; plenty of sellers and a full catalog is what makes buyers willing to come. The two sides beckon each other, and this is what sets a two-sided market apart from an ordinary one.</p>
+      <p><strong>The reflection problem, in one sentence</strong>: in the data the two sides always rise together and fall together. But two possibilities lie behind this, one that a side genuinely <em>pulls</em> the other, and another that both sides are pushed at once by something you cannot see (a subsidy, a wave of hype). Whether it is "you affected me" or "we were both affected by the same thing," a simple regression cannot tell. That is the reflection problem. We work it through first, then turn to how to identify it.</p>
+    </div>
+
+    <p>Where does the model start? Write the size of the other side into utility. A buyer's utility for platform $j$ depends on how many sellers are on that platform; a seller's utility, conversely, depends on how many buyers.</p>
+
+    <div class="formula-box">
+      <div class="formula-title">Two-sided utility (cross-side network effects)</div>
+      <div class="formula-math">$$U^{\text{buy}}_{nj} = \beta' x_j + \gamma\, N^{\text{sell}}_j + \varepsilon^{b}_{nj}, \qquad U^{\text{sell}}_{sj} = \pi' f_j + \eta\, N^{\text{buy}}_j + \varepsilon^{s}_{sj}$$</div>
+      <div class="formula-explain">
+        <table>
+          <tr><td class="var-observed">$N^{\text{sell}}_j,\ N^{\text{buy}}_j$</td><td>Number of sellers and buyers on platform $j$ (participation on the two sides)</td></tr>
+          <tr><td class="var-estimated">$\gamma,\ \eta$</td><td>Cross-side network effect parameters (to be estimated)</td></tr>
+          <tr><td class="var-observed">$x_j,\ f_j$</td><td>Platform's intrinsic attributes, and the seller side's fees and fixed costs</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="figure">
+    <svg viewBox="0 0 680 300" role="img" aria-label="Two-sided market feedback loop: more sellers raise buyer utility, more buyers raise seller utility, and a common shock pushes both sides at once">
+      <defs>
+        <marker id="tb1" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" style="fill:var(--fig-1)"></path></marker>
+        <marker id="tb3" markerWidth="9" markerHeight="9" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" style="fill:var(--fig-3)"></path></marker>
+        <marker id="tb2" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" style="fill:var(--fig-2)"></path></marker>
+      </defs>
+      <rect x="222" y="16" width="236" height="38" rx="8" style="fill:none;stroke:var(--fig-2);stroke-width:1.5;stroke-dasharray:6 4"></rect>
+      <text x="340" y="40" text-anchor="middle" class="lbl-s" style="fill:var(--fig-2);font-weight:700">Common shock ε · subsidy / hype</text>
+      <path d="M304,54 L168,138" style="fill:none;stroke:var(--fig-2);stroke-width:1.3;stroke-dasharray:5 3" marker-end="url(#tb2)"></path>
+      <path d="M376,54 L512,138" style="fill:none;stroke:var(--fig-2);stroke-width:1.3;stroke-dasharray:5 3" marker-end="url(#tb2)"></path>
+      <rect x="56" y="140" width="160" height="66" rx="10" style="fill:var(--fig-1-soft);stroke:var(--fig-1);stroke-width:1.8"></rect>
+      <text x="136" y="168" text-anchor="middle" class="ink lbl" style="font-weight:700">Buyer side</text>
+      <text x="136" y="190" text-anchor="middle" class="mut lbl-s">Participation N_buy</text>
+      <rect x="464" y="140" width="160" height="66" rx="10" style="fill:var(--fig-3-soft);stroke:var(--fig-3);stroke-width:1.8"></rect>
+      <text x="544" y="168" text-anchor="middle" class="ink lbl" style="font-weight:700">Seller side</text>
+      <text x="544" y="190" text-anchor="middle" class="mut lbl-s">Participation N_sell</text>
+      <path d="M470,150 C 402,96 278,96 214,150" style="fill:none;stroke:var(--fig-1);stroke-width:1.8" marker-end="url(#tb1)"></path>
+      <text x="340" y="92" text-anchor="middle" class="lbl-s" style="fill:var(--fig-1);font-weight:700">γ · sellers↑ → buyer utility↑</text>
+      <path d="M210,196 C 278,250 402,250 466,196" style="fill:none;stroke:var(--fig-3);stroke-width:1.8" marker-end="url(#tb3)"></path>
+      <text x="340" y="272" text-anchor="middle" class="lbl-s" style="fill:var(--fig-3);font-weight:700">η · buyers↑ → seller utility↑</text>
+    </svg>
+    <div class="figcaption"><span class="fig-label">Figure 8.2</span>The feedback loop of a two-sided market. The more sellers, the higher buyer utility (parameter γ); the more buyers, the higher seller utility (parameter η). The two sides are each a precondition for the other and are pinned down together in equilibrium. The difficulty of identification is this: a common shock such as a subsidy or a wave of hype pushes both sides up at once, making the two sides always rise and fall together in the data, so a simple regression cannot tell whether one side pulled the other or both were pushed by the same invisible hand. This is exactly the reflection problem.</div>
+    </div>
+
+    <p>Participation on the two sides must be consistent at once in equilibrium, satisfying a pair of market-clearing conditions: given the seller count, how many buyers come in is set by the demand function $D_j$; given the buyer count, how many sellers come in is set by the supply function $S_j$.</p>
+
+    <div class="formula-box">
+      <div class="formula-title">Market clearing in two-sided equilibrium</div>
+      <div class="formula-math">$$N^{\text{buy}}_j = D_j\!\big(N^{\text{sell}}_j\big), \qquad N^{\text{sell}}_j = S_j\!\big(N^{\text{buy}}_j\big)$$</div>
+    </div>
+
+    <p>The difficulty is entirely one of identification. Suppose you want to measure a number: for each additional seller on the platform, how many buyers it draws in, which is the cross-side network effect <span class="var-estimated">$\gamma$</span>. Open the data and platforms with more sellers have more buyers too, strongly positively correlated. The naive reading grabs that correlation and calls it the network effect, but it does not survive questioning.</p>
+
+    <div class="intuition-box">
+      <div class="box-title">Intuition: why this is called the "reflection problem"</div>
+      Where sellers cluster, buyers are many too, but that is not necessarily sellers <em>drawing in</em> buyers. It could be that buyers warmed up first and sellers rushed in on the scent; it could also be that both sides are chasing the same unseen thing: the platform suddenly took off, and a subsidy or a spell of word of mouth swept both sides in at once. Who is responding to whom, a simple regression cannot see. It is like watching a person raise a hand in a mirror: you can never say whether they raised first or the mirror image did, because the two are synchronized to the instant, not a hair apart. It is from this very image that Manski (1993) named it the reflection problem.
+    </div>
+
+    <p>Translate this worry into econometric language: regressing buyer-side participation directly on the seller side $N^{\text{sell}}_j$ gives a severely biased estimate, because $N^{\text{sell}}_j$ is correlated with the unobserved driver of buyer entry $\varepsilon^b$. When buyers' willingness to enter strengthens, sellers scent the demand and pour in as well, and that demand-driven seller participation gets muddled into the network effect by the regression. This is the mirror intuition of Manski's (1993, <em>REStud</em>) <strong>reflection problem</strong>: the equilibrium outcome is generated jointly by the two sides' mutually constraining decisions, and a simple regression cannot tell who is responding to whom. To be precise, Manski's reflection problem originally refers to endogenous effects and contextual effects being inseparable through collinearity in a linear-in-means model; what the two-sided market borrows here is its sense of "decided simultaneously, hard to order in time," treating the two earlier threats separately, one the reverse causation of one side pulling the other, the other both sides being pushed by the same unobserved shock. The three identification questions are straightforward to answer here.</p>
+
+    <ul>
+      <li><strong>① What are we trying to estimate?</strong> The cross-side network effect $\gamma$ and its reverse $\eta$: the <em>causal</em> push of the other side's size on this side's entry, not the correlation of participation on the two sides.</li>
+      <li><strong>② Which variation identifies it?</strong> To undo the knot of "both sides responding to each other at once," there are two kinds of route: one is to find exogenous variation that pushes only one side and does not burrow directly into the other side's preferences; the other is simply to write the two sides' simultaneous decisions explicitly as a structural equilibrium and estimate $\gamma,\eta$ directly from that equilibrium.</li>
+      <li><strong>③ When does identification fail?</strong> If the two sides are merely pushed together by common hype and you cannot find the variation above, $\gamma$ and $\eta$ cannot be separated. The regression coefficient would be a blend of the two-sided feedback and the common factor stirred together, untrustworthy in both sign and magnitude.</li>
+    </ul>
+
+    <p>So the problem is not one of estimation technique but of whether you can manufacture a slice of variation that breaks the simultaneity. Brought down to concrete practice, the two kinds of route become the following three.</p>
+
+    <div class="info-box">
+      <div class="box-title">Identification strategies (two-sided markets)</div>
+      <ul style="margin-bottom:0">
+        <li><strong>An exogenous shock or fee change on one side</strong>: look for a variable that affects one side's cost only and does not enter the other side's preferences directly. For example, a fee regulation that shocks the seller side's cost without directly changing buyer preferences can identify buyers' sensitivity to seller coverage.</li>
+        <li><strong>A time lag</strong>: if historically one side moved first (sellers set up shop, then buyers responded), you can use that ordering to break the simultaneity.</li>
+        <li><strong>Solving the structural equilibrium</strong>: specify the two sides' simultaneous decisions and the equilibrium concept explicitly, and estimate $\gamma,\eta$ jointly as parameters of the equilibrium system rather than regressing equation by equation.</li>
+      </ul>
+    </div>
+
+    <p>Two-sided markets also have a temperament that static one-sided models lack: <strong>there may be more than one equilibrium</strong>. Under the same set of parameters, the market may settle at an equilibrium where both sides are sparse or at one where both sides are thriving, with a critical mass lying between them; once coordination fails, the market is trapped at the low end. The implication for counterfactuals is direct: changing a fee or issuing a subsidy cannot be treated as a linear extrapolation near the original equilibrium, but must re-solve the two-sided equilibrium and check whether tipping occurs. A classic structural two-sided study, such as Rysman's (2004, <em>REStud</em>) analysis of the Yellow Pages market, demonstrates how to estimate two-sided demand and the equilibrium together and can serve as a specification-level reference; here we borrow only its research design, not specific numbers.</p>
+
+    <div class="takeaway-box">
+      <div class="box-title">Bottom Line</div>
+      The identification difficulty in two-sided markets is the reflection problem: the two sides cause each other, and a simple regression cannot pull the network effect apart. The workable ways out are an exogenous shock on one side, a time lag, or solving the structural equilibrium. And do not forget that there may be more than one equilibrium, so a counterfactual must re-solve the two-sided equilibrium and check again for tipping.
+    </div>
+
+    <!-- ============================================ -->
+    <h2 id="reviews-reputation">8.6 Reviews and Reputation</h2>
+
+    <p>On a platform, reviews are one of the most important information signals, the thing consumers rely on to weigh whether a seller they have never dealt with, or a product they have never handled, is worth trusting. To fit reviews into a structural model, the first step is to work out which door they enter utility through, and there are a few common ones.</p>
+
+    <ul>
+      <li><strong>Mean rating</strong> $\bar r_j$: as a quality signal, enters mean utility directly.</li>
+      <li><strong>Review count</strong> $\ln m_j$: as a proxy for information volume or popularity (social proof), usually in logs.</li>
+      <li><strong>Rating dispersion</strong> $\mathrm{Var}(r_j)$: the more spread out the ratings, the more uncertain the quality signal, given its own dimension to capture that uncertainty.</li>
+      <li><strong>Text features</strong>: readability, subjectivity, identity disclosure, and the like, entering utility through the attribute vector $x_j$. In the 2012 paper of Section 8.3, a SMOG readability index +1 grade brings +9.3% demand, an empirical demonstration of text features entering utility.</li>
+    </ul>
+
+    <div class="formula-box">
+      <div class="formula-title">Review information entering utility</div>
+      <div class="formula-math">$$U_{nj} = \beta' x_j + \beta_r\, \bar r_j + \beta_m \ln m_j + \beta_v\, \mathrm{Var}(r_j) + \xi_j + \varepsilon_{nj}$$</div>
+      <div class="formula-explain">
+        <table>
+          <tr><td class="var-observed">$\bar r_j,\ m_j$</td><td>Product $j$'s mean rating and review count</td></tr>
+          <tr><td class="var-observed">$\mathrm{Var}(r_j)$</td><td>Variance of the rating distribution (the signal's uncertainty)</td></tr>
+          <tr><td class="var-estimated">$\beta_r,\ \beta_m,\ \beta_v$</td><td>The parameter effects of each review dimension on choice (to be estimated)</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="info-box">
+      <div class="box-title">Background you'll need: selection bias and Bayesian updating</div>
+      <p>The two concepts below come up twice; a sentence on each first.</p>
+      <p><strong>Selection bias</strong>: if the sample you observe is not a random group but has been screened once by some mechanism, conclusions drawn from it will be biased. Reviews are a live example: people willing to spend time leaving one are not ordinary buyers to begin with, and those giving extreme scores (five stars or one) are especially eager to speak up, so the rating distribution you see has already been filtered once by "who is willing to talk."</p>
+      <p><strong>Bayesian updating</strong>: hold an initial guess in mind (the prior, say "this store is probably middling"), and after seeing new evidence (a batch of reviews), move the guess up or down according to the evidence's weight to reach a revised judgment (the posterior). The more evidence and the more consistent it is, the harder the move. Chapter 07's learning model uses exactly this updating.</p>
+    </div>
+
+    <p>Fitting reviews into utility is not hard; the trouble is that it drags out two econometric traps that must be dealt with. <strong>The first is review endogeneity</strong>: good products already sell more and get more reviews, $\bar r_j$ is positively correlated with unobserved quality $\xi_j$, and a raw regression overstates the rating's effect. <strong>The second is selection bias</strong>: not everyone leaves a review, those who do (especially the extreme scorers) do not represent all buyers, and the rating distribution you see has itself been selected. For the former, you can lean on fixed effects, instruments, or the rounding discontinuity in how ratings are displayed; for the latter, either model the willingness to review explicitly (a Heckman-style correction) or use a platform policy change that altered the incentive to review as an instrument. Leave these two traps untreated and the coefficients on rating and review count are all but uninterpretable.</p>
+
+    <p>Going one layer deeper, reviews rewrite consumers' beliefs bit by bit over time, drawing the static model toward the dynamic. A consumer can update the posterior on quality in a Bayesian way: seeing how many of the $m_j$ reviews are high scores, they update the probability that "this product is high quality" once more and then decide by the posterior whether to buy.</p>
+
+    <div class="formula-box">
+      <div class="formula-title">Bayesian quality updating (beliefs enter utility)</div>
+      <div class="formula-math">$$P(\text{high quality} \mid \text{reviews}) = \frac{P(\text{reviews}\mid\text{high quality})\,P(\text{high quality})}{P(\text{reviews})}$$</div>
+    </div>
+
+    <p>Put the posterior probability into utility rather than the raw average score, and the model can capture the dynamic process by which reviews change beliefs step by step, a line of thought that connects directly to Chapter 07's dynamic discrete choice and learning models.</p>
+
+    <div class="intuition-box">
+      <div class="box-title">Intuition: what the structural model adds here</div>
+      A reduced-form regression can tell you that a rating one star higher brings a few more percentage points of sales, but it cannot tell whether those points are because <strong>the rating reflects true quality</strong> (correlation) or because <strong>the rating itself changed consumers' beliefs</strong> (information). The policy implications of the two readings are worlds apart: if the former, however the platform optimizes the rating display, the effect is limited; if the latter, just adjust how reviews are aggregated or displayed and demand shifts with it. The structural model writes "belief updating" and "quality correlation" as two distinct sets of parameters, and this is exactly what it gives beyond reduced-form methods.
+    </div>
+
+    <div class="takeaway-box">
+      <div class="box-title">Bottom Line</div>
+      Reviews enter utility through several doors, mean rating, review count, rating dispersion, and text features; the two unavoidable traps are review endogeneity and review selection bias. What the structural model adds is the ability to separate reviews changing beliefs (information) from reviews reflecting quality (correlation), which is precisely what reduced-form methods struggle to do.
+    </div>
+
+    <!-- ============================================ -->
+    <h2 id="pricing-competition">8.7 Pricing, Competition, and Market Power</h2>
+
+    <p>Once demand is estimated, the supply-side questions come right up: what the optimal price should be, what marginal cost is, and how large market power is. This section connects demand to pricing; the formulas link back to Chapter 06 and are not re-derived here.</p>
+
+    <p>The starting point is the first-order condition. The first-order condition is the condition the optimal price must satisfy: at the optimal price, nudging it up or down a touch does not raise profit, because the marginal gain and loss exactly cancel. Written for a single-product firm under logit demand, the optimal markup depends only on its own share:</p>
+
+    <div class="formula-box">
+      <div class="formula-title">The single-product logit markup</div>
+      <div class="formula-math">$$p_j - c_j = \frac{1}{\alpha\,(1 - s_j)}$$</div>
+      <div class="formula-explain">
+        <table>
+          <tr><td class="var-estimated">$\alpha$</td><td>Price coefficient (the marginal effect of price on utility, written as positive)</td></tr>
+          <tr><td class="var-observed">$s_j$</td><td>Product $j$'s market share</td></tr>
+          <tr><td class="var-estimated">$c_j$</td><td>Marginal cost (recovered from price and share)</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <p>The higher the share, the higher the markup and the greater the market power. Once you enter a multiproduct or competitive setting, the markup no longer depends on own share alone but must be solved jointly through a matrix $\Omega$ built from ownership and demand derivatives, matrix algebra already derived in Chapter 06. But the most common use is actually the inverse: given observed prices and shares, the same first-order condition can <strong>back out marginal cost</strong>, the gateway from demand estimation to welfare and counterfactuals.</p>
+
+    <details>
+      <summary>Derivation: the matrix form of multiproduct markups</summary>
+      <div class="detail-content">
+        <p>When a multiproduct firm prices one of its products, it takes into account that raising the price pushes some demand toward its own other products. Write this interdependence into the first-order condition and the vector solution for markups is $\mathbf{p}-\mathbf{c} = -\,\Omega^{-1}\mathbf{s}$, where $\Omega_{jk}=\partial s_k/\partial p_j$ takes the demand derivative for same-firm products and 0 for other-firm products. With a single product $\Omega$ collapses to a scalar, and substituting back recovers the $p_j-c_j=1/[\alpha(1-s_j)]$ above.</p>
+      </div>
+    </details>
+
+    <p>The platform setting adds two new complications to pricing. The first is the <strong>take rate</strong>: the platform collects a commission $\tau$ from sellers, the seller keeps only $(1-\tau)p_j$, so the effective cost becomes $c_j/(1-\tau)$, forming a double markup between platform and seller. The second is <strong>algorithmic pricing</strong>: price is decided in real time by an algorithm, the researcher cannot see the pricing rule, and so price endogeneity gains one more source. Below, an example worked all the way from setup to numbers runs a take-rate counterfactual through in full.</p>
+
+    <div class="worked-example">
+      <div class="worked-title">Illustration: a take-rate counterfactual for three SaaS subscription tiers <span class="demo-badge">illustrative data</span></div>
+
+      <div class="worked-step">Step 1: Setup</div>
+      <p>Three SaaS subscription products A, B, and C are sold on the same procurement platform, and consumers may also buy nothing (the outside option, utility normalized to 0). Consumer utility $U_{ij} = \delta_j - \alpha p_j + \varepsilon_{ij}$ follows logit. Illustrative parameters: price coefficient $\alpha = 0.008$ (per yuan per month), non-price mean utilities $\delta = (2.2,\ 2.6,\ 3.0)$, firm marginal costs $c = (40,\ 70,\ 120)$ yuan per month per seat, potential market $M = 500{,}000$ seats, and the platform's baseline take rate $\tau_0 = 20\%$. The three firms each set single-product Bertrand-Nash prices, with first-order condition</p>
+      <div class="formula-math">$$p_j = \frac{c_j}{1-\tau} + \frac{1}{\alpha\,(1-s_j)}.$$</div>
+
+      <div class="worked-step">Step 2: Solve the baseline equilibrium</div>
+      <p>Price and share bite into each other, so the equilibrium is solved by fixed-point iteration. The results are as follows (shares have been cross-checked with the logit probabilities):</p>
+      <div class="table-scroll">
+      <table>
+        <thead>
+          <tr><th>Product</th><th>Price $p_j$ (yuan/month)</th><th>Firm receives $(1-\tau)p_j$</th><th>Cost $c_j$</th><th>Platform take $\tau p_j$</th><th>Share $s_j$</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>A</td><td>221.01</td><td>176.81</td><td>40</td><td>44.20</td><td>26.91%</td></tr>
+          <tr><td>B</td><td>262.86</td><td>210.29</td><td>70</td><td>52.57</td><td>28.72%</td></tr>
+          <tr><td>C</td><td>321.01</td><td>256.81</td><td>120</td><td>64.20</td><td>26.91%</td></tr>
+          <tr><td>No purchase</td><td>—</td><td>—</td><td>—</td><td>—</td><td>17.47%</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <p>Under the baseline, consumer surplus is 218.09 yuan per person per month. Consumer surplus here is computed by logsum: take the exponential of the utilities of the three products and the outside option, sum, take the log, and divide by the price coefficient $\alpha$ (the full reporting standards are in Section 8.8). Summed over the whole market this is about 109 million yuan per month, total firm profit about 56.95 million yuan per month, and platform commission revenue about 22.13 million yuan per month.</p>
+
+      <div class="worked-step">Step 3: Recover marginal cost (back to Chapter 06)</div>
+      <p>Suppose you have only prices and shares in hand; recover cost from the first-order condition, $\hat c_j = (1-\tau_0)\big(p_j - \frac{1}{\alpha(1-s_j)}\big)$, and you get $\hat c = (40,\ 70,\ 120)$, matching the setup to the last digit. This step is precisely the standard routine for turning estimated demand into a cost estimate.</p>
+
+      <div class="worked-step">Step 4: Counterfactual, the platform raises the take rate to 30%</div>
+      <p>When the take rate rises, each firm's effective cost $c_j/(1-\tau)$ is pushed up, the firm passes part of it on to consumers, and the equilibrium must be re-solved (cost $c$ and quality $\delta$ both stay fixed, and what is demonstrated here is exactly the equilibrium feedback):</p>
+      <div class="table-scroll">
+      <table>
+        <thead>
+          <tr><th>Product</th><th>New price (Δ)</th><th>New share (Δ)</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>A</td><td>229.19 (+8.18)</td><td>27.34% (+0.44)</td></tr>
+          <tr><td>B</td><td>274.54 (+11.67)</td><td>28.38% (−0.34)</td></tr>
+          <tr><td>C</td><td>338.81 (+17.80)</td><td>25.32% (−1.59)</td></tr>
+          <tr><td>No purchase</td><td>—</td><td>18.95% (+1.48)</td></tr>
+        </tbody>
+      </table>
+      </div>
+      <p>Price did rise, but the increase does not pass the full rise in effective cost through. With the higher take rate, the three firms' effective costs $c_j/(1-\tau)$ rise by 7.14, 12.50, and 21.43 yuan respectively, yet prices rise by only 8.18, 11.67, and 17.80 yuan, for pass-through rates of about 114% for A, 93% for B, and 83% for C. Here is a spot easy to misread: C has the largest absolute price increase (17.80 yuan), but spread over its own 21.43-yuan cost increase, its pass-through rate is actually the lowest; the one that truly over-passes-through is A, whose share rose rather than fell, with a pass-through above 100, while B and C do not fully cover their cost increases. Do not assume a pass-through above 100 is a miscalculation: under differentiated Bertrand competition, how a cost shock lands depends on the curvature of demand and rivals' responses, and some products' pass-through can perfectly well exceed 100%. Shares are pushed toward the outside option overall (the no-purchase share rises by 1.48 percentage points). Consumer surplus per person falls from 218.09 yuan per month to 207.89 yuan, down by 10.20 yuan. The whole-market welfare account is summed up in Section 8.8: consumers and firms both lose, platform commission revenue rises, yet total welfare across the three parties still falls, and that is the deadweight loss thrown off by the double markup.</p>
+
+      <div class="worked-step">Step 5: A reproducible code skeleton</div>
+<pre><code>import numpy as np
+alpha=0.008; delta=np.array([2.2,2.6,3.0]); c=np.array([40.,70.,120.])
+def shares(p):
+    e=np.exp(delta-alpha*p); d=1+e.sum(); return e/d, d
+def solve(tau, p=None):
+    p = c/(1-tau)+150. if p is None else p
+    for _ in range(200000):
+        s,_=shares(p); pn=c/(1-tau)+1/(alpha*(1-s))
+        if np.max(np.abs(pn-p))&lt;1e-12: return pn
+        p=0.5*p+0.5*pn
+p0=solve(0.20); p1=solve(0.30, p0.copy())   # baseline vs. 30% take rate</code></pre>
+    </div>
+
+    <div class="takeaway-box">
+      <div class="box-title">Bottom Line</div>
+      The move from demand to pricing runs through the first-order condition: the single-product markup $=1/[\alpha(1-s_j)]$, and in reverse it backs out marginal cost. The platform-specific take rate stacks up a double markup, and algorithmic pricing adds a new source of price endogeneity. Any take-rate or cost counterfactual must re-solve the equilibrium; do not assume everyone else stands still.
+    </div>
+
+    <!-- ============================================ -->
+    <h2 id="welfare-reporting">8.8 Reporting Standards for Welfare Analysis</h2>
+
+    <p>A counterfactual, in the end, often has to answer one thing: how much users gained and how much they lost. The measuring stick for gains and losses here is consumer surplus: the most a consumer is willing to pay for an option, minus the price they actually pay, and what is left is the net benefit they take from the transaction. In a discrete choice model, summing this surplus over all consumers is given exactly by the logsum, that is, take the exponential of the deterministic utilities of all options (including the outside option), sum, take the log, and finally divide by the price coefficient $\alpha$.</p>
+
+    <div class="formula-box">
+      <div class="formula-title">Logit consumer surplus and its counterfactual change</div>
+      <div class="formula-math">$$\overline{CS} = \frac{1}{\alpha}\ln\Big(1 + \sum_{j} e^{V_j}\Big), \qquad \Delta CS = \frac{1}{\alpha}\Big[\ln\big(1+\textstyle\sum_j e^{V_j^{1}}\big) - \ln\big(1+\textstyle\sum_j e^{V_j^{0}}\big)\Big]$$</div>
+      <div class="formula-explain">
+        <table>
+          <tr><td class="var-researcher">$V_j$</td><td>The deterministic utility of option $j$ (the outside option normalized to 0)</td></tr>
+          <tr><td class="var-estimated">$\alpha$</td><td>The price coefficient, converting utility units into money</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <p>Before you start, draw the boundary of where this formula applies. Pulling $\frac{1}{\alpha}$ out in front of the log this cleanly presumes that $\alpha$ is the same for all consumers and that there is no income effect, that is, the most basic logit (the illustration in Section 8.7 happens to satisfy this, with $\alpha$ constant, which is why it could be computed directly there). But neither of this chapter's flagship specifications satisfies it: Ghose and Han hang a random coefficient on price, and BLP uses $\ln(y_i - p_j)$ to let price sensitivity vary with income, so the marginal utility of price differs person to person on both sides. For a random-coefficients model, the correct approach is to compute a separate $\frac{1}{\alpha_i}\ln\big(1+\sum_j e^{V_{ij}}\big)$ for each individual (or each Monte Carlo draw) and then average over the population, rather than glossing over it with a single average $\alpha$. There is also a numerical reef buried here: random coefficients let some individuals' $\alpha_i$ be drawn close to 0 (almost insensitive to price), $1/\alpha_i$ then blows up, and per-capita surplus is hijacked by these few astronomical figures, so in practice you have to trim or otherwise handle them specifically.</p>
+
+    <p>Before reporting, two more boundaries must hold. The first concerns income effects, and it also corrects a common claim along the way. With no income effect, $\alpha$ is constant, and logsum divided by $\alpha$ gives exactly the compensating variation CV; moreover, in this case compensating variation equals equivalent variation ($CV = EV$, Small &amp; Rosen, 1981), and this is the root of why the earlier formula holds. So the issue is not "once there is an income effect, swap logsum for CV," but rather this: once an income effect appears (say a policy moves consumers' real budget constraint, or, as in the BLP of Section 8.4, $\ln(y_i - p_j)$ ties price sensitivity to income), $\alpha$ is no longer constant, the equality $CV = EV$ breaks, and logsum divided by $\alpha$ is no longer exact, so to obtain CV you must switch to a numerical method, solving individual by individual for the monetary compensation that pulls utility back to its pre-change level. The second: <strong>the choice set must be fixed</strong>, and the definition of the outside option must stand up to scrutiny. The absolute level of CS is dragged around by the outside option's normalization, has no interpretive meaning in itself, and only $\Delta CS$ is comparable, so always report the change, never the absolute level.</p>
+
+    <p>A counterfactual number must carry uncertainty. Parameter estimates have standard errors, and that uncertainty has to be propagated all the way through to the welfare conclusion: the common approaches are a parametric bootstrap (repeatedly sampling from the parameters' estimated distribution, recomputing the counterfactual on each draw, and taking quantiles as the interval) or the delta method. The checklist to report includes: the point estimate and interval, the units, whether it is per-capita or total, and how sensitive it is to key parameters.</p>
+
+    <p>Summarize the take-rate counterfactual of Section 8.7 by these standards and you get a standard welfare table. The intervals in the table are drawn from a parametric bootstrap.</p>
+
+    <details>
+      <summary>Going deeper: how this confidence interval is drawn</summary>
+      <div class="detail-content">
+        <p>The idea of the parametric bootstrap is to let the parameters jitter according to their own estimation uncertainty and see how much the counterfactual conclusion jitters with them. Here we impose illustrative estimation uncertainty on $\alpha$ and $\delta$: set the standard error of $\alpha$ to 0.001 and of each $\delta_j$ to 0.25, and resample 2000 times from these two distributions. For each drawn parameter set, re-solve both the baseline and the counterfactual equilibrium and compute $\Delta CS$ once more; finally take the 2.5% and 97.5% quantiles of the 2000 $\Delta CS$ values as the 95% interval.</p>
+      </div>
+    </details>
+
+    <div class="table-scroll">
+    <table>
+      <thead>
+        <tr><th>Basis (million yuan/month)</th><th>Baseline ($\tau=20\%$)</th><th>Counterfactual ($\tau=30\%$)</th><th>Change</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Consumer surplus CS</td><td>109.05</td><td>103.95</td><td><strong>−5.10</strong> (95% CI: −5.50 to −4.60)</td></tr>
+        <tr><td>Firm profit</td><td>56.95</td><td>48.64</td><td>−8.32</td></tr>
+        <tr><td>Platform commission revenue</td><td>22.13</td><td>33.96</td><td>+11.82</td></tr>
+        <tr><td>Total welfare</td><td>188.13</td><td>186.54</td><td><strong>−1.59</strong></td></tr>
+      </tbody>
+    </table>
+    <div style="font-size:13px;color:var(--text-light);margin-top:6px;"><span class="demo-badge">illustrative data</span>; a potential market of 500,000 seats. Consumer surplus per person falls from 218.09 yuan/month to 207.89 yuan (a decrease of 10.20 yuan). Annualized ΔCS is about −61.2 million yuan/year (95% CI: −66.0 to −55.2 million yuan/year). Total welfare adds up the three parties, consumer surplus, firm profit, and platform commission; the illustration assumes the platform intermediary's marginal cost is zero, so the commission is counted in full toward welfare; the 1.59 million yuan of net reduction across the three parties is the deadweight loss squeezed out of the market by the double markup. Each item is rounded independently, so the sum of the components may differ from the total column by 0.01.</div>
+    </div>
+
+    <p>How to read this table matters more than the numbers themselves. As the take rate goes from 20% to 30%, platform commission revenue gains 11.82 million yuan per month, yet consumer surplus falls by 5.10 million yuan and firm profit by 8.32 million yuan, for a net reduction in total welfare of 1.59 million yuan per month across the three parties. The rise in the take rate is partly swallowed by firms, partly passed on to consumers, and partly squeezes marginal users straight out of the market (the no-purchase share rises by 1.48 percentage points), and these lost users are exactly the deadweight loss thrown off by the double markup. When reporting, make this mechanism clear rather than tossing off "total welfare falls by 1.59 million yuan" and calling it done.</p>
+
+    <p>The report template to borrow from a real paper is Ghose and Han's <strong>roughly 33.6 billion dollars</strong> in Section 8.2. It demonstrates the full set of bases a proper welfare figure should carry: <strong>United States, annual, consumer surplus</strong>. Drop any one of these three and the reader cannot gauge the figure's magnitude or compare it with others. When you report a welfare figure, you must likewise supply all three: the geographic scope, the time frequency, and whether it is consumer surplus or total welfare.</p>
+
+    <div class="takeaway-box">
+      <div class="box-title">Bottom Line</div>
+      Use logsum for welfare, but hold two boundaries (no large income effect, a fixed choice set), report only $\Delta CS$, not the absolute level. Every counterfactual number needs an interval (parametric bootstrap), units, per-capita or total, and sensitivity, and then a clear account of the mechanism behind it. Following the 33.6 billion dollars example, write out all three: geography, frequency, and basis.
+    </div>
+
+    <!-- ============================================ -->
+    <h2 id="misconceptions">8.9 Common Pitfalls</h2>
+
+    <div class="table-scroll">
+    <table>
+      <thead>
+        <tr><th>Common wrong claim</th><th>Why it's wrong</th><th>The fact / what to do instead</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>"The randomized ranking experiment is in Ghose, Ipeirotis &amp; Li (2012)"</td>
+          <td>The 2012 paper is a hotel-ranking design study using Travelocity's actual transaction data, with no randomized experiment</td>
+          <td>The randomized experiment is in the 2014 <em>Management Science</em> paper (a custom-built search engine, 900 people)</td>
+        </tr>
+        <tr>
+          <td>"Ghose &amp; Han's (2014) price elasticities are −2 for Apple and −3.7 for Google"</td>
+          <td>These two numbers come from a textbook exercise adapted from this paper, not from the original</td>
+          <td>Cite only the verifiable signs and coefficients (Apple price coefficient −0.115, Google −0.807)</td>
+        </tr>
+        <tr>
+          <td>"Ghose &amp; Han find that a one-star rating increase drives 20% more demand, and review elasticity is +15% for free apps versus +8% for paid"</td>
+          <td>None of these specific numbers can be found in the original or the available appendix; they are sourceless fabrication</td>
+          <td>Rewrite as qualitative conclusions; never write numbers that cannot be confirmed</td>
+        </tr>
+        <tr>
+          <td>"BLP (1995) ran an import-tariff/VER counterfactual"</td>
+          <td>The 1995 paper only lists potential applications and ran no standalone policy simulation</td>
+          <td>The VER counterfactual is in the Berry, Levinsohn &amp; Pakes (1999, <em>AER</em>) sister paper</td>
+        </tr>
+        <tr>
+          <td>"BLP's data are about 2,000 models across 20 years"</td>
+          <td>Conflates the number of observations with the number of models</td>
+          <td>2,217 model/year observations, corresponding to 997 distinct models, 1971–1990</td>
+        </tr>
+        <tr>
+          <td>"Ghose &amp; Han and the 2012 paper are both standard BLP"</td>
+          <td>Neither is textbook BLP</td>
+          <td>The former is random coefficients plus a two-level nested logit plus a supply side; the latter is a hybrid of BLP and a pure-attribute model</td>
+        </tr>
+      </tbody>
+    </table>
+    </div>
+
+    <!-- ============================================ -->
+    <h2 id="summary">8.10 Chapter Summary</h2>
+
+    <p>This chapter carried the earlier chapters' methods back to the research frontier. Three close readings give three research designs you can adopt directly. Ghose and Han (2014) demonstrate how to fill invisible sales back in with a power-law conversion, capture heterogeneous preferences with a random-coefficients nested logit, and cross-check price endogeneity with two instrument sets, with the main results that IAP is equivalent to a 28% price cut, advertising to an 8% price increase, and US annual consumer surplus about 33.6 billion dollars. Ghose, Ipeirotis, and Li's two papers demonstrate how a structural model on observed data and a randomized experiment reinforce each other: the 2012 paper designs a consumer-surplus ranking, and the 2014 paper uses simultaneous equations on archival data of about 970,000 search sessions to estimate that each one-position rise in rank brings clicks +10.07% and conversion +5.63%, then validates this with a randomized experiment on a custom-built search engine, and remember that the randomization is in the 2014 paper, not the 2012 one. BLP (1995), as the methodological source, demonstrates the design of a large choice set, aggregate data, endogenous price, and heterogeneous preferences that is isomorphic to digital markets, with all models elastic and an average markup of about 24%, while the VER counterfactual is in the 1999 sister paper. The four topics each set up a framework: the reflection problem and multiple equilibria in two-sided markets, the split between information and correlation in reviews, the double markup of the take rate, and the discipline of bases and intervals in welfare reporting.</p>
+
+    <p>Two disciplines run through the whole chapter. The first is a factual discipline: every number from a real paper must be traceable back to the original, and anything untraceable is rewritten as a qualitative conclusion; the several classic misattributions this chapter corrects (which paper the experiment is in, the source of the elasticity numbers, the attribution of the counterfactual, the data scale) are all forced into place by this discipline. The second is an equilibrium discipline: a platform is a mutually responsive system, so any counterfactual must re-solve the equilibrium, attach an uncertainty interval, and spell out the welfare basis. Hold to these two, and Chapter 09 will gather up the full workflow from research question to paper, model validation, and a working reference.</p>
+
+    <!-- ============================================ -->
+    <h2 id="readings">Further Reading</h2>
+
+    <h4>Close-reading references</h4>
+    <ul>
+      <li>Ghose, A., &amp; Han, S. P. (2014). Estimating demand for mobile applications in the new economy. <em>Management Science</em>, <em>60</em>(6), 1470–1488. <a href="https://doi.org/10.1287/mnsc.2014.1945">https://doi.org/10.1287/mnsc.2014.1945</a></li>
+      <li>Ghose, A., Ipeirotis, P. G., &amp; Li, B. (2012). Designing ranking systems for hotels on travel search engines by mining user-generated and crowdsourced content. <em>Marketing Science</em>, <em>31</em>(3), 493–520. <a href="https://doi.org/10.1287/mksc.1110.0700">https://doi.org/10.1287/mksc.1110.0700</a></li>
+      <li>Ghose, A., Ipeirotis, P. G., &amp; Li, B. (2014). Examining the impact of ranking on consumer behavior and search engine revenue. <em>Management Science</em>, <em>60</em>(7), 1632–1654. <a href="https://doi.org/10.1287/mnsc.2013.1828">https://doi.org/10.1287/mnsc.2013.1828</a></li>
+      <li>Berry, S., Levinsohn, J., &amp; Pakes, A. (1995). Automobile prices in market equilibrium. <em>Econometrica</em>, <em>63</em>(4), 841–890. <a href="https://doi.org/10.2307/2171802">https://doi.org/10.2307/2171802</a> (methodological template; technical details in Chapter 06 of this series)</li>
+    </ul>
+
+    <h4>Topic references</h4>
+    <ul>
+      <li>Berry, S., Levinsohn, J., &amp; Pakes, A. (1999). Voluntary export restraints on automobiles: Evaluating a trade policy. <em>American Economic Review</em>, <em>89</em>(3), 400–430. <a href="https://doi.org/10.1257/aer.89.3.400">https://doi.org/10.1257/aer.89.3.400</a> (BLP's counterfactual sister paper)</li>
+      <li>Rysman, M. (2004). Competition between networks: A study of the market for Yellow Pages. <em>Review of Economic Studies</em>, <em>71</em>(2), 483–512. <a href="https://doi.org/10.1111/0034-6527.00512">https://doi.org/10.1111/0034-6527.00512</a> (a classic structural two-sided market study)</li>
+      <li>Manski, C. F. (1993). Identification of endogenous social effects: The reflection problem. <em>Review of Economic Studies</em>, <em>60</em>(3), 531–542. <a href="https://doi.org/10.2307/2298123">https://doi.org/10.2307/2298123</a> (the origin of the reflection problem)</li>
+      <li>Small, K. A., &amp; Rosen, H. S. (1981). Applied welfare economics with discrete choice models. <em>Econometrica</em>, <em>49</em>(1), 105–130. <a href="https://doi.org/10.2307/1911129">https://doi.org/10.2307/1911129</a> (the theoretical source for the logsum welfare measure and the CV=EV equivalence)</li>
+    </ul>
+
+    <footer class="page-footer">
+      From Choices to Counterfactuals: Structural Estimation for Digital Platform Research · 08 Platform Research Applications
+    </footer>
+
+  </main>
+</div>
+
+<script defer src="assets/katex/katex.min.js"></script>
+<script defer src="assets/katex/auto-render.min.js"></script>
+<script defer src="assets/notes.js"></script>
+</body>
+</html>

@@ -57,5 +57,18 @@
   })();
 </script>
 
+<script>
+  (function() {
+    var navButton = document.querySelector('#site-nav > button');
+    var hiddenLinks = document.getElementById('site-nav-hidden-links');
+    if (!navButton || !hiddenLinks) return;
+    navButton.addEventListener('click', function() {
+      navButton.setAttribute('aria-expanded', String(!hiddenLinks.classList.contains('hidden')));
+    });
+  })();
+</script>
+
 {% include analytics.html %}
+{% if site.google_scholar_stats_enabled %}
 {% include fetch_google_scholar_stats.html %}
+{% endif %}
