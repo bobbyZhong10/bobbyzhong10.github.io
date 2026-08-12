@@ -28,7 +28,7 @@ My research lies in the economics of information systems. I study digital platfo
     <article class="news-item">
       <div class="news-item__date">Apr. 2026</div>
       <div class="news-item__type">Paper</div>
-      <div class="news-item__body">The preference-filtering paper was accepted at AMCIS 2026 and selected as a <strong>Top 25% Paper Nominee</strong></div>
+      <div class="news-item__body">The preference-filtering paper was accepted at AMCIS 2026 and selected as a Top 25% Paper Nominee</div>
     </article>
      <article class="news-item">
       <div class="news-item__date">Mar. 2026</div>
@@ -53,7 +53,7 @@ My research lies in the economics of information systems. I study digital platfo
     <article class="news-item">
       <div class="news-item__date">Jul. 2025</div>
       <div class="news-item__type">Honor</div>
-      <div class="news-item__body">Received the <strong>XJTLU Best Student Final Year Project (Thesis) Award (1/893)</strong></div>
+      <div class="news-item__body">Received the XJTLU Best Student Final Year Project (Thesis) Award (1/893)</div>
     </article>
     <article class="news-item">
       <div class="news-item__date">Jul. 2025</div>
