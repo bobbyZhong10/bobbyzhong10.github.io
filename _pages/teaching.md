@@ -2,6 +2,7 @@
 permalink: /teaching/
 title: "Teaching"
 excerpt: ""
+description: "Teaching experience of Yunzhou (Bobby) Zhong."
 author_profile: true
 ---
 

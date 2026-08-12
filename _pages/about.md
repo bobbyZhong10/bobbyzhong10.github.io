@@ -2,6 +2,7 @@
 permalink: /
 title: ""
 excerpt: ""
+description: "Yunzhou (Bobby) Zhong is a researcher in the economics of information systems, digital platforms, and emerging technologies."
 author_profile: true
 redirect_from:
   - /about/

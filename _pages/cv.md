@@ -2,6 +2,7 @@
 permalink: /cv/
 title: "Curriculum Vitae"
 excerpt: ""
+description: "Curriculum vitae of Yunzhou (Bobby) Zhong."
 author_profile: true
 ---
 

@@ -2,6 +2,7 @@
 permalink: /notes/
 title: "Notes"
 excerpt: ""
+description: "Research notes on information systems economics, empirical methods, and structural estimation for digital platform research."
 author_profile: true
 ---
 
