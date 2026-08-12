@@ -15,8 +15,8 @@ My research lies in the economics of information systems. I study digital platfo
 </section>
 
 <div class="phd-callout">
-  <span class="phd-callout__badge">Fall 2027 PhD Applicant · U.S. Business Schools</span>
-  <p>I am primarily seeking <strong>PhD opportunities in Information Systems</strong> while also considering closely related programs in empirical operations management and quantitative marketing. I welcome connections with scholars whose research interests align with mine.</p>
+  <span class="phd-callout__badge">PhD Applicant for Fall 2027 Entry · U.S. Business Schools</span>
+  <p>I am applying in the 2026–27 admissions cycle to <strong>PhD programs in Information Systems</strong> for Fall 2027 entry, while also considering closely related programs in empirical operations management and quantitative marketing. I welcome connections with scholars whose research interests align with mine.</p>
 </div>
 
 <section class="home-section">
