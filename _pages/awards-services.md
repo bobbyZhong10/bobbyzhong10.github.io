@@ -47,7 +47,7 @@ author_profile: true
 </section>
 
 <section class="content-card" markdown="1">
-## Professional Membership
+## Professional Memberships
 
 - Institute for Operations Research and the Management Sciences (INFORMS)
 - Association for Information Systems (AIS)
