@@ -1,0 +1,22 @@
+# main links links
+main:
+  - title: "Home"
+    url: "/"
+
+  - title: "Research"
+    url: "/research-projects/"
+
+  - title: "Education"
+    url: "/education/"
+
+  - title: "Awards and Service"
+    url: "/awards-services/"
+
+  - title: "Teaching"
+    url: "/teaching/"
+
+  - title: "CV"
+    url: "/cv/"
+
+  - title: "Notes"
+    url: "/notes/"

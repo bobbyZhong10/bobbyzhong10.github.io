@@ -1,0 +1,71 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='590.40pt' height='316.80pt' viewBox='0 0 590.40 316.80'>
+<g class='svglite'>
+<defs>
+  <style type='text/css'><![CDATA[
+    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {
+      fill: none;
+      stroke: #000000;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-miterlimit: 10.00;
+    }
+    .svglite text {
+      white-space: pre;
+    }
+    .svglite g.glyphgroup path {
+      fill: inherit;
+      stroke: none;
+    }
+  ]]></style>
+</defs>
+<rect width='100%' height='100%' style='stroke: none; fill: #FFFFFF;'/>
+<defs>
+  <clipPath id='cpMC4wMHw1OTAuNDB8MC4wMHwzMTYuODA='>
+    <rect x='0.00' y='0.00' width='590.40' height='316.80' />
+  </clipPath>
+</defs>
+<g clip-path='url(#cpMC4wMHw1OTAuNDB8MC4wMHwzMTYuODA=)'>
+<rect x='82.35' y='192.42' width='103.19' height='33.67' style='stroke-width: 0.75; stroke: none; fill: #C53030;' />
+<rect x='206.17' y='99.57' width='103.19' height='92.85' style='stroke-width: 0.75; stroke: none; fill: #DD8452;' />
+<rect x='330.00' y='55.56' width='103.19' height='136.86' style='stroke-width: 0.75; stroke: none; fill: #2B6CB0;' />
+<rect x='453.82' y='64.79' width='103.19' height='127.63' style='stroke-width: 0.75; stroke: none; fill: #1A365D;' />
+<text x='133.94' y='279.36' text-anchor='middle' style='font-size: 12.00px; font-family: "Arial";' textLength='49.34px' lengthAdjust='spacingAndGlyphs'>OLS logit</text>
+<text x='257.77' y='279.36' text-anchor='middle' style='font-size: 12.00px; font-family: "Arial";' textLength='36.67px' lengthAdjust='spacingAndGlyphs'>IV logit</text>
+<text x='381.59' y='279.36' text-anchor='middle' style='font-size: 12.00px; font-family: "Arial";' textLength='41.34px' lengthAdjust='spacingAndGlyphs'>full BLP</text>
+<text x='505.42' y='279.36' text-anchor='middle' style='font-size: 12.00px; font-family: "Arial";' textLength='24.00px' lengthAdjust='spacingAndGlyphs'>truth</text>
+<text transform='translate(14.75,215.12) rotate(-90)' style='font-size: 12.00px; font-family: "Arial";' textLength='89.80px' lengthAdjust='spacingAndGlyphs'>price coefficient  </text>
+<text transform='translate(14.75,125.33) rotate(-90)' style='font-size: 12.00px; font-family: "Symbol";' textLength='7.58px' lengthAdjust='spacingAndGlyphs'>α</text>
+<text transform='translate(14.75,117.76) rotate(-90)' style='font-size: 12.00px; font-family: "Arial";' textLength='42.00px' lengthAdjust='spacingAndGlyphs'>  (per $)</text>
+<line x1='63.36' y1='228.89' x2='63.36' y2='46.56' style='stroke-width: 0.75;' />
+<line x1='63.36' y1='228.89' x2='56.16' y2='228.89' style='stroke-width: 0.75;' />
+<line x1='63.36' y1='192.42' x2='56.16' y2='192.42' style='stroke-width: 0.75;' />
+<line x1='63.36' y1='155.96' x2='56.16' y2='155.96' style='stroke-width: 0.75;' />
+<line x1='63.36' y1='119.49' x2='56.16' y2='119.49' style='stroke-width: 0.75;' />
+<line x1='63.36' y1='83.02' x2='56.16' y2='83.02' style='stroke-width: 0.75;' />
+<line x1='63.36' y1='46.56' x2='56.16' y2='46.56' style='stroke-width: 0.75;' />
+<text transform='translate(46.08,228.89) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Arial";' textLength='20.67px' lengthAdjust='spacingAndGlyphs'>-0.2</text>
+<text transform='translate(46.08,192.42) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Arial";' textLength='16.67px' lengthAdjust='spacingAndGlyphs'>0.0</text>
+<text transform='translate(46.08,155.96) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Arial";' textLength='16.67px' lengthAdjust='spacingAndGlyphs'>0.2</text>
+<text transform='translate(46.08,119.49) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Arial";' textLength='16.67px' lengthAdjust='spacingAndGlyphs'>0.4</text>
+<text transform='translate(46.08,83.02) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Arial";' textLength='16.67px' lengthAdjust='spacingAndGlyphs'>0.6</text>
+<text transform='translate(46.08,46.56) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Arial";' textLength='16.67px' lengthAdjust='spacingAndGlyphs'>0.8</text>
+</g>
+<defs>
+  <clipPath id='cpNjMuMzZ8NTc2LjAwfDM3LjQ0fDI1My40NA=='>
+    <rect x='63.36' y='37.44' width='512.64' height='216.00' />
+  </clipPath>
+</defs>
+<g clip-path='url(#cpNjMuMzZ8NTc2LjAwfDM3LjQ0fDI1My40NA==)'>
+<line x1='63.36' y1='192.42' x2='576.00' y2='192.42' style='stroke-width: 0.75; stroke: #718096;' />
+<line x1='63.36' y1='64.79' x2='576.00' y2='64.79' style='stroke-width: 0.75; stroke: #1A365D; stroke-dasharray: 1.00,3.00;' />
+<text x='133.94' y='241.05' text-anchor='middle' style='font-size: 11.40px; font-family: "Arial";' textLength='25.95px' lengthAdjust='spacingAndGlyphs'>-0.18</text>
+<text x='257.77' y='96.30' text-anchor='middle' style='font-size: 11.40px; font-family: "Arial";' textLength='22.16px' lengthAdjust='spacingAndGlyphs'>0.51</text>
+<text x='381.59' y='52.29' text-anchor='middle' style='font-size: 11.40px; font-family: "Arial";' textLength='22.16px' lengthAdjust='spacingAndGlyphs'>0.75</text>
+<text x='505.42' y='61.52' text-anchor='middle' style='font-size: 11.40px; font-family: "Arial";' textLength='22.16px' lengthAdjust='spacingAndGlyphs'>0.70</text>
+</g>
+<g clip-path='url(#cpMC4wMHw1OTAuNDB8MC4wMHwzMTYuODA=)'>
+<text x='319.68' y='22.92' text-anchor='middle' style='font-size: 11.76px;fill: #1A365D; font-family: "Arial";' textLength='395.27px' lengthAdjust='spacingAndGlyphs'>Recovering the price coefficient: OLS gets the sign wrong; BLP hits the truth</text>
+</g>
+</g>
+</svg>

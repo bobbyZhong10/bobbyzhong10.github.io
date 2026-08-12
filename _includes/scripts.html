@@ -1,0 +1,75 @@
+<script src="{{ '/assets/js/main.min.js' | relative_url }}"></script>
+<script>
+  (function() {
+    var root = document.documentElement;
+    var btn = document.getElementById('theme-toggle');
+    var icon = document.getElementById('theme-toggle-icon');
+    if (!btn || !icon) return;
+
+    function setTheme(theme) {
+      root.setAttribute('data-theme', theme);
+      localStorage.setItem('theme', theme);
+      btn.setAttribute('data-theme', theme);
+      btn.setAttribute('aria-label', theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
+    }
+
+    var current = root.getAttribute('data-theme');
+    if (current !== 'dark' && current !== 'light') {
+      current = 'light';
+      root.setAttribute('data-theme', current);
+    }
+    setTheme(current);
+
+    btn.addEventListener('click', function() {
+      var next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      setTheme(next);
+    });
+  })();
+</script>
+
+<script>
+  (function() {
+    var masthead = document.querySelector('.masthead');
+    if (!masthead) return;
+    function update() {
+      if (window.scrollY > 4) {
+        masthead.classList.add('is-scrolled');
+      } else {
+        masthead.classList.remove('is-scrolled');
+      }
+    }
+    update();
+    window.addEventListener('scroll', update, { passive: true });
+  })();
+</script>
+
+<script>
+  (function() {
+    var headings = document.querySelectorAll('.content-card > h2[id], .content-card > h3[id], .research-section > h2[id], .research-section > h3[id]');
+    headings.forEach(function(h) {
+      var link = document.createElement('a');
+      link.href = '#' + h.id;
+      link.className = 'heading-anchor';
+      link.textContent = '#';
+      link.setAttribute('aria-label', 'Permalink to ' + h.textContent.trim());
+      h.appendChild(link);
+    });
+  })();
+</script>
+
+<script>
+  (function() {
+    var navButton = document.querySelector('#site-nav > button');
+    var hiddenLinks = document.getElementById('site-nav-hidden-links');
+    if (!navButton || !hiddenLinks) return;
+    navButton.addEventListener('click', function() {
+      navButton.setAttribute('aria-expanded', String(!hiddenLinks.classList.contains('hidden')));
+    });
+  })();
+</script>
+
+{% include analytics.html %}
+{% comment %}
+Google Scholar statistics are disabled because the generated data branch is not currently available.
+{% include fetch_google_scholar_stats.html %}
+{% endcomment %}

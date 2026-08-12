@@ -1,0 +1,19 @@
+<svg viewBox="0 0 640 320" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, 'Noto Sans SC', sans-serif">
+  <line x1="70" y1="30" x2="70" y2="290" stroke="#94a1b2" stroke-width="1.5"/>
+  <line x1="70" y1="290" x2="600" y2="290" stroke="#94a1b2" stroke-width="1.5"/>
+  <text x="70" y="22" text-anchor="start" font-size="13" fill="#64748b">q2 (Nimbus output)</text>
+  <text x="600" y="310" text-anchor="end" font-size="13" fill="#64748b">q1 (Cirrus output) →</text>
+
+  <line x1="320.0" y1="290.0" x2="70.0" y2="40.0" stroke="#2b6cb0" stroke-width="2.4"/>
+  <text x="150" y="70" text-anchor="start" font-size="12" fill="#2b6cb0">Cirrus best response</text>
+  <line x1="70.0" y1="165.0" x2="570.0" y2="290.0" stroke="#c53030" stroke-width="2.4"/>
+  <text x="470" y="270" text-anchor="start" font-size="12" fill="#c53030">Nimbus best response</text>
+
+  <circle cx="236.7" cy="206.7" r="5" fill="#1a365d"/>
+  <text x="247" y="200" text-anchor="start" font-size="12.5" fill="#1a365d">Cournot NE (10/3, 10/3)</text>
+
+  <circle cx="195.0" cy="227.5" r="4" fill="#7c7f46"/>
+  <text x="150" y="245" text-anchor="end" font-size="11.5" fill="#5a5d33">collusion (5/2, 5/2)</text>
+
+  <text x="330" y="140" text-anchor="middle" font-size="12.5" fill="#334155">best-response curves cross = Cournot NE</text>
+</svg>

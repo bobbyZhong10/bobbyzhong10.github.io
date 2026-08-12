@@ -1,0 +1,28 @@
+<svg viewBox="0 0 700 320" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, 'Noto Sans SC', sans-serif">
+  <line x1="70" y1="30" x2="70" y2="290" stroke="#94a1b2" stroke-width="1.5"/>
+  <line x1="70" y1="290" x2="640" y2="290" stroke="#94a1b2" stroke-width="1.5"/>
+  <text x="70" y="22" text-anchor="start" font-size="13" fill="#64748b">price p</text>
+  <text x="640" y="310" text-anchor="end" font-size="13" fill="#64748b">quantity q →</text>
+
+  <polygon points="70.0,59.2 70.0,155.4 299.2,155.4" fill="#2b6cb0" opacity="0.14"/>
+  <polygon points="70.0,155.4 299.2,155.4 299.2,251.5 70.0,251.5" fill="#7c7f46" opacity="0.16"/>
+  <polygon points="299.2,155.4 528.3,251.5 299.2,251.5" fill="#c53030" opacity="0.18"/>
+
+  <line x1="70.0" y1="59.2" x2="620.0" y2="290.0" stroke="#1a365d" stroke-width="2.5"/>
+  <text x="615" y="220" text-anchor="end" font-size="12" fill="#1a365d">demand p = 12 - q</text>
+  <line x1="70.0" y1="59.2" x2="345.0" y2="290.0" stroke="#2b6cb0" stroke-width="1.8" stroke-dasharray="6 4"/>
+  <text x="350" y="285" text-anchor="start" font-size="12" fill="#2b6cb0">MR</text>
+  <line x1="70.0" y1="251.5" x2="620.0" y2="251.5" stroke="#c53030" stroke-width="1.8"/>
+  <text x="628" y="247" text-anchor="end" font-size="12" fill="#c53030">MC = 2</text>
+
+  <line x1="299.2" y1="155.4" x2="299.2" y2="290" stroke="#cfccc4" stroke-width="1.2" stroke-dasharray="4 4"/>
+  <line x1="70" y1="155.4" x2="299.2" y2="155.4" stroke="#cfccc4" stroke-width="1.2" stroke-dasharray="4 4"/>
+  <circle cx="299.2" cy="155.4" r="4.5" fill="#1a365d"/>
+  <text x="62" y="159" text-anchor="end" font-size="12" fill="#2d3748">7</text>
+  <text x="299.2" y="305" text-anchor="middle" font-size="12" fill="#2d3748">qm=5</text>
+  <text x="528.3" y="305" text-anchor="middle" font-size="12" fill="#64748b">qc=10</text>
+
+  <text x="120" y="128" text-anchor="middle" font-size="12" fill="#2b6cb0">CS=12.5</text>
+  <text x="185" y="210" text-anchor="middle" font-size="12" fill="#5a5d33">profit=25</text>
+  <text x="382" y="228" text-anchor="middle" font-size="12" fill="#c53030">DWL=12.5</text>
+</svg>

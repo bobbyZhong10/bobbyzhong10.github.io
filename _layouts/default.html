@@ -1,0 +1,63 @@
+---
+layout: compress
+---
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    {% include head.html %}
+    {% include head/custom.html %}
+  </head>
+
+  {% assign current_url = page.url | replace: "index.html", "" %}
+  {% assign page_slug = current_url | replace: "/", " " | strip | replace: " ", "-" %}
+  <body class="page-shell{% if current_url == "/" %} page-home{% else %} page-inner{% endif %}{% if page_slug != "" %} page-{{ page_slug }}{% endif %}">
+
+    <a class="skip-to-content" href="#main">Skip to content</a>
+
+    {% include browser-upgrade.html %}
+    {% include masthead.html %}
+
+    <div id="main" role="main">
+      {% if current_url == "/" %}
+        {% include home-hero.html %}
+      {% endif %}
+      <article class="page" itemscope itemtype="http://schema.org/CreativeWork">
+        {% if page.title %}<meta itemprop="headline" content="{{ page.title | markdownify | strip_html | strip_newlines | escape_once }}">{% endif %}
+        <div class="page__inner-wrap">
+          <section class="page__content" itemprop="text">
+            {{ content }}
+          </section>
+        </div>
+      </article>
+    </div>
+
+    {% if current_url == "/" %}
+      <div class="visitor-map-slot">
+        <div class="visitor-map">
+          <script type="text/javascript" id="mapmyvisitors" src="https://mapmyvisitors.com/map.js?cl=ffffff&w=280&t=n&d=TA8pmEL4G-sfNd8cPpO5EpflMiKxnDDIwjKdS5HqpDw&co=d6cfe8&ct=000000"></script>
+          <script>
+            (function(container) {
+              function labelMapLink() {
+                var link = container.querySelector('a[href]');
+                if (!link) return false;
+                link.setAttribute('aria-label', 'Visitor map');
+                return true;
+              }
+              if (labelMapLink()) return;
+              var observer = new MutationObserver(function() {
+                if (labelMapLink()) observer.disconnect();
+              });
+              observer.observe(container, { childList: true, subtree: true });
+            }(document.currentScript.parentElement));
+          </script>
+        </div>
+      </div>
+    {% endif %}
+
+    <footer class="site-copyright" role="contentinfo">© 2025-2026 Bobby Zhong</footer>
+
+    {% include scripts.html %}
+
+  </body>
+</html>

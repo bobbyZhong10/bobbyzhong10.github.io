@@ -1,0 +1,62 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='518.40pt' height='244.80pt' viewBox='0 0 518.40 244.80'>
+<g class='svglite'>
+<defs>
+  <style type='text/css'><![CDATA[
+    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {
+      fill: none;
+      stroke: #000000;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-miterlimit: 10.00;
+    }
+    .svglite text {
+      white-space: pre;
+    }
+    .svglite g.glyphgroup path {
+      fill: inherit;
+      stroke: none;
+    }
+  ]]></style>
+</defs>
+<rect width='100%' height='100%' style='stroke: none; fill: #FAFAF9;'/>
+<defs>
+  <clipPath id='cpMC4wMHw1MTguNDB8MC4wMHwyNDQuODA='>
+    <rect x='0.00' y='0.00' width='518.40' height='244.80' />
+  </clipPath>
+</defs>
+<g clip-path='url(#cpMC4wMHw1MTguNDB8MC4wMHwyNDQuODA=)'>
+<rect x='0.00' y='0.00' width='518.40' height='244.80' style='stroke-width: 1.26; stroke: none; fill: #FAFAF9;' />
+</g>
+<defs>
+  <clipPath id='cpMTI5LjYzfDUxMS45MnwyNy40MHwyMDcuNTk='>
+    <rect x='129.63' y='27.40' width='382.29' height='180.18' />
+  </clipPath>
+</defs>
+<g clip-path='url(#cpMTI5LjYzfDUxMS45MnwyNy40MHwyMDcuNTk=)'>
+<rect x='129.63' y='27.40' width='382.29' height='180.18' style='stroke-width: 1.26; stroke: none; fill: #FAFAF9;' />
+<polyline points='129.63,166.01 511.92,166.01 ' style='stroke-width: 1.26; stroke: #E6E3DF; stroke-linecap: butt;' />
+<polyline points='129.63,96.70 511.92,96.70 ' style='stroke-width: 1.26; stroke: #E6E3DF; stroke-linecap: butt;' />
+<polyline points='129.63,207.59 129.63,27.40 ' style='stroke-width: 1.26; stroke: #E6E3DF; stroke-linecap: butt;' />
+<polyline points='245.48,207.59 245.48,27.40 ' style='stroke-width: 1.26; stroke: #E6E3DF; stroke-linecap: butt;' />
+<polyline points='361.32,207.59 361.32,27.40 ' style='stroke-width: 1.26; stroke: #E6E3DF; stroke-linecap: butt;' />
+<polyline points='477.17,207.59 477.17,27.40 ' style='stroke-width: 1.26; stroke: #E6E3DF; stroke-linecap: butt;' />
+<rect x='129.63' y='79.38' width='333.29' height='34.65' style='stroke-width: 1.26; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #2B6CB0;' />
+<rect x='129.63' y='148.68' width='119.50' height='34.65' style='stroke-width: 1.26; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #B7791F;' />
+<line x1='276.66' y1='207.59' x2='276.66' y2='27.40' style='stroke-width: 1.49; stroke: #1A365D; stroke-dasharray: 7.97,7.97; stroke-linecap: butt;' />
+<text x='280.43' y='57.40' style='font-size: 10.24px;fill: #1A365D; font-family: "Arial";' textLength='75.55px' lengthAdjust='spacingAndGlyphs'>true ATT = 0.254</text>
+<text x='470.39' y='100.98' style='font-size: 11.95px;fill: #2D3748; font-family: "Arial";' textLength='29.88px' lengthAdjust='spacingAndGlyphs'>0.575</text>
+<text x='256.60' y='170.28' style='font-size: 11.95px;fill: #2D3748; font-family: "Arial";' textLength='29.88px' lengthAdjust='spacingAndGlyphs'>0.206</text>
+</g>
+<g clip-path='url(#cpMC4wMHw1MTguNDB8MC4wMHwyNDQuODA=)'>
+<text x='123.80' y='169.72' text-anchor='end' style='font-size: 10.40px;fill: #2D3748; font-family: "Arial";' textLength='117.33px' lengthAdjust='spacingAndGlyphs'>Study A  randomized pilot</text>
+<text x='123.80' y='100.42' text-anchor='end' style='font-size: 10.40px;fill: #2D3748; font-family: "Arial";' textLength='115.42px' lengthAdjust='spacingAndGlyphs'>Study B  naive difference</text>
+<text x='129.63' y='220.85' text-anchor='middle' style='font-size: 10.40px;fill: #2D3748; font-family: "Arial";' textLength='14.45px' lengthAdjust='spacingAndGlyphs'>0.0</text>
+<text x='245.48' y='220.85' text-anchor='middle' style='font-size: 10.40px;fill: #2D3748; font-family: "Arial";' textLength='14.45px' lengthAdjust='spacingAndGlyphs'>0.2</text>
+<text x='361.32' y='220.85' text-anchor='middle' style='font-size: 10.40px;fill: #2D3748; font-family: "Arial";' textLength='14.45px' lengthAdjust='spacingAndGlyphs'>0.4</text>
+<text x='477.17' y='220.85' text-anchor='middle' style='font-size: 10.40px;fill: #2D3748; font-family: "Arial";' textLength='14.45px' lengthAdjust='spacingAndGlyphs'>0.6</text>
+<text x='320.78' y='235.59' text-anchor='middle' style='font-size: 13.00px;fill: #2D3748; font-family: "Arial";' textLength='283.81px' lengthAdjust='spacingAndGlyphs'>Estimated effect on log tickets resolved per agent</text>
+<text x='129.63' y='17.64' style='font-size: 15.60px; font-weight: bold;fill: #1A365D; font-family: "Arial";' textLength='362.17px' lengthAdjust='spacingAndGlyphs'>One product, two answers: naive vs. randomized</text>
+</g>
+</g>
+</svg>

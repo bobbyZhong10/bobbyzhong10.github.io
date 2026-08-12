@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script>(function(){try{var t=localStorage.getItem('theme');if(t==='dark'||t==='light')document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
+  <title>From Choices to Counterfactuals: Structural Estimation for Digital Platform Research</title>
+  <link rel="stylesheet" href="assets/style.css?v=notes-ui-20260822">
+</head>
+<body>
+<div class="notes-topbar"><a class="notes-home" href="https://bobbyzhong10.github.io/">← Yunzhou (Bobby) Zhong</a><div class="notes-topbar__right"><a href="https://bobbyzhong10.github.io/notes/">Research Notes</a><button id="theme-toggle" class="notes-theme-toggle" type="button" aria-label="Toggle theme"><span></span></button></div></div>
+<div class="cover-wrapper">
+
+  <a class="site-back-link" href="/notes/"><span aria-hidden="true">←</span> Back to Research Notes</a>
+
+  <header class="cover-header">
+    <h1>From Choices to Counterfactuals</h1>
+    <div class="cover-sub">Structural Estimation for Digital Platform Research</div>
+    <div class="cover-sub-en">Discrete choice, demand estimation, and counterfactuals</div>
+    <div class="cover-rule"></div>
+  </header>
+
+  <div class="cover-intro">
+    <p>These notes are written for empirical researchers who study digital platforms and information systems. They follow one continuous thread: what a user's discrete-choice data reveals about preferences, how to estimate those preferences, and how to use the estimated model to answer questions that experiments and regressions cannot. What would a policy that has never been tried actually do? Where do churned users go? How much welfare does a design change give a user, or take away?</p>
+    <p>The nine chapters follow that thread. The first two explain when a structural model is really needed and give a framework for choosing one. From there the series starts with random utility and logit, gradually relaxes the restrictions on substitution and admits preference heterogeneity, works through the numerical details of simulation-based estimation, tackles price endogeneity and BLP, and reaches dynamic discrete choice. It closes with close readings of canonical platform-research papers and a workflow that runs from research question to finished paper, model validation included. The cases and data used for illustration are not real; each is marked as such in the text.</p>
+  </div>
+
+  <div class="chapter-grid">
+    <a class="chapter-card" href="01_overview_roadmap.html">
+      <span class="ch-no">Chapter 01</span>
+      <div class="ch-title">Overview &amp; Decision Framework</div>
+      <div class="ch-desc">Series roadmap: the model map, when you need a structural model, the model-selection decision framework, and notation.</div>
+    </a>
+    <a class="chapter-card" href="02_why_structural.html">
+      <span class="ch-no">Chapter 02</span>
+      <div class="ch-title">Why Structural Models</div>
+      <div class="ch-desc">Policy invariance, the DGP view, Marschak's Maxim, the twelve modeling decisions, and the philosophy of identification and validation.</div>
+    </a>
+    <a class="chapter-card" href="03_rum_logit.html">
+      <span class="ch-no">Chapter 03</span>
+      <div class="ch-title">RUM and Logit</div>
+      <div class="ch-desc">Random utility, the logit derivation, IIA, elasticities and consumer surplus, and maximum likelihood.</div>
+    </a>
+    <a class="chapter-card" href="04_gev_mixed_logit.html">
+      <span class="ch-no">Chapter 04</span>
+      <div class="ch-title">Nested and Mixed Logit</div>
+      <div class="ch-desc">Breaking IIA: nesting, the GEV family, random coefficients, and preference heterogeneity.</div>
+    </a>
+    <a class="chapter-card" href="05_simulation_estimation.html">
+      <span class="ch-no">Chapter 05</span>
+      <div class="ch-title">Simulation and Numerical Estimation</div>
+      <div class="ch-desc">Numerical optimization, sampling and low-discrepancy sequences, simulated maximum likelihood (MSL/MSM), and convergence diagnostics.</div>
+    </a>
+    <a class="chapter-card" href="06_endogeneity_blp.html">
+      <span class="ch-no">Chapter 06</span>
+      <div class="ch-title">Endogeneity and BLP</div>
+      <div class="ch-desc">Price endogeneity, the Berry inversion, the contraction mapping, GMM and instruments, and Nevo's cereal study.</div>
+    </a>
+    <a class="chapter-card" href="07_dynamic_choice.html">
+      <span class="ch-no">Chapter 07</span>
+      <div class="ch-title">Dynamic Discrete Choice</div>
+      <div class="ch-desc">Rust's bus-engine model, the Bellman equation, a worked numerical example, CCP, and a menu of estimators.</div>
+    </a>
+    <a class="chapter-card" href="08_applications.html">
+      <span class="ch-no">Chapter 08</span>
+      <div class="ch-title">Platform Research Applications</div>
+      <div class="ch-desc">Close readings of canonical papers: app demand, search ranking, two-sided markets, reviews and reputation, pricing and welfare.</div>
+    </a>
+    <a class="chapter-card" href="09_workflow_reference.html">
+      <span class="ch-no">Chapter 09</span>
+      <div class="ch-title">Workflow, Validation, and Reference</div>
+      <div class="ch-desc">From research question to paper: the full workflow, model validation, defending specification and identification, plus formula and software references.</div>
+    </a>
+  </div>
+
+  <footer class="cover-footer">
+    From Choices to Counterfactuals: Structural Estimation for Digital Platform Research
+  </footer>
+
+</div>
+<script defer src="assets/notes.js?v=notes-ui-20260822"></script>
+</body>
+</html>

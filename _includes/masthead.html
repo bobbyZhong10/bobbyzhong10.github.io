@@ -1,0 +1,23 @@
+<div class="masthead">
+  <div class="masthead__inner-wrap">
+    <div class="masthead__menu">
+      <nav id="site-nav-static" class="greedy-nav" aria-label="Primary navigation">
+        <ul class="visible-links">
+          {%- for link in site.data.navigation.main -%}
+            {%- if link.url contains '://' -%}
+              {%- assign url = link.url -%}
+            {%- else -%}
+              {%- assign url = link.url | relative_url -%}
+            {%- endif -%}
+            <li class="masthead__menu-item{% if page.url == link.url %} masthead__menu-item--active{% endif %}">
+              <a href="{{ url }}"{% if page.url == link.url %} aria-current="page"{% endif %}>{{ link.title }}</a>
+            </li>
+          {%- endfor -%}
+        </ul>
+        <button id="theme-toggle" class="theme-toggle-btn masthead-theme-toggle" type="button" aria-label="Toggle color theme">
+          <span id="theme-toggle-icon" aria-hidden="true"></span>
+        </button>
+      </nav>
+    </div>
+  </div>
+</div>

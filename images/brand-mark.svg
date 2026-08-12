@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" role="img" aria-labelledby="brand-title brand-description">
+  <title id="brand-title">BZ monogram</title>
+  <desc id="brand-description">White BZ initials on a navy rounded square with a crimson rule.</desc>
+  <rect x="24" y="24" width="464" height="464" rx="112" fill="#011f5b"/>
+  <rect x="72" y="72" width="368" height="18" rx="9" fill="#990000"/>
+  <text x="256" y="350" fill="#ffffff" font-family="Georgia, 'Times New Roman', serif" font-size="244" font-weight="700" text-anchor="middle">BZ</text>
+</svg>

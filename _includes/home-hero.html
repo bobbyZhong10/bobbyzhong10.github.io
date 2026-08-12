@@ -1,0 +1,32 @@
+<section class="home-hero" aria-label="About">
+  <div class="home-hero__inner">
+    <div class="home-hero__content">
+      {% if site.author.employer %}
+        <p class="home-hero__meta">{{ site.author.employer }}</p>
+      {% endif %}
+      <h1 class="home-hero__name">{{ site.author.name }}</h1>
+
+      <ul class="home-hero__links" aria-label="Profiles and contact">
+        {% if site.author.email %}
+          <li><a href="mailto:{{ site.author.email }}" aria-label="Email" title="Email" data-tooltip="Email"><i class="fas fa-fw fa-envelope" aria-hidden="true"></i></a></li>
+        {% endif %}
+        {% if site.author.googlescholar %}
+          <li><a href="{{ site.author.googlescholar }}" aria-label="Google Scholar" title="Google Scholar" data-tooltip="Google Scholar" target="_blank" rel="noopener"><i class="fas fa-fw fa-graduation-cap" aria-hidden="true"></i></a></li>
+        {% endif %}
+        {% if site.author.orcid %}
+          <li><a href="{{ site.author.orcid }}" aria-label="ORCID" title="ORCID" data-tooltip="ORCID" target="_blank" rel="noopener"><i class="ai ai-orcid-square ai-fw" aria-hidden="true"></i></a></li>
+        {% endif %}
+        {% if site.author.linkedin %}
+          {% assign linkedin_url = site.author.linkedin %}
+          {% unless linkedin_url contains '://' %}{% assign linkedin_url = 'https://www.linkedin.com/in/' | append: linkedin_url %}{% endunless %}
+          <li><a href="{{ linkedin_url }}" aria-label="LinkedIn" title="LinkedIn" data-tooltip="LinkedIn" target="_blank" rel="noopener"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i></a></li>
+        {% endif %}
+        <li><a href="{{ '/cv/' | relative_url }}" aria-label="Curriculum Vitae" title="Curriculum Vitae" data-tooltip="Curriculum Vitae"><i class="fas fa-fw fa-file-alt" aria-hidden="true"></i></a></li>
+      </ul>
+    </div>
+
+    <div class="home-hero__avatar">
+      <img src="{{ site.author.avatar | relative_url }}" alt="{{ site.author.name }}">
+    </div>
+  </div>
+</section>
