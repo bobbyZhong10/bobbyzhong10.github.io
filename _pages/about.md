@@ -38,7 +38,7 @@ My research lies in the economics of information systems. I study digital platfo
     <article class="news-item">
       <div class="news-item__date">Nov. 2025</div>
       <div class="news-item__type">Grant</div>
-      <div class="news-item__body">Received the Professional Student Travel Grant from the <a href="https://www.upenn.edu/">University of Pennsylvania</a></div>
+      <div class="news-item__body">Received the GAPSA Professional Student Travel Grant from the University of Pennsylvania</div>
     </article>
     <article class="news-item">
       <div class="news-item__date">Oct. 2025</div>
@@ -48,7 +48,7 @@ My research lies in the economics of information systems. I study digital platfo
     <article class="news-item">
       <div class="news-item__date">Aug. 2025</div>
       <div class="news-item__type">Milestone</div>
-      <div class="news-item__body">Joined the Master of Behavioral and Decision Sciences program at the <a href="https://www.upenn.edu/">University of Pennsylvania</a></div>
+      <div class="news-item__body">Joined the Master of Behavioral and Decision Sciences program at the University of Pennsylvania</div>
     </article>
     <article class="news-item">
       <div class="news-item__date">Jul. 2025</div>
