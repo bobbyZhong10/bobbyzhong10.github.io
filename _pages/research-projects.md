@@ -86,7 +86,7 @@ author_profile: true
   </li>
   <li class="research-entry">
     <div class="research-entry__title"><em>How Are We Mobilized to Express on Social Media? Identity, Persuasion, and Social Norms</em></div>
-    <div class="research-entry__meta">Presented at the 86th Annual Meeting of the Academy of Management · Philadelphia, PA · Aug. 2026</div>
+    <div class="research-entry__meta">86th Annual Meeting of the Academy of Management · Philadelphia, PA · Aug. 2026</div>
   </li>
   <li class="research-entry">
     <div class="research-entry__title"><em>Too Neat to Be True? AI-Generated Review Summary Discrepancies and Consumer Response</em></div>
