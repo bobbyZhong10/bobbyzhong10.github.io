@@ -81,16 +81,17 @@ author_profile: true
 
 <ul class="research-entry-list research-entry-list--presentations">
   <li class="research-entry">
+    <div class="research-entry__title"><em>Too Neat to Be True? AI-Generated Review Summary Discrepancies and Consumer Response</em></div>
+    <div class="research-entry__meta">OSU Fisher AI in Business Conference · Columbus, OH · Oct. 2026 (scheduled)</div>
+    <div class="research-entry__meta">INFORMS Annual Meeting · Atlanta, GA · Oct. 2025</div>
+  </li>
+  <li class="research-entry">
     <div class="research-entry__title"><em>When Personalization Backfires: Skepticism and Decision Confidence in Platform-Mediated Information</em></div>
     <div class="research-entry__meta">32nd Americas Conference on Information Systems · Reno, NV · Aug. 2026 (scheduled)</div>
   </li>
   <li class="research-entry">
     <div class="research-entry__title"><em>How Are We Mobilized to Express on Social Media? Identity, Persuasion, and Social Norms</em></div>
     <div class="research-entry__meta">86th Annual Meeting of the Academy of Management · Philadelphia, PA · Aug. 2026</div>
-  </li>
-  <li class="research-entry">
-    <div class="research-entry__title"><em>Too Neat to Be True? AI-Generated Review Summary Discrepancies and Consumer Response</em></div>
-    <div class="research-entry__meta">INFORMS Annual Meeting · Atlanta, GA · Oct. 2025</div>
   </li>
   <li class="research-entry">
     <div class="research-entry__title"><em>Evaluating the Impact of Anthropomorphic Emojis on Digital Sustainability Content Engagement</em></div>

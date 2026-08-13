@@ -26,6 +26,11 @@ My research lies in the economics of information systems. I study digital platfo
   </div>
   <div class="news-list">
     <article class="news-item">
+      <div class="news-item__date">Aug. 2026</div>
+      <div class="news-item__type">Paper</div>
+      <div class="news-item__body">The AI-generated review summary paper was accepted for presentation at the OSU Fisher AI in Business Conference</div>
+    </article>
+    <article class="news-item">
       <div class="news-item__date">Apr. 2026</div>
       <div class="news-item__type">Paper</div>
       <div class="news-item__body">The preference-filtering paper was accepted at AMCIS 2026 and selected as a Top 25% Paper Nominee</div>
@@ -43,7 +48,7 @@ My research lies in the economics of information systems. I study digital platfo
     <article class="news-item">
       <div class="news-item__date">Oct. 2025</div>
       <div class="news-item__type">Talk</div>
-      <div class="news-item__body">Presented the AI-generated review summary paper at the INFORMS Annual Meeting and attended CIST</div>
+      <div class="news-item__body">Presented the AI-generated review summary paper at the INFORMS Annual Meeting and attended my first CIST</div>
     </article>
     <article class="news-item">
       <div class="news-item__date">Aug. 2025</div>
