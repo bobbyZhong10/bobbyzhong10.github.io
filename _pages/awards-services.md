@@ -13,7 +13,7 @@ author_profile: true
 
 <div class="award-list">
   <div class="award-entry">
-    <div class="award-entry__title">Professional Student Travel Grant</div>
+    <div class="award-entry__title">GAPSA Professional Student Travel Grant</div>
     <div class="award-entry__context">University of Pennsylvania</div>
     <div class="award-entry__meta">2025</div>
   </div>
