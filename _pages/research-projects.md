@@ -87,7 +87,7 @@ author_profile: true
   </li>
   <li class="research-entry">
     <div class="research-entry__title"><em>When Personalization Backfires: Skepticism and Decision Confidence in Platform-Mediated Information</em></div>
-    <div class="research-entry__meta">32nd Americas Conference on Information Systems · Reno, NV · Aug. 2026 (scheduled)</div>
+    <div class="research-entry__meta">32nd Americas Conference on Information Systems · Reno, NV · Aug. 2026 </div>
   </li>
   <li class="research-entry">
     <div class="research-entry__title"><em>How Are We Mobilized to Express on Social Media? Identity, Persuasion, and Social Norms</em></div>
