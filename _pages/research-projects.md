@@ -16,8 +16,8 @@ author_profile: true
 <section class="content-card content-card--research-focus" markdown="1">
 ## Research Interests
 
-- **Topics:** Digital Platforms, Human–AI Interaction, Social Media and Online Reputation
-- **Methods:** Econometrics, Text Analysis, Laboratory and Field Experiments, Machine Learning and LLM-based Annotation
+- **Topics:** Digital Platforms, Human-AI Interaction, Social Media, Online Word of Mouth
+- **Methods:** Econometrics, Text Analysis, Natural/Field Experiments, Laboratory Experiments, Machine Learning
 </section>
 
 <div class="content-card research-record">
