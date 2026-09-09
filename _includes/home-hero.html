@@ -21,6 +21,11 @@
           {% unless linkedin_url contains '://' %}{% assign linkedin_url = 'https://www.linkedin.com/in/' | append: linkedin_url %}{% endunless %}
           <li><a href="{{ linkedin_url }}" aria-label="LinkedIn" title="LinkedIn" data-tooltip="LinkedIn" target="_blank" rel="noopener"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i></a></li>
         {% endif %}
+        {% if site.author.github %}
+          {% assign github_url = site.author.github %}
+          {% unless github_url contains '://' %}{% assign github_url = 'https://github.com/' | append: github_url %}{% endunless %}
+          <li><a href="{{ github_url }}" aria-label="GitHub" title="GitHub" data-tooltip="GitHub" target="_blank" rel="noopener"><i class="fab fa-fw fa-github" aria-hidden="true"></i></a></li>
+        {% endif %}
         <li><a href="{{ '/cv/' | relative_url }}" aria-label="Curriculum Vitae" title="Curriculum Vitae" data-tooltip="Curriculum Vitae"><i class="fas fa-fw fa-file-alt" aria-hidden="true"></i></a></li>
       </ul>
     </div>
