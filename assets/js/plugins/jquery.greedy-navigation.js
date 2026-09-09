@@ -14,6 +14,13 @@ var breaks = [];
 
 function updateNav() {
 
+  // This legacy helper is bundled site-wide, but the current masthead uses a
+  // static navigation element. Exit cleanly when the greedy-nav controls are
+  // not present instead of recursing against empty jQuery collections.
+  if (!$nav.length || !$btn.length || !$vlinks.length || !$hlinks.length) {
+    return;
+  }
+
   var availableSpace = $btn.hasClass('hidden') ? $nav.width() : $nav.width() - $btn.width() - 30;
 
   // The visible list is overflowing the nav

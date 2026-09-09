@@ -1,4 +1,4 @@
-<script src="{{ '/assets/js/main.min.js' | relative_url }}"></script>
+<script src="{{ '/assets/js/main.min.js' | relative_url }}?v={{ site.time | date: '%s' }}"></script>
 <script>
   (function() {
     var root = document.documentElement;
@@ -6,9 +6,15 @@
     var icon = document.getElementById('theme-toggle-icon');
     if (!btn || !icon) return;
 
-    function setTheme(theme) {
+    function setTheme(theme, persist) {
       root.setAttribute('data-theme', theme);
-      localStorage.setItem('theme', theme);
+      if (persist) {
+        try {
+          localStorage.setItem('theme', theme);
+        } catch (error) {
+          // Theme switching should still work when storage is unavailable.
+        }
+      }
       btn.setAttribute('data-theme', theme);
       btn.setAttribute('aria-label', theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode');
     }
@@ -18,11 +24,11 @@
       current = 'light';
       root.setAttribute('data-theme', current);
     }
-    setTheme(current);
+    setTheme(current, false);
 
     btn.addEventListener('click', function() {
       var next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-      setTheme(next);
+      setTheme(next, true);
     });
   })();
 </script>

@@ -12,7 +12,8 @@ html[data-theme="dark"] {
   --navy: #9cb9ea; --crimson: #e08f8f; --panel-shadow: 0 1px 2px rgba(0,0,0,.3);
   --masthead-bg: rgba(22,25,30,.78); --link-rule: rgba(156,185,234,.32);
 }
-html, html[data-theme="light"], html[data-theme="dark"] { background: var(--bg); font-size: 16px; }
+html, html[data-theme="light"], html[data-theme="dark"] { background: var(--bg); font-size: 16px; color-scheme: light; }
+html[data-theme="dark"] { color-scheme: dark; }
 body, .greedy-nav, .page, .masthead__inner-wrap, .page__content, .home-hero, button, input, select, textarea {
   font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", "PingFang SC", "Hiragino Sans GB", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
