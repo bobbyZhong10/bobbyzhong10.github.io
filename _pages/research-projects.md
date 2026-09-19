@@ -32,7 +32,7 @@ author_profile: true
   <li class="research-entry">
     <div class="research-entry__title"><em>When Do Anthropomorphic Emojis Enhance Information Sharing? A Visual-Linguistic Synergy Perspective</em></div>
     <div class="research-entry__authors"><strong>Yunzhou Zhong</strong>, <a href="https://ef.hksyu.edu/about-us/staff-list/detail/lee-tin-yun">Philip Tin Yun Lee</a>, <a href="https://scholar.xjtlu.edu.cn/en/persons/BingjieDeng/">Bingjie Deng</a></div>
-    <div class="research-entry__meta">Under review</div>
+    <div class="research-entry__meta">Invited for resubmission</div>
   </li>
   <li class="research-entry">
     <div class="research-entry__title"><em>Too Neat to Be True? AI-Generated Review Summary Discrepancies and Consumer Response</em></div>
