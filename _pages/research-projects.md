@@ -50,6 +50,7 @@ author_profile: true
   <li class="research-entry">
     <div class="research-entry__title"><em>Who Pays When Algorithms Price? Algorithmic Cost Allocation in Ride-Hailing Markets</em></div>
     <div class="research-entry__authors"><strong>Yunzhou Zhong</strong>, <a href="https://oid.wharton.upenn.edu/profile/wulynn/">Lynn Wu</a>, <a href="https://oid.wharton.upenn.edu/profile/lhitt/">Lorin Hitt</a></div>
+    <div class="research-entry__meta">Work in progress</div>
   </li>
 </ul>
 </section>

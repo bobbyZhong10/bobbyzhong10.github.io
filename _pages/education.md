@@ -30,14 +30,14 @@ author_profile: true
 
 <div class="academic-entry-list">
   <div class="academic-entry">
-    <div class="academic-entry__title"><a href="https://catalog.upenn.edu/courses/oidd/">OIDD 9550 Research Seminar in Information Systems</a></div>
-    <div class="academic-entry__context">Instructor: <a href="https://oid.wharton.upenn.edu/profile/wulynn/">Prof. Lynn Wu</a> · The Wharton School</div>
-    <div class="academic-entry__meta">Spring 2026 · Grade: A</div>
-  </div>
-  <div class="academic-entry">
     <div class="academic-entry__title"><a href="https://catalog.upenn.edu/courses/stat/">STAT 5200 Applied Econometrics I</a></div>
     <div class="academic-entry__context">Instructor: Dr. Yisroel Cahn · The Wharton School</div>
     <div class="academic-entry__meta">Fall 2026 · In progress</div>
+  </div>
+  <div class="academic-entry">
+    <div class="academic-entry__title"><a href="https://catalog.upenn.edu/courses/oidd/">OIDD 9550 Research Seminar in Information Systems</a></div>
+    <div class="academic-entry__context">Instructor: <a href="https://oid.wharton.upenn.edu/profile/wulynn/">Prof. Lynn Wu</a> · The Wharton School</div>
+    <div class="academic-entry__meta">Spring 2026 · Grade: A</div>
   </div>
 </div>
 </section>
