@@ -14,6 +14,6 @@ author_profile: true
     <div class="cv-updated">Last updated: August 2026</div>
   </div>
   <div class="cv-preview">
-    <iframe src="https://drive.google.com/file/d/1dUabk_jFrImTuo6MdvGb93OICIFRqovD/preview" title="Yunzhou Zhong Curriculum Vitae" loading="eager" allow="autoplay"></iframe>
+    <iframe src="https://drive.google.com/file/d/1dUabk_jFrImTuo6MdvGb93OICIFRqovD/preview" title="Yunzhou Zhong Curriculum Vitae" loading="lazy"></iframe>
   </div>
 </div>
