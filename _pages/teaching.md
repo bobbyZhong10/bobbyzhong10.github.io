@@ -13,13 +13,13 @@ author_profile: true
 
 <div class="teaching-entry">
   <div class="teaching-entry__title">Financial Analysis with Python and AI Tools</div>
-  <div class="teaching-entry__context">Business Analytics Summer School · International Business School Suzhou</div>
-  <div class="teaching-entry__meta">Xi'an Jiaotong-Liverpool University · Summers 2023 and 2024</div>
+  <div class="teaching-entry__context">Business Analytics Summer School · International Business School Suzhou, Xi'an Jiaotong-Liverpool University</div>
+  <div class="teaching-entry__meta">Summers 2023 and 2024</div>
 </div>
 
 <div class="teaching-entry">
   <div class="teaching-entry__title">Business Analytics Basics</div>
-  <div class="teaching-entry__context">Business Analytics Summer School · International Business School Suzhou</div>
-  <div class="teaching-entry__meta">Xi'an Jiaotong-Liverpool University · Summers 2023 and 2024</div>
+  <div class="teaching-entry__context">Business Analytics Summer School · International Business School Suzhou, Xi'an Jiaotong-Liverpool University</div>
+  <div class="teaching-entry__meta">Summers 2023 and 2024</div>
 </div>
 </section>
