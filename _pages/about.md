@@ -17,7 +17,7 @@ My research is in the economics of information systems, with a focus on digital 
 
 <div class="phd-callout">
   <span class="phd-callout__badge">PhD Applicant for Fall 2027 Entry · U.S. Business Schools</span>
-  <p>I am applying to <strong>PhD programs in Information Systems</strong> for Fall 2027 entry in the 2026–27 admissions cycle, while also considering closely related programs in empirical operations management and quantitative marketing. I welcome conversations with scholars in related areas.</p>
+  <p>I am applying to <strong>PhD programs in Information Systems</strong> for Fall 2027 entry in the 2026–27 admissions cycle, and to closely related programs in empirical operations management and quantitative marketing. I welcome conversations with scholars in related areas.</p>
 </div>
 
 <section class="home-section">
@@ -33,7 +33,7 @@ My research is in the economics of information systems, with a focus on digital 
     <article class="news-item">
       <div class="news-item__date">Apr. 2026</div>
       <div class="news-item__type">Paper</div>
-      <div class="news-item__body">The preference-filtering paper was accepted at AMCIS 2026 and selected as a Top 25% Paper Nominee</div>
+      <div class="news-item__body">The personalization paper was accepted at AMCIS 2026 and selected as a Top 25% Paper Nominee</div>
     </article>
      <article class="news-item">
       <div class="news-item__date">Mar. 2026</div>

@@ -23,7 +23,7 @@ author_profile: true
     <div class="award-entry__meta">2025</div>
   </div>
   <div class="award-entry">
-    <div class="award-entry__title">Best Practices Scholarship for National Top Undergraduate Programs</div>
+    <div class="award-entry__title">Best Practices Scholarship for National First-Class Undergraduate Programs</div>
     <div class="award-entry__context">Xi'an Jiaotong-Liverpool University</div>
     <div class="award-entry__meta">2022 and 2024</div>
   </div>
