@@ -18,7 +18,7 @@ author_profile: true
     <div class="academic-entry__meta">Aug. 2025 – Expected Dec. 2026</div>
   </div>
   <div class="academic-entry">
-    <div class="academic-entry__title"><a href="https://www.xjtlu.edu.cn/en/study/undergraduate/information-management-and-information-systems">BSc (Hons) &amp; BMan in Information Management and Information Systems <span class="academic-entry__qualifier">(dual degree)</span></a></div>
+    <div class="academic-entry__title"><a href="https://www.xjtlu.edu.cn/en/study/undergraduate/information-management-and-information-systems">BSc (Hons) &amp; Bachelor of Management in Information Management and Information Systems <span class="academic-entry__qualifier">(dual degree)</span></a></div>
     <div class="academic-entry__context"><a href="https://www.liverpool.ac.uk/">University of Liverpool</a> &amp; <a href="https://www.xjtlu.edu.cn/en">Xi'an Jiaotong-Liverpool University (XJTLU)</a></div>
     <div class="academic-entry__meta">Sep. 2021 – Jul. 2025</div>
   </div>
