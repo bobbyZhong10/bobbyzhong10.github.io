@@ -66,7 +66,6 @@ html[data-theme="dark"] #theme-toggle-icon { transform: rotate(180deg); }
 /* Paper panels and hierarchy */
 .home-intro-card, .phd-callout, .content-card, .home-section .news-list, .research-quote-card { position: static; margin: 26px 0 0; padding: 24px 28px 20px; border: 1px solid var(--panel-border); border-radius: var(--radius); background: var(--panel); box-shadow: var(--panel-shadow); backdrop-filter: none; -webkit-backdrop-filter: none; }
 .home-intro-card::before, .content-card::before, .news-list::before, .research-quote-card::before, .research-quote-card::after { display: none !important; content: none !important; }
-.content-card:hover, .phd-callout:hover { transform: none; box-shadow: var(--panel-shadow); }
 .home-intro-card { border-left: 1px solid var(--panel-border); }
 .home-intro-card p, .content-card p, .phd-callout p { margin: 20px 0 0; line-height: 1.72; text-align: justify; hyphens: auto; }
 .home-intro-card p:first-child, .content-card p:first-child, .phd-callout p:first-child { margin-top: 0; }

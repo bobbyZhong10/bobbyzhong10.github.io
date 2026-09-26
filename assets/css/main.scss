@@ -701,17 +701,6 @@ html[data-theme="dark"] .cv-button:hover {
     opacity: 0.7;
 }
 
-.content-card:hover,
-.phd-callout:hover {
-    transform: translateY(-1px);
-    transition: transform 0.18s ease, box-shadow 0.18s ease;
-    box-shadow: var(--glass-shadow-hover);
-}
-
-.news-item:hover {
-    background-color: color-mix(in srgb, var(--site-link) 4%, transparent);
-}
-
 .news-item__date {
     align-self: start;
     display: inline-flex;
@@ -1067,10 +1056,6 @@ html[data-theme="dark"] .phd-callout__badge::before {
     letter-spacing: 0.02em;
 }
 
-.page-research-projects .content-card:hover {
-    border-color: color-mix(in srgb, var(--site-link) 24%, var(--glass-border-strong));
-}
-
 .page-research-projects .content-card--research-focus ul {
     margin-left: 0;
     position: static;
@@ -1397,21 +1382,6 @@ h2:hover > .heading-anchor {
 .page-research-projects .research-quote-card blockquote,
 .page-education .content-card:first-of-type > h2 {
     margin-top: 0;
-}
-
-@media (prefers-reduced-motion: reduce) {
-    .content-card:hover,
-    .phd-callout:hover {
-        transform: none;
-    }
-}
-
-@media (hover: none) and (pointer: coarse) {
-    .content-card:hover,
-    .phd-callout:hover {
-        transform: none;
-        box-shadow: var(--site-shadow);
-    }
 }
 
 .page__content ul li::marker {
