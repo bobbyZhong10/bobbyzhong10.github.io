@@ -3,7 +3,6 @@ permalink: /research-projects/
 title: "Research"
 excerpt: ""
 description: "Research by Yunzhou (Bobby) Zhong on digital platforms, platform competition, human-AI interaction, social media, and online word of mouth."
-author_profile: true
 ---
 
 # Research

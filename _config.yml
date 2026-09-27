@@ -13,7 +13,7 @@ repository               : "bobbyzhong10/bobbyzhong10.github.io"
 google_scholar_stats_use_cdn : true
 
 # google analytics
-google_analytics_id      :  # get google_analytics_id from https://analytics.google.com/analytics/
+google_analytics_id      : "G-EPEH8SENTV" # Google Analytics 4 measurement ID
 
 # SEO Related
 google_site_verification :  # get google_site_verification from https://search.google.com/search-console/about
@@ -82,14 +82,12 @@ exclude:
   - LICENSE
   - README
   - Rakefile
-  - assets/js/_main.js
-  - assets/js/plugins
-  - assets/js/vendor
   - config
   - gulpfile.js
   - log
   - notes/is-economics-methods/assets/template.html
   - notes/is-economics-methods/assets/wrap-tables.lua
+  - notes/is-economics-methods/code
   - notes/is-economics-methods/inline_figures.py
   - notes/is-economics-methods/src
   - notes/is-economics-methods/validate_book.py
@@ -131,7 +129,6 @@ defaults:
       type: pages
     values:
       layout: default
-      author_profile: true
 
 
 # Sass/SCSS

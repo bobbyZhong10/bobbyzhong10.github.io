@@ -3,7 +3,6 @@ permalink: /education/
 title: "Education"
 excerpt: ""
 description: "Academic background and PhD-level coursework of Yunzhou (Bobby) Zhong."
-author_profile: true
 ---
 
 # Education

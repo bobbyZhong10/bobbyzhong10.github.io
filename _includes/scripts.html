@@ -1,4 +1,3 @@
-<script src="{{ '/assets/js/main.min.js' | relative_url }}?v={{ site.time | date: '%s' }}"></script>
 <script>
   (function() {
     var root = document.documentElement;
@@ -35,22 +34,6 @@
 
 <script>
   (function() {
-    var masthead = document.querySelector('.masthead');
-    if (!masthead) return;
-    function update() {
-      if (window.scrollY > 4) {
-        masthead.classList.add('is-scrolled');
-      } else {
-        masthead.classList.remove('is-scrolled');
-      }
-    }
-    update();
-    window.addEventListener('scroll', update, { passive: true });
-  })();
-</script>
-
-<script>
-  (function() {
     var toggles = document.querySelectorAll('[data-abstract-toggle]');
     Array.prototype.forEach.call(toggles, function(button) {
       var panel = document.getElementById(button.getAttribute('aria-controls'));
@@ -64,18 +47,6 @@
   })();
 </script>
 
-<script>
-  (function() {
-    var navButton = document.querySelector('#site-nav > button');
-    var hiddenLinks = document.getElementById('site-nav-hidden-links');
-    if (!navButton || !hiddenLinks) return;
-    navButton.addEventListener('click', function() {
-      navButton.setAttribute('aria-expanded', String(!hiddenLinks.classList.contains('hidden')));
-    });
-  })();
-</script>
-
-{% include analytics.html %}
 {% comment %}
 Google Scholar statistics are disabled because the generated data branch is not currently available.
 {% include fetch_google_scholar_stats.html %}

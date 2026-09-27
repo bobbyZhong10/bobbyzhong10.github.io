@@ -34,7 +34,6 @@ The `notes/` directory is different: its HTML, CSS, JavaScript, and local assets
 | `assets/css/main.scss` | Stylesheet entry point: imports the theme modules, then `_sass/_site.scss` |
 | `_sass/_site.scss` | All site-specific styles and the color tokens (light and dark) |
 | `_sass/` (other files) | Base theme modules imported by `main.scss` |
-| `assets/js/` | Main-site JavaScript and bundled plugins |
 | `images/` | Avatar, favicons, manifest, and other site images |
 | `notes/` | Standalone lecture-note collections |
 | `docs/` | Internal documentation; excluded from the published site |
