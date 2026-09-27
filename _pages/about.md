@@ -35,7 +35,7 @@ My research is in the economics of information systems, with a focus on digital 
       <div class="news-item__type">Paper</div>
       <div class="news-item__body">The personalization paper was accepted at AMCIS 2026 and selected as a Top 25% Paper Nominee</div>
     </article>
-     <article class="news-item">
+    <article class="news-item">
       <div class="news-item__date">Mar. 2026</div>
       <div class="news-item__type">Paper</div>
       <div class="news-item__body">The social media expression paper was accepted at the 2026 AOM Annual Meeting</div>

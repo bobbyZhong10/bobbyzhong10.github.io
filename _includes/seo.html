@@ -100,4 +100,34 @@
 {% if site.baidu_site_verification %}
   <meta name="baidu-site-verification" content="{{ site.baidu_site_verification }}" />
 {% endif %}
+
+{% if page.url == "/" %}
+  {% assign ld_same_as = "" | split: "" %}
+  {% if site.author.googlescholar %}{% assign ld_same_as = ld_same_as | push: site.author.googlescholar %}{% endif %}
+  {% if site.author.orcid %}{% assign ld_same_as = ld_same_as | push: site.author.orcid %}{% endif %}
+  {% if site.author.linkedin %}
+    {% assign ld_linkedin = site.author.linkedin %}
+    {% unless ld_linkedin contains '://' %}{% assign ld_linkedin = 'https://www.linkedin.com/in/' | append: ld_linkedin %}{% endunless %}
+    {% assign ld_same_as = ld_same_as | push: ld_linkedin %}
+  {% endif %}
+  {% if site.author.github %}
+    {% assign ld_github = site.author.github %}
+    {% unless ld_github contains '://' %}{% assign ld_github = 'https://github.com/' | append: ld_github %}{% endunless %}
+    {% assign ld_same_as = ld_same_as | push: ld_github %}
+  {% endif %}
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": {{ site.author.name | jsonify }},
+      "url": {{ site.url | append: "/" | jsonify }},
+      {% if seo_image %}"image": {{ seo_image | jsonify }},{% endif %}
+      {% if site.author.email %}"email": {{ site.author.email | jsonify }},{% endif %}
+      {% if site.author.employer %}"affiliation": { "@type": "CollegeOrUniversity", "name": {{ site.author.employer | jsonify }} },{% endif %}
+      {% if site.author.location %}"workLocation": { "@type": "Place", "name": {{ site.author.location | jsonify }} },{% endif %}
+      "description": {{ page.description | default: site.description | jsonify }},
+      "sameAs": {{ ld_same_as | jsonify }}
+    }
+  </script>
+{% endif %}
 <!-- end SEO -->
