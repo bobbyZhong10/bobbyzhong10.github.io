@@ -137,18 +137,18 @@ a:hover {
   color: var(--navy);
 }
 
-.page__content a:not(.btn):not(.cv-button):not(.notes-link):not(.heading-anchor) {
+.page__content a:not(.btn):not(.cv-button):not(.notes-link):not(.heading-anchor):not(.research-entry__button) {
   border-radius: 3px;
   text-decoration: none;
   box-shadow: inset 0 -1px 0 var(--link-rule);
   transition: color 0.15s ease, box-shadow 0.15s ease;
 }
 
-.page__content a:not(.btn):not(.cv-button):not(.notes-link):not(.heading-anchor):focus-visible {
+.page__content a:not(.btn):not(.cv-button):not(.notes-link):not(.heading-anchor):not(.research-entry__button):focus-visible {
   background-color: color-mix(in srgb, var(--focus) 9%, transparent);
 }
 
-.page__content a:not(.btn):not(.cv-button):not(.notes-link):not(.heading-anchor):hover {
+.page__content a:not(.btn):not(.cv-button):not(.notes-link):not(.heading-anchor):not(.research-entry__button):hover {
   color: var(--navy);
   box-shadow: inset 0 -2px 0 var(--navy);
   background: none;
@@ -813,6 +813,86 @@ h2:hover > .heading-anchor {
   width: fit-content;
 }
 
+.research-entry__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.research-entry__button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  height: 28px;
+  margin: 0;
+  padding: 0 11px;
+  border: 1px solid var(--rule);
+  border-radius: 6px;
+  background: var(--panel);
+  color: var(--navy);
+  font-size: 12.5px;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  line-height: 1;
+  text-decoration: none !important;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+  transition: border-color 0.15s ease;
+}
+
+.research-entry__button:hover {
+  border-color: var(--navy);
+  color: var(--navy);
+}
+
+// Chevron on the Abstract toggle; flips when the abstract is open.
+.research-entry__button[data-abstract-toggle]::after {
+  content: "";
+  width: 5px;
+  height: 5px;
+  margin: -3px 1px 0 2px;
+  border-right: 1.5px solid currentColor;
+  border-bottom: 1.5px solid currentColor;
+  transform: rotate(45deg);
+  transition: transform 0.15s ease, margin 0.15s ease;
+}
+
+.research-entry__button[aria-expanded="true"]::after {
+  margin-top: 3px;
+  transform: rotate(-135deg);
+}
+
+.research-entry__abstract {
+  margin-top: 12px;
+  padding: 2px 0 2px 14px;
+  border-left: 2px solid var(--rule);
+  color: var(--ink-2);
+  font-size: 14.5px;
+  line-height: 1.65;
+}
+
+.research-entry__abstract p {
+  margin: 0;
+  color: inherit;
+  line-height: inherit;
+}
+
+.research-entry__abstract p + p {
+  margin-top: 10px;
+}
+
+// Abstracts start collapsed once JS is running; without JS they stay readable
+// and the toggle, which would do nothing, is hidden.
+.js .research-entry__abstract:not(.is-open) {
+  display: none;
+}
+
+.no-js .research-entry__button[data-abstract-toggle] {
+  display: none;
+}
+
 /* Education, awards, teaching
    ========================================================================== */
 
@@ -1292,7 +1372,9 @@ html[data-theme="dark"] .cv-button:hover {
   .home-hero__links a[data-tooltip]::after,
   .heading-anchor,
   .cv-button,
-  .notes-link {
+  .notes-link,
+  .research-entry__button,
+  .research-entry__button::after {
     transition: none;
   }
 }
