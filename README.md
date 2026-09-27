@@ -1,8 +1,8 @@
-# Personal Academic Website
+# Yunzhou (Bobby) Zhong — Academic Website
 
-Source code for [bobbyzhong10.github.io](https://bobbyzhong10.github.io), built with [Jekyll](https://jekyllrb.com/) and hosted on GitHub Pages.
+Source for [bobbyzhong10.github.io](https://bobbyzhong10.github.io), a static site built with [Jekyll](https://jekyllrb.com/) and deployed by GitHub Pages.
 
-## Getting Started
+## Local Preview
 
 Requires Ruby and Bundler.
 
@@ -11,31 +11,39 @@ bundle install
 bundle exec jekyll serve
 ```
 
-Open `http://127.0.0.1:4000/` to preview the site locally. Restart the server after editing `_config.yml`.
+Then open <http://127.0.0.1:4000/>. `./run_server.sh` starts the same server with live reload. Restart the server after editing `_config.yml`.
 
-## Structure
+If the build stops with `Invalid US-ASCII character`, run it with a UTF-8 locale: `LANG=en_US.UTF-8 bundle exec jekyll serve`.
 
-| Path | Purpose |
+## Where Things Live
+
+| Path | Contents |
 | --- | --- |
-| `_config.yml` | Site settings and author profile |
-| `_data/navigation.yml` | Top navigation menu |
-| `_pages/` | Page content (home, research, education, awards, teaching, CV, notes) |
-| `_layouts/`, `_includes/` | Page layout and shared components |
-| `_sass/`, `assets/` | Styles, scripts, and fonts |
+| `_pages/` | Page content: home, research, education, awards and service, teaching, CV, notes |
+| `_config.yml` | Site settings, author profile and links, Google Analytics ID, build exclusions |
+| `_data/navigation.yml` | Top navigation |
+| `_layouts/`, `_includes/` | Page shell, header, home hero, SEO tags, and page scripts |
+| `_sass/_site.scss` | All site styles, including the light and dark color tokens |
+| `_sass/` (other files) | Base theme modules |
+| `assets/` | Stylesheet entry point, icon CSS, and icon fonts |
 | `images/` | Portrait, favicons, and brand mark |
-| `notes/` | Standalone note collections |
+| `notes/` | Research-note collections, published as pre-built HTML |
+| `scripts/` | Generator for the favicon and brand-mark images |
 | `docs/` | Internal documentation (not published) |
 
-## Customization
+## Common Edits
 
-- Edit page content in `_pages/`.
-- Update name, affiliation, and profile links in `_config.yml`.
-- Adjust styles in `_sass/_site.scss`.
-- See `docs/SITE_ARCHITECTURE.md` for a more detailed guide.
+- **Page text:** edit the matching file in `_pages/`.
+- **Name, affiliation, and profile links:** the `author` block in `_config.yml`.
+- **Styles and colors:** `_sass/_site.scss`. Reuse the color tokens at the top of the file rather than adding new colors.
+- **Abstracts and paper links:** `_pages/research-projects.md`. Each abstract and link button sits under its paper; copy an existing entry's markup.
+- **Analytics:** the Google Analytics measurement ID is `google_analytics_id` in `_config.yml`; the visitor badge is in `_layouts/default.html`.
+
+[`docs/SITE_ARCHITECTURE.md`](docs/SITE_ARCHITECTURE.md) explains how the pieces fit together and how the notes are built.
 
 ## Deployment
 
-Pushing to `main` triggers a GitHub Pages build. Generated output in `_site/` is not committed.
+Pushing to `main` triggers a GitHub Pages build, and the live site updates within a minute or two. The generated `_site/` folder is not committed.
 
 ## License
 
