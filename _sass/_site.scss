@@ -727,9 +727,9 @@ h2:hover > .heading-anchor {
   padding: 0;
 }
 
-.page-research-projects .research-section + .research-section {
-  margin-top: 0.18rem;
-  padding-top: 1.35rem;
+// Gap between sections: the last entry's 14px bottom padding + this margin.
+.page-research-projects .research-section + .research-section > h3 {
+  margin-top: 20px;
 }
 
 .page-research-projects .content-card .research-entry-list {
