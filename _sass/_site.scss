@@ -1032,11 +1032,6 @@ html[data-theme="dark"] #theme-toggle-icon {
   text-align: center;
 }
 
-.visitor-counter a {
-  display: inline-block;
-  line-height: 0;
-}
-
 // The badge's blue half would melt into the dark page; a hairline keeps its edge.
 html[data-theme="dark"] .visitor-counter img {
   border-radius: 4px;
