@@ -3,7 +3,6 @@ permalink: /
 title: ""
 excerpt: ""
 description: "Yunzhou (Bobby) Zhong is a researcher in the economics of information systems, digital platforms, and emerging technologies."
-author_profile: true
 redirect_from:
   - /about/
   - /about.html
@@ -19,51 +18,3 @@ My research is in the economics of information systems, with a focus on digital 
   <span class="phd-callout__badge">PhD Applicant for Fall 2027 Entry · U.S. Business Schools</span>
   <p>I am applying to <strong>PhD programs in Information Systems</strong> for Fall 2027 entry in the 2026–27 admissions cycle, and to closely related programs in empirical operations management and quantitative marketing. I welcome conversations with scholars in related areas.</p>
 </div>
-
-<section class="home-section">
-  <div class="section-heading">
-    <h2>News</h2>
-  </div>
-  <div class="news-list">
-    <article class="news-item">
-      <div class="news-item__date">Aug. 2026</div>
-      <div class="news-item__type">Paper</div>
-      <div class="news-item__body">The AI-generated review summary paper was accepted for presentation at the OSU Fisher AI in Business Conference</div>
-    </article>
-    <article class="news-item">
-      <div class="news-item__date">Apr. 2026</div>
-      <div class="news-item__type">Paper</div>
-      <div class="news-item__body">The personalization paper was accepted at AMCIS 2026 and selected as a Top 25% Paper Nominee</div>
-    </article>
-    <article class="news-item">
-      <div class="news-item__date">Mar. 2026</div>
-      <div class="news-item__type">Paper</div>
-      <div class="news-item__body">The social media expression paper was accepted at the 2026 AOM Annual Meeting</div>
-    </article>
-    <article class="news-item">
-      <div class="news-item__date">Nov. 2025</div>
-      <div class="news-item__type">Grant</div>
-      <div class="news-item__body">Received the GAPSA Professional Student Travel Grant from the University of Pennsylvania</div>
-    </article>
-    <article class="news-item">
-      <div class="news-item__date">Oct. 2025</div>
-      <div class="news-item__type">Talk</div>
-      <div class="news-item__body">Presented the AI-generated review summary paper at the INFORMS Annual Meeting and attended my first CIST</div>
-    </article>
-    <article class="news-item">
-      <div class="news-item__date">Aug. 2025</div>
-      <div class="news-item__type">Milestone</div>
-      <div class="news-item__body">Joined the Master of Behavioral and Decision Sciences program at the University of Pennsylvania</div>
-    </article>
-    <article class="news-item">
-      <div class="news-item__date">Jul. 2025</div>
-      <div class="news-item__type">Honor</div>
-      <div class="news-item__body">Received the XJTLU Best Student Final Year Project (Thesis) Award (1/893)</div>
-    </article>
-    <article class="news-item">
-      <div class="news-item__date">Jul. 2025</div>
-      <div class="news-item__type">Talk</div>
-      <div class="news-item__body">Presented the anthropomorphic emoji paper at PACIS 2025</div>
-    </article>
-  </div>
-</section>

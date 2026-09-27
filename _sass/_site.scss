@@ -198,8 +198,7 @@ button:focus-visible {
   display: none;
 }
 
-.greedy-nav .visible-links li a,
-.greedy-nav .visible-links li:first-child a {
+.greedy-nav .visible-links li a {
   margin: 0;
   padding: 4px 0;
   color: var(--muted);
@@ -216,9 +215,8 @@ button:focus-visible {
   border-radius: 3px;
 }
 
-// !important: `li:first-child a` above is more specific when Home is active.
 .greedy-nav .visible-links .masthead__menu-item--active a {
-  color: var(--ink) !important;
+  color: var(--ink);
   font-weight: 600;
   box-shadow: inset 0 -2px 0 var(--crimson);
 }
@@ -393,7 +391,6 @@ html[data-theme="dark"] #theme-toggle-icon {
 .home-intro-card,
 .phd-callout,
 .content-card,
-.home-section .news-list,
 .research-quote-card {
   margin: 26px 0 0;
   padding: 24px 28px 20px;
@@ -480,8 +477,7 @@ html[data-theme="dark"] #theme-toggle-icon {
   line-height: 1.2;
 }
 
-.page__content h2,
-.home-section h2 {
+.page__content h2 {
   display: flex;
   align-items: center;
   gap: 18px;
@@ -494,8 +490,7 @@ html[data-theme="dark"] #theme-toggle-icon {
   letter-spacing: -0.014em;
 }
 
-.page__content h2::after,
-.home-section h2::after {
+.page__content h2::after {
   content: "";
   display: block;
   flex: 1 1 auto;
@@ -518,64 +513,6 @@ html[data-theme="dark"] #theme-toggle-icon {
   font-size: 19px;
   font-weight: 600;
   letter-spacing: -0.012em;
-}
-
-.section-heading {
-  margin-bottom: 0;
-}
-
-/* News
-   ========================================================================== */
-
-.home-section {
-  margin-top: 26px;
-}
-
-.news-item {
-  position: relative;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: start;
-  gap: 4px 26px;
-  padding: 14px 0 14px 26px;
-  border-left: 1px solid var(--rule);
-}
-
-.news-item::before {
-  content: "";
-  position: absolute;
-  top: 21px;
-  left: -4px;
-  width: 7px;
-  height: 7px;
-  background: var(--navy);
-}
-
-.news-item__date {
-  display: inline-flex;
-  flex: 0 0 92px;
-  align-items: center;
-  align-self: start;
-  padding: 4px 0 0;
-  color: var(--navy);
-  font-size: 12.5px;
-  font-weight: 600;
-  letter-spacing: 0.01em;
-  font-variant-numeric: tabular-nums;
-  font-feature-settings: "tnum" 1, "ss01" 1;
-  white-space: nowrap;
-}
-
-.news-item__type {
-  display: none;
-}
-
-.news-item__body {
-  flex: 1 1 420px;
-  min-width: 0;
-  color: var(--ink);
-  font-size: 16px;
-  line-height: 1.62;
 }
 
 /* Research
@@ -1090,15 +1027,20 @@ html[data-theme="dark"] #theme-toggle-icon {
 /* Footer
    ========================================================================== */
 
-.visitor-map-slot {
+.visitor-counter {
   padding-top: 40px;
   text-align: center;
 }
 
-.visitor-map,
-.visitor-map > div,
-.visitor-map iframe {
-  margin: 0 auto;
+.visitor-counter a {
+  display: inline-block;
+  line-height: 0;
+}
+
+// The badge's blue half would melt into the dark page; a hairline keeps its edge.
+html[data-theme="dark"] .visitor-counter img {
+  border-radius: 4px;
+  box-shadow: 0 0 0 1px var(--rule);
 }
 
 .site-copyright {
@@ -1162,8 +1104,7 @@ html[data-theme="dark"] #theme-toggle-icon {
     white-space: normal;
   }
 
-  .greedy-nav .visible-links li a,
-  .greedy-nav .visible-links li:first-child a {
+  .greedy-nav .visible-links li a {
     padding: 2px 0;
     font-size: 13px;
   }
@@ -1223,8 +1164,7 @@ html[data-theme="dark"] #theme-toggle-icon {
     font-size: 24px;
   }
 
-  .page__content h2,
-  .home-section h2 {
+  .page__content h2 {
     font-size: 19px;
   }
 
@@ -1245,15 +1185,6 @@ html[data-theme="dark"] #theme-toggle-icon {
   .research-quote-card__cite {
     margin: 0 0 4px;
     font-size: 15px;
-  }
-
-  .news-item {
-    gap: 2px 0;
-  }
-
-  .news-item__date,
-  .news-item__body {
-    flex: 0 0 100%;
   }
 
   .cv-preview iframe {

@@ -3,7 +3,6 @@ permalink: /awards-services/
 title: "Awards and Service"
 excerpt: ""
 description: "Honors, awards, academic service, and professional memberships of Yunzhou (Bobby) Zhong."
-author_profile: true
 ---
 
 # Awards and Service
