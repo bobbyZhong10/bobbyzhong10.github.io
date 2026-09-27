@@ -51,20 +51,6 @@
 
 <script>
   (function() {
-    var headings = document.querySelectorAll('.content-card > h2[id], .content-card > h3[id], .research-section > h2[id], .research-section > h3[id]');
-    headings.forEach(function(h) {
-      var link = document.createElement('a');
-      link.href = '#' + h.id;
-      link.className = 'heading-anchor';
-      link.textContent = '#';
-      link.setAttribute('aria-label', 'Permalink to ' + h.textContent.trim());
-      h.appendChild(link);
-    });
-  })();
-</script>
-
-<script>
-  (function() {
     var toggles = document.querySelectorAll('[data-abstract-toggle]');
     Array.prototype.forEach.call(toggles, function(button) {
       var panel = document.getElementById(button.getAttribute('aria-controls'));

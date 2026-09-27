@@ -60,7 +60,7 @@ Each page uses YAML front matter for its permalink, title, and layout settings. 
 - Update name, institution, avatar, profile links, or SEO metadata in `_config.yml`.
 - Edit the homepage identity block in `_includes/home-hero.html`.
 - Edit the shared navigation shell in `_includes/masthead.html`.
-- Edit theme switching and heading-anchor behavior in `_includes/scripts.html`.
+- Edit theme switching and the abstract toggles in `_includes/scripts.html`.
 - Add site-wide or page-specific styles to the matching section of `_sass/_site.scss`. Reuse the color tokens at the top of that file instead of hard-coding new colors.
 - Change low-level theme behavior in `_sass/` only when the change should affect the whole site.
 
