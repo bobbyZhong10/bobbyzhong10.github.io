@@ -39,4 +39,6 @@ Pushing to `main` triggers a GitHub Pages build. Generated output in `_site/` is
 
 ## License
 
-Source code is released under the [MIT License](LICENSE).
+The site's source code is released under the [MIT License](LICENSE). It is adapted from [AcadHomepage](https://github.com/RayeRen/acad-homepage.github.io) by Yi Ren, which builds on [Minimal Mistakes](https://github.com/mmistakes/minimal-mistakes) by Michael Rose.
+
+The MIT License covers the code only. All site content, including text, photographs, the CV, research notes, and papers and their abstracts, is © 2025–2026 Yunzhou (Bobby) Zhong and co-authors where applicable. All rights reserved; it may not be reused without permission.
