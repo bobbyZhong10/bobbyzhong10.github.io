@@ -128,7 +128,7 @@ author_profile: true
 <ul class="research-entry-list">
   <li class="research-entry">
     <div class="research-entry__title"><em>Social Interaction and Volatility Clustering in Chinese Market</em></div>
-    <div class="research-entry__authors"><strong>Yunzhou Zhong</strong> · Undergraduate Thesis · Supervised by <a href="https://scholar.xjtlu.edu.cn/en/persons/XuezhongHe/">Prof. Xuezhong (Tony) He</a></div>
+    <div class="research-entry__authors"><strong>Yunzhou Zhong</strong><span class="research-entry__detail"> · Undergraduate Thesis · Supervised by </span><a href="https://scholar.xjtlu.edu.cn/en/persons/XuezhongHe/">Prof. Xuezhong (Tony) He</a></div>
     <div class="research-entry__meta"><strong>XJTLU Best Student Final Year Project (Thesis) Award (1/893)</strong></div>
   </li>
 </ul>

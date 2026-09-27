@@ -13,20 +13,13 @@
   --panel-border: #e2e6ec;
   --hairline: #eceff3;
   --rule: #d8dce2;
-  --divider: rgba(219, 209, 197, 0.78);
   --ink: #16191d;
   --ink-2: #4a5058;
-  --text: #16191d;
   --muted: #5d646e;
-  --anchor: #5f5b56;
   --navy: #011f5b;
   --crimson: #990000;
-  --focus: #011f5b;
-  --accent: #990000;
-  --hover: #990000;
   --radius: 12px;
   --panel-shadow: 0 1px 2px rgba(16, 25, 40, 0.05);
-  --hover-shadow: 0 10px 28px rgba(1, 31, 91, 0.065), 0 1px 0 rgba(255, 255, 255, 0.58) inset;
   --masthead-bg: rgba(244, 245, 247, 0.78);
   --link-rule: rgba(1, 31, 91, 0.28);
 }
@@ -37,19 +30,12 @@ html[data-theme="dark"] {
   --panel-border: #2f353f;
   --hairline: #282d35;
   --rule: #333944;
-  --divider: rgba(50, 65, 86, 0.78);
   --ink: #e8eaee;
   --ink-2: #c3c9d1;
-  --text: #f5f0e8;
   --muted: #9aa2ac;
-  --anchor: #d7ccbf;
   --navy: #9cb9ea;
   --crimson: #e08f8f;
-  --focus: #f3d7d7;
-  --accent: #d06a6a;
-  --hover: #fff;
   --panel-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-  --hover-shadow: 0 12px 28px rgba(0, 0, 0, 0.27), 0 1px 0 rgba(220, 232, 255, 0.1) inset;
   --masthead-bg: rgba(22, 25, 30, 0.78);
   --link-rule: rgba(156, 185, 234, 0.32);
 }
@@ -92,14 +78,6 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-html[data-theme="dark"] body {
-  background:
-    radial-gradient(circle at top left, rgba(1, 31, 91, 0.06), transparent 32%),
-    radial-gradient(circle at top right, rgba(153, 0, 0, 0.06), transparent 24%),
-    var(--bg);
-  background-attachment: fixed;
-}
-
 #main {
   flex: 1 0 auto;
   width: 100%;
@@ -125,7 +103,7 @@ html[data-theme="dark"] body {
 .page__content,
 .page__content p,
 .page__content li {
-  color: var(--text);
+  color: var(--ink);
 }
 
 a {
@@ -137,18 +115,18 @@ a:hover {
   color: var(--navy);
 }
 
-.page__content a:not(.btn):not(.cv-button):not(.notes-link):not(.heading-anchor):not(.research-entry__button) {
+.page__content a:not(.btn):not(.cv-button):not(.notes-link):not(.research-entry__button) {
   border-radius: 3px;
   text-decoration: none;
   box-shadow: inset 0 -1px 0 var(--link-rule);
   transition: color 0.15s ease, box-shadow 0.15s ease;
 }
 
-.page__content a:not(.btn):not(.cv-button):not(.notes-link):not(.heading-anchor):not(.research-entry__button):focus-visible {
-  background-color: color-mix(in srgb, var(--focus) 9%, transparent);
+.page__content a:not(.btn):not(.cv-button):not(.notes-link):not(.research-entry__button):focus-visible {
+  background-color: color-mix(in srgb, var(--navy) 9%, transparent);
 }
 
-.page__content a:not(.btn):not(.cv-button):not(.notes-link):not(.heading-anchor):not(.research-entry__button):hover {
+.page__content a:not(.btn):not(.cv-button):not(.notes-link):not(.research-entry__button):hover {
   color: var(--navy);
   box-shadow: inset 0 -2px 0 var(--navy);
   background: none;
@@ -158,7 +136,6 @@ a:focus-visible,
 button:focus-visible {
   outline: 2px solid var(--navy);
   outline-offset: 3px;
-  border-radius: 4px;
 }
 
 .skip-to-content {
@@ -168,8 +145,8 @@ button:focus-visible {
   z-index: 1000;
   padding: 0.5rem 0.85rem;
   border-radius: 6px;
-  background: var(--focus);
-  color: #fff !important;
+  background: var(--navy);
+  color: var(--panel) !important;
   font-size: 0.88rem;
   font-weight: 600;
   text-decoration: none;
@@ -179,8 +156,6 @@ button:focus-visible {
 .skip-to-content:focus,
 .skip-to-content:focus-visible {
   top: 0.5rem;
-  outline: 2px solid color-mix(in srgb, var(--accent) 65%, transparent);
-  outline-offset: 2px;
   box-shadow: 0 6px 18px rgba(1, 31, 91, 0.28);
 }
 
@@ -237,6 +212,10 @@ button:focus-visible {
   display: none;
 }
 
+.greedy-nav .visible-links li a:focus-visible {
+  border-radius: 3px;
+}
+
 // !important: `li:first-child a` above is more specific when Home is active.
 .greedy-nav .visible-links .masthead__menu-item--active a {
   color: var(--ink) !important;
@@ -261,11 +240,6 @@ button:focus-visible {
   transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
 }
 
-.theme-toggle-btn:focus-visible {
-  outline: 2px solid color-mix(in srgb, var(--accent) 55%, transparent);
-  outline-offset: 2px;
-}
-
 #theme-toggle-icon {
   display: inline-flex;
   width: 14px;
@@ -277,7 +251,6 @@ button:focus-visible {
 }
 
 html[data-theme="dark"] #theme-toggle-icon {
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.34);
   transform: rotate(180deg);
 }
 
@@ -380,7 +353,6 @@ html[data-theme="dark"] #theme-toggle-icon {
 
 .home-hero__links a:hover {
   border-color: var(--navy);
-  color: var(--hover);
 }
 
 .home-hero__links i,
@@ -413,13 +385,6 @@ html[data-theme="dark"] #theme-toggle-icon {
 .home-hero__links a:hover[data-tooltip]::after,
 .home-hero__links a:focus-visible[data-tooltip]::after {
   opacity: 1;
-}
-
-.cv-button:focus-visible,
-.home-hero__links a:focus-visible {
-  outline: 2px solid color-mix(in srgb, var(--focus) 65%, transparent);
-  outline-offset: 3px;
-  border-radius: 4px;
 }
 
 /* Panels
@@ -559,33 +524,6 @@ html[data-theme="dark"] #theme-toggle-icon {
   margin-bottom: 0;
 }
 
-.heading-anchor {
-  margin-left: 0.45rem;
-  color: var(--anchor) !important;
-  font-size: 0.95em;
-  font-weight: 400;
-  text-decoration: none !important;
-  opacity: 0;
-  transition: opacity 0.18s ease, color 0.18s ease;
-}
-
-.page__content h2 .heading-anchor {
-  order: 3;
-}
-
-h2:hover > .heading-anchor {
-  opacity: 0.55;
-}
-
-.heading-anchor:hover {
-  color: var(--focus) !important;
-  opacity: 1 !important;
-}
-
-.heading-anchor:focus-visible {
-  opacity: 1;
-}
-
 /* News
    ========================================================================== */
 
@@ -713,10 +651,6 @@ h2:hover > .heading-anchor {
   margin-top: 26px;
 }
 
-.page-research-projects .research-record:hover {
-  box-shadow: var(--hover-shadow);
-}
-
 .page-research-projects .research-record > h2 {
   margin-bottom: 0.15rem;
   padding-bottom: 0.72rem;
@@ -775,6 +709,11 @@ h2:hover > .heading-anchor {
   margin-top: 6px;
   color: var(--ink);
   font-size: 14px;
+}
+
+// Descriptive text inside an author line (e.g. "Undergraduate Thesis · Supervised by").
+.research-entry__detail {
+  color: var(--muted);
 }
 
 .research-entry__meta {
@@ -915,12 +854,6 @@ h2:hover > .heading-anchor {
   border-top: 0;
 }
 
-.award-entry + .award-entry,
-.academic-entry + .academic-entry {
-  padding-top: 0.82rem;
-  border-top: 1px solid var(--divider);
-}
-
 .academic-entry__title,
 .award-entry__title,
 .teaching-entry__title {
@@ -1030,15 +963,6 @@ h2:hover > .heading-anchor {
 
 .cv-button:hover {
   border-color: var(--navy);
-  color: var(--hover);
-}
-
-html[data-theme="dark"] .cv-button {
-  background: color-mix(in srgb, var(--focus) 9%, #212b3c);
-}
-
-html[data-theme="dark"] .cv-button:hover {
-  background: color-mix(in srgb, var(--focus) 15%, #212b3c);
 }
 
 .cv-button__icon {
@@ -1137,12 +1061,7 @@ html[data-theme="dark"] .cv-button:hover {
 
 .notes-link:hover {
   border-color: var(--navy);
-  color: var(--text);
-}
-
-.notes-link:focus-visible {
-  outline: 3px solid color-mix(in srgb, var(--accent) 72%, transparent);
-  outline-offset: 3px;
+  color: var(--ink);
 }
 
 .notes-link__title {
@@ -1370,7 +1289,6 @@ html[data-theme="dark"] .cv-button:hover {
   #theme-toggle-icon,
   .home-hero__links a,
   .home-hero__links a[data-tooltip]::after,
-  .heading-anchor,
   .cv-button,
   .notes-link,
   .research-entry__button,
