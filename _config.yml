@@ -68,6 +68,8 @@ include:
 exclude:
   - docs
   - google_scholar_crawler
+  - run_server.sh
+  - scripts
   - "*.sublime-project"
   - "*.sublime-workspace"
   - .asset-cache

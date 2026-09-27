@@ -1060,7 +1060,8 @@ html[data-theme="dark"] .visitor-counter img {
 }
 
 @media (min-width: 1440px) {
-  #main {
+  #main,
+  .masthead__inner-wrap {
     max-width: 1200px;
   }
 
