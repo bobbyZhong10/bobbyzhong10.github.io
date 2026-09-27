@@ -30,7 +30,7 @@ Open `http://127.0.0.1:4000/` to preview the site locally. Restart the server af
 
 - Edit page content in `_pages/`.
 - Update name, affiliation, and profile links in `_config.yml`.
-- Adjust styles at the end of `assets/css/main.scss`.
+- Adjust styles in `_sass/_site.scss`.
 - See `docs/SITE_ARCHITECTURE.md` for a more detailed guide.
 
 ## Deployment

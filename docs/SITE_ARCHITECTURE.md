@@ -31,8 +31,9 @@ The `notes/` directory is different: its HTML, CSS, JavaScript, and local assets
 | `_includes/` | Header, navigation, home hero, SEO, scripts, and reusable fragments |
 | `_data/navigation.yml` | Top navigation labels and URLs |
 | `_config.yml` | Site identity, author metadata, plugins, build rules, and exclusions |
-| `assets/css/main.scss` | Main stylesheet entry point and site-specific visual overrides |
-| `_sass/` | Base theme modules imported by `main.scss` |
+| `assets/css/main.scss` | Stylesheet entry point: imports the theme modules, then `_sass/_site.scss` |
+| `_sass/_site.scss` | All site-specific styles and the color tokens (light and dark) |
+| `_sass/` (other files) | Base theme modules imported by `main.scss` |
 | `assets/js/` | Main-site JavaScript and bundled plugins |
 | `images/` | Avatar, favicons, manifest, and other site images |
 | `notes/` | Standalone lecture-note collections |
@@ -60,7 +61,7 @@ Each page uses YAML front matter for its permalink, title, and layout settings. 
 - Edit the homepage identity block in `_includes/home-hero.html`.
 - Edit the shared navigation shell in `_includes/masthead.html`.
 - Edit theme switching and heading-anchor behavior in `_includes/scripts.html`.
-- Add site-wide or page-specific styles near the end of `assets/css/main.scss`. Reuse the existing CSS variables instead of hard-coding new colors.
+- Add site-wide or page-specific styles to the matching section of `_sass/_site.scss`. Reuse the color tokens at the top of that file instead of hard-coding new colors.
 - Change low-level theme behavior in `_sass/` only when the change should affect the whole site.
 
 ## Brand Assets
