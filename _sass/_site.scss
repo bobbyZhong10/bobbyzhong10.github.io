@@ -740,13 +740,16 @@ html[data-theme="dark"] #theme-toggle-icon {
   transform: rotate(-135deg);
 }
 
+// 47em keeps lines to about 95 characters.
 .research-entry__abstract {
+  max-width: 47em;
   margin-top: 12px;
   padding: 2px 0 2px 14px;
   border-left: 2px solid var(--rule);
   color: var(--ink-2);
   font-size: 14.5px;
   line-height: 1.65;
+  text-align: justify;
 }
 
 .research-entry__abstract p {
@@ -1181,6 +1184,10 @@ html[data-theme="dark"] .visitor-counter img {
   .research-quote-card__cite {
     margin: 0 0 4px;
     font-size: 15px;
+  }
+
+  .research-entry__abstract {
+    text-align: left;
   }
 
   .cv-preview iframe {
