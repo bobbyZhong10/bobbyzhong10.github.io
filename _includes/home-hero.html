@@ -6,27 +6,28 @@
       {% endif %}
       <h1 class="home-hero__name">{{ site.author.name }}</h1>
 
+      <!-- Icons: Font Awesome Free 5.5.0 (CC BY 4.0, fontawesome.com/license/free); ORCID from Academicons 1.8.0 (SIL OFL 1.1) -->
       <ul class="home-hero__links" aria-label="Profiles and contact">
         {% if site.author.email %}
-          <li><a href="mailto:{{ site.author.email }}" aria-label="Email" title="Email" data-tooltip="Email"><i class="fas fa-fw fa-envelope" aria-hidden="true"></i></a></li>
+          <li><a href="mailto:{{ site.author.email }}" aria-label="Email" title="Email" data-tooltip="Email">{% include icons/envelope.svg %}</a></li>
         {% endif %}
         {% if site.author.linkedin %}
           {% assign linkedin_url = site.author.linkedin %}
           {% unless linkedin_url contains '://' %}{% assign linkedin_url = 'https://www.linkedin.com/in/' | append: linkedin_url %}{% endunless %}
-          <li><a href="{{ linkedin_url }}" aria-label="LinkedIn" title="LinkedIn" data-tooltip="LinkedIn" target="_blank" rel="noopener"><i class="fab fa-fw fa-linkedin" aria-hidden="true"></i></a></li>
+          <li><a href="{{ linkedin_url }}" aria-label="LinkedIn" title="LinkedIn" data-tooltip="LinkedIn" target="_blank" rel="noopener">{% include icons/linkedin.svg %}</a></li>
         {% endif %}
         {% if site.author.googlescholar %}
-          <li><a href="{{ site.author.googlescholar }}" aria-label="Google Scholar" title="Google Scholar" data-tooltip="Google Scholar" target="_blank" rel="noopener"><i class="fas fa-fw fa-graduation-cap" aria-hidden="true"></i></a></li>
+          <li><a href="{{ site.author.googlescholar }}" aria-label="Google Scholar" title="Google Scholar" data-tooltip="Google Scholar" target="_blank" rel="noopener">{% include icons/graduation-cap.svg %}</a></li>
         {% endif %}
         {% if site.author.orcid %}
-          <li><a href="{{ site.author.orcid }}" aria-label="ORCID" title="ORCID" data-tooltip="ORCID" target="_blank" rel="noopener"><i class="ai ai-orcid-square ai-fw" aria-hidden="true"></i></a></li>
+          <li><a href="{{ site.author.orcid }}" aria-label="ORCID" title="ORCID" data-tooltip="ORCID" target="_blank" rel="noopener">{% include icons/orcid.svg %}</a></li>
         {% endif %}
         {% if site.author.github %}
           {% assign github_url = site.author.github %}
           {% unless github_url contains '://' %}{% assign github_url = 'https://github.com/' | append: github_url %}{% endunless %}
-          <li><a href="{{ github_url }}" aria-label="GitHub" title="GitHub" data-tooltip="GitHub" target="_blank" rel="noopener"><i class="fab fa-fw fa-github" aria-hidden="true"></i></a></li>
+          <li><a href="{{ github_url }}" aria-label="GitHub" title="GitHub" data-tooltip="GitHub" target="_blank" rel="noopener">{% include icons/github.svg %}</a></li>
         {% endif %}
-        <li><a href="{{ '/cv/' | relative_url }}" aria-label="Curriculum Vitae" title="Curriculum Vitae" data-tooltip="Curriculum Vitae"><i class="fas fa-fw fa-file-alt" aria-hidden="true"></i></a></li>
+        <li><a href="{{ '/cv/' | relative_url }}" aria-label="Curriculum Vitae" title="Curriculum Vitae" data-tooltip="Curriculum Vitae">{% include icons/file.svg %}</a></li>
       </ul>
     </div>
 

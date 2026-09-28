@@ -353,11 +353,12 @@ html[data-theme="dark"] #theme-toggle-icon {
   border-color: var(--navy);
 }
 
-.home-hero__links i,
-.home-hero__links .fas,
-.home-hero__links .fab,
-.home-hero__links .ai {
-  font-size: 16px;
+// Inline SVG icons drawn on the same 1em box the icon fonts used.
+.hero-icon {
+  display: block;
+  width: auto;
+  height: 16px;
+  fill: currentColor;
 }
 
 .home-hero__links a[data-tooltip]::after {
@@ -740,9 +741,9 @@ html[data-theme="dark"] #theme-toggle-icon {
   transform: rotate(-135deg);
 }
 
-// 47em keeps lines to about 95 characters.
+// 58em keeps lines to about 120 characters.
 .research-entry__abstract {
-  max-width: 47em;
+  max-width: 58em;
   margin-top: 12px;
   padding: 2px 0 2px 14px;
   border-left: 2px solid var(--rule);
