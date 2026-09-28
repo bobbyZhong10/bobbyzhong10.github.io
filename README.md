@@ -25,7 +25,7 @@ If the build stops with `Invalid US-ASCII character`, run it with a UTF-8 locale
 | `_layouts/`, `_includes/` | Page shell, header, home hero, SEO tags, and page scripts |
 | `_sass/_site.scss` | All site styles, including the light and dark color tokens |
 | `_sass/` (other files) | Base theme modules |
-| `assets/` | Stylesheet entry point, icon CSS, and icon fonts |
+| `assets/` | Stylesheet entry point and icon fonts |
 | `images/` | Portrait, favicons, and brand mark |
 | `notes/` | Research-note collections, published as pre-built HTML |
 | `scripts/` | Generator for the favicon and brand-mark images |

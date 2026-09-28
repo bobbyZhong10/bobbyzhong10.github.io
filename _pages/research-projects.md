@@ -84,7 +84,7 @@ newsreader_font: true
     <div class="research-entry__authors"><strong>Yunzhou Zhong</strong>, <a href="https://scholar.xjtlu.edu.cn/en/persons/BingjieDeng/">Bingjie Deng</a></div>
     <div class="research-entry__meta">86th Annual Meeting of the Academy of Management (AOM 2026)</div>
     <div class="research-entry__actions">
-      <a class="research-entry__button" href="https://journals.aom.org/doi/10.5465/AMPROC.2026.10295abstract" target="_blank" rel="noopener">HTML <span aria-hidden="true">↗</span></a>
+      <a class="research-entry__button" href="https://doi.org/10.5465/AMPROC.2026.10295abstract" target="_blank" rel="noopener">HTML <span aria-hidden="true">↗</span></a>
     </div>
   </li>
   <li class="research-entry">
