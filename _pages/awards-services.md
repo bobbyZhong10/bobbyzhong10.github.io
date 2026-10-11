@@ -14,7 +14,7 @@ description: "Honors, awards, academic service, and professional memberships of 
   <div class="award-entry">
     <div class="award-entry__title">GAPSA Professional Student Travel Grant</div>
     <div class="award-entry__context">University of Pennsylvania</div>
-    <div class="award-entry__meta">2025</div>
+    <div class="award-entry__meta">2025 and 2026</div>
   </div>
   <div class="award-entry">
     <div class="award-entry__title">XJTLU Best Student Final Year Project (Thesis) Award (1/893)</div>
