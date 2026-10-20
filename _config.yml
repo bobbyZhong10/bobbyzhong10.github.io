@@ -10,7 +10,6 @@ title                    : "Yunzhou (Bobby) Zhong"
 description              : "Economics of Information Systems"
 url                      : "https://bobbyzhong10.github.io"
 repository               : "bobbyzhong10/bobbyzhong10.github.io"
-google_scholar_stats_use_cdn : true
 
 # google analytics
 google_analytics_id      : "G-EPEH8SENTV" # Google Analytics 4 measurement ID
@@ -37,12 +36,9 @@ author:
   dribbble         :
   flickr           :
   facebook         :
-  foursquare       :
   github           : "bobbyZhong10"
-  google_plus      :
   keybase          :
   instagram        :
-  impactstory      : # e.g., "https://profiles.impactstory.org/u/xxxx-xxxx-xxxx-xxxx"
   lastfm           :
   linkedin         : "yunzhou-zhong-659647229"
   dblp             : # e.g., "https://dblp.org/pid/xx/xxxx.html"
@@ -52,8 +48,7 @@ author:
   stackoverflow    : # http://stackoverflow.com/users/123456/username
   steam            :
   tumblr           :
-  twitter          : 
-  vine             :
+  twitter          :
   weibo            :
   xing             :
   youtube          :
@@ -62,12 +57,9 @@ author:
 
 # Reading Files
 include:
-  - .htaccess
   - _pages
-  - files
 exclude:
   - docs
-  - google_scholar_crawler
   - run_server.sh
   - scripts
   - "*.sublime-project"
@@ -122,7 +114,6 @@ kramdown:
   entity_output: as_char
   toc_levels: 1..6
   smart_quotes: lsquo,rsquo,ldquo,rdquo
-  enable_coderay: false
 
 # Defaults
 defaults:
@@ -147,23 +138,6 @@ timezone: America/New_York # http://en.wikipedia.org/wiki/List_of_tz_database_ti
 
 # Plugins
 plugins:
-  - jekyll-paginate
   - jekyll-sitemap
-  - jekyll-gist
   - jekyll-feed
   - jekyll-redirect-from
-# mimic GitHub Pages with --safe
-whitelist:
-  - jekyll-paginate
-  - jekyll-sitemap
-  - jekyll-gist
-  - jekyll-feed
-  - jemoji
-
-
-# HTML Compression
-# - http://jch.penibelst.de/
-compress_html:
-  clippings: all
-  ignore:
-    envs: development

@@ -78,7 +78,6 @@ def main() -> None:
         ("apple-touch-icon.png", 180),
         ("android-chrome-192x192.png", 192),
         ("android-chrome-512x512.png", 512),
-        ("mstile-150x150.png", 150),
     ):
         save_png(master, filename, size)
 
