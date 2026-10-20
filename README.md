@@ -4,9 +4,10 @@ Source for [bobbyzhong10.github.io](https://bobbyzhong10.github.io), a static si
 
 ## Local Preview
 
-Requires Ruby and Bundler.
+Requires [mise](https://mise.jdx.dev/), activated in your shell. `mise.toml` pins Ruby 3.3.4, the version GitHub Pages builds with.
 
 ```bash
+mise install
 bundle install
 bundle exec jekyll serve
 ```
