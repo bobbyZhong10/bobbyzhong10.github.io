@@ -101,10 +101,10 @@ Keep relative asset and chapter links intact when moving or renaming files in ei
 
 ## Local Build and Preview
 
-The dependency lock works with Ruby 3.1. On macOS with Homebrew:
+The local toolchain mirrors GitHub Pages: `mise.toml` pins Ruby 3.3.4 and the `Gemfile` pins `github-pages` 232. When GitHub Pages moves to a new release (listed at <https://pages.github.com/versions/>), update both together. With mise activated in the shell:
 
 ```bash
-export PATH="/opt/homebrew/opt/ruby@3.1/bin:$PATH"
+mise install
 BUNDLE_PATH=vendor/bundle bundle install
 BUNDLE_PATH=vendor/bundle bundle exec jekyll build
 python3 -m http.server 4000 --bind 127.0.0.1 --directory _site

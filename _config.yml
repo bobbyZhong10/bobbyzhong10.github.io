@@ -87,6 +87,7 @@ exclude:
   - config
   - gulpfile.js
   - log
+  - mise.toml
   - notes/is-economics-methods/assets/template.html
   - notes/is-economics-methods/assets/wrap-tables.lua
   - notes/is-economics-methods/code
