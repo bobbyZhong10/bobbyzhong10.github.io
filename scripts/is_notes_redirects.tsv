@@ -1,0 +1,24 @@
+old_file	kind	targets	note
+05_estimation_mle_gmm.html	split	05_m_estimation_nonlinear_regression.html,06_maximum_likelihood.html,07_gmm_minimum_distance.html,12_binary_multinomial_response.html	The Helix binary-adoption case study from this chapter is now part of Chapter 12.
+06_inference.html	one	08_inference.html	
+07_panel_dynamic_panel.html	split	10_linear_panel_fe_re.html,11_dynamic_panel.html	
+08_nonparametrics.html	one	14_nonparametrics.html	
+09_potential_outcomes.html	one	15_potential_outcomes.html	
+10_research_design_architecture.html	one	16_research_design_architecture.html	
+11_measurement_digital_traces.html	one	17_measurement_digital_traces.html	
+12_iv_late_mte.html	one	18_iv_late_mte.html	
+13_did_event_studies.html	one	19_did_event_studies.html	DID_M and non-binary treatments are now covered in Chapter 20.
+14_rdd_synthetic_control.html	split	21_regression_discontinuity.html,22_synthetic_control_factor_models.html	
+15_sensitivity_partial_identification.html	one	23_sensitivity_partial_identification.html	
+16_causal_ml_dml.html	one	24_causal_ml_dml.html	
+17_digital_experimentation.html	one	25_digital_experimentation.html	
+18_interference_marketplace_experiments.html	one	26_interference_marketplace_experiments.html	
+19_discrete_choice.html	one	27_discrete_choice.html	
+20_demand_blp.html	one	28_demand_blp.html	
+21_supply_markups_mergers.html	one	29_supply_markups_mergers.html	
+22_entry_partial_id.html	one	30_entry_partial_id.html	
+23_dynamic_structural.html	one	31_dynamic_structural.html	
+24_platforms_networks.html	one	32_platforms_networks.html	
+25_search_advertising.html	one	33_search_advertising.html	
+26_ai_algorithms_data.html	one	34_ai_algorithms_data.html	
+27_quick_reference.html	one	35_quick_reference.html	
