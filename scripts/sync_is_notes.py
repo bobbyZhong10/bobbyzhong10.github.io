@@ -403,8 +403,8 @@ def _files(root: Path, base: Path) -> list:
 
 def publish_set(build_dir: Path) -> set:
     """Pages, assets, sources, code and inline_figures.py; never tools/, toc_v3.tsv or validate_book.py."""
-    wanted = {path.name for path in build_dir.glob("*.html")}
-    wanted |= {f"src/{path.name}" for path in (build_dir / "src").glob("*.md")}
+    wanted = {path.name for path in build_dir.glob("*.html") if not path.name.startswith("demo")}
+    wanted |= {f"src/{path.name}" for path in (build_dir / "src").glob("*.md") if not path.name.startswith("demo")}
     for name in PUBLISH_ASSETS:
         path = build_dir / "assets" / name
         wanted |= set(_files(path, build_dir)) if path.is_dir() else {f"assets/{name}"}
@@ -423,8 +423,10 @@ def install(build_dir: Path, dest: Path) -> None:
     if read(marker).strip() != BUILD_COMPLETE:
         raise BuildError(f"the build in {build_dir} did not finish; run build again")
     wanted = publish_set(build_dir)
-    if dest.exists() and any(dest.iterdir()) and not (dest / "index.html").is_file():
-        raise BuildError(f"{dest} is not empty and has no index.html; refusing to delete anything in it")
+    cover = dest / "index.html"
+    if dest.exists() and any(dest.iterdir()) and not (cover.is_file() and f"<h1>{SIDEBARTITLE}</h1>" in read(cover)):
+        raise BuildError(f"{dest} is not empty and its index.html is not this book's cover; "
+                         "refusing to delete anything in it")
     dest.mkdir(parents=True, exist_ok=True)
 
     removed = copied = 0
