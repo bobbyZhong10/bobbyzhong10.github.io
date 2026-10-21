@@ -175,7 +175,14 @@ def _and_join(items: list) -> str:
     return items[0] if len(items) == 1 else ", ".join(items[:-1]) + " and " + items[-1]
 
 
-def stub_html(row: dict, titles: dict, version: str, descs: dict = None, edition: int = 35) -> str:
+def _link_chapters(text: str, titles: dict) -> str:
+    """Escape a note and link each "Chapter N" it names to that chapter's page, when there is one."""
+    pages = {int(name[:2]): name for name in titles}
+    return re.sub(r"Chapter (\d+)", lambda match: f'<a href="{pages[int(match.group(1))]}">{match.group(0)}</a>'
+                  if int(match.group(1)) in pages else match.group(0), html_escape(text))
+
+
+def stub_html(row: dict, titles: dict, version: str, descs: dict | None = None, edition: int = 35) -> str:
     """The static page left at a v2 file name.
 
     A one-to-one row redirects at once and keeps the #anchor. A split row is a landing page
@@ -192,7 +199,7 @@ def stub_html(row: dict, titles: dict, version: str, descs: dict = None, edition
             '  <meta name="viewport" content="width=device-width, initial-scale=1.0" />',
             '  <meta name="robots" content="noindex" />']
     sub = f"This page was Chapter {old_number} of the {V2_CHAPTERS}-chapter edition."
-    note = [f"    <p>{html_escape(row['note'])}</p>"] if row["note"] else []
+    note = [f"    <p>{_link_chapters(row['note'], titles)}</p>"] if row["note"] else []
     if row["kind"] == "one":
         head += [f"  <title>{html_escape(chapter(first))} | {SIDEBARTITLE}</title>",
                  f'  <link rel="canonical" href="{first}" />',
@@ -240,7 +247,7 @@ def load_redirects(path: Path) -> list:
             if not any(field.strip() for field in fields):
                 continue
             if len(fields) not in (3, 4):
-                raise ValueError(f"{path}:{line}: expected 4 tab-separated fields, found {len(fields)}")
+                raise ValueError(f"{path}:{line}: expected 3 or 4 tab-separated fields, found {len(fields)}")
             old, kind, targets = (field.strip() for field in fields[:3])
             targets = [name.strip() for name in targets.split(",") if name.strip()]
             note = fields[3].strip() if len(fields) == 4 else ""
@@ -338,16 +345,22 @@ def _pandoc(out: Path, stem: str) -> list:
             if line.strip() and not line.startswith("[WARNING] Deprecated: --katex")]
 
 
-def render(out: Path, stems: list) -> None:
-    """The book's pandoc command for every page, then inline_figures.py, as tools/render_all.sh does."""
+def _check_pandoc() -> None:
+    if not shutil.which("pandoc"):
+        raise BuildError("pandoc not found on PATH")
     version = subprocess.run(["pandoc", "--version"], capture_output=True, text=True, check=True).stdout.split("\n")[0]
     if version != f"pandoc {PANDOC_VERSION}":
         print(f"warning: {version}; the golden test was recorded with pandoc {PANDOC_VERSION}", file=sys.stderr)
+
+
+def render(out: Path, stems: list) -> None:
+    """The book's pandoc command for every page, then inline_figures.py, as tools/render_all.sh does."""
     with ThreadPoolExecutor(max_workers=os.cpu_count() or 4) as pool:
         warnings = [line for lines in pool.map(lambda stem: _pandoc(out, stem), stems) for line in lines]
     for line in warnings:
         print(line, file=sys.stderr)
-    subprocess.run([sys.executable, "inline_figures.py"], cwd=out, check=True)
+    if subprocess.run([sys.executable, "inline_figures.py"], cwd=out).returncode != 0:
+        raise BuildError("inline_figures.py failed")
     print(f"rendered {len(stems)} pages, {len(warnings)} pandoc warning lines besides the --katex notice")
 
 
@@ -362,6 +375,7 @@ def build(src: Path, site: Path, redirects: Path, version: str, out: Path) -> No
     if _inside(out, src) or _inside(src, out) or _inside(out, site) or _inside(site, out):
         raise BuildError("--out must be a separate folder, outside --src and --site")
     rows = load_redirects(redirects)
+    _check_pandoc()
 
     _prepare_out(out)
     shutil.copytree(src, out, ignore=_copy_ignore(src), copy_function=shutil.copyfile, dirs_exist_ok=True)
@@ -417,6 +431,8 @@ def publish_set(build_dir: Path) -> set:
 
 def install(build_dir: Path, dest: Path) -> None:
     build_dir, dest = build_dir.resolve(), dest.resolve()
+    if _inside(dest, build_dir) or _inside(build_dir, dest):
+        raise BuildError("--build and --dest must not contain each other")
     marker = build_dir / BUILD_MARKER
     if not marker.is_file():
         raise BuildError(f"{build_dir} is not a folder written by `build` (no {BUILD_MARKER})")
@@ -527,11 +543,16 @@ def check_site(site_root: Path, collection: str, redirects: Path) -> list:
         if not stub.is_file():
             errors.append(f"{collection}/{row['old_file']}: redirect page missing")
             continue
-        text = read(stub)
+        text, first, name = read(stub), row["targets"][0], f"{collection}/{row['old_file']}"
         if ('<meta name="robots" content="noindex"' not in text
-                or f'<link rel="canonical" href="{row["targets"][0]}"' not in text):
-            errors.append(f"{collection}/{row['old_file']}: not a redirect page (needs noindex and a canonical "
-                          f"link to {row['targets'][0]})")
+                or f'<link rel="canonical" href="{first}"' not in text):
+            errors.append(f"{name}: not a redirect page (needs noindex and a canonical link to {first})")
+        redirects_now = "http-equiv" in text or "location.replace" in text
+        if row["kind"] == "split" and redirects_now:
+            errors.append(f"{name}: a landing page must not redirect (decision 3)")
+        if row["kind"] == "one" and (f"location.replace({json.dumps(first)} + location.hash)" not in text
+                                     or f'content="0; url={first}"' not in text):
+            errors.append(f"{name}: must redirect to {first} at once and keep the anchor (location.hash)")
         for name in row["targets"]:
             if not (coll / name).is_file():
                 errors.append(f"{collection}/{row['old_file']}: redirect target {name} missing")
@@ -556,7 +577,7 @@ def check_site(site_root: Path, collection: str, redirects: Path) -> list:
     return errors
 
 
-def main(argv: list = None) -> int:
+def main(argv: list | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.split("\n\n")[0])
     commands = parser.add_subparsers(dest="command", required=True)
     build_args = commands.add_parser("build", help="render a notes workspace with the site layer")
@@ -585,7 +606,7 @@ def main(argv: list = None) -> int:
                 print(error)
             print(f"check: {len(errors)} error(s) in {args.collection}")
             return 1 if errors else 0
-    except (BuildError, ValueError) as error:
+    except (BuildError, ValueError, OSError) as error:
         print(f"sync_is_notes.py {args.command}: {error}", file=sys.stderr)
         return 2
     return 0

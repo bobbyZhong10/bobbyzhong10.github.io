@@ -23,6 +23,7 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parents[2]
 SCRIPTS = REPO / "scripts"
 sys.path.insert(0, str(SCRIPTS))
+sys.dont_write_bytecode = True  # keep scripts/__pycache__ out of the repository
 import sync_is_notes as sync  # noqa: E402
 
 
@@ -67,8 +68,9 @@ APPENDIX_C = {
     "27_quick_reference.html": ("one", ["35_quick_reference.html"]),
 }
 
-# Golden normalizations, applied in this order to both sides before an html page is compared. Each
-# entry is (id, what it absorbs, one concrete example, pattern, replacement). Nothing else differs.
+# Golden normalizations, applied in this order before an html page is compared. Each entry is
+# (id, what it absorbs, one concrete example, pattern, replacement). Rules in ONLINE_ONLY rewrite only
+# the pre-release page; the others apply to both sides. Nothing else differs.
 NORMALIZATIONS = [
     ("W1", "whitespace that contains a line break, between two tags, is dropped",
      'online topbar is one line `</a><div class="notes-topbar__right">`; the template writes '
@@ -106,9 +108,12 @@ OVERLAY_SUFFIXES = (".html", ".md")
 OVERLAY_FILES = {"assets/notes.js", "assets/template.html", "assets/style.css"}
 
 
-def norm(text: str, skip: str = None) -> str:
+ONLINE_ONLY = {"S1"}
+
+
+def norm(text: str, skip: str | None = None, online: bool = False) -> str:
     for rule, _what, _example, pattern, replacement in NORMALIZATIONS:
-        if rule != skip:
+        if rule != skip and (online or rule not in ONLINE_ONLY):
             text = re.sub(pattern, replacement, text)
     return text.strip()
 
@@ -154,9 +159,9 @@ def make_online_site(root: Path) -> Path:
     return root
 
 
-def run_cli(*args: str) -> subprocess.CompletedProcess:
+def run_cli(*args: str, env: dict | None = None) -> subprocess.CompletedProcess:
     return subprocess.run([sys.executable, str(SCRIPTS / "sync_is_notes.py"), *map(str, args)],
-                          capture_output=True, text=True)
+                          capture_output=True, text=True, env=env)
 
 
 def read_v3_toc() -> list:
@@ -213,18 +218,19 @@ class TestGoldenV2Overlay(unittest.TestCase):
         self.assertEqual(len(pages), 28)
         for page in pages:
             with self.subTest(page=page):
-                self.assertEqual(norm(online(page)), norm((self.out / page).read_text(encoding="utf-8")))
+                self.assertEqual(norm(online(page), online=True),
+                                 norm((self.out / page).read_text(encoding="utf-8")))
 
     def test_every_normalization_is_needed(self):
         pages = sorted(p for p in self.tree if "/" not in p and p.endswith(".html"))
         texts = [(online(page), (self.out / page).read_text(encoding="utf-8")) for page in pages]
         for rule, *_ in NORMALIZATIONS:
             with self.subTest(rule=rule):
-                self.assertTrue(any(norm(a, skip=rule) != norm(b, skip=rule) for a, b in texts),
+                self.assertTrue(any(norm(a, skip=rule, online=True) != norm(b, skip=rule) for a, b in texts),
                                 f"{rule} absorbs no difference; drop it from NORMALIZATIONS")
 
     def test_index_equal_online_after_norm(self):
-        self.assertEqual(norm(online("index.html")),
+        self.assertEqual(norm(online("index.html"), online=True),
                          norm((self.out / "index.html").read_text(encoding="utf-8")))
 
     def test_template_differs_only_by_theme_init_line(self):
@@ -332,6 +338,7 @@ class TestV3Build(unittest.TestCase):
             if kind == "one":
                 with self.subTest(old=old):
                     self.assertIn(f'location.replace("{targets[0]}" + location.hash)', self.page(old))
+        self.assertIn('<a href="20_did_beyond_binary.html">Chapter 20</a>', self.page("13_did_event_studies.html"))
 
     def test_file_nav_markers_kept(self):
         template = self.page("assets/template.html")
@@ -526,6 +533,7 @@ class TestNotesJs(unittest.TestCase):
 
 
 TITLES = {"08_inference.html": "Inference: Delta Method, Bootstrap, Clustering & Testing",
+          "20_did_beyond_binary.html": "DiD II: Fuzzy, Continuous & Switching Treatments",
           "21_regression_discontinuity.html": "Regression Discontinuity Designs",
           "22_synthetic_control_factor_models.html": "Synthetic Control and Panel Factor Models"}
 DESCS = {"21_regression_discontinuity.html": "Continuity-based identification & more",
@@ -563,6 +571,13 @@ class TestStubHtml(unittest.TestCase):
         self.assertNotIn("location", html)
         self.assertIn(f'src="assets/notes.js?v={NEW_VERSION}"', html)
 
+    def test_note_links_the_chapters_it_names(self):
+        row = {"old_file": "13_did_event_studies.html", "kind": "one", "targets": ["08_inference.html"],
+               "note": "DID_M is now in Chapter 20; Chapter 99 does not exist."}
+        html = sync.stub_html(row, TITLES, NEW_VERSION)
+        self.assertIn('<p>DID_M is now in <a href="20_did_beyond_binary.html">Chapter 20</a>; '
+                      "Chapter 99 does not exist.</p>", html)
+
     def test_split_landing_page_needs_descriptions(self):
         row = {"old_file": "14_rdd_synthetic_control.html", "kind": "split",
                "targets": ["21_regression_discontinuity.html", "22_synthetic_control_factor_models.html"],
@@ -586,6 +601,24 @@ def make_build(root: Path) -> Path:
         (root / name).write_text(body, encoding="utf-8")
     (root / sync.BUILD_MARKER).write_text(sync.BUILD_COMPLETE + "\n", encoding="utf-8")
     return root
+
+
+class TestBuildErrors(unittest.TestCase):
+
+    def test_missing_pandoc_is_reported_without_traceback(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            tmp = Path(tmp)
+            for name in ("ws/index.html", "ws/assets/template.html", "ws/src/introduction.md", "ws/inline_figures.py",
+                         "site/assets/style.css", "site/assets/notes.js"):
+                (tmp / name).parent.mkdir(parents=True, exist_ok=True)
+                (tmp / name).write_text("x", encoding="utf-8")
+            result = run_cli("build", "--src", tmp / "ws", "--site", tmp / "site",
+                             "--redirects", write_redirects(tmp / "r.tsv"), "--version", NEW_VERSION,
+                             "--out", tmp / "out", env={**os.environ, "PATH": str(tmp / "empty")})
+            self.assertEqual(result.returncode, 2, result.stderr)
+            self.assertIn("pandoc", result.stderr)
+            self.assertNotIn("Traceback", result.stderr)
+            self.assertFalse((tmp / "out").exists())
 
 
 class TestInstall(unittest.TestCase):
@@ -630,6 +663,19 @@ class TestInstall(unittest.TestCase):
             self.assertNotEqual(result.returncode, 0)
             self.assertFalse((Path(tmp) / "dest").exists())
 
+    def test_install_refuses_overlapping_build_and_dest(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            nest = Path(tmp) / "nest"
+            build = make_build(nest / "b")
+            (nest / "index.html").write_text(f"<h1>{sync.SIDEBARTITLE}</h1>", encoding="utf-8")
+            before = files_under(nest)
+            for dest in (nest, build / "site"):
+                with self.subTest(dest=dest):
+                    result = run_cli("install", "--build", build, "--dest", dest)
+                    self.assertEqual(result.returncode, 2, result.stderr)
+                    self.assertNotIn("Traceback", result.stderr)
+                    self.assertEqual(files_under(nest), before)
+
     def test_install_refuses_an_unfinished_build(self):
         with tempfile.TemporaryDirectory() as tmp:
             tmp = Path(tmp)
@@ -669,6 +715,8 @@ def make_site(root: Path, stub_target: str = "08_c.html") -> Path:
             f'</body></html>', encoding="utf-8")
     (coll / "06_old.html").write_text(
         f'<html><head><meta name="robots" content="noindex" /><link rel="canonical" href="{stub_target}" />'
+        f'<script>location.replace("{stub_target}" + location.hash)</script>'
+        f'<meta http-equiv="refresh" content="0; url={stub_target}" />'
         f'</head><body><a href="{stub_target}">moved</a></body></html>', encoding="utf-8")
     urls = [f"{SITE_URL}/{COLLECTION}/"] + [f"{SITE_URL}/{COLLECTION}/{p}" for p in pages[1:]]
     urls.append(f"{SITE_URL}/about/")
@@ -746,6 +794,20 @@ class TestCheck(unittest.TestCase):
                                                          encoding="utf-8")
             errors = sync.check_site(site, COLLECTION, write_redirects(Path(tmp) / "r.tsv"))
             self.assertTrue(any("06_old.html" in e for e in errors), errors)
+
+    def test_check_flags_redirect_behaviour(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            site = make_site(Path(tmp) / "_site")
+            stub = site / COLLECTION / "06_old.html"
+            stub.write_text(stub.read_text(encoding="utf-8").replace(" + location.hash", ""), encoding="utf-8")
+            errors = sync.check_site(site, COLLECTION, write_redirects(Path(tmp) / "r.tsv"))
+            self.assertTrue(any("06_old.html" in e and "location.hash" in e for e in errors), errors)
+            # A split row is a landing page and must not redirect.
+            split = Path(tmp) / "split.tsv"
+            split.write_text("old_file\tkind\ttargets\tnote\n06_old.html\tsplit\t08_c.html,09_c.html\t\n",
+                             encoding="utf-8")
+            errors = sync.check_site(site, COLLECTION, split)
+            self.assertTrue(any("06_old.html" in e and "landing page" in e for e in errors), errors)
 
     def test_check_flags_sitemap(self):
         with tempfile.TemporaryDirectory() as tmp:
