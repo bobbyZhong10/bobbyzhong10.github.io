@@ -579,7 +579,7 @@ def make_build(root: Path) -> Path:
         "assets/wrap-tables.lua": "lua", "assets/fig/f.svg": "<svg/>", "assets/katex/katex.min.js": "k",
         "src/01_a.md": "md", "src/introduction.md": "md", "code/01_a/run.R": "R", "inline_figures.py": "py",
         "tools/toc.py": "py", "toc_v3.tsv": "tsv", "validate_book.py": "py", "assets/fig/.DS_Store": "",
-        "code/01_a/__pycache__/x.pyc": "",
+        "code/01_a/__pycache__/x.pyc": "", "demo.html": "demo", "src/demo.md": "demo", "RENUMBERED_V3": "",
     }
     for name, body in files.items():
         (root / name).parent.mkdir(parents=True, exist_ok=True)
@@ -594,7 +594,7 @@ class TestInstall(unittest.TestCase):
         with tempfile.TemporaryDirectory() as tmp:
             build = make_build(Path(tmp) / "build")
             dest = Path(tmp) / "dest"
-            for name, body in {"index.html": "old", "validate_book.py": "v2", "27_quick_reference.html": "v2",
+            for name, body in {"index.html": f"<h1>{sync.SIDEBARTITLE}</h1>", "validate_book.py": "v2", "27_quick_reference.html": "v2",
                                "src/27_quick_reference.md": "v2", "assets/fig/old.svg": "v2"}.items():
                 (dest / name).parent.mkdir(parents=True, exist_ok=True)
                 (dest / name).write_text(body, encoding="utf-8")
@@ -616,6 +616,11 @@ class TestInstall(unittest.TestCase):
             result = run_cli("install", "--build", build, "--dest", dest)
             self.assertNotEqual(result.returncode, 0)
             self.assertEqual(files_under(dest), {"precious.txt"})
+            # A sibling collection has an index.html too, but not this book's cover.
+            (dest / "index.html").write_text("<h1>From Choices to Counterfactuals</h1>", encoding="utf-8")
+            result = run_cli("install", "--build", build, "--dest", dest)
+            self.assertNotEqual(result.returncode, 0)
+            self.assertEqual(files_under(dest), {"precious.txt", "index.html"})
 
     def test_install_refuses_a_tree_that_is_not_a_build(self):
         with tempfile.TemporaryDirectory() as tmp:
