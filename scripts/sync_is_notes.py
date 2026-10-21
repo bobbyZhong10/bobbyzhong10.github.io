@@ -20,6 +20,8 @@ Run from the repository root, for example:
       --redirects scripts/is_notes_redirects.tsv
 """
 
+from __future__ import annotations
+
 import argparse
 import csv
 import filecmp
@@ -348,7 +350,10 @@ def _pandoc(out: Path, stem: str) -> list:
 def _check_pandoc() -> None:
     if not shutil.which("pandoc"):
         raise BuildError("pandoc not found on PATH")
-    version = subprocess.run(["pandoc", "--version"], capture_output=True, text=True, check=True).stdout.split("\n")[0]
+    result = subprocess.run(["pandoc", "--version"], capture_output=True, text=True)
+    if result.returncode != 0:
+        raise BuildError(f"pandoc --version failed:\n{result.stderr}")
+    version = result.stdout.split("\n")[0]
     if version != f"pandoc {PANDOC_VERSION}":
         print(f"warning: {version}; the golden test was recorded with pandoc {PANDOC_VERSION}", file=sys.stderr)
 

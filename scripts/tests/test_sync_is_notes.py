@@ -9,6 +9,8 @@ from the working tree. The v3 tests build notes_v3_en. Both sources live in iClo
 IS_NOTES_V3_EN override their paths. A test whose source or commit is missing is skipped.
 """
 
+from __future__ import annotations
+
 import csv
 import hashlib
 import os
@@ -604,6 +606,13 @@ def make_build(root: Path) -> Path:
 
 
 class TestBuildErrors(unittest.TestCase):
+
+    @unittest.skipUnless(Path("/usr/bin/python3").is_file(), "no system python3")
+    def test_runs_on_the_system_python(self):
+        # macOS ships Python 3.9 as /usr/bin/python3; a shell without Homebrew first on PATH uses it.
+        result = subprocess.run(["/usr/bin/python3", "-B", str(SCRIPTS / "sync_is_notes.py"), "--help"],
+                                capture_output=True, text=True)
+        self.assertEqual(result.returncode, 0, result.stderr)
 
     def test_missing_pandoc_is_reported_without_traceback(self):
         with tempfile.TemporaryDirectory() as tmp:
