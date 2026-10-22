@@ -104,6 +104,7 @@ newsreader_font: true
 <ul class="research-entry-list research-entry-list--presentations">
   <li class="research-entry">
     <div class="research-entry__title"><em>Too Neat to Be True? AI-Generated Review Summary Discrepancies and Consumer Response</em></div>
+    <div class="research-entry__meta">POMS Annual Conference · Orlando, FL · Apr. 2027 (scheduled)</div>
     <div class="research-entry__meta">Conference on Artificial Intelligence, Machine Learning, and Business Analytics · Philadelphia, PA · Dec. 2026 (scheduled)</div>
     <div class="research-entry__meta">OSU Fisher AI in Business Conference · Columbus, OH · Oct. 2026</div>
     <div class="research-entry__meta">INFORMS Annual Meeting · Atlanta, GA · Oct. 2025</div>
