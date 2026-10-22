@@ -1,47 +1,47 @@
-# 第 2 章 运行案例：Aster 与 Boreal 的若干博弈
-# 全部数字均可手算；本脚本把手算过程原样誊写并自检。
-# 运行时请 cd 进本目录。
+# Chapter 2 running example: games between Aster and Boreal
+# Every number can be computed by hand; this script transcribes the hand calculations and checks them.
+# Run from this directory.
 
-## 6.1 定价博弈：占优与纳什均衡 --------------------------------------------
-# 收益矩阵 A[Aster 行动, Boreal 行动]，值为 Aster 收益；对称博弈 B = t(A)
+## 6.1 Pricing game: dominance and Nash equilibrium ------------------------
+# Payoff matrix A[Aster action, Boreal action], entries are Aster's payoffs; symmetric game, B = t(A)
 A <- matrix(c(10, 2, 14, 6), nrow = 2, byrow = TRUE,
             dimnames = list(c("High", "Low"), c("High", "Low")))
-High_dominated <- all(A["Low", ] > A["High", ])   # Low 严格支配 High
-cat("High 被 Low 严格支配（Aster）:", High_dominated, " -> NE=(Low,Low)=(6,6)\n")
+High_dominated <- all(A["Low", ] > A["High", ])   # Low strictly dominates High
+cat("High strictly dominated by Low (Aster):", High_dominated, " -> NE=(Low,Low)=(6,6)\n")
 
-## 6.2 兼容性博弈：纯与混合策略均衡 ----------------------------------------
-# (S1,S1)=(3,1) (S2,S2)=(1,3) mismatch=(0,0)；A 偏好 S1，B 偏好 S2
-# 纯策略 NE：逐格无单方面有利偏离
-# 混合：A 以 p 选 S1，B 以 q 选 S1
-p <- 3/4        # 由 B 无差异 p*1 = (1-p)*3 解出
-q <- 1/4        # 由 A 无差异 3q = 1-q 解出
+## 6.2 Compatibility game: pure and mixed strategy equilibria --------------
+# (S1,S1)=(3,1) (S2,S2)=(1,3) mismatch=(0,0); A prefers S1, B prefers S2
+# Pure strategy NE: check each cell for a profitable unilateral deviation
+# Mixed: A chooses S1 with prob p, B chooses S1 with prob q
+p <- 3/4        # from B's indifference p*1 = (1-p)*3
+q <- 1/4        # from A's indifference 3q = 1-q
 coord_prob <- p*q + (1-p)*(1-q)
-EU_A <- 3*q     # A 期望收益（均衡下两纯策略相等）
-cat(sprintf("混合 NE: p=%.2f q=%.2f 协调概率=%.3f A 期望=%.2f\n",
+EU_A <- 3*q     # A's expected payoff (both pure strategies pay the same in equilibrium)
+cat(sprintf("mixed NE: p=%.2f q=%.2f coordination prob=%.3f A expected=%.2f\n",
             p, q, coord_prob, EU_A))
 stopifnot(abs(coord_prob - 3/8) < 1e-12)
 
-## 6.3 序贯博弈：逆向归纳与 SPE --------------------------------------------
-# A 先动，B 观察后匹配（匹配得 1 或 3，均 > 0）；A 预见 -> 选 S1 得 3
+## 6.3 Sequential game: backward induction and SPE -------------------------
+# A moves first, B observes and matches (matching pays 1 or 3, both > 0); A foresees this -> picks S1, gets 3
 aster_choice <- if (3 > 1) "S1" else "S2"
-cat("SPE: Aster ->", aster_choice, "; Boreal 匹配 -> 收益 (3, 1)\n")
+cat("SPE: Aster ->", aster_choice, "; Boreal matches -> payoffs (3, 1)\n")
 
-## 6.4 不完全信息：Bayesian Nash equilibrium -------------------------------
-# Boreal: Normal 型(prob beta) 占优 Low；Committed 型(1-beta) 占优 High
-# Aster 期望收益：面对 High 选 High=10/Low=7；面对 Low 选 High=3/Low=6
+## 6.4 Incomplete information: Bayesian Nash equilibrium -------------------
+# Boreal: Normal type (prob beta) has dominant action Low; Committed type (1-beta) has dominant action High
+# Aster's payoffs: against High, High=10/Low=7; against Low, High=3/Low=6
 beta <- 2/5
 EU_high <- beta*3 + (1 - beta)*10     # = 10 - 7 beta
 EU_low  <- beta*6 + (1 - beta)*7      # = 7 - beta
 aster_bne <- ifelse(EU_high >= EU_low, "High", "Low")
-cat(sprintf("BNE beta=%.1f: EU_high=%.1f EU_low=%.1f -> Aster=%s (门槛 beta*=0.5)\n",
+cat(sprintf("BNE beta=%.1f: EU_high=%.1f EU_low=%.1f -> Aster=%s (threshold beta*=0.5)\n",
             beta, EU_high, EU_low, aster_bne))
 
-## 6.5 重复博弈：合作门槛 --------------------------------------------------
+## 6.5 Repeated game: cooperation threshold --------------------------------
 R <- 10; T <- 14; P <- 6
 delta_star <- (T - R) / (T - P)
 coop  <- function(d) R / (1 - d)
 cheat <- function(d) T + d * P / (1 - d)
-cat(sprintf("grim 门槛 delta*=%.2f；在门槛处 coop=%.1f cheat=%.1f\n",
+cat(sprintf("grim threshold delta*=%.2f; at the threshold coop=%.1f cheat=%.1f\n",
             delta_star, coop(delta_star), cheat(delta_star)))
 stopifnot(abs(coop(delta_star) - cheat(delta_star)) < 1e-9)
 
@@ -51,3 +51,30 @@ deltas <- c(0.4, 0.5, 0.7, 0.9)
 slack <- coop(deltas) - cheat(deltas)
 cat("cooperation slack by delta:", paste(round(slack, 2), collapse=", "), "\n")
 stopifnot(all(diff(slack) > 0), abs(slack[deltas == delta_star]) < 1e-9)
+
+## 6.6 Bargaining: Nash solution and Rubinstein solution --------------------
+# Surplus V = 100; Aster's share d1 + alpha * (V - d1 - d2)
+V <- 100
+nb <- function(d1, d2, alpha = 0.5) d1 + alpha*(V - d1 - d2)
+cat(sprintf("Nash bargaining (Aster): sym=%.0f asym d=(20,0)=%.0f weighted alpha=0.6=%.0f\n",
+            nb(0, 0), nb(20, 0), nb(20, 0, 0.6)))
+stopifnot(nb(0, 0) == 50, nb(20, 0) == 60, abs(nb(20, 0, 0.6) - 68) < 1e-9)
+# Rubinstein alternating offers: proposer 1/(1+delta), responder delta/(1+delta)
+rub <- function(delta) c(mover = 1/(1+delta), responder = delta/(1+delta))
+r80 <- round(100 * rub(0.80), 4); r99 <- round(100 * rub(0.99), 4)
+cat(sprintf("Rubinstein x100: delta=0.80 -> %.4f / %.4f; delta=0.99 -> %.4f / %.4f\n",
+            r80[1], r80[2], r99[1], r99[2]))
+stopifnot(all(abs(r80 - c(55.5556, 44.4444)) < 1e-9),
+          all(abs(r99 - c(50.2513, 49.7487)) < 1e-9))
+
+## 6.7 Correlated equilibrium: a public coin --------------------------------
+CE_A <- 0.5*3 + 0.5*1; CE_B <- 0.5*1 + 0.5*3; mixed_NE <- 3/4
+cat(sprintf("public-coin CE: CE_A=%.2f CE_B=%.2f vs mixed NE=%.2f\n",
+            CE_A, CE_B, mixed_NE))
+stopifnot(CE_A == 2, CE_B == 2, mixed_NE == 0.75)
+
+## 6.8 Global game: the unique tipping threshold ----------------------------
+# Indifference of the marginal player: theta* + E[l] - 1 = 0 with E[l] = 1/2
+theta_star <- 1 - 1/2
+cat(sprintf("global-game threshold theta*=%.1f\n", theta_star))
+stopifnot(theta_star == 0.5)

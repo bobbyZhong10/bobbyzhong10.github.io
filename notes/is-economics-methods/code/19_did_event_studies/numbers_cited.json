@@ -1,0 +1,11 @@
+{
+  "card_krueger_1994_abstract_nj_min_wage_before_usd": 4.25,
+  "card_krueger_1994_abstract_nj_min_wage_after_usd": 5.05,
+  "card_krueger_1994_abstract_stores_surveyed": 410,
+  "card_krueger_1994_sec3A_did_fte_per_store": 2.76,
+  "card_krueger_1994_sec3A_did_fte_percent": 13,
+  "card_krueger_1994_sec3A_did_fte_t_stat": 2.03,
+  "greenwood_wattal_2015_wp_results_uberx_decrease_per_quarter_low_pct": 3.6,
+  "greenwood_wattal_2015_wp_results_uberx_decrease_per_quarter_high_pct": 5.6,
+  "bertrand_duflo_mullainathan_2004_abstract_placebo_significant_up_to_pct": 45
+}

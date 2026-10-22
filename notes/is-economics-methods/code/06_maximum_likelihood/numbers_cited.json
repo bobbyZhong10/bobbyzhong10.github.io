@@ -1,0 +1,18 @@
+{
+  "fh2007_jim_tab1_y7_regular_pct": 24.1,
+  "fh2007_jim_tab1_y7_highend_pct": 49.1,
+  "fh2007_jim_tab1_y12_regular_pct": 17.3,
+  "fh2007_jim_tab1_y12_highend_pct": 39.4,
+  "fh2007_jim_tab1_n_years": 12,
+  "fh2007_jim_s3_calibration_years": 7,
+  "fh2007_jim_s3_p82_sbg_y12_error_highend_pct": 4,
+  "fh2007_jim_s3_p82_sbg_y12_error_regular_pct": 2,
+  "fh2007_jim_s2_linear_y12_error_highend_pct": 81,
+  "fh2007_jim_s2_exponential_y12_error_highend_pct": 30,
+  "fh2007_jim_s2_quadratic_y12_overestimate_highend_pct": 92,
+  "fh2007_jim_s2_exponential_y12_error_regular_pct": 54,
+  "fh2007_jim_s3_mean_churn_prob_regular": 0.37,
+  "fh2007_jim_s3_mean_churn_prob_highend": 0.15,
+  "fh2007_jim_s3_p82_text_alpha_hat_highend_typo": 0.688,
+  "fh2007_jim_appB_p90_alpha_hat_highend": 0.668
+}

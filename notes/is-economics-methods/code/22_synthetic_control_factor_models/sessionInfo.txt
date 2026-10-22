@@ -1,0 +1,60 @@
+R version 4.6.1 (2026-06-24)
+Platform: aarch64-apple-darwin23
+Running under: macOS Golden Gate 27.0.1
+
+Matrix products: default
+BLAS:   /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRblas.0.dylib 
+LAPACK: /Library/Frameworks/R.framework/Versions/4.6/Resources/lib/libRlapack.dylib;  LAPACK version 3.12.1
+
+locale:
+[1] en_US/en_US/en_US/C/en_US/en_US
+
+time zone: America/New_York
+tzcode source: internal
+
+attached base packages:
+[1] parallel  stats     graphics  grDevices utils     datasets  methods  
+[8] base     
+
+other attached packages:
+ [1] jsonlite_2.0.0   patchwork_1.3.2  svglite_2.2.2    ggplot2_4.0.3   
+ [5] rgenoud_5.9-0.11 optimx_2025-4.9  kernlab_0.9-33   clarabel_0.11.3 
+ [9] pensynth_0.8.2   lpSolve_5.6.23   quadprog_1.5-8   fect_2.4.5      
+[13] did_2.5.1        fixest_0.14.2    scpi_4.0.1       augsynth_0.2.0  
+[17] synthdid_0.0.9   dplyr_1.2.1      tidysynth_0.2.1 
+
+loaded via a namespace (and not attached):
+  [1] Rdpack_2.6.6        gridExtra_2.3.1     DRDID_1.3.0        
+  [4] sandwich_3.1-3      rlang_1.3.0         magrittr_2.0.5     
+  [7] multcomp_1.4-32     dreamerr_1.5.0      matrixStats_1.5.0  
+ [10] compiler_4.6.1      systemfonts_1.3.2   vctrs_0.7.3        
+ [13] reshape2_1.4.5      quantreg_6.1        stringr_1.6.0      
+ [16] pkgconfig_2.0.3     backports_1.5.1     CVXR_1.9.2         
+ [19] pracma_2.4.6        nloptr_2.2.1        MatrixModels_0.5-4 
+ [22] purrr_1.2.2         trust_0.1-9         stringmagic_1.3.0  
+ [25] fastglm_0.1.2       highs_1.14.0-2      gmp_0.7-5.1        
+ [28] uuid_1.2-2          quantdr_1.3.2       ECOSolveR_0.6.2    
+ [31] R6_2.6.1            stringi_1.8.9       RColorBrewer_1.1-3 
+ [34] GGally_2.4.0        parallelly_1.48.0   boot_1.3-32        
+ [37] lmtest_0.9-40       numDeriv_2016.8-1.1 estimability_2.0.0 
+ [40] Rcpp_1.1.2          iterators_1.0.14    BMisc_1.4.10       
+ [43] future.apply_1.21.0 zoo_1.9-1           snow_0.4-4         
+ [46] Matrix_1.7-6        splines_4.6.1       tidyselect_1.2.1   
+ [49] abind_1.4-8         codetools_0.2-20    listenv_1.1.0      
+ [52] doRNG_1.8.6.3       lattice_0.23-1      tibble_3.3.1       
+ [55] plyr_1.8.9          withr_3.0.3         S7_0.2.2           
+ [58] coda_0.19-4.1       future_1.80.0       fastDummies_1.7.6  
+ [61] survival_3.8-12     ggstats_0.14.0      osqp_1.0.0         
+ [64] pillar_1.11.1       scs_3.2.7           rngtools_1.5.2     
+ [67] checkmate_2.3.4     foreach_1.5.2       generics_0.1.4     
+ [70] scales_1.4.0        gtools_3.9.5        globals_0.20.0     
+ [73] xtable_1.8-8        glue_1.8.1          cubature_2.1.4-1   
+ [76] glmx_0.2-3          emmeans_2.0.4       tools_4.6.1        
+ [79] data.table_1.18.6.1 SparseM_1.84-2      mvtnorm_1.4-2      
+ [82] grid_4.6.1          Qtools_1.6.0        bigmemory_4.6.6    
+ [85] tidyr_1.3.2         rbibutils_2.4.1     conquer_1.3.3      
+ [88] nlme_3.1-171        Formula_1.2-6       cli_3.6.6          
+ [91] textshaping_1.0.5   np_0.70-5           bigmemory.sri_0.1.8
+ [94] corpcor_1.6.10      doSNOW_1.0.20       gtable_0.3.6       
+ [97] digest_0.6.39       TH.data_1.1-5       farver_2.1.2       
+[100] lifecycle_1.0.5     MASS_7.3-66        

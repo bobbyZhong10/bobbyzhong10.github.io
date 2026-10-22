@@ -36,7 +36,9 @@ NOTES_V3_EN = Path(os.environ.get("IS_NOTES_V3_EN", NOTES_ROOT / "notes_v3_en"))
 GOLDEN_COMMIT = "6964e91"
 COLLECTION = "notes/is-economics-methods"
 OLD_VERSION = "notes-ui-20260822"
-NEW_VERSION = "notes-ui-20261021"
+NEW_VERSION = "notes-ui-20261022b"  # a letter suffix marks a second release on one day
+SITE_URL = "https://bobbyzhong10.github.io"
+CANONICAL_BASE = f"{SITE_URL}/{COLLECTION}/"
 REDIRECTS = SCRIPTS / "is_notes_redirects.tsv"
 
 # Appendix C of the Phase 4 plan: v2 page -> (kind, v3 targets, first target is canonical).
@@ -161,6 +163,13 @@ def make_online_site(root: Path) -> Path:
     return root
 
 
+def make_online_repo(root: Path) -> Path:
+    """A repository-shaped copy of the golden site: _config.yml plus the collection's site files."""
+    root.mkdir(parents=True, exist_ok=True)
+    (root / "_config.yml").write_bytes(git("show", f"{GOLDEN_COMMIT}:_config.yml", binary=True))
+    return make_online_site(root / COLLECTION)
+
+
 def run_cli(*args: str, env: dict | None = None) -> subprocess.CompletedProcess:
     return subprocess.run([sys.executable, str(SCRIPTS / "sync_is_notes.py"), *map(str, args)],
                           capture_output=True, text=True, env=env)
@@ -265,7 +274,7 @@ class TestV3Build(unittest.TestCase):
             raise unittest.SkipTest(f"commit {GOLDEN_COMMIT} not in this repository")
         cls.tmp = tempfile.TemporaryDirectory()
         tmp = Path(cls.tmp.name)
-        site = make_online_site(tmp / "site")
+        site = make_online_repo(tmp / "repo")
         cls.out = tmp / "build"
         result = run_cli("build", "--src", NOTES_V3_EN, "--site", site, "--redirects", REDIRECTS,
                          "--version", NEW_VERSION, "--out", cls.out)
@@ -302,7 +311,7 @@ class TestV3Build(unittest.TestCase):
                 html = self.page(name)
                 self.assertIn(f'href="assets/style.css?v={NEW_VERSION}"', html)
                 self.assertIn(f'src="assets/notes.js?v={NEW_VERSION}"', html)
-                self.assertEqual(set(re.findall(r"\?v=(notes-ui-\d+)", html)), {NEW_VERSION})
+                self.assertEqual(set(re.findall(r"\?v=(notes-ui-\d{8}[a-z]?)", html)), {NEW_VERSION})
         stale = sorted(p.relative_to(self.out).as_posix() for p in self.out.rglob("*")
                        if p.is_file() and OLD_VERSION.encode() in p.read_bytes())
         self.assertEqual([], stale)
@@ -324,22 +333,25 @@ class TestV3Build(unittest.TestCase):
                 for target in targets:
                     self.assertIn(sync.html_escape(descs[target]), html)
                 self.assertIn('<meta name="robots" content="noindex" />', html)
-                self.assertIn(f'<link rel="canonical" href="{targets[0]}" />', html)
+                self.assertIn(f'<link rel="canonical" href="{CANONICAL_BASE}{targets[0]}" />', html)
                 self.assertNotIn("http-equiv", html)
                 self.assertNotIn("location.replace", html)
+        landing = self.page("05_estimation_mle_gmm.html")
+        self.assertGreater(landing.index("Helix"), landing.rindex('<a class="chapter-card"'))
 
     def test_one_to_one_stub_keeps_hash(self):
         html = self.page("06_inference.html")
         self.assertIn('<script>location.replace("08_inference.html" + location.hash)</script>', html)
         self.assertIn('<meta http-equiv="refresh" content="0; url=08_inference.html" />', html)
-        self.assertIn('<link rel="canonical" href="08_inference.html" />', html)
-        self.assertIn('<meta name="robots" content="noindex" />', html)
+        self.assertIn(f'<link rel="canonical" href="{CANONICAL_BASE}08_inference.html" />', html)
         self.assertRegex(html, r'This chapter is now <a href="08_inference.html">Chapter 8 · Inference: '
                                r'[^<]+</a> in the 35-chapter edition\.')
         for old, (kind, targets) in APPENDIX_C.items():
             if kind == "one":
                 with self.subTest(old=old):
                     self.assertIn(f'location.replace("{targets[0]}" + location.hash)', self.page(old))
+                    self.assertIn(f'<link rel="canonical" href="{CANONICAL_BASE}{targets[0]}" />', self.page(old))
+                    self.assertNotIn('name="robots"', self.page(old))
         self.assertIn('<a href="20_did_beyond_binary.html">Chapter 20</a>', self.page("13_did_event_studies.html"))
 
     def test_file_nav_markers_kept(self):
@@ -525,7 +537,7 @@ class TestNotesJs(unittest.TestCase):
     { file: '01_a.html', label: '01 Consumer, Producer & Welfare' },
     { file: '02_b.html', label: '02 Sant\\'Anna' }
   ];
-  var other = 'assets/x.css?v=notes-ui-20261021';
+  var other = 'assets/x.css?v=notes-ui-20261022b';
 }());
 """)
 
@@ -547,9 +559,9 @@ class TestStubHtml(unittest.TestCase):
     def test_one_to_one_stub(self):
         row = {"old_file": "06_inference.html", "kind": "one", "targets": ["08_inference.html"],
                "note": "Tests & notes."}
-        html = sync.stub_html(row, TITLES, NEW_VERSION)
-        self.assertIn('<meta name="robots" content="noindex" />', html)
-        self.assertIn('<link rel="canonical" href="08_inference.html" />', html)
+        html = sync.stub_html(row, TITLES, NEW_VERSION, canonical_base=CANONICAL_BASE)
+        self.assertNotIn('name="robots"', html)
+        self.assertIn(f'<link rel="canonical" href="{CANONICAL_BASE}08_inference.html" />', html)
         self.assertIn('<meta http-equiv="refresh" content="0; url=08_inference.html" />', html)
         self.assertIn('<script>location.replace("08_inference.html" + location.hash)</script>', html)
         self.assertIn('This chapter is now <a href="08_inference.html">Chapter 8 · Inference: Delta Method, '
@@ -562,10 +574,13 @@ class TestStubHtml(unittest.TestCase):
     def test_split_landing_page(self):
         row = {"old_file": "14_rdd_synthetic_control.html", "kind": "split",
                "targets": ["21_regression_discontinuity.html", "22_synthetic_control_factor_models.html"],
-               "note": ""}
-        html = sync.stub_html(row, TITLES, NEW_VERSION, descs=DESCS)
+               "note": "The old case study is in Chapter 22."}
+        html = sync.stub_html(row, TITLES, NEW_VERSION, canonical_base=CANONICAL_BASE, descs=DESCS)
         self.assertEqual(re.findall(r'<a class="chapter-card" href="([^"]+)"', html), row["targets"])
-        self.assertIn('<link rel="canonical" href="21_regression_discontinuity.html" />', html)
+        self.assertIn(f'<link rel="canonical" href="{CANONICAL_BASE}21_regression_discontinuity.html" />', html)
+        # The note follows the cards, so the prompt leads straight into them.
+        self.assertGreater(html.index("The old case study"), html.rindex('<a class="chapter-card"'))
+        self.assertLess(html.index("Pick the one you were looking for"), html.index('<div class="chapter-grid">'))
         self.assertIn('<meta name="robots" content="noindex" />', html)
         self.assertIn("Continuity-based identification &amp; more", html)
         self.assertIn("Synthetic control &lt;inference&gt;", html)
@@ -576,7 +591,7 @@ class TestStubHtml(unittest.TestCase):
     def test_note_links_the_chapters_it_names(self):
         row = {"old_file": "13_did_event_studies.html", "kind": "one", "targets": ["08_inference.html"],
                "note": "DID_M is now in Chapter 20; Chapter 99 does not exist."}
-        html = sync.stub_html(row, TITLES, NEW_VERSION)
+        html = sync.stub_html(row, TITLES, NEW_VERSION, canonical_base=CANONICAL_BASE)
         self.assertIn('<p>DID_M is now in <a href="20_did_beyond_binary.html">Chapter 20</a>; '
                       "Chapter 99 does not exist.</p>", html)
 
@@ -585,7 +600,43 @@ class TestStubHtml(unittest.TestCase):
                "targets": ["21_regression_discontinuity.html", "22_synthetic_control_factor_models.html"],
                "note": ""}
         with self.assertRaises(ValueError):
-            sync.stub_html(row, TITLES, NEW_VERSION)
+            sync.stub_html(row, TITLES, NEW_VERSION, canonical_base=CANONICAL_BASE)
+
+
+class TestCanonicalBase(unittest.TestCase):
+
+    def site(self, tmp: str, config: str | None) -> Path:
+        root = Path(tmp)
+        if config is not None:
+            (root / "_config.yml").write_text(config, encoding="utf-8")
+        site = root / COLLECTION
+        site.mkdir(parents=True)
+        return site
+
+    def test_reads_url_and_baseurl_from_the_site_config(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            site = self.site(tmp, 'title: x\nurl                      : "https://example.org/"\nbaseurl: "/blog"\n'
+                                  'author:\n  url: "https://wrong.example"\n')
+            self.assertEqual(sync.canonical_base(site), f"https://example.org/blog/{COLLECTION}/")
+
+    def test_baseurl_is_optional(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            site = self.site(tmp, "url: https://example.org\n")
+            self.assertEqual(sync.canonical_base(site), f"https://example.org/{COLLECTION}/")
+
+    def test_needs_a_config_with_a_url(self):
+        for config in (None, "author:\n  url: https://wrong.example\n"):
+            with self.subTest(config=config), tempfile.TemporaryDirectory() as tmp:
+                with self.assertRaises(sync.BuildError):
+                    sync.canonical_base(self.site(tmp, config))
+
+    def test_the_real_site(self):
+        self.assertEqual(sync.canonical_base(REPO / COLLECTION), CANONICAL_BASE)
+
+    def test_version_may_carry_a_letter(self):
+        self.assertTrue(sync.VERSION.fullmatch("notes-ui-20261022b"))
+        self.assertFalse(sync.VERSION.fullmatch("notes-ui-20261022bb"))
+        self.assertIn("?v=notes-ui-20261023'", sync.notes_js(OLD_JS.replace("20260822", "20260822b"), [], "notes-ui-20261023"))
 
 
 def make_build(root: Path) -> Path:
@@ -621,6 +672,7 @@ class TestBuildErrors(unittest.TestCase):
                          "site/assets/style.css", "site/assets/notes.js"):
                 (tmp / name).parent.mkdir(parents=True, exist_ok=True)
                 (tmp / name).write_text("x", encoding="utf-8")
+            (tmp / "_config.yml").write_text("url: https://example.org\n", encoding="utf-8")
             result = run_cli("build", "--src", tmp / "ws", "--site", tmp / "site",
                              "--redirects", write_redirects(tmp / "r.tsv"), "--version", NEW_VERSION,
                              "--out", tmp / "out", env={**os.environ, "PATH": str(tmp / "empty")})
@@ -692,6 +744,7 @@ class TestInstall(unittest.TestCase):
                          "site/assets/style.css", "site/assets/notes.js"):
                 (tmp / name).parent.mkdir(parents=True, exist_ok=True)
                 (tmp / name).write_text("no front matter, no file-nav", encoding="utf-8")
+            (tmp / "_config.yml").write_text("url: https://example.org\n", encoding="utf-8")
             redirects = write_redirects(tmp / "r.tsv")
             result = run_cli("build", "--src", tmp / "ws", "--site", tmp / "site", "--redirects", redirects,
                              "--version", NEW_VERSION, "--out", tmp / "out")
@@ -701,9 +754,6 @@ class TestInstall(unittest.TestCase):
             self.assertNotEqual(result.returncode, 0)
             self.assertIn("did not finish", result.stderr)
             self.assertFalse((tmp / "dest").exists())
-
-
-SITE_URL = "https://bobbyzhong10.github.io"
 
 
 def make_site(root: Path, stub_target: str = "08_c.html") -> Path:
@@ -723,7 +773,7 @@ def make_site(root: Path, stub_target: str = "08_c.html") -> Path:
             f'<h2 id="top">T</h2><a href="{nxt}#top">next</a><img src="data:image/png;base64,AAAA" />'
             f'</body></html>', encoding="utf-8")
     (coll / "06_old.html").write_text(
-        f'<html><head><meta name="robots" content="noindex" /><link rel="canonical" href="{stub_target}" />'
+        f'<html><head><link rel="canonical" href="{CANONICAL_BASE}{stub_target}" />'
         f'<script>location.replace("{stub_target}" + location.hash)</script>'
         f'<meta http-equiv="refresh" content="0; url={stub_target}" />'
         f'</head><body><a href="{stub_target}">moved</a></body></html>', encoding="utf-8")
@@ -817,6 +867,34 @@ class TestCheck(unittest.TestCase):
                              encoding="utf-8")
             errors = sync.check_site(site, COLLECTION, split)
             self.assertTrue(any("06_old.html" in e and "landing page" in e for e in errors), errors)
+
+    def test_check_one_to_one_rules(self):
+        cases = {"noindex": ("<head>", '<head><meta name="robots" content="noindex" />'),
+                 "canonical": (f'href="{CANONICAL_BASE}08_c.html"', 'href="08_c.html"')}
+        for word, (old, new) in cases.items():
+            with self.subTest(word=word), tempfile.TemporaryDirectory() as tmp:
+                site = make_site(Path(tmp) / "_site")
+                stub = site / COLLECTION / "06_old.html"
+                stub.write_text(stub.read_text(encoding="utf-8").replace(old, new), encoding="utf-8")
+                errors = sync.check_site(site, COLLECTION, write_redirects(Path(tmp) / "r.tsv"))
+                self.assertTrue(any("06_old.html" in e and word in e for e in errors), errors)
+
+    def test_check_landing_page_rules(self):
+        landing = (f'<html><head><meta name="robots" content="noindex" />'
+                   f'<link rel="canonical" href="{CANONICAL_BASE}08_c.html" /></head><body>'
+                   f'<a class="chapter-card" href="08_c.html">8</a><a class="chapter-card" href="09_c.html">9</a>'
+                   f'</body></html>')
+        with tempfile.TemporaryDirectory() as tmp:
+            site = make_site(Path(tmp) / "_site")
+            split = Path(tmp) / "split.tsv"
+            split.write_text("old_file\tkind\ttargets\tnote\n06_old.html\tsplit\t08_c.html,09_c.html\t\n",
+                             encoding="utf-8")
+            stub = site / COLLECTION / "06_old.html"
+            stub.write_text(landing, encoding="utf-8")
+            self.assertEqual(sync.check_site(site, COLLECTION, split), [])
+            stub.write_text(landing.replace('<meta name="robots" content="noindex" />', ""), encoding="utf-8")
+            errors = sync.check_site(site, COLLECTION, split)
+            self.assertTrue(any("06_old.html" in e and "noindex" in e for e in errors), errors)
 
     def test_check_flags_sitemap(self):
         with tempfile.TemporaryDirectory() as tmp:

@@ -575,6 +575,8 @@ thead { background: var(--primary); color: #fff; }
 th { padding: 10px 14px; text-align: left; font-weight: 600; font-size: 13px; overflow-wrap: anywhere; }
 
 td { padding: 10px 14px; border-bottom: 1px solid var(--border); vertical-align: top; overflow-wrap: anywhere; }
+/* bare URLs in reference lists must wrap on narrow screens */
+a.uri { overflow-wrap: anywhere; }
 
 tbody tr:hover { background: rgba(26,54,93,0.03); }
 
@@ -798,6 +800,8 @@ code {
 .theorem { background: var(--bg-card); border: 1px solid var(--border); border-left: 4px solid var(--primary); }
 .theorem::before { content: "Proposition"; color: var(--primary); }
 .theorem[data-label]::before { content: attr(data-label); }
+/* a box that opens with its own bold label (Theorem 1, Corollary 1, Lemma 1) needs no generic header */
+.theorem:not([data-label]):has(> p:first-child > strong:first-child)::before { content: none; }
 .theorem em { font-style: normal; }
 .case { background: rgba(49,130,206,0.07); border-left: 4px solid var(--is-app); }
 .case::before { content: "Running case"; color: var(--primary); }
