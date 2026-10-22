@@ -4,9 +4,10 @@
   <meta charset="utf-8" />
   <meta name="generator" content="pandoc" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
-  <title>Game Theory | Foundations of Information Systems Economics</title>
+  <title>Game Theory | Foundations of Information Systems
+Economics</title>
 <script>(function(){var t=null;try{t=localStorage.getItem('theme');}catch(e){}if(t!=='dark'&&t!=='light'){t=(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light';}document.documentElement.setAttribute('data-theme',t);})();</script>
-  <link rel="stylesheet" href="assets/style.css?v=notes-ui-20260822" />
+  <link rel="stylesheet" href="assets/style.css?v=notes-ui-20261022c" />
   <script defer="" src="assets/katex/katex.min.js"></script>
   <script>document.addEventListener("DOMContentLoaded", function () {
  var mathElements = document.getElementsByClassName("math");
@@ -25,10 +26,17 @@
   <link rel="stylesheet" href="assets/katex/katex.min.css" />
 </head>
 <body>
-<div class="notes-topbar"><a class="notes-home" href="https://bobbyzhong10.github.io/">← Yunzhou (Bobby) Zhong</a><div class="notes-topbar__right"><a href="https://bobbyzhong10.github.io/notes/">Research Notes</a><button id="theme-toggle" class="notes-theme-toggle" type="button" aria-label="Toggle theme"><span></span></button></div></div>
+<div class="notes-topbar">
+  <a class="notes-home" href="https://bobbyzhong10.github.io/">← Yunzhou (Bobby) Zhong</a>
+  <div class="notes-topbar__right">
+    <a href="https://bobbyzhong10.github.io/notes/">Research Notes</a>
+    <button id="theme-toggle" class="notes-theme-toggle" type="button" aria-label="Toggle theme"><span></span></button>
+  </div>
+</div>
 <div class="page-wrapper">
   <nav class="sidebar">
-    <div class="sidebar-title">Foundations of Information Systems Economics</div>
+    <div class="sidebar-title">Foundations of Information Systems
+Economics</div>
     <div class="sidebar-subtitle">Theory · Methods · Applications</div>
     <div class="toc-section-label">On this page</div>
     <div class="toc">
@@ -62,33 +70,43 @@ reading</a></li>
       <div class="nav-label">This series</div>
       <a href="index.html">Home · Overview</a>
       <a href="introduction.html">Introduction · How to Use</a>
+      <!-- TOC:FILE-NAV -->
       <a href="01_consumer_producer_welfare.html">01 Consumer, Producer &amp; Welfare</a>
       <a href="02_game_theory.html">02 Game Theory</a>
       <a href="03_information_mechanism_design.html">03 Information &amp; Mechanism Design</a>
       <a href="04_pricing_imperfect_competition.html">04 Pricing &amp; Imperfect Competition</a>
-      <a href="05_estimation_mle_gmm.html">05 Estimation: MLE &amp; GMM</a>
-      <a href="06_inference.html">06 Inference: Bootstrap &amp; Clustering</a>
-      <a href="07_panel_dynamic_panel.html">07 Panel &amp; Dynamic Panel</a>
-      <a href="08_nonparametrics.html">08 Nonparametrics &amp; Semiparametrics</a>
-      <a href="09_potential_outcomes.html">09 Potential Outcomes &amp; Selection</a>
-      <a href="10_research_design_architecture.html">10 Research Design</a>
-      <a href="11_measurement_digital_traces.html">11 Measurement &amp; Digital Traces</a>
-      <a href="12_iv_late_mte.html">12 IV: LATE &amp; MTE</a>
-      <a href="13_did_event_studies.html">13 DiD &amp; Event Studies</a>
-      <a href="14_rdd_synthetic_control.html">14 RDD &amp; Synthetic Control</a>
-      <a href="15_sensitivity_partial_identification.html">15 Sensitivity &amp; Partial Identification</a>
-      <a href="16_causal_ml_dml.html">16 Causal ML &amp; DML</a>
-      <a href="17_digital_experimentation.html">17 Digital Experimentation</a>
-      <a href="18_interference_marketplace_experiments.html">18 Interference &amp; Marketplace Experiments</a>
-      <a href="19_discrete_choice.html">19 Discrete Choice &amp; Mixed Logit</a>
-      <a href="20_demand_blp.html">20 Demand Estimation &amp; BLP</a>
-      <a href="21_supply_markups_mergers.html">21 Supply, Markups &amp; Mergers</a>
-      <a href="22_entry_partial_id.html">22 Entry &amp; Partial Identification</a>
-      <a href="23_dynamic_structural.html">23 Dynamic Structural Models</a>
-      <a href="24_platforms_networks.html">24 Platforms &amp; Network Effects</a>
-      <a href="25_search_advertising.html">25 Search, Advertising &amp; Information Goods</a>
-      <a href="26_ai_algorithms_data.html">26 AI, Adoption &amp; Data Economics</a>
-      <a href="27_quick_reference.html">27 Quick Reference &amp; Tools</a>
+      <a href="05_m_estimation_nonlinear_regression.html">05 M-Estimation &amp; Nonlinear Regression</a>
+      <a href="06_maximum_likelihood.html">06 Maximum Likelihood</a>
+      <a href="07_gmm_minimum_distance.html">07 GMM &amp; Minimum Distance</a>
+      <a href="08_inference.html">08 Inference: Bootstrap &amp; Clustering</a>
+      <a href="09_iv_system_estimation.html">09 Instrumental Variables &amp; System Estimation</a>
+      <a href="10_linear_panel_fe_re.html">10 Linear Panels: FE, RE, FD &amp; CRE</a>
+      <a href="11_dynamic_panel.html">11 Dynamic Panels</a>
+      <a href="12_binary_multinomial_response.html">12 Binary &amp; Multinomial Response Models</a>
+      <a href="13_quantile_regression.html">13 Quantile Regression</a>
+      <a href="14_nonparametrics.html">14 Nonparametrics &amp; Semiparametrics</a>
+      <a href="15_potential_outcomes.html">15 Potential Outcomes &amp; Selection</a>
+      <a href="16_research_design_architecture.html">16 Research Design</a>
+      <a href="17_measurement_digital_traces.html">17 Measurement &amp; Digital Traces</a>
+      <a href="18_iv_late_mte.html">18 IV: LATE &amp; MTE</a>
+      <a href="19_did_event_studies.html">19 DiD &amp; Event Studies</a>
+      <a href="20_did_beyond_binary.html">20 DiD II: Non-Binary Treatments</a>
+      <a href="21_regression_discontinuity.html">21 Regression Discontinuity</a>
+      <a href="22_synthetic_control_factor_models.html">22 Synthetic Control &amp; Panel Factor Models</a>
+      <a href="23_sensitivity_partial_identification.html">23 Sensitivity &amp; Partial Identification</a>
+      <a href="24_causal_ml_dml.html">24 Causal ML &amp; DML</a>
+      <a href="25_digital_experimentation.html">25 Digital Experimentation</a>
+      <a href="26_interference_marketplace_experiments.html">26 Interference &amp; Marketplace Experiments</a>
+      <a href="27_discrete_choice.html">27 Discrete Choice &amp; Mixed Logit</a>
+      <a href="28_demand_blp.html">28 Demand Estimation &amp; BLP</a>
+      <a href="29_supply_markups_mergers.html">29 Supply, Markups &amp; Mergers</a>
+      <a href="30_entry_partial_id.html">30 Entry &amp; Partial Identification</a>
+      <a href="31_dynamic_structural.html">31 Dynamic Structural Models</a>
+      <a href="32_platforms_networks.html">32 Platforms &amp; Network Effects</a>
+      <a href="33_search_advertising.html">33 Search, Advertising &amp; Experience Goods</a>
+      <a href="34_ai_algorithms_data.html">34 AI, Adoption &amp; Data Economics</a>
+      <a href="35_quick_reference.html">35 Quick Reference &amp; Tools</a>
+      <!-- /TOC:FILE-NAV -->
     </div>
   </nav>
   <main class="main-content" id="top">
@@ -96,7 +114,8 @@ reading</a></li>
       <h1>Game Theory</h1>
       <div class="subtitle">Strategic Interaction, Equilibrium, and
 Credible Threats</div>
-      <div class="meta">Foundations of Information Systems Economics · Chapter 2</div>
+      <div class="meta">Foundations of Information Systems Economics ·
+Chapter 2</div>
     </header>
 <h2 id="introduction">Introduction</h2>
 <p>Both platforms know that holding prices high earns each of them 10,
@@ -123,13 +142,13 @@ worth carrying out.</p>
 <p>Aster and Boreal will keep changing the stage on which they meet,
 across pricing, compatibility standards, order of moves, and private
 information. The same handful of small games will show why good
-intentions cannot substitute for incentives, why moving first is
-sometimes an advantage and sometimes a burden, and why, when equilibrium
-is not unique, empirical work needs to say something extra about the
-selection mechanism. The later models of pricing, entry, platform
-competition, and algorithmic coordination all come down to the same
-question: when everyone is responding to everyone else, which prediction
-will not be overturned by the players’ own best responses?</p>
+intentions cannot substitute for incentives, why moving first is often
+an advantage, and why, when equilibrium is not unique, empirical work
+needs to say something extra about the selection mechanism. The later
+models of pricing, entry, platform competition, and algorithmic
+coordination all come down to the same question: when everyone is
+responding to everyone else, which prediction will not be overturned by
+the players’ own best responses?</p>
 <h2 id="a-prediction-taken-for-granted">1 A prediction taken for
 granted</h2>
 <div class="case">
@@ -138,12 +157,12 @@ To shrink the strategic interaction down to something we can do by hand,
 we look only at their pricing stance, each choosing between two options:
 hold a premium (a high price, call it High) or launch an undercut (a low
 price, call it Low). The monthly profits under the four combinations (in
-millions, the first number for Aster, the second for Boreal) are in the
-table below. When both hold high prices they each earn 10, the best
-joint outcome they can reach; whoever cuts price unilaterally uses the
-low price to grab a large share of the other’s users, so the cutter
-earns 14 and the firm that stays high is left with 2; when both cut,
-they fall into a price war and each earns 6.</p>
+millions of dollars, the first number for Aster, the second for Boreal)
+are in the table below. When both hold high prices, they each earn 10,
+the best joint outcome they can reach. Whoever cuts price unilaterally
+uses the low price to grab a large share of the other’s users, so the
+cutter earns 14 and the firm that stays high is left with 2. When both
+cut, they fall into a price war and each earns 6.</p>
 <div class="table-scroll">
 <table>
 <thead>
@@ -282,13 +301,18 @@ step by step: the first round needs only that everyone is rational, the
 second needs “I know you are rational,” the third needs “I know that you
 know that I am rational,” and deleting all the way to the end uses
 common knowledge of rationality (all levels of “I know that you know …”
-hold). The set of strategies left after deletion is the set of
-rationalizable strategies, the precise answer to “how much can be ruled
-out by common knowledge of rationality alone.” The key point is that
-rationalizability usually does not delete cleanly, and a large set of
-strategies survives, which shows that common knowledge of rationality by
-itself is often not enough to pin down a unique prediction. We need
-something stronger, and that is Nash equilibrium.</p>
+hold). The same logic leads to the set of rationalizable strategies, the
+precise answer to “how much can be ruled out by common knowledge of
+rationality alone.” Strictly speaking, rationalizability deletes the
+strategies that are never a best response, so the set it leaves is no
+larger than the one left by iterated deletion of strictly dominated
+strategies. In two-player games the two sets coincide; with three or
+more players, the rationalizable set can be strictly smaller. The key
+point is that rationalizability usually does not delete cleanly: a large
+set of strategies survives, which shows that common knowledge of
+rationality by itself is often not enough to pin down a unique
+prediction. We need something stronger, and that is Nash
+equilibrium.</p>
 <h3 id="nash-equilibrium-mutual-best-responses">3.2 Nash equilibrium:
 mutual best responses</h3>
 <p>Nash equilibrium writes the intuition of “self-sustaining” as a
@@ -308,14 +332,14 @@ rational expectations brought down to the level of strategies. In the
 pricing game, (Low, Low) is the unique Nash equilibrium, both firms earn
 6, and either one that switches back to High unilaterally only falls to
 2.</p>
-<p>Nash equilibrium is not always unique, nor does it always exist in
-pure strategies, and the compatibility game exposes both points. Aster
-and Boreal each choose a technology standard, S1 or S2, and only when
-both use the same standard can they interconnect and each reap a network
-payoff, while going their separate ways leaves them unable to connect,
-with zero payoff. Aster prefers S1, Boreal prefers S2, but both would
-rather accommodate the other than fail to connect. The payoffs are in
-the table below.</p>
+<p>Nash equilibrium is not always unique, and the compatibility game
+exposes this; nor does it always exist in pure strategies, as the
+matching pennies example below shows. Aster and Boreal each choose a
+technology standard, S1 or S2. Only when both use the same standard can
+they interconnect and each reap a network payoff; if they go their
+separate ways, they cannot connect and each gets zero. Aster prefers S1
+and Boreal prefers S2, but both would rather accommodate the other than
+fail to connect. The payoffs are in the table below.</p>
 <div class="table-scroll">
 <table>
 <thead>
@@ -390,28 +414,29 @@ with finitely many strategies) has at least one Nash equilibrium, if
 mixed strategies are allowed.</p>
 </div>
 <p>The existence theorem guarantees that “no pure-strategy equilibrium
-can be found” never means the game has no equilibrium, a mixed strategy
-equilibrium is surely there, which is why mixed strategies are not a
+can be found” never means the game has no equilibrium: a mixed strategy
+equilibrium is always there. This is why mixed strategies are not a
 dispensable technical patch but a necessity for making the equilibrium
 concept complete. The proof uses a fixed-point theorem (Kakutani or
-Brouwer), stitching everyone’s best-response map into a continuous
-correspondence from strategy combinations to strategy combinations,
-whose fixed point is the equilibrium. For details, see the appendix of
-MWG Chapter 8, which we do not develop here.</p>
+Brouwer). It stitches everyone’s best-response maps into a single
+correspondence from strategy combinations to strategy combinations
+(nonempty, convex-valued, with a closed graph), and a fixed point of
+this correspondence is an equilibrium. For details, see the appendix of
+MWG Chapter 8; we do not develop them here.</p>
 <h3 id="incomplete-information-and-bayesian-nash-equilibrium">3.3
 Incomplete information and Bayesian Nash equilibrium</h3>
 <p>So far both platforms fully understand each other’s payoffs. In
 reality this is often not the case: a platform’s cost, technological
 readiness, and strategic resolve are often private information that only
-it knows. Harsanyi’s treatment is to introduce a type for each player,
-encoding its private information, and to assume that the prior
-distribution of types is common knowledge, on which basis players make
-Bayesian inferences about the rival’s type. With this, a game of
-incomplete information is turned into a game of imperfect information
-over types, and the equilibrium concept is correspondingly generalized
-to Bayesian Nash equilibrium: each type of each player best-responds
-given the distribution of the rival’s types (and the rival’s
-type-contingent strategies).</p>
+it knows. Harsanyi’s approach is to give each player a type that encodes
+its private information and to assume that the prior distribution of
+types is common knowledge; players then use this prior to make Bayesian
+inferences about the rival’s type. With this, a game of incomplete
+information is turned into a game of imperfect information over types,
+and the equilibrium concept is correspondingly generalized to Bayesian
+Nash equilibrium (BNE): each type of each player best-responds given the
+distribution of the rival’s types (and the rival’s type-contingent
+strategies).</p>
 <p>Take a platform version of the example. Aster is uncertain about
 Boreal’s cost structure: with probability <span
 class="math inline">\beta</span> Boreal is the Normal type, whose cost
@@ -470,7 +495,7 @@ triggered.</p>
 shows up at once. Now let Aster choose a standard first and announce it,
 and Boreal choose after seeing it.</p>
 <figure>
-<svg viewBox="0 0 720 320" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, 'Noto Sans SC', sans-serif" role="img" aria-label="Extensive form of the sequential compatibility game: Aster chooses S1 or S2 first, Boreal chooses after observing; backward induction (bold branches) gives the SPE: Aster chooses S1, Boreal follows, outcome (3, 1)." style="max-width:100%;height:auto;display:block;margin:0 auto">
+<svg viewBox="0 0 720 320" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, 'Noto Sans SC', sans-serif" role="img" aria-label="Extensive form of the sequential compatibility game: Aster chooses S1 or S2 first, Boreal chooses after observing; backward induction (bold branches) gives the subgame perfect equilibrium: Aster chooses S1, Boreal follows, outcome (3, 1)." style="max-width:100%;height:auto;display:block;margin:0 auto">
   <circle cx="360" cy="50" r="6" fill="#1a365d"/>
   <text x="360" y="38" text-anchor="middle" font-size="13" fill="#1a365d">Aster</text>
 
@@ -503,8 +528,9 @@ and Boreal choose after seeing it.</p>
 </svg>
 <figcaption aria-hidden="true">Extensive form of the sequential
 compatibility game: Aster chooses S1 or S2 first, Boreal chooses after
-observing; backward induction (bold branches) gives the SPE: Aster
-chooses S1, Boreal follows, outcome (3, 1).</figcaption>
+observing; backward induction (bold branches) gives the subgame perfect
+equilibrium: Aster chooses S1, Boreal follows, outcome (3,
+1).</figcaption>
 </figure>
 <p>The standard way to solve a dynamic game is backward induction: work
 back from the ends of the tree, at each decision point assuming the
@@ -522,21 +548,21 @@ failure and equilibrium multiplicity under simultaneous choice is
 dissolved in one stroke by “who moves first,” and this is the precise
 source of the first-mover advantage.</p>
 <p>The result of backward induction corresponds to a solution concept
-stronger than Nash equilibrium, subgame perfect equilibrium. It requires
-the strategy combination to be a Nash equilibrium not just in the whole
-game but also when restricted to every subgame (the complete
+stronger than Nash equilibrium, subgame perfect equilibrium (SPE). It
+requires the strategy combination to be a Nash equilibrium not just in
+the whole game but also when restricted to every subgame (the complete
 continuation game starting from any single decision node). This
 requirement of “equilibrium everywhere” is exactly what rules out empty
 threats: if a threat is not optimal in the very subgame where it would
 have to be carried out, then the strategy combination it belongs to does
 not constitute a Nash equilibrium in that subgame, and so is thrown out
 by SPE. The sequential compatibility game in fact has other Nash
-equilibria, for example Boreal declaring “no matter what you choose I
-will choose S2,” which can scare Aster into also choosing S2 and gives
-the Nash equilibrium (S2, S2), but this threat is not credible: in the
-subgame where Aster actually chose S1, Boreal gets 1 from following with
-S1, better than 0 from holding out with S2, so it will not actually
-carry it out. SPE eliminates all such Nash equilibria propped up by
+equilibria. For example, Boreal can declare “no matter what you choose,
+I will choose S2,” which can scare Aster into also choosing S2 and gives
+the Nash equilibrium (S2, S2). But this threat is not credible: in the
+subgame where Aster has actually chosen S1, Boreal gets 1 from following
+with S1, better than 0 from holding out with S2, so it will not carry
+out the threat. SPE eliminates all such Nash equilibria propped up by
 empty threats and leaves only the backward-induction (S1, S1).</p>
 <div class="intuition">
 <p>Credibility is the soul of dynamic games, and its test can be summed
@@ -573,10 +599,10 @@ so that any strategy that is optimal only when the rival never errs is
 eliminated. The common motivation of these refinements is to give a
 reasonable constraint on off-path beliefs (what to believe after a
 deviation from the equilibrium path). We do not develop their technical
-details in this chapter, and only need to know that they are all
-extensions of the credibility idea under imperfect information, and
-later in this series, when we cover signaling games, we will make
-concrete use of off-path belief refinements.</p>
+details in this chapter. It is enough to know that they all extend the
+idea of credibility to games of imperfect information; the next chapter,
+on signaling games, explains why off-path beliefs need such
+refinements.</p>
 <h3 id="existence-how-a-fixed-point-guarantees-equilibrium">3.6
 Existence: how a fixed point guarantees equilibrium</h3>
 <p>The existence theorem in Section 3.2 gave only the conclusion, and
@@ -627,7 +653,8 @@ chooses S1, the vertical axis the probability <span
 class="math inline">q</span> that Boreal chooses S1, and draw a
 best-response curve for each: given the other’s probability, with what
 probability should I choose S1. Both curves are step-shaped with a kink,
-and they must cross, and the crossing point <span
+and they must cross. Here they cross at three points: the two corners
+are the two pure-strategy equilibria, and the interior point <span
 class="math inline">(p, q) = (3/4, 1/4)</span> is exactly the mixed
 equilibrium solved in Section 3.2. The existence theorem is nothing but
 the general version of this geometric fact: best-response curves cannot
@@ -666,38 +693,38 @@ equilibria, and is often strictly larger.</p>
 <p>Return to the compatibility game. Let a public fair coin serve as the
 coordinating device: heads recommends both firms choose S1, tails
 recommends both choose S2, each with probability one half, and both
-firms can see the toss. On receiving “S1,” Aster knows Boreal is also
-recommended S1 and will follow, and following with S1 gets 3, better
-than 0 from jumping to S2, so following is optimal; the same for Boreal.
-So this is a correlated equilibrium, and each firm’s expected payoff is
-<span class="math inline">\tfrac{1}{2}\cdot 3 + \tfrac{1}{2}\cdot 1 =
-2</span>, far above the pitiful <span class="math inline">3/4</span> of
-the mixed equilibrium, and fairly centered between the two pure
-equilibria the two firms prefer, resolving in one stroke the
-coordination failure of Section 3.2. If the public signal is replaced by
-a private correlated signal, a correlated equilibrium can even reach
-payoffs that no convex combination of Nash equilibria can attain (Aumann
-gave a famous example using the game of Chicken), which we do not
-develop here. Correlated equilibrium is especially apt for information
-systems: a pricing or recommendation algorithm used in common by many
-parties is itself a correlating device, and it can coordinate the market
-onto some outcome without any explicit collusion. Questions like “the
-algorithm is quietly coordinating” need exactly the language of
-correlated equilibrium to characterize, and later in this series, when
-we cover algorithms and markets, we will return to it.</p>
+firms can see the toss. On receiving “S1,” Aster knows that Boreal has
+also been recommended S1 and will follow it; following with S1 gets 3,
+better than 0 from jumping to S2, so following is optimal. The same
+holds for Boreal. So this is a correlated equilibrium, and each firm’s
+expected payoff is <span class="math inline">\tfrac{1}{2}\cdot 3 +
+\tfrac{1}{2}\cdot 1 = 2</span>, far above the pitiful <span
+class="math inline">3/4</span> of the mixed equilibrium, and fairly
+centered between the two pure equilibria the two firms prefer, resolving
+in one stroke the coordination failure of Section 3.2. If the public
+signal is replaced by a private correlated signal, a correlated
+equilibrium can even reach payoffs that no convex combination of Nash
+equilibria can attain (Aumann gave a famous example using the game of
+Chicken), which we do not develop here. Correlated equilibrium is
+especially apt for information systems: a pricing or recommendation
+algorithm used in common by many parties is itself a correlating device,
+and it can coordinate the market onto some outcome without any explicit
+collusion. Questions such as whether “the algorithm is quietly
+coordinating” call for exactly the language of correlated
+equilibrium.</p>
 <h3
 id="bargaining-nash-bargaining-and-rubinstein-alternating-offers">3.8
 Bargaining: Nash bargaining and Rubinstein alternating offers</h3>
-<p>The games above are mostly zero-sum confrontations, but a great deal
-of interaction in the platform economy is of another kind: two sides
-cooperating can create a surplus, and the only question is how to divide
-it. A platform negotiating a revenue split with a content supplier, two
-firms negotiating equity to form a joint venture, a deal makes everyone
-happy while a breakdown sends everyone back home, and how that surplus
-finally gets cut is the bargaining problem. It has two seemingly
-unrelated solutions that reach the same conclusion, and understanding
-this is key to the platform bargaining analysis on the supply side later
-on.</p>
+<p>The games above are mostly about competing or coordinating, but a
+great deal of interaction in the platform economy is of another kind:
+two sides cooperating can create a surplus, and the only question is how
+to divide it. Think of a platform negotiating a revenue split with a
+content supplier, or two firms negotiating equity to form a joint
+venture: a deal makes everyone happy, while a breakdown sends each side
+its own way. How that surplus is finally divided is the bargaining
+problem. It has two solutions that look unrelated yet reach the same
+conclusion, and understanding this is the foundation for reading models
+of upstream-downstream bargaining.</p>
 <p>The first is Nash’s (1950a) axiomatic solution, treating bargaining
 as a cooperative game. Given the set of feasible utility combinations
 <span class="math inline">U</span> (convex, compact) and the
@@ -709,22 +736,22 @@ exists and is unique, and it is the point that maximizes the Nash
 product:</p>
 <p><span class="math display">\max_{(u_1, u_2)\in U}\; (u_1 - d_1)(u_2 -
 d_2)</span></p>
-<p>When both sides are risk-neutral and dividing a sum of money of size
-<span class="math inline">V</span>, this solution has a plain-language
-reading: each side first takes back the <span
+<p>When both sides are risk-neutral and are dividing a sum of money of
+size <span class="math inline">V</span>, this solution has a
+plain-language reading: each side first takes back the <span
 class="math inline">d_i</span> it would get on breakdown, then the
 remaining net surplus <span class="math inline">V - d_1 - d_2</span> is
-split evenly. Section 6.6 will compute the <span
-class="math inline">50/50</span> when the disagreement point is <span
-class="math inline">(0,0)</span>, and the <span
-class="math inline">60/40</span> when one side has an outside option
-<span class="math inline">d = (20, 0)</span>. Replacing the symmetry
-axiom with a weighted version gives generalized Nash bargaining, where
-one side gets <span class="math inline">d_1 + \alpha(V - d_1 -
-d_2)</span>, and the weight <span class="math inline">\alpha</span>
-measures its relative bargaining power. This is exactly the origin of
-the bargaining-power parameter in the platform-supplier bargaining
-(Nash-in-Nash) later in this series.</p>
+split evenly. Section 6.6 computes the <span
+class="math inline">50/50</span> split when the disagreement point is
+<span class="math inline">(0,0)</span>, and the <span
+class="math inline">60/40</span> split when one side has an outside
+option <span class="math inline">d = (20, 0)</span>. Replacing the
+symmetry axiom with a weighted version gives generalized Nash
+bargaining, in which one side gets <span class="math inline">d_1 +
+\alpha(V - d_1 - d_2)</span> and the weight <span
+class="math inline">\alpha</span> measures its relative bargaining
+power. This is where the bargaining-power parameter in applied models of
+upstream-downstream bargaining (such as Nash-in-Nash) comes from.</p>
 <p>The second is Rubinstein’s (1982) strategic solution, treating
 bargaining as a dynamic game and solving it with the SPE machinery of
 Section 3.4. Two players take turns proposing a division of a surplus of
@@ -783,8 +810,8 @@ adoption pushes both the largest and the smallest equilibrium up at the
 same time. This gives coordination games a clean skeleton, but other
 equilibria may still be sandwiched between the largest and the smallest,
 so multiplicity is not eradicated.</p>
-<p>The second goes to the root, and is global games (Carlsson and van
-Damme 1993; Morris and Shin 1998). It mixes a tiny bit of incomplete
+<p>The second goes to the root: global games (Carlsson and van Damme
+1993; Morris and Shin 1998). It mixes a tiny bit of incomplete
 information into complete information: no one knows the fundamental
 <span class="math inline">\theta</span> exactly anymore, each seeing
 only a private signal with tiny noise. With this touch, common knowledge
@@ -794,7 +821,7 @@ value and not otherwise, so that the fundamental critical value <span
 class="math inline">\theta^*</span> for tipping is uniquely pinned down.
 What lets it select a unique equilibrium is a property called the
 Laplacian belief: the marginal player standing at the critical signal
-has, about “what fraction of people will adopt,” a posterior that is
+holds a posterior about “what fraction of people will adopt” that is
 exactly uniform on <span class="math inline">[0, 1]</span>. Take a setup
 we can compute by hand: the payoff to adopting is <span
 class="math inline">\theta + \ell - 1</span>, where <span
@@ -805,19 +832,18 @@ complete information, as long as <span class="math inline">\theta \in
 class="math inline">\theta &gt; 0</span> when <span
 class="math inline">\ell = 1</span>) and none adopting (payoff <span
 class="math inline">\theta - 1 &lt; 0</span> when <span
-class="math inline">\ell = 0</span>) are equilibria, so multiplicity. In
-the global game, the marginal player expects <span
+class="math inline">\ell = 0</span>) are equilibria, so the equilibrium
+is not unique. In the global game, the marginal player expects <span
 class="math inline">\mathbb{E}[\ell] = 1/2</span>, and the indifference
 condition <span class="math inline">\theta^* + \tfrac{1}{2} - 1 =
 0</span> immediately gives the unique critical value <span
 class="math inline">\theta^* = 1/2</span>: if the fundamental is above
-<span class="math inline">1/2</span> the platform is adopted by all in a
-cascade, and if below it sinks into silence, and the equilibrium
-selected is exactly the risk-dominant one. Section 6.8 reviews this
-critical value. Global games are the theoretical pillar for
-understanding coordination phenomena like platform tipping, bank runs,
-and currency attacks, and later in this series, when we cover platforms
-and network effects, we will use it head-on.</p>
+<span class="math inline">1/2</span>, adoption cascades until everyone
+has adopted the platform; if it is below, the platform sinks into
+silence. The equilibrium selected is exactly the risk-dominant one.
+Section 6.8 checks this critical value. Global games are the theoretical
+pillar for understanding coordination phenomena like platform tipping,
+bank runs, and currency attacks.</p>
 <p>Here is a summary: solution concepts are a ladder arranged from weak
 to strong requirements of rationality. Dominance and rationalizability
 use only common knowledge of rationality, and often cannot delete down
@@ -825,7 +851,7 @@ to a unique prediction; Nash equilibrium adds mutual confirmation of
 beliefs, giving a self-sustaining strategy combination, but it may be
 multiple and may exist only in mixed strategies, and its existence is
 guaranteed by the fixed point of the best-response correspondence, with
-mixing being exactly the step that makes the fixed-point theorem land;
+mixing being exactly the step that lets the fixed-point theorem apply;
 Bayesian Nash equilibrium generalizes it to private information, players
 best-responding to a distribution of types; subgame perfection enters
 dynamic games, using “equilibrium everywhere” to eliminate incredible
@@ -836,20 +862,28 @@ and characterizes algorithms quietly coordinating, the two solutions of
 bargaining (Nash’s axiomatic and Rubinstein’s alternating offers) reach
 the same division of surplus under the Nash program, and global games
 use a bit of incomplete information to select a unique tipping critical
-value for coordination games. With each level climbed and each tool
-added, fewer predictions survive and they are more credible, and this
-map is the core takeaway of the chapter.</p>
+value for coordination games. Each step up the ladder leaves fewer
+predictions standing, and those that survive are more credible. The
+companion tools point in different directions: correlated equilibrium
+enlarges the set of supportable outcomes, while global games narrow it.
+This map is the core takeaway of the chapter. The next section carries
+strategic complementarity from the relations between firms to the
+organizational choices within a firm.</p>
 <h3
 id="topkis-organizational-complementary-systems-and-empirical-tests">3.10
 Topkis, organizational complementary systems, and empirical tests</h3>
-<p>Strategic complementarity does not only occur between different
-firms, it also occurs among the multiple organizational choices within
-the same firm. Suppose a firm chooses AI adoption <span
-class="math inline">a</span>, employee skill investment <span
-class="math inline">s</span>, and decentralization of decision rights
-<span class="math inline">d</span> simultaneously, with profit <span
-class="math inline">\pi(a,s,d;\theta)</span>. If any two choices have
-increasing differences, for example</p>
+<p>Strategic complementarity occurs not only between different firms but
+also among the multiple organizational choices within the same firm.
+Suppose a firm chooses AI adoption <span class="math inline">a</span>,
+employee skill investment <span class="math inline">s</span>, and
+decentralization of decision rights <span class="math inline">d</span>
+simultaneously, with profit <span
+class="math inline">\pi(a,s,d;\theta)</span>. In this section, <span
+class="math inline">s</span> and <span class="math inline">d</span>
+denote only these two choices and are unrelated to the strategy <span
+class="math inline">s_i</span> and the disagreement point <span
+class="math inline">d</span> used earlier in the chapter. If any two
+choices have increasing differences, for example</p>
 <p><span class="math display">\frac{\partial^2\pi}{\partial a\,\partial
 s}\geq0,
 \qquad
@@ -857,32 +891,35 @@ s}\geq0,
 <p>then raising skill investment increases the marginal return to AI
 adoption, and AI adoption also increases the marginal return to
 decentralization. If the choice set is a lattice and the profit function
-is supermodular, the Topkis monotonicity theorem guarantees that the
-smallest and largest optimal choices rise monotonically in the parameter
-<span class="math inline">\theta</span> that raises marginal returns.
-This result requires neither concavity of the profit function nor
-uniqueness of the optimum, and is especially suited to studying
-organizational practices that come in bundles.</p>
+is supermodular, the monotonicity theorem of Topkis (1978) guarantees
+that the smallest and largest optimal choices rise monotonically in the
+parameter <span class="math inline">\theta</span> that raises marginal
+returns. This result requires neither concavity of the profit function
+nor uniqueness of the optimum, which makes it especially suited to
+studying organizational practices that come in bundles.</p>
 <p>The theory also explains why “bought AI but productivity did not
-rise” cannot directly falsify the value of the technology: moving only
-<span class="math inline">a</span> without moving <span
-class="math inline">s</span> and <span class="math inline">d</span>, the
-firm may still be stuck in a low-complementarity system. Empirically
-there are two common types of test. A correlation test checks whether
+rise” cannot directly falsify the value of the technology: a firm that
+moves only <span class="math inline">a</span>, without moving <span
+class="math inline">s</span> and <span class="math inline">d</span>, may
+still be stuck in a low-complementarity system. Empirically there are
+two common types of test. A correlation test checks whether
 complementary practices are adopted together, but common shocks also
 create positive correlation; a performance test checks whether joint
-adoption brings superadditive gains, but observational interaction is
-affected by selection. The most powerful design randomizes or
-quasi-randomizes two practices separately, identifying with a factorial
-contrast</p>
+adoption brings superadditive gains, but an interaction estimated from
+observational data is subject to selection. The most powerful design
+randomizes or quasi-randomizes the two practices separately. Writing
+<span class="math inline">Y(a,s)</span> for the firm’s outcome (such as
+productivity) when the two practices are set at <span
+class="math inline">a</span> and <span class="math inline">s</span>,
+such a design identifies the factorial contrast</p>
 <p><span
 class="math display">\Delta_{as}=\{Y(1,1)-Y(0,1)\}-\{Y(1,0)-Y(0,0)\}.</span></p>
 <p><span class="math inline">\Delta_{as}&gt;0</span> is the empirical
-counterpart of causal complementarity. If we can only observe firms’ own
-choices, we should at least report the adoption bundles, adjust the
-timing, and state what selection restriction the identification of the
-interaction relies on. Chapter 26 will apply this theory to AI, workflow
-redesign, and human capital.</p>
+counterpart of causal complementarity. If we can observe only the firms’
+own choices, we should at least report the bundles of practices they
+adopt and the timing of their adjustments, and state which selection
+restriction the identification of the interaction relies on. Chapter 34
+will apply this theory to AI, workflow redesign, and human capital.</p>
 <h2 id="repeated-games-and-the-possibility-of-cooperation">4 Repeated
 games and the possibility of cooperation</h2>
 <p>Section 1 left a jarring conclusion: the unique equilibrium of the
@@ -933,12 +970,15 @@ barriers, few players, and close mutual monitoring more easily sustain
 high prices, while markets where one price cut can grab most of the
 market (a huge <span class="math inline">T - R</span>) have especially
 fragile cooperation.</p>
-<p>The general form of this conclusion is the folk theorem. It says: in
-an infinitely repeated game, as long as players are patient enough
-(<span class="math inline">\delta</span> close enough to 1), any
-feasible payoff combination that gives every player strictly more than
-its minmax (the lowest value the others can jointly hold it to) can be
-supported as the average payoff of some subgame perfect equilibrium.</p>
+<p>The general form of this conclusion is the folk theorem. It states
+that in a two-player infinitely repeated game, or in an infinitely
+repeated game with three or more players that satisfies the
+Fudenberg-Maskin dimensionality condition (full dimensionality), as long
+as players are patient enough (<span class="math inline">\delta</span>
+close enough to 1), any feasible payoff combination that gives every
+player strictly more than its minmax (the lowest value the others can
+jointly hold it to) can be supported as the average payoff of some
+subgame perfect equilibrium.</p>
 <figure>
 <svg viewBox="0 0 700 340" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, 'Noto Sans SC', sans-serif" role="img" aria-label="The folk theorem payoff set: the shaded region is the convex hull of feasible payoffs, the dashed lines are the two firms’ respective minmax levels, and the darker region in the upper right (feasible payoffs above both minmax lines) can all be supported as SPE by a sufficiently patient repeated game." style="max-width:100%;height:auto;display:block;margin:0 auto">
   <line x1="80" y1="50" x2="80" y2="300" stroke="#94a1b2" stroke-width="1.5"/>
@@ -988,15 +1028,17 @@ be some other equilibrium, and equilibrium concepts alone cannot tell
 them apart, and this is exactly the problem that conduct tests and
 collusion identification later in this series will have to confront
 head-on.</p>
-<p>Here is a summary: cooperation that is sentenced to death by the
-logic of dominance in a one-shot game can be revived when the game is
-infinitely repeated and players are patient enough, sustained by the
-credible threat that “betrayal invites retaliation,” with the threshold
-<span class="math inline">\delta \geq (T-R)/(T-P)</span> determined by
-the ratio of the sneak-attack temptation to the strength of retaliation;
-the folk theorem pushes this to the general case, at the cost of severe
-equilibrium multiplicity, and the theory can say what outcomes are
-supportable but cannot say which one will happen.</p>
+<p>Here is a summary. Cooperation that the logic of dominance sentences
+to death in a one-shot game can be revived when the game is infinitely
+repeated and players are patient enough. It is sustained by the credible
+threat that “betrayal invites retaliation,” and the threshold <span
+class="math inline">\delta \geq (T-R)/(T-P)</span> is determined by the
+ratio of the temptation to defect to the strength of retaliation. The
+folk theorem extends this to the general case at the cost of severe
+equilibrium multiplicity: the theory can say which outcomes are
+supportable but not which one will happen. The subsection below turns to
+the comparative statics, equilibrium selection, and empirical
+implications of these conclusions.</p>
 <h3
 id="comparative-statics-equilibrium-selection-and-empirical-implications">4.1
 Comparative statics, equilibrium selection, and empirical
@@ -1022,16 +1064,16 @@ class="math inline">\gamma</span> requires variation that moves one
 side’s payoff without directly moving the other side’s payoff, or
 exploits the structure of network connections and restrictions on
 timing.</p>
-<p>Repeated games give another kind of comparative statics. The
-constraint for grim-trigger cooperation is</p>
-<p><span class="math display">\frac{R}{1-\delta}\geq T+\frac{\delta
-P}{1-\delta},\qquad \delta\geq\frac{T-R}{T-P}.</span></p>
-<p>When interaction is more frequent, the probability the relationship
-continues is higher, or punishment is harsher, cooperation is easier to
-sustain. Empirically, price wars are more likely to appear when demand
-drops sharply, monitoring worsens, or the relationship nears its end.
-But observed price parallelism does not equal collusion, since cost
-co-movement and common algorithms also produce the same pattern.</p>
+<p>Repeated games give another kind of comparative statics. Recall the
+grim-trigger cooperation threshold <span
+class="math inline">\delta\geq(T-R)/(T-P)</span> from the start of this
+section: cooperation is easier to sustain when interaction is more
+frequent, when the relationship is more likely to continue, or when
+punishment is harsher. Empirically, price wars are more likely to appear
+when demand drops sharply, monitoring worsens, or the relationship nears
+its end. But observed price parallelism is not the same as collusion,
+since co-moving costs and shared algorithms can produce the same
+pattern.</p>
 <div class="table-scroll">
 <table>
 <colgroup>
@@ -1105,15 +1147,17 @@ subgame perfect equilibrium.</p>
 <p>Method: for an infinitely repeated game, they construct the
 strategies needed to support a target payoff (cooperation plus credible
 punishment for betrayal), and prove that when the discount factor is
-close enough to 1, any individually rational feasible payoff can be
-realized as the average payoff of an SPE. Compared with earlier folk
-theorems that spoke only of Nash equilibrium, their key advance is to
-make the punishment itself credible (there is a reward after the
-punishment phase, so the punisher is willing to carry it out), so that
-the conclusion holds for subgame perfection, not just Nash equilibrium.
-They also give the dimensionality condition (full dimensionality) needed
-to achieve this, ensuring there is enough room to impose differentiated
-punishments and rewards on different players.</p>
+close enough to 1, any strictly individually rational feasible payoff
+can be realized as the average payoff of an SPE. Earlier folk theorems
+mostly held only for Nash equilibrium, or held for subgame perfection
+only without discounting. Their key advance is to make the punishment
+itself credible under discounting (a reward follows the punishment
+phase, so the punisher is willing to carry it out). As a result, the
+conclusion holds for subgame perfection, not just for Nash equilibrium,
+and the minmax may be computed with mixed strategies. They also give the
+dimensionality condition needed with three or more players, which
+ensures there is enough room to impose differentiated punishments and
+rewards on different players.</p>
 <p>Result: it established the folk theorem for discounted repeated
 games, where the set of supportable SPE payoffs fills the entire
 individually rational feasible region as patience tends to the
@@ -1182,11 +1226,11 @@ game: dominance and Nash equilibrium</h3>
 strictly dominated by Low: for Aster, facing Boreal’s High, Low gets 14,
 higher than High’s 10; facing Boreal’s Low, Low gets 6, higher than
 High’s 2. In both cases Low is strictly better, so High is strictly
-dominated, and the same for both firms, so the only surviving strategy
+dominated. The same holds for both firms, so the only surviving strategy
 combination is (Low, Low), with payoffs (6, 6), which is also the unique
-Nash equilibrium. The cooperative (High, High) with payoffs (10, 10),
-though Pareto dominant, is not an equilibrium, because each side wants
-to cut price secretly.</p>
+Nash equilibrium. The cooperative outcome (High, High), with payoffs
+(10, 10), Pareto dominates (6, 6) but is not an equilibrium, because
+each side wants to cut its price secretly.</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Payoff matrix: dimensions [Aster action, Boreal action], values are (Aster, Boreal)</span></span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>A <span class="ot">&lt;-</span> <span class="fu">matrix</span>(<span class="fu">c</span>(<span class="dv">10</span>, <span class="dv">2</span>, <span class="dv">14</span>, <span class="dv">6</span>), <span class="at">nrow =</span> <span class="dv">2</span>, <span class="at">byrow =</span> <span class="cn">TRUE</span>,</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>            <span class="at">dimnames =</span> <span class="fu">list</span>(<span class="fu">c</span>(<span class="st">&quot;High&quot;</span>,<span class="st">&quot;Low&quot;</span>), <span class="fu">c</span>(<span class="st">&quot;High&quot;</span>,<span class="st">&quot;Low&quot;</span>)))  <span class="co"># Aster payoffs</span></span>
@@ -1215,8 +1259,8 @@ a payoff of <span class="math inline">3/4</span>.</p>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>coord_prob <span class="ot">&lt;-</span> p<span class="sc">*</span>q <span class="sc">+</span> (<span class="dv">1</span><span class="sc">-</span>p)<span class="sc">*</span>(<span class="dv">1</span><span class="sc">-</span>q)      <span class="co"># probability of successful coordination</span></span>
 <span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>EU_A <span class="ot">&lt;-</span> <span class="dv">3</span><span class="sc">*</span>q                          <span class="co"># Aster&#39;s expected payoff (choosing S1, equal to S2 in equilibrium)</span></span>
 <span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">p =</span> p, <span class="at">q =</span> q, <span class="at">coord_prob =</span> coord_prob, <span class="at">EU_A =</span> EU_A)</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;       p       q coord_prob   EU_A</span></span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  0.7500  0.2500     0.3750  0.7500</span></span></code></pre></div>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;          p          q coord_prob       EU_A</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;      0.750      0.250      0.375      0.750</span></span></code></pre></div>
 <h3 id="the-sequential-game-backward-induction-and-spe">6.3 The
 sequential game: backward induction and SPE</h3>
 <p>Turn the compatibility game into one where Aster moves first.
@@ -1256,8 +1300,8 @@ when Normal types are more common it retreats low.</p>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>EU_low  <span class="ot">&lt;-</span> beta<span class="sc">*</span><span class="dv">6</span> <span class="sc">+</span> (<span class="dv">1</span> <span class="sc">-</span> beta)<span class="sc">*</span><span class="dv">7</span>     <span class="co"># = 7 - beta</span></span>
 <span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">EU_high =</span> EU_high, <span class="at">EU_low =</span> EU_low,</span>
 <span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">aster =</span> <span class="fu">ifelse</span>(EU_high <span class="sc">&gt;=</span> EU_low, <span class="st">&quot;High&quot;</span>, <span class="st">&quot;Low&quot;</span>), <span class="at">threshold_beta =</span> <span class="fl">0.5</span>)</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  EU_high   EU_low    aster threshold_beta</span></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;    &quot;7.2&quot;    &quot;6.6&quot;   &quot;High&quot;          &quot;0.5&quot;</span></span></code></pre></div>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;        EU_high         EU_low          aster threshold_beta</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;          &quot;7.2&quot;          &quot;6.6&quot;         &quot;High&quot;          &quot;0.5&quot;</span></span></code></pre></div>
 <h3 id="the-repeated-game-the-threshold-for-cooperation">6.5 The
 repeated game: the threshold for cooperation</h3>
 <p>Under grim trigger, the discount threshold for sustaining (High,
@@ -1357,20 +1401,19 @@ shifts from “depends on expectations” to “depends on whether the
 fundamental is above <span class="math inline">1/2</span>,” which is
 exactly the certainty that global games bring to the coordination
 problem.</p>
-<p>The section’s accounts are now settled: the same batch of platforms,
-the same set of primitives, and the logic of dominance rules that
-one-shot pricing is doomed to a price war, pure and mixed Nash
-equilibria reveal the multiplicity and fragility of standards
-coordination, backward induction shows the first mover’s locking-in
-advantage, the Bayesian equilibrium handles betting under private
-information, the repeated game gives the exact threshold for the revival
-of cooperation, the two bargaining solutions cut the surplus by
-different routes to the same end, the correlated equilibrium resolves
-coordination failure with a single coin, and the global game collapses
-the multiple equilibria into a unique tipping critical value. Every step
-can be done by hand and self-checked, and the ladder of solution
-concepts and the tools around it are laid out in full on these few small
-games.</p>
+<p>The section’s accounts are now settled. With the same platforms and
+the same set of primitives, the logic of dominance rules that one-shot
+pricing is doomed to a price war; pure and mixed Nash equilibria reveal
+the multiplicity and fragility of standards coordination; backward
+induction shows the first mover’s lock-in advantage; the Bayesian Nash
+equilibrium handles betting under private information; the repeated game
+gives the exact threshold at which cooperation revives; the two
+bargaining solutions divide the surplus by different routes to the same
+end; the correlated equilibrium resolves coordination failure with a
+single coin; and the global game collapses the multiple equilibria into
+a unique tipping critical value. Every step can be done by hand and
+self-checked, and the ladder of solution concepts and the tools around
+it are laid out in full on these few small games.</p>
 <h2 id="failure-modes-of-modeling-and-robustness">7 Failure modes of
 modeling and robustness</h2>
 <p>The machinery of game theory is precise, but there are a few places
@@ -1395,26 +1438,25 @@ parameter lies in a set rather than a point), a topic to which a
 dedicated chapter later in this series is devoted, and here we only need
 to know that multiplicity is not a flaw that can be dodged with a trick
 but an intrinsic property of strategic interaction.</p>
-<p>It is worth stressing that the tools of Sections 3.7 and 3.9 are made
-precisely to address this multiplicity trouble, but in opposite
-directions, so we must keep them straight when using them. Global games
-take the “selection” route, mixing a bit of private noise into complete
-information to collapse an entire region of coordination equilibria into
-a unique critical value, at the cost that this uniqueness depends on the
-specific assumptions about the noise structure, and once the noise fails
+<p>It is worth stressing that the tools of Sections 3.7 and 3.9 were
+designed precisely to address this multiplicity problem, but they work
+in opposite directions, so we must keep them straight. Global games take
+the “selection” route: they mix a bit of private noise into complete
+information and collapse an entire region of coordination equilibria
+into a unique critical value. The cost is that this uniqueness depends
+on specific assumptions about the noise structure. Once the noise fails
 to satisfy the conditions (signals highly correlated, or a public signal
-present), uniqueness may collapse and multiplicity may come roaring
-back, so it is a conditional selection rather than a master key.
-Correlated equilibrium takes exactly the “expansion” route: once it
-folds in a common signal, the supportable outcomes are larger than the
-convex hull of Nash equilibria, which is an advantage when explaining
-“why algorithms can coordinate high prices,” but if used for prediction
-it amounts to spreading the already multiple equilibrium set even wider,
-so that almost anything can be rationalized, and predictive power is
-even weaker. In a word, what these tools change is the size of the
-equilibrium set, and before using them think clearly about whether you
-want to narrow predictions or explain more phenomena, since the two
-cannot both be had.</p>
+present), uniqueness may break down and multiplicity may come roaring
+back, so global games offer a conditional selection rather than a master
+key. Correlated equilibrium takes precisely the “expansion” route. Once
+it folds in a common signal, the supportable outcomes include the convex
+hull of Nash equilibria and are often larger. This is an advantage when
+explaining “why algorithms can coordinate high prices,” but used for
+prediction it spreads an already multiple equilibrium set even wider, so
+that almost anything can be rationalized and predictive power becomes
+weaker still. In short, these tools change the size of the equilibrium
+set. Before using them, think clearly about whether you want to narrow
+predictions or explain more phenomena, since you cannot have both.</p>
 <p>The strength of the rationality assumption is the second place. Nash
 equilibrium assumes players are not only rational but also correctly
 anticipate each other’s equilibrium strategies, with common knowledge
@@ -1431,11 +1473,11 @@ platform really roll dice to decide a standard? Most of the time, no. A
 better reading of a mixed equilibrium is a population-level frequency (a
 fraction of firms choose S1 and a fraction choose S2, in proportions
 exactly equal to the equilibrium probabilities), or the rival’s
-uncertainty about your choice (Harsanyi’s purification theorem shows
-that a mixed equilibrium can be seen as the limit of pure-strategy
-equilibria in a game with tiny private perturbations to the payoffs).
-When using a mixed equilibrium, be clear in your mind about which one
-you mean, especially when matching it to data.</p>
+uncertainty about your choice (the purification theorem of Harsanyi
+(1973) shows that a mixed equilibrium can be seen as the limit of
+pure-strategy equilibria in a game with tiny private perturbations to
+the payoffs). When you use a mixed equilibrium, be clear about which
+reading you mean, especially when you take it to data.</p>
 <p>The real-world counterpart of credibility and commitment is a fourth
 place. SPE eliminates empty threats by relying on “carrying out the
 threat is not optimal when it actually comes to that.” But in reality
@@ -1464,19 +1506,20 @@ assumptions loosen.</p>
 <div class="readings">
 <p>Required reading, in the suggested reading order:</p>
 <ul>
-<li>Vincent Crawford, Lecture Slides on Game Theory / Industrial
-Organization (corresponding to MWG Chapters 7 to 9 and 12). The
+<li>Vincent Crawford (2012, Lecture Slides on Game Theory / Industrial
+Organization), corresponding to MWG Chapters 7 to 9 and 12. The
 organization and intuition of this chapter’s ladder of solution concepts
 mainly follow these slides, and reading them once first will straighten
 out the relationships among dominance, Nash, and SPE.</li>
-<li>Mas-Colell, Whinston and Green, Microeconomic Theory, Chapters 7 to
-9. The authoritative reference for game theory, with Chapter 8’s Nash
-equilibrium and BNE and Chapter 9’s SPE and sequential equilibrium being
-the complete sources for Sections 3.2 to 3.5 of this chapter, and the
-proof of the existence theorem is here too.</li>
-<li>Gibbons, Game Theory for Applied Economists. An application-oriented
-introduction to game theory, dense with examples and low in barriers,
-good to read alongside MWG to fill in intuition.</li>
+<li>Mas-Colell, Whinston and Green (1995, Microeconomic Theory),
+Chapters 7 to 9. The authoritative reference for game theory. Its
+Chapter 8 (Nash equilibrium and BNE) and Chapter 9 (SPE and sequential
+equilibrium) are the complete sources for Sections 3.2 to 3.5 of this
+chapter, and the proof of the existence theorem is there too.</li>
+<li>Gibbons (1992, Game Theory for Applied Economists). An
+application-oriented introduction to game theory, rich in examples and
+easy to get into, and good to read alongside MWG to build
+intuition.</li>
 </ul>
 <p>Further reading:</p>
 <ul>
@@ -1493,10 +1536,10 @@ strategies under imperfect information.</li>
 incomplete information and of BNE, the source of the ideas in Section
 3.3.</li>
 <li>Nash (1950a) and Rubinstein (1982). The two cornerstones of
-bargaining, the axiomatic solution and the strategic solution, read with
-Osborne and Rubinstein (1990) to see clearly how the Nash program
-connects the two, the complete source of Section 3.8 and the origin of
-the primitives for the platform bargaining analysis later on.</li>
+bargaining, the axiomatic solution and the strategic solution, and
+together the complete source of Section 3.8. Read them with Osborne and
+Rubinstein (1990) to see clearly how the Nash program connects the
+two.</li>
 <li>Aumann (1974, 1987). The proposal of correlated equilibrium and its
 reinterpretation as an “expression of Bayesian rationality,” the basis
 of Section 3.7, unavoidable for understanding algorithmic
@@ -1507,8 +1550,9 @@ crises, the source of the uniqueness conclusion of Section 3.9.</li>
 <li>Milgrom and Roberts (1990). The general theory of supermodular games
 and strategic complementarity, the source of the largest and smallest
 equilibria and the monotone comparative statics of Section 3.9.</li>
-<li>Fudenberg and Tirole, Game Theory. The standard graduate-level
-reference, especially complete on dynamic games and refinements.</li>
+<li>Fudenberg and Tirole (1991, Game Theory). The standard
+graduate-level reference, especially complete on dynamic games and
+refinements.</li>
 </ul>
 </div>
 <div class="apa-refs">
@@ -1541,6 +1585,11 @@ Princeton University Press.</li>
 Science, 14</em>(3), 159-182. <a
 href="https://doi.org/10.1287/mnsc.14.3.159"
 class="uri">https://doi.org/10.1287/mnsc.14.3.159</a></li>
+<li>Harsanyi, J. C. (1973). Games with randomly disturbed payoffs: A new
+rationale for mixed-strategy equilibrium points. <em>International
+Journal of Game Theory, 2</em>(1), 1-23. <a
+href="https://doi.org/10.1007/BF01737554"
+class="uri">https://doi.org/10.1007/BF01737554</a></li>
 <li>Katz, M. L., &amp; Shapiro, C. (1985). Network externalities,
 competition, and compatibility. <em>American Economic Review,
 75</em>(3), 424-440.</li>
@@ -1582,7 +1631,8 @@ class="uri">https://doi.org/10.1287/opre.26.2.305</a></li>
 </ul>
 </div>
     <footer class="page-footer">
-<span>Foundations of Information Systems Economics: Empirical Methods for Information Systems Economics</span>
+<span>Foundations of Information Systems Economics: Empirical Methods
+for Information Systems Economics</span>
     </footer>
   </main>
 </div>
@@ -1618,6 +1668,6 @@ class="uri">https://doi.org/10.1287/opre.26.2.305</a></li>
   window.addEventListener('resize', fitMath);
 }());
 </script>
-<script defer src="assets/notes.js?v=notes-ui-20260822"></script>
+<script defer src="assets/notes.js?v=notes-ui-20261022c"></script>
 </body>
 </html>

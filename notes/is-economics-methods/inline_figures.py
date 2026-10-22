@@ -3,14 +3,18 @@
 rendered HTML as a self-contained, responsive <svg> element, so figures travel
 with the page (no dependency on the assets/fig/ folder shipping alongside).
 
-Run AFTER pandoc, from the notes_v2/ directory:  python3 inline_figures.py
-Idempotent: once a page's <img> refs are inlined there is nothing left to match.
+Run AFTER pandoc, from the workspace root:
+    python3 inline_figures.py                 every *.html in the current directory
+    python3 inline_figures.py NN.html [...]   only the named pages (two sessions that render different
+                                              chapters at the same time must name their own pages)
+Idempotent: once a page's <img> refs are inlined there is nothing left to match. A named file that does
+not exist is an error (exit 2) and nothing is processed.
 
 Handles the two gotchas of inlining many SVGs on one page:
   1. id collisions  -> every id (and #ref) is namespaced per figure (g1_, g2_, ...)
   2. fixed pt sizing -> width/height attrs stripped; viewBox kept; responsive style added
 """
-import re, glob, os, base64
+import re, glob, os, sys, base64
 
 FIGDIR = "assets/fig"
 # SVGs larger than this that have a rasterized sibling .png (e.g. dense contour
@@ -68,9 +72,14 @@ img_re = re.compile(
     r'<img\s+src="(?P<src>assets/fig/[^"]+\.svg)"(?:\s+alt="(?P<alt>[^"]*)")?[^>]*?/>',
     re.DOTALL)
 
-def main():
+def main(argv=None):
+    names = list(sys.argv[1:] if argv is None else argv)
+    missing = [n for n in names if not os.path.isfile(n)]
+    if missing:
+        print("inline_figures.py: no such file: " + ", ".join(missing), file=sys.stderr)
+        sys.exit(2)
     total = 0
-    for html in sorted(glob.glob("*.html")):
+    for html in (names or sorted(glob.glob("*.html"))):
         txt = open(html, encoding="utf-8").read()
         if 'src="assets/fig/' not in txt:
             continue

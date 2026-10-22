@@ -1,12 +1,12 @@
-# 第 3 章 运行案例：Vireo 广告位拍卖与若干机制
-# 全部数字均可手算；本脚本把手算过程原样誊写并自检。
-# 运行时请 cd 进本目录。
+# Chapter 3 running example: Vireo's ad slot auction and other mechanisms
+# Every number can be computed by hand; this script transcribes the hand calculations and checks them.
+# Run from this directory.
 
-## 6.1 效率配置与 VCG 支付 -------------------------------------------------
-v   <- c(10, 6, 4)           # 每次点击估值（已排序）
-ctr <- c(100, 40, 0)         # 广告位点击率（第 3 位 = 落空）
-# 效率配置：广告主 i -> 广告位 i
-# VCG 支付 = 他人在其缺席时的最大价值 - 他人在选定配置下的实得价值
+## 6.1 Efficient allocation and VCG payments -------------------------------
+v   <- c(10, 6, 4)           # value per click (sorted)
+ctr <- c(100, 40, 0)         # slot click rates (3rd entry = no slot)
+# Efficient allocation: advertiser i -> slot i
+# VCG payment = others' max value in its absence - others' realized value under the chosen allocation
 pay1 <- (v[2]*ctr[1] + v[3]*ctr[2]) - (v[2]*ctr[2] + v[3]*ctr[3])
 pay2 <- (v[1]*ctr[1] + v[3]*ctr[2]) - (v[1]*ctr[1] + v[3]*ctr[3])
 VCG_rev <- pay1 + pay2
@@ -14,38 +14,53 @@ util1 <- v[1]*ctr[1] - pay1
 util2 <- v[2]*ctr[2] - pay2
 cat(sprintf("VCG: pay1=%d (%.1f/click) pay2=%d (%.1f/click) revenue=%d\n",
             pay1, pay1/ctr[1], pay2, pay2/ctr[2], VCG_rev))
-cat(sprintf("     util1=%d util2=%d (均非负 -> 真话占优)\n", util1, util2))
+cat(sprintf("     util1=%d util2=%d (both nonnegative -> IR holds; truthful dominance follows from the VCG theorem of Section 3.6)\n", util1, util2))
 stopifnot(VCG_rev == 680, util1 >= 0, util2 >= 0)
 
-## 6.2 GSP 对照 -----------------------------------------------------------
-# 天真如实报价：顶部位付第二名报价，次位付第三名报价
-gsp_naive <- v[2]*ctr[1] + v[3]*ctr[2]
-cat(sprintf("GSP 天真真话收入=%d；局部无嫉妒均衡复现 VCG=%d\n", gsp_naive, VCG_rev))
+## 6.2 GSP comparison ------------------------------------------------------
+# Truthful bids: the top slot pays the second bid, the second slot pays the third bid
+gsp_truth <- v[2]*ctr[1] + v[3]*ctr[2]
+# Local envy-freeness check: advertiser 2 swapping with the one above (top slot at price 6) gets 0 <= its current 80;
+# advertiser 3 moving up to the second slot (at price 4) gets 0 <= 0.
+stopifnot((v[2] - v[2])*ctr[1] <= (v[2] - v[3])*ctr[2], (v[3] - v[3])*ctr[2] <= 0)
+# Downward deviation check: advertiser 1 dropping to the second slot (at price 4) gets 240 <= its current 400; advertiser 2 exiting gets 0 <= 80.
+# An upward deviation costs at least the swap price, so the swap checks above cover it. Hence truthful bidding is a locally envy-free equilibrium here.
+stopifnot((v[1] - v[3])*ctr[2] <= (v[1] - v[2])*ctr[1], 0 <= (v[2] - v[3])*ctr[2])
+# The lowest revenue locally envy-free (LEF) equilibrium reproduces VCG:
+# second slot price = v3, top slot price p1_low makes advertiser 2 exactly indifferent between the two slots
+p1_low  <- (v[2]*(ctr[1] - ctr[2]) + v[3]*ctr[2])/ctr[1]
+gsp_low <- p1_low*ctr[1] + v[3]*ctr[2]
+stopifnot(abs(gsp_low - VCG_rev) < 1e-9)
+cat(sprintf("GSP truthful revenue=%d (also a locally envy-free equilibrium here); lowest LEF revenue=%.0f, reproduces VCG=%d\n",
+            gsp_truth, gsp_low, VCG_rev))
 
-## 6.3 收入等价与保留价 ---------------------------------------------------
-# 两广告主估值独立均匀[0,1]
+## 6.3 Revenue equivalence and reserve price -------------------------------
+# Two advertisers with independent uniform[0,1] values
 n <- 2
-spa <- (n - 1)/(n + 1)                 # 第二价格：次高值期望
-fpa <- (n - 1)/n * n/(n + 1)           # 第一价格：压价 b(v)=(n-1)/n v，最高报价期望
-cat(sprintf("收入等价: 第二价格=%.4f 第一价格=%.4f\n", spa, fpa))
+spa <- (n - 1)/(n + 1)                 # second price: expected second highest value
+fpa <- (n - 1)/n * n/(n + 1)           # first price: shading b(v)=(n-1)/n v, expected highest bid
+cat(sprintf("revenue equivalence: second price=%.4f first price=%.4f\n", spa, fpa))
 stopifnot(abs(spa - fpa) < 1e-12)
-# 最优保留价 r* = 1/2（解 r = (1-F)/f = 1-r）；n=2 期望收入
-rev_reserve <- 5/12
-cat(sprintf("最优保留价 r*=0.5，期望收入=%.4f（对比无保留价 %.4f）\n", rev_reserve, spa))
+# Optimal reserve r* = 1/2 (solves r = (1-F)/f = 1-r); expected revenue with n=2
+r <- 0.5
+# one bidder above r pays r; both above pay the second highest value E[min | both >= r]
+rev_reserve <- 2*r*(1 - r)*r + (1 - r)^2*(r + (1 - r)/3)
+stopifnot(abs(rev_reserve - 5/12) < 1e-12)
+cat(sprintf("optimal reserve r*=0.5, expected revenue=%.4f (vs %.4f without a reserve)\n", rev_reserve, spa))
 
-## 3.1 Akerlof 逆向选择自检 -----------------------------------------------
-# 质量 theta~U[0,1]，卖家估值 theta，买家估值 1.5 theta
-# 价格 p 下卖者 theta<=p，均质 p/2，买家 WTP = 1.5*(p/2) = 0.75p < p
+## 3.1 Akerlof adverse selection check -------------------------------------
+# Quality theta~U[0,1], seller values it at theta, buyer at 1.5 theta
+# At price p the sellers are those with theta<=p, mean quality p/2, buyer WTP = 1.5*(p/2) = 0.75p < p
 p_grid <- seq(0.1, 1, by = 0.1)
 wtp <- 1.5 * (p_grid/2)
-cat("Akerlof: WTP < 价格 恒成立 ->", all(wtp < p_grid), " 市场崩解至 theta=0\n")
+cat("Akerlof: WTP < price at every price ->", all(wtp < p_grid), " market unravels to theta=0\n")
 
-## 3.4 道德风险自检 -------------------------------------------------------
-# 高努力成本 5，高业绩概率 0.8（低努力 0.2），有限责任 w>=0
-# IC: 0.6 (wH - wL) >= 5 -> wH-wL >= 25/3；wL=0 -> wH=25/3；租 = 0.8 wH - 5
+## 3.4 Moral hazard check --------------------------------------------------
+# High effort costs 5; success probability 0.8 (0.2 under low effort); limited liability w>=0
+# IC: 0.6 (wH - wL) >= 5 -> wH-wL >= 25/3; wL=0 -> wH=25/3; rent = 0.8 wH - 5
 wH <- 25/3; wL <- 0
 rent <- 0.8*wH - 5
-cat(sprintf("道德风险: wH-wL>=%.3f, wH=%.3f, 代理人租=%.3f\n", 25/3, wH, rent))
+cat(sprintf("moral hazard: wH-wL>=%.3f, wH=%.3f, agent rent=%.3f\n", 25/3, wH, rent))
 stopifnot(abs(0.6*(wH - wL) - 5) < 1e-9)
 
 ## 4.6 Comparative statics checks ------------------------------------------

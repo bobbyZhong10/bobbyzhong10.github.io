@@ -85,7 +85,6 @@ exclude:
   - notes/is-economics-methods/code
   - notes/is-economics-methods/inline_figures.py
   - notes/is-economics-methods/src
-  - notes/is-economics-methods/validate_book.py
   - node_modules
   - package.json
   - tmp
@@ -123,6 +122,99 @@ defaults:
       type: pages
     values:
       layout: default
+  # Redirect stubs for the v2 file names of the IS economics notes: keep them out of the sitemap
+  - scope:
+      path: "notes/is-economics-methods/05_estimation_mle_gmm.html"
+    values:
+      sitemap: false
+  - scope:
+      path: "notes/is-economics-methods/06_inference.html"
+    values:
+      sitemap: false
+  - scope:
+      path: "notes/is-economics-methods/07_panel_dynamic_panel.html"
+    values:
+      sitemap: false
+  - scope:
+      path: "notes/is-economics-methods/08_nonparametrics.html"
+    values:
+      sitemap: false
+  - scope:
+      path: "notes/is-economics-methods/09_potential_outcomes.html"
+    values:
+      sitemap: false
+  - scope:
+      path: "notes/is-economics-methods/10_research_design_architecture.html"
+    values:
+      sitemap: false
+  - scope:
+      path: "notes/is-economics-methods/11_measurement_digital_traces.html"
+    values:
+      sitemap: false
+  - scope:
+      path: "notes/is-economics-methods/12_iv_late_mte.html"
+    values:
+      sitemap: false
+  - scope:
+      path: "notes/is-economics-methods/13_did_event_studies.html"
+    values:
+      sitemap: false
+  - scope:
+      path: "notes/is-economics-methods/14_rdd_synthetic_control.html"
+    values:
+      sitemap: false
+  - scope:
+      path: "notes/is-economics-methods/15_sensitivity_partial_identification.html"
+    values:
+      sitemap: false
+  - scope:
+      path: "notes/is-economics-methods/16_causal_ml_dml.html"
+    values:
+      sitemap: false
+  - scope:
+      path: "notes/is-economics-methods/17_digital_experimentation.html"
+    values:
+      sitemap: false
+  - scope:
+      path: "notes/is-economics-methods/18_interference_marketplace_experiments.html"
+    values:
+      sitemap: false
+  - scope:
+      path: "notes/is-economics-methods/19_discrete_choice.html"
+    values:
+      sitemap: false
+  - scope:
+      path: "notes/is-economics-methods/20_demand_blp.html"
+    values:
+      sitemap: false
+  - scope:
+      path: "notes/is-economics-methods/21_supply_markups_mergers.html"
+    values:
+      sitemap: false
+  - scope:
+      path: "notes/is-economics-methods/22_entry_partial_id.html"
+    values:
+      sitemap: false
+  - scope:
+      path: "notes/is-economics-methods/23_dynamic_structural.html"
+    values:
+      sitemap: false
+  - scope:
+      path: "notes/is-economics-methods/24_platforms_networks.html"
+    values:
+      sitemap: false
+  - scope:
+      path: "notes/is-economics-methods/25_search_advertising.html"
+    values:
+      sitemap: false
+  - scope:
+      path: "notes/is-economics-methods/26_ai_algorithms_data.html"
+    values:
+      sitemap: false
+  - scope:
+      path: "notes/is-economics-methods/27_quick_reference.html"
+    values:
+      sitemap: false
 
 
 # Sass/SCSS

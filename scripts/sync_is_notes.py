@@ -59,8 +59,8 @@ STYLESHEET = '  <link rel="stylesheet" href="assets/style.css" />'
 PANDOC_ARGS = ["-f", "markdown+autolink_bare_uris", "--template=assets/template.html", "--katex=assets/katex/",
                "--lua-filter=assets/wrap-tables.lua", "--toc", "--toc-depth=2"]
 PANDOC_VERSION = "3.12.1"
-VERSION = re.compile(r"notes-ui-\d{8}")
-VERSION_QUERY = re.compile(r"\?v=notes-ui-\d{8}")
+VERSION = re.compile(r"notes-ui-\d{8}[a-z]?")  # a letter marks a second release on the same day
+VERSION_QUERY = re.compile(r"\?v=notes-ui-\d{8}[a-z]?")
 
 BUILD_MARKER = ".sync_is_notes_build"  # "incomplete" while build runs, "complete" once it succeeded
 BUILD_COMPLETE = "complete"
@@ -83,6 +83,8 @@ FILE_NAV = re.compile(r'<div class="file-nav">(.*?)</nav>', re.S)
 FILE_NAV_LINK = re.compile(r'<a href="(\d\d_[a-z0-9_]+\.html)">([^<]*)</a>')
 EXTERNAL = re.compile(r"^(?:[a-zA-Z][a-zA-Z0-9+.-]*:|//)")
 SITEMAP_LOC = re.compile(r"<loc>\s*([^<]+?)\s*</loc>")
+CANONICAL = re.compile(r'<link rel="canonical" href="([^"]*)"')
+NOINDEX = '<meta name="robots" content="noindex"'
 
 
 class BuildError(Exception):
@@ -184,11 +186,12 @@ def _link_chapters(text: str, titles: dict) -> str:
                   if int(match.group(1)) in pages else match.group(0), html_escape(text))
 
 
-def stub_html(row: dict, titles: dict, version: str, descs: dict | None = None, edition: int = 35) -> str:
-    """The static page left at a v2 file name.
+def stub_html(row: dict, titles: dict, version: str, *, canonical_base: str, descs: dict | None = None,
+              edition: int = 35) -> str:
+    """The static page left at a v2 file name; its canonical link is canonical_base + the first target.
 
     A one-to-one row redirects at once and keeps the #anchor. A split row is a landing page
-    (decision 3): it lists every new chapter with its description and does not redirect.
+    (decision 3): it lists every new chapter with its description, does not redirect and carries noindex.
     """
     targets = row["targets"]
     first = targets[0]
@@ -198,13 +201,13 @@ def stub_html(row: dict, titles: dict, version: str, descs: dict | None = None, 
         return f"Chapter {int(name[:2])} · {titles[name]}"
 
     head = ['<!DOCTYPE html>', '<html lang="en">', '<head>', '  <meta charset="utf-8" />',
-            '  <meta name="viewport" content="width=device-width, initial-scale=1.0" />',
-            '  <meta name="robots" content="noindex" />']
+            '  <meta name="viewport" content="width=device-width, initial-scale=1.0" />']
+    canonical = f'  <link rel="canonical" href="{canonical_base}{first}" />'
     sub = f"This page was Chapter {old_number} of the {V2_CHAPTERS}-chapter edition."
     note = [f"    <p>{_link_chapters(row['note'], titles)}</p>"] if row["note"] else []
     if row["kind"] == "one":
         head += [f"  <title>{html_escape(chapter(first))} | {SIDEBARTITLE}</title>",
-                 f'  <link rel="canonical" href="{first}" />',
+                 canonical,
                  f"  <script>location.replace({json.dumps(first)} + location.hash)</script>",
                  f'  <meta http-equiv="refresh" content="0; url={first}" />']
         heading = "This chapter has moved"
@@ -218,8 +221,9 @@ def stub_html(row: dict, titles: dict, version: str, descs: dict | None = None, 
         if missing:
             raise ValueError(f"{row['old_file']}: a landing page needs a description for {', '.join(missing)}")
         numbers = _and_join([str(int(name[:2])) for name in targets])
-        head += [f"  <title>Chapter {old_number} is now Chapters {numbers} | {SIDEBARTITLE}</title>",
-                 f'  <link rel="canonical" href="{first}" />']
+        head += ['  <meta name="robots" content="noindex" />',
+                 f"  <title>Chapter {old_number} is now Chapters {numbers} | {SIDEBARTITLE}</title>",
+                 canonical]
         heading = "This chapter has been split"
         cards = [f'    <a class="chapter-card" href="{name}"><div class="ch-no">{name[:2]}</div>'
                  f'<div class="ch-title">{html_escape(titles[name])}</div>'
@@ -227,9 +231,9 @@ def stub_html(row: dict, titles: dict, version: str, descs: dict | None = None, 
         body = ['  <div class="cover-intro">',
                 f"    <p>In the {edition}-chapter edition its material is spread over Chapters {numbers}. "
                 "Pick the one you were looking for:</p>",
-                *note,
                 "  </div>",
-                '  <div class="chapter-grid">', *cards, "  </div>"]
+                '  <div class="chapter-grid">', *cards, "  </div>",
+                *(['  <div class="cover-intro">', *note, "  </div>"] if note else [])]
     head += [THEME_INIT, _stylesheet(version), "</head>"]
     page = [*head, "<body>", TOPBAR_INLINE, '<div class="cover-wrapper">', '  <header class="cover-header">',
             f"    <h1>{heading}</h1>", f'    <div class="cover-sub">{sub}</div>', "  </header>", *body,
@@ -311,6 +315,25 @@ def yaml_field(text: str, key: str) -> str:
     return value
 
 
+def canonical_base(site: Path) -> str:
+    """The collection's absolute URL: url and baseurl from the site's _config.yml, then the folder's path."""
+    site = site.resolve()
+    config = next((folder / "_config.yml" for folder in site.parents if (folder / "_config.yml").is_file()), None)
+    if config is None:
+        raise BuildError(f"no _config.yml above {site}; the redirect pages need the site's url")
+    text = read(config)
+
+    def value(key: str) -> str:
+        match = re.search(rf"^{key}[ \t]*:[ \t]*[\"']?([^\"'#\s]*)", text, re.M)
+        return match.group(1) if match else ""
+
+    url = value("url").rstrip("/")
+    if not url:
+        raise BuildError(f"{config} has no top-level url")
+    path = "/".join(part for part in (value("baseurl").strip("/"), site.relative_to(config.parent).as_posix()) if part)
+    return f"{url}/{path}/"
+
+
 def _inside(path: Path, root: Path) -> bool:
     return path == root or root in path.parents
 
@@ -372,7 +395,7 @@ def render(out: Path, stems: list) -> None:
 def build(src: Path, site: Path, redirects: Path, version: str, out: Path) -> None:
     src, site, out = src.resolve(), site.resolve(), out.expanduser().resolve()
     if not VERSION.fullmatch(version):
-        raise BuildError(f"--version must look like notes-ui-YYYYMMDD, not {version!r}")
+        raise BuildError(f"--version must look like notes-ui-YYYYMMDD, optionally with one letter, not {version!r}")
     for required in (src / "index.html", src / "assets/template.html", src / "src/introduction.md",
                      src / "inline_figures.py", site / "assets/style.css", site / "assets/notes.js"):
         if not required.is_file():
@@ -380,6 +403,7 @@ def build(src: Path, site: Path, redirects: Path, version: str, out: Path) -> No
     if _inside(out, src) or _inside(src, out) or _inside(out, site) or _inside(site, out):
         raise BuildError("--out must be a separate folder, outside --src and --site")
     rows = load_redirects(redirects)
+    base = canonical_base(site) if rows else ""
     _check_pandoc()
 
     _prepare_out(out)
@@ -406,7 +430,8 @@ def build(src: Path, site: Path, redirects: Path, version: str, out: Path) -> No
         unknown = [name for name in row["targets"] if name not in titles]
         if unknown:
             raise BuildError(f"redirect {row['old_file']}: no such chapter {', '.join(unknown)}")
-        write(out / row["old_file"], stub_html(row, titles, version, descs=descs, edition=len(toc)))
+        write(out / row["old_file"], stub_html(row, titles, version, canonical_base=base, descs=descs,
+                                               edition=len(toc)))
 
     leftover = sorted({path.name for path in out.glob("*.html")} - pages - {row["old_file"] for row in rows})
     if leftover:
@@ -542,6 +567,13 @@ def check_site(site_root: Path, collection: str, redirects: Path) -> list:
             if fragment and target.suffix == ".html" and fragment not in page(target).ids:
                 errors.append(f"{name}: missing anchor {link}")
 
+    sitemap = site_root / "sitemap.xml"
+    locs = SITEMAP_LOC.findall(read(sitemap)) if sitemap.is_file() else []
+    prefix = f"/{collection}/"
+    # The collection's absolute URL, as the site itself publishes it in sitemap.xml.
+    bases = {loc[:loc.index(prefix) + len(prefix)] for loc in locs if urlsplit(loc).path.startswith(prefix)}
+    base = bases.pop() if len(bases) == 1 else None
+
     stubs = {row["old_file"] for row in rows}
     for row in rows:
         stub = coll / row["old_file"]
@@ -549,26 +581,31 @@ def check_site(site_root: Path, collection: str, redirects: Path) -> list:
             errors.append(f"{collection}/{row['old_file']}: redirect page missing")
             continue
         text, first, name = read(stub), row["targets"][0], f"{collection}/{row['old_file']}"
-        if ('<meta name="robots" content="noindex"' not in text
-                or f'<link rel="canonical" href="{first}"' not in text):
-            errors.append(f"{name}: not a redirect page (needs noindex and a canonical link to {first})")
-        redirects_now = "http-equiv" in text or "location.replace" in text
-        if row["kind"] == "split" and redirects_now:
-            errors.append(f"{name}: a landing page must not redirect (decision 3)")
-        if row["kind"] == "one" and (f"location.replace({json.dumps(first)} + location.hash)" not in text
-                                     or f'content="0; url={first}"' not in text):
-            errors.append(f"{name}: must redirect to {first} at once and keep the anchor (location.hash)")
+        canonical = CANONICAL.search(text)
+        if not canonical:
+            errors.append(f"{name}: not a redirect page (no canonical link)")
+        elif (not urlsplit(canonical.group(1)).netloc or not canonical.group(1).endswith(prefix + first)
+              or (base and canonical.group(1) != base + first)):
+            errors.append(f"{name}: the canonical link must be the absolute URL {base or '...' + prefix}{first}")
+        if row["kind"] == "split":
+            if NOINDEX not in text:
+                errors.append(f"{name}: a landing page needs noindex (decision 3)")
+            if "http-equiv" in text or "location.replace" in text:
+                errors.append(f"{name}: a landing page must not redirect (decision 3)")
+        else:
+            if NOINDEX in text:
+                errors.append(f"{name}: a one-to-one redirect must not carry noindex")
+            if (f"location.replace({json.dumps(first)} + location.hash)" not in text
+                    or f'content="0; url={first}"' not in text):
+                errors.append(f"{name}: must redirect to {first} at once and keep the anchor (location.hash)")
         for name in row["targets"]:
             if not (coll / name).is_file():
                 errors.append(f"{collection}/{row['old_file']}: redirect target {name} missing")
 
-    sitemap = site_root / "sitemap.xml"
     if not sitemap.is_file():
         errors.append("sitemap.xml missing")
     else:
-        prefix = f"/{collection}/"
-        listed = [path[len(prefix):] or "index.html" for path in
-                  (unquote(urlsplit(loc).path) for loc in SITEMAP_LOC.findall(read(sitemap)))
+        listed = [path[len(prefix):] or "index.html" for path in (unquote(urlsplit(loc).path) for loc in locs)
                   if path.startswith(prefix)]
         pages = {path.name for path in coll.glob("*.html")} - stubs
         if len(listed) != PAGE_COUNT:

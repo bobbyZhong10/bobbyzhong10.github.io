@@ -1,0 +1,89 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='576.00pt' height='345.60pt' viewBox='0 0 576.00 345.60'>
+<g class='svglite'>
+<defs>
+  <style type='text/css'><![CDATA[
+    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {
+      fill: none;
+      stroke: #000000;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-miterlimit: 10.00;
+    }
+    .svglite text {
+      white-space: pre;
+    }
+    .svglite g.glyphgroup path {
+      fill: inherit;
+      stroke: none;
+    }
+  ]]></style>
+</defs>
+<rect width='100%' height='100%' style='stroke: none; fill: #FFFFFF;'/>
+<defs>
+  <clipPath id='cpMC4wMHw1NzYuMDB8MC4wMHwzNDUuNjA='>
+    <rect x='0.00' y='0.00' width='576.00' height='345.60' />
+  </clipPath>
+</defs>
+<g clip-path='url(#cpMC4wMHw1NzYuMDB8MC4wMHwzNDUuNjA=)'>
+<rect x='-0.000000000000064' y='0.00' width='576.00' height='345.60' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
+</g>
+<defs>
+  <clipPath id='cpMzUuNTZ8NTcwLjUyfDUuNDh8MjUyLjE1'>
+    <rect x='35.56' y='5.48' width='534.96' height='246.67' />
+  </clipPath>
+</defs>
+<g clip-path='url(#cpMzUuNTZ8NTcwLjUyfDUuNDh8MjUyLjE1)'>
+<polyline points='35.56,245.41 570.52,245.41 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='35.56,179.05 570.52,179.05 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='35.56,112.69 570.52,112.69 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='35.56,46.34 570.52,46.34 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='59.88,252.15 59.88,5.48 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='129.36,252.15 129.36,5.48 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='198.83,252.15 198.83,5.48 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='268.31,252.15 268.31,5.48 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='337.78,252.15 337.78,5.48 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='407.25,252.15 407.25,5.48 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='476.73,252.15 476.73,5.48 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='546.20,252.15 546.20,5.48 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
+<rect x='59.88' y='195.05' width='486.32' height='20.68' style='stroke-width: 1.07; stroke: none; stroke-linecap: butt; stroke-linejoin: miter; fill: #D55E00; fill-opacity: 0.12;' />
+<polygon points='59.88,239.03 77.25,235.93 94.62,231.87 111.99,226.82 129.36,220.86 146.72,214.10 164.09,206.71 181.46,198.86 198.83,190.69 216.20,182.30 233.57,173.78 250.94,165.17 268.31,156.51 285.67,147.82 303.04,139.11 320.41,130.39 337.78,121.65 355.15,112.92 372.52,104.18 389.89,95.44 407.25,86.69 424.62,77.94 441.99,69.20 459.36,60.45 476.73,51.70 494.10,42.95 511.47,34.20 528.84,25.44 546.20,16.69 546.20,69.74 528.84,76.43 511.47,83.12 494.10,89.81 476.73,96.50 459.36,103.20 441.99,109.89 424.62,116.59 407.25,123.28 389.89,129.98 372.52,136.68 355.15,143.38 337.78,150.08 320.41,156.78 303.04,163.48 285.67,170.18 268.31,176.88 250.94,183.56 233.57,190.22 216.20,196.83 198.83,203.36 181.46,209.74 164.09,215.88 146.72,221.67 129.36,226.96 111.99,231.61 94.62,235.51 77.25,238.61 59.88,240.93 ' style='stroke-width: 0.00; stroke: none; stroke-linecap: butt; fill: #0072B2; fill-opacity: 0.18;' />
+<polyline points='59.88,239.03 77.25,235.93 94.62,231.87 111.99,226.82 129.36,220.86 146.72,214.10 164.09,206.71 181.46,198.86 198.83,190.69 216.20,182.30 233.57,173.78 250.94,165.17 268.31,156.51 285.67,147.82 303.04,139.11 320.41,130.39 337.78,121.65 355.15,112.92 372.52,104.18 389.89,95.44 407.25,86.69 424.62,77.94 441.99,69.20 459.36,60.45 476.73,51.70 494.10,42.95 511.47,34.20 528.84,25.44 546.20,16.69 ' style='stroke-width: 1.07; stroke: none; stroke-linecap: butt;' />
+<polyline points='546.20,69.74 528.84,76.43 511.47,83.12 494.10,89.81 476.73,96.50 459.36,103.20 441.99,109.89 424.62,116.59 407.25,123.28 389.89,129.98 372.52,136.68 355.15,143.38 337.78,150.08 320.41,156.78 303.04,163.48 285.67,170.18 268.31,176.88 250.94,183.56 233.57,190.22 216.20,196.83 198.83,203.36 181.46,209.74 164.09,215.88 146.72,221.67 129.36,226.96 111.99,231.61 94.62,235.51 77.25,238.61 59.88,240.93 ' style='stroke-width: 1.07; stroke: none; stroke-linecap: butt;' />
+<polyline points='59.88,239.98 77.25,237.27 94.62,233.69 111.99,229.22 129.36,223.91 146.72,217.88 164.09,211.30 181.46,204.30 198.83,197.03 216.20,189.57 233.57,182.00 250.94,174.36 268.31,166.69 285.67,159.00 303.04,151.29 320.41,143.58 337.78,135.87 355.15,128.15 372.52,120.43 389.89,112.71 407.25,104.99 424.62,97.26 441.99,89.54 459.36,81.82 476.73,74.10 494.10,66.38 511.47,58.66 528.84,50.94 546.20,43.22 ' style='stroke-width: 1.49; stroke: #0072B2; stroke-linecap: butt;' />
+<polyline points='59.88,239.95 77.25,237.26 94.62,233.74 111.99,229.35 129.36,224.14 146.72,218.24 164.09,211.78 181.46,204.93 198.83,197.80 216.20,190.50 233.57,183.09 250.94,175.61 268.31,168.10 285.67,160.57 303.04,153.02 320.41,145.47 337.78,137.91 355.15,130.36 372.52,122.80 389.89,115.24 407.25,107.68 424.62,100.12 441.99,92.56 459.36,85.00 476.73,77.44 494.10,69.88 511.47,62.32 528.84,54.76 546.20,47.20 ' style='stroke-width: 1.49; stroke: #0072B2; stroke-dasharray: 1.99,5.98; stroke-linecap: butt;' />
+<polyline points='59.88,205.39 546.20,205.39 ' style='stroke-width: 1.49; stroke: #D55E00; stroke-dasharray: 7.97,7.97; stroke-linecap: butt;' />
+<polyline points='59.88,202.52 546.20,202.52 ' style='stroke-width: 1.49; stroke: #404040; stroke-linecap: butt;' />
+<circle cx='59.88' cy='239.98' r='2.70' style='stroke-width: 0.71; stroke: #0072B2; fill: #0072B2;' />
+<circle cx='268.31' cy='166.69' r='2.70' style='stroke-width: 0.71; stroke: #0072B2; fill: #0072B2;' />
+<circle cx='407.25' cy='104.99' r='2.70' style='stroke-width: 0.71; stroke: #0072B2; fill: #0072B2;' />
+<text x='62.16' y='234.13' text-anchor='end' style='font-size: 9.10px;fill: #0072B2; font-family: "Arial";' textLength='22.78px' lengthAdjust='spacingAndGlyphs'>0.041</text>
+<text x='270.58' y='160.84' text-anchor='end' style='font-size: 9.10px;fill: #0072B2; font-family: "Arial";' textLength='22.78px' lengthAdjust='spacingAndGlyphs'>0.593</text>
+<text x='409.53' y='99.13' text-anchor='end' style='font-size: 9.10px;fill: #0072B2; font-family: "Arial";' textLength='22.78px' lengthAdjust='spacingAndGlyphs'>1.058</text>
+</g>
+<g clip-path='url(#cpMC4wMHw1NzYuMDB8MC4wMHwzNDUuNjA=)'>
+<text x='30.63' y='248.56' text-anchor='end' style='font-size: 8.80px;fill: #4D4D4D; font-family: "Arial";' textLength='12.22px' lengthAdjust='spacingAndGlyphs'>0.0</text>
+<text x='30.63' y='182.20' text-anchor='end' style='font-size: 8.80px;fill: #4D4D4D; font-family: "Arial";' textLength='12.22px' lengthAdjust='spacingAndGlyphs'>0.5</text>
+<text x='30.63' y='115.84' text-anchor='end' style='font-size: 8.80px;fill: #4D4D4D; font-family: "Arial";' textLength='12.22px' lengthAdjust='spacingAndGlyphs'>1.0</text>
+<text x='30.63' y='49.49' text-anchor='end' style='font-size: 8.80px;fill: #4D4D4D; font-family: "Arial";' textLength='12.22px' lengthAdjust='spacingAndGlyphs'>1.5</text>
+<text x='59.88' y='263.38' text-anchor='middle' style='font-size: 8.80px;fill: #4D4D4D; font-family: "Arial";' textLength='43.03px' lengthAdjust='spacingAndGlyphs'>USD 1,000</text>
+<text x='129.36' y='263.38' text-anchor='middle' style='font-size: 8.80px;fill: #4D4D4D; font-family: "Arial";' textLength='35.70px' lengthAdjust='spacingAndGlyphs'>USD 100</text>
+<text x='198.83' y='263.38' text-anchor='middle' style='font-size: 8.80px;fill: #4D4D4D; font-family: "Arial";' textLength='30.81px' lengthAdjust='spacingAndGlyphs'>USD 10</text>
+<text x='268.31' y='263.38' text-anchor='middle' style='font-size: 8.80px;fill: #4D4D4D; font-family: "Arial";' textLength='25.92px' lengthAdjust='spacingAndGlyphs'>USD 1</text>
+<text x='337.78' y='263.38' text-anchor='middle' style='font-size: 8.80px;fill: #4D4D4D; font-family: "Arial";' textLength='33.25px' lengthAdjust='spacingAndGlyphs'>10 cents</text>
+<text x='407.25' y='263.38' text-anchor='middle' style='font-size: 8.80px;fill: #4D4D4D; font-family: "Arial";' textLength='23.95px' lengthAdjust='spacingAndGlyphs'>1 cent</text>
+<text x='476.73' y='263.38' text-anchor='middle' style='font-size: 8.80px;fill: #4D4D4D; font-family: "Arial";' textLength='31.28px' lengthAdjust='spacingAndGlyphs'>0.1 cent</text>
+<text x='546.20' y='263.38' text-anchor='middle' style='font-size: 8.80px;fill: #4D4D4D; font-family: "Arial";' textLength='36.17px' lengthAdjust='spacingAndGlyphs'>0.01 cent</text>
+<text x='303.04' y='275.84' text-anchor='middle' style='font-size: 11.00px; font-family: "Arial";' textLength='247.12px' lengthAdjust='spacingAndGlyphs'>Unit in which 30-day sales are recorded (log scale)</text>
+<text transform='translate(13.36,128.81) rotate(-90)' text-anchor='middle' style='font-size: 11.00px; font-family: "Arial";' textLength='172.16px' lengthAdjust='spacingAndGlyphs'>Effect of Spotlight (coefficient on D)</text>
+<line x1='154.49' y1='303.24' x2='168.31' y2='303.24' style='stroke-width: 1.49; stroke: #0072B2; stroke-linecap: butt;' />
+<line x1='154.49' y1='326.00' x2='168.31' y2='326.00' style='stroke-width: 1.49; stroke: #0072B2; stroke-dasharray: 1.99,5.98; stroke-linecap: butt;' />
+<line x1='335.43' y1='303.24' x2='349.26' y2='303.24' style='stroke-width: 1.49; stroke: #D55E00; stroke-dasharray: 7.97,7.97; stroke-linecap: butt;' />
+<line x1='335.43' y1='326.00' x2='349.26' y2='326.00' style='stroke-width: 1.49; stroke: #404040; stroke-linecap: butt;' />
+<text x='175.52' y='306.39' style='font-size: 8.80px; font-family: "Arial";' textLength='152.70px' lengthAdjust='spacingAndGlyphs'>OLS of log(1 + y) on Spotlight (95% CI)</text>
+<text x='175.52' y='329.15' style='font-size: 8.80px; font-family: "Arial";' textLength='111.53px' lengthAdjust='spacingAndGlyphs'>Population ATE on log(1 + y)</text>
+<text x='356.46' y='306.39' style='font-size: 8.80px; font-family: "Arial";' textLength='96.77px' lengthAdjust='spacingAndGlyphs'>PPML, any unit (95% CI)</text>
+<text x='356.46' y='329.15' style='font-size: 8.80px; font-family: "Arial";' textLength='96.86px' lengthAdjust='spacingAndGlyphs'>True log(E[y(1)] / E[y(0)])</text>
+</g>
+</g>
+</svg>

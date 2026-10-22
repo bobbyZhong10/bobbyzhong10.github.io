@@ -4,10 +4,10 @@
   <meta charset="utf-8" />
   <meta name="generator" content="pandoc" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
-  <title>Pricing, Monopoly &amp; Imperfect Competition | IS Economics ·
-Empirical Methods</title>
+  <title>Pricing, Monopoly &amp; Imperfect Competition | Foundations of
+Information Systems Economics</title>
 <script>(function(){var t=null;try{t=localStorage.getItem('theme');}catch(e){}if(t!=='dark'&&t!=='light'){t=(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light';}document.documentElement.setAttribute('data-theme',t);})();</script>
-  <link rel="stylesheet" href="assets/style.css?v=notes-ui-20260822" />
+  <link rel="stylesheet" href="assets/style.css?v=notes-ui-20261022c" />
   <script defer="" src="assets/katex/katex.min.js"></script>
   <script>document.addEventListener("DOMContentLoaded", function () {
  var mathElements = document.getElementsByClassName("math");
@@ -26,10 +26,17 @@ Empirical Methods</title>
   <link rel="stylesheet" href="assets/katex/katex.min.css" />
 </head>
 <body>
-<div class="notes-topbar"><a class="notes-home" href="https://bobbyzhong10.github.io/">← Yunzhou (Bobby) Zhong</a><div class="notes-topbar__right"><a href="https://bobbyzhong10.github.io/notes/">Research Notes</a><button id="theme-toggle" class="notes-theme-toggle" type="button" aria-label="Toggle theme"><span></span></button></div></div>
+<div class="notes-topbar">
+  <a class="notes-home" href="https://bobbyzhong10.github.io/">← Yunzhou (Bobby) Zhong</a>
+  <div class="notes-topbar__right">
+    <a href="https://bobbyzhong10.github.io/notes/">Research Notes</a>
+    <button id="theme-toggle" class="notes-theme-toggle" type="button" aria-label="Toggle theme"><span></span></button>
+  </div>
+</div>
 <div class="page-wrapper">
   <nav class="sidebar">
-    <div class="sidebar-title">Foundations of Information Systems Economics</div>
+    <div class="sidebar-title">Foundations of Information Systems
+Economics</div>
     <div class="sidebar-subtitle">Theory · Methods · Applications</div>
     <div class="toc-section-label">On this page</div>
     <div class="toc">
@@ -63,33 +70,43 @@ Reading</a></li>
       <div class="nav-label">This series</div>
       <a href="index.html">Home · Overview</a>
       <a href="introduction.html">Introduction · How to Use</a>
+      <!-- TOC:FILE-NAV -->
       <a href="01_consumer_producer_welfare.html">01 Consumer, Producer &amp; Welfare</a>
       <a href="02_game_theory.html">02 Game Theory</a>
       <a href="03_information_mechanism_design.html">03 Information &amp; Mechanism Design</a>
       <a href="04_pricing_imperfect_competition.html">04 Pricing &amp; Imperfect Competition</a>
-      <a href="05_estimation_mle_gmm.html">05 Estimation: MLE &amp; GMM</a>
-      <a href="06_inference.html">06 Inference: Bootstrap &amp; Clustering</a>
-      <a href="07_panel_dynamic_panel.html">07 Panel &amp; Dynamic Panel</a>
-      <a href="08_nonparametrics.html">08 Nonparametrics &amp; Semiparametrics</a>
-      <a href="09_potential_outcomes.html">09 Potential Outcomes &amp; Selection</a>
-      <a href="10_research_design_architecture.html">10 Research Design</a>
-      <a href="11_measurement_digital_traces.html">11 Measurement &amp; Digital Traces</a>
-      <a href="12_iv_late_mte.html">12 IV: LATE &amp; MTE</a>
-      <a href="13_did_event_studies.html">13 DiD &amp; Event Studies</a>
-      <a href="14_rdd_synthetic_control.html">14 RDD &amp; Synthetic Control</a>
-      <a href="15_sensitivity_partial_identification.html">15 Sensitivity &amp; Partial Identification</a>
-      <a href="16_causal_ml_dml.html">16 Causal ML &amp; DML</a>
-      <a href="17_digital_experimentation.html">17 Digital Experimentation</a>
-      <a href="18_interference_marketplace_experiments.html">18 Interference &amp; Marketplace Experiments</a>
-      <a href="19_discrete_choice.html">19 Discrete Choice &amp; Mixed Logit</a>
-      <a href="20_demand_blp.html">20 Demand Estimation &amp; BLP</a>
-      <a href="21_supply_markups_mergers.html">21 Supply, Markups &amp; Mergers</a>
-      <a href="22_entry_partial_id.html">22 Entry &amp; Partial Identification</a>
-      <a href="23_dynamic_structural.html">23 Dynamic Structural Models</a>
-      <a href="24_platforms_networks.html">24 Platforms &amp; Network Effects</a>
-      <a href="25_search_advertising.html">25 Search, Advertising &amp; Information Goods</a>
-      <a href="26_ai_algorithms_data.html">26 AI, Adoption &amp; Data Economics</a>
-      <a href="27_quick_reference.html">27 Quick Reference &amp; Tools</a>
+      <a href="05_m_estimation_nonlinear_regression.html">05 M-Estimation &amp; Nonlinear Regression</a>
+      <a href="06_maximum_likelihood.html">06 Maximum Likelihood</a>
+      <a href="07_gmm_minimum_distance.html">07 GMM &amp; Minimum Distance</a>
+      <a href="08_inference.html">08 Inference: Bootstrap &amp; Clustering</a>
+      <a href="09_iv_system_estimation.html">09 Instrumental Variables &amp; System Estimation</a>
+      <a href="10_linear_panel_fe_re.html">10 Linear Panels: FE, RE, FD &amp; CRE</a>
+      <a href="11_dynamic_panel.html">11 Dynamic Panels</a>
+      <a href="12_binary_multinomial_response.html">12 Binary &amp; Multinomial Response Models</a>
+      <a href="13_quantile_regression.html">13 Quantile Regression</a>
+      <a href="14_nonparametrics.html">14 Nonparametrics &amp; Semiparametrics</a>
+      <a href="15_potential_outcomes.html">15 Potential Outcomes &amp; Selection</a>
+      <a href="16_research_design_architecture.html">16 Research Design</a>
+      <a href="17_measurement_digital_traces.html">17 Measurement &amp; Digital Traces</a>
+      <a href="18_iv_late_mte.html">18 IV: LATE &amp; MTE</a>
+      <a href="19_did_event_studies.html">19 DiD &amp; Event Studies</a>
+      <a href="20_did_beyond_binary.html">20 DiD II: Non-Binary Treatments</a>
+      <a href="21_regression_discontinuity.html">21 Regression Discontinuity</a>
+      <a href="22_synthetic_control_factor_models.html">22 Synthetic Control &amp; Panel Factor Models</a>
+      <a href="23_sensitivity_partial_identification.html">23 Sensitivity &amp; Partial Identification</a>
+      <a href="24_causal_ml_dml.html">24 Causal ML &amp; DML</a>
+      <a href="25_digital_experimentation.html">25 Digital Experimentation</a>
+      <a href="26_interference_marketplace_experiments.html">26 Interference &amp; Marketplace Experiments</a>
+      <a href="27_discrete_choice.html">27 Discrete Choice &amp; Mixed Logit</a>
+      <a href="28_demand_blp.html">28 Demand Estimation &amp; BLP</a>
+      <a href="29_supply_markups_mergers.html">29 Supply, Markups &amp; Mergers</a>
+      <a href="30_entry_partial_id.html">30 Entry &amp; Partial Identification</a>
+      <a href="31_dynamic_structural.html">31 Dynamic Structural Models</a>
+      <a href="32_platforms_networks.html">32 Platforms &amp; Network Effects</a>
+      <a href="33_search_advertising.html">33 Search, Advertising &amp; Experience Goods</a>
+      <a href="34_ai_algorithms_data.html">34 AI, Adoption &amp; Data Economics</a>
+      <a href="35_quick_reference.html">35 Quick Reference &amp; Tools</a>
+      <!-- /TOC:FILE-NAV -->
     </div>
   </nav>
   <main class="main-content" id="top">
@@ -97,7 +114,8 @@ Reading</a></li>
       <h1>Pricing, Monopoly &amp; Imperfect Competition</h1>
       <div class="subtitle">Market Power, Price Discrimination, and
 Oligopoly</div>
-      <div class="meta">Foundations of Information Systems Economics · Chapter 4</div>
+      <div class="meta">Foundations of Information Systems Economics ·
+Chapter 4</div>
     </header>
 <h2 id="introduction">Introduction</h2>
 <p>The same demand curve and the same marginal cost can give birth to
@@ -163,10 +181,10 @@ wide range. Start with why it is not a ceiling. Part of that
 instrument, not an iron law of market power. If Cirrus does not charge
 every merchant a single price, but instead lays out a tiered commission
 menu and lets merchants of different sizes self-select, it can earn
-more; Section 6 will show that this kind of second-degree price
-discrimination lifts profit from 25 to 26. And if it could price
-perfectly and individually to each merchant, it could pocket both the
-12.5 in consumer surplus and the 12.5 that was previously deadweight
+more. Section 6 shows, in a two-type version of this market, that such a
+menu lifts profit from the 25 of a single package to 26. And if it could
+price perfectly and individually to each merchant, it could pocket both
+the 12.5 in consumer surplus and the 12.5 that was previously deadweight
 loss (total profit of 50). A single price is far from the limit of
 extraction. Now for why it is not a floor. That 25 rests on the premise
 that Cirrus owns the market. The moment a rival platform, Nimbus, enters
@@ -249,12 +267,13 @@ uses price discrimination to extract more, and what that means for
 welfare.</p>
 <h2 id="core-structure-monopoly-pricing-and-price-discrimination">3 Core
 Structure: Monopoly Pricing and Price Discrimination</h2>
-<p>This section is the most detailed part of the chapter’s analysis.
-First we lay out single-price monopoly fully, then along the line of
-“how much information about buyers can be obtained, and how far
-arbitrage can be blocked” we unfold the three degrees of price
-discrimination one at a time, and finally we touch on a subtle
-constraint on monopoly: the Coase conjecture.</p>
+<p>This section is the most detailed part of the chapter’s analysis. We
+first work through single-price monopoly in full. Then, following the
+question of “how much information about buyers can be obtained, and how
+far arbitrage can be blocked,” we take up the three degrees of price
+discrimination one at a time. Next we touch on a subtle constraint on
+monopoly, the Coase conjecture, and finally we turn to nonlinear
+pricing, versioning, and intertemporal dynamic pricing.</p>
 <h3 id="single-price-monopoly-and-deadweight-loss">3.1 Single-Price
 Monopoly and Deadweight Loss</h3>
 <p>Start with the simplest case: the monopolist charges every buyer the
@@ -460,32 +479,35 @@ class="math inline">F</span> to sweep up all the resulting consumer
 surplus in one go. The result is that the firm captures the entire
 surplus that should have gone to buyers, while output reaches the
 competitive level: with two pricing instruments it reproduces the effect
-of first-degree discrimination. Section 6.5 will substitute this
-chapter’s demand and find <span class="math inline">F = 50</span> and
-profit 50, exactly twice the single-price 25, with output rising to the
-efficient 10. When buyers are heterogeneous there is a trade-off: a high
-<span class="math inline">F</span> extracts more from large buyers but
-shuts small buyers out, so the optimal two-part tariff must balance “the
-markup per unit” against “how many buyers to cover,” which is exactly
-the extension of the discrete menu of Section 3.2 to continuous types.
-Membership fees plus usage fees, a platform’s listing fee plus
-transaction commission, subscription floors plus overage charges, the
-shadow of the two-part tariff is everywhere.</p>
+of first-degree discrimination. Section 6.5 substitutes this chapter’s
+demand and finds <span class="math inline">F = 50</span> and profit 50,
+exactly twice the single-price 25, with output rising to the efficient
+10. When buyers are heterogeneous there is a trade-off: a high <span
+class="math inline">F</span> extracts more from large buyers but shuts
+small buyers out, so the optimal two-part tariff must balance “the
+markup per unit” against “how many buyers to cover.” This can be read as
+a simplification of the menu idea of Section 3.2: with continuous types
+the optimum is a fully nonlinear tariff, and the two-part tariff is only
+its affine approximation. Membership fees plus usage fees, a platform’s
+listing fee plus transaction commission, subscription floors plus
+overage charges: the shadow of the two-part tariff is everywhere.</p>
 <p>The second family is bundling (Adams and Yellen 1976): selling
 several goods together as a package. Counterintuitively, even when
 marginal cost is zero and each good priced separately is already
-optimal, as long as buyers’ valuations of the different goods are
-negatively correlated, pure bundling can still earn more. The reason is
-that bundling smooths out the differences in willingness to pay across
-buyers, letting the firm set the bundle price close to each buyer’s
-total valuation and thereby capture the surplus that separate pricing
-misses. In the two-good two-buyer example of Section 6.5, selling
-separately yields 20 in total, while pure bundling grabs 24 at a stroke.
-Going one step further, mixed bundling (selling the bundle and the
-individual goods at the same time) is usually even better. This explains
-why software suites, content memberships, and tiered platform services
-always sell a pile of features bundled together: bundling extracts
-exactly the surplus that piece-by-piece pricing leaves on the table.</p>
+optimal, pure bundling may earn more when buyers’ valuations of the
+different goods are negatively correlated, though not always: it can
+also do worse than separate sales. The reason is that bundling smooths
+out the differences in willingness to pay across buyers, letting the
+firm set the bundle price close to each buyer’s total valuation and
+thereby capture the surplus that separate pricing misses. In the
+two-good two-buyer example of Section 6.5, selling separately yields 20
+in total, while pure bundling grabs 24 at a stroke. Going one step
+further, mixed bundling (selling the bundle and the individual goods at
+the same time) does at least as well as both, since it contains pure
+bundling and separate sales as special cases. This explains why software
+suites, content memberships, and tiered platform services always sell a
+pile of features bundled together: bundling extracts exactly the surplus
+that piece-by-piece pricing leaves on the table.</p>
 <h3 id="versioning-designing-quality-menus-for-information-goods">3.5
 Versioning: Designing Quality Menus for Information Goods</h3>
 <p>The high fixed cost, near-zero reproduction cost, and designable
@@ -498,16 +520,27 @@ of the low-end version do not necessarily come from technical cost, but
 may be a degradation added deliberately to maintain incentive
 compatibility.</p>
 <p>Let types be <span class="math inline">\theta_H&gt;\theta_L</span>,
-quality be <span class="math inline">s</span>, and utility be <span
-class="math inline">\theta s-p</span>. The menu <span
-class="math inline">(s_L,p_L),(s_H,p_H)</span> must satisfy the two IC
-and IR constraints. The standard single-crossing result is still
-efficient at the top: <span class="math inline">s_H</span> is
-undistorted, <span class="math inline">s_L</span> is distorted downward,
-in order to reduce the information rent that must be left when the high
-type imitates the low-end version. So “why the free version is
-deliberately missing features” is not an accident of product design, but
-a testable prediction of the screening constraint.</p>
+quality be <span class="math inline">s</span>, utility be <span
+class="math inline">\theta s-p</span>, and the unit cost of a product of
+quality <span class="math inline">s</span> be <span
+class="math inline">c(s)</span>, strictly convex (<span
+class="math inline">c&#39;&gt;0</span>, <span
+class="math inline">c&#39;&#39;&gt;0</span>), so that efficient quality
+satisfies <span class="math inline">\theta=c&#39;(s)</span>. The menu
+<span class="math inline">(s_L,p_L),(s_H,p_H)</span> must satisfy the
+two IC and IR constraints. The standard single-crossing result still
+gives efficiency at the top: <span class="math inline">s_H</span> is
+undistorted, and <span class="math inline">s_L</span> is distorted
+downward to reduce the information rent the high type must be left so
+that it does not imitate the low type by picking the low-end version.
+The convex cost is essential. With zero cost of quality, profit is
+linear in <span class="math inline">s_L</span>, and the optimal menu
+collapses to a single version or excludes the low type (Salant 1989).
+For a zero-cost information good to be versioned, valuations cannot take
+the form <span class="math inline">\theta v(s)</span>, which scales
+proportionally with type. When either condition holds, “why the free
+version is deliberately missing features” is not an accident of product
+design but a testable prediction of the screening constraint.</p>
 <p>Versioning also has boundaries. Too many versions increase menu
 complexity and maintenance cost; competition compresses the room for
 artificial degradation, because a rival can use a higher-quality low-end
@@ -538,13 +571,13 @@ under other conditions: buyers are myopic, or the good is perishable and
 a fresh batch of buyers who cannot wait arrives each period (airline
 seats and concert tickets are exactly like this), or cost or quality
 falls over time. The opposite pattern to skimming is penetration pricing
-(low price first, higher price later), which is optimal only under
-network effects or learning-by-doing: use a low introductory price to
-build the installed base first, then raise the price once network value
-takes hold. A platform’s freemium and low-price customer acquisition are
-essentially penetration pricing, aimed at breaking past that adoption
-threshold of Chapter 2, and this thread leads to the platform chapter
-later on.</p>
+(low price first, higher price later), which is often optimal under
+network effects, learning-by-doing, switching costs, or experience
+goods: use a low introductory price to build the installed base first,
+then raise the price once network value takes hold. A platform’s
+freemium and low-price customer acquisition are essentially penetration
+pricing, aimed at pushing past the adoption threshold of Chapter 2; this
+thread leads to the platform chapter later in the book.</p>
 <p>The other pole of dynamic pricing is a fixed and exhaustible stock,
 and the classic result is Hotelling’s Rule (Hotelling 1931). Consider an
 exhaustible resource with marginal extraction cost <span
@@ -575,24 +608,28 @@ pricing and congestion pricing in cloud computing, echoes exactly
 Hotelling’s logic: price scarcity itself, and let its rent chase the
 cost of capital.</p>
 <p>To summarize: single-price monopoly holds output below the
-competitive level and creates deadweight loss; price discrimination is
-divided into three degrees by how much information the firm has, with
-first-degree extracting perfectly yet most efficient, third-degree
-sorting by observable label and charging the inelastic more, and
-second-degree using a self-selecting menu to sort indirectly, trading
-distortion at the bottom for information rent at the top, exactly the
-pricing incarnation of the screening of Chapter 3; nonlinear pricing
-lands second-degree discrimination as two practical families, the
+competitive level and creates deadweight loss. Price discrimination is
+divided into three degrees by how much information the firm has.
+First-degree discrimination extracts perfectly yet is the most
+efficient; third-degree discrimination sorts buyers by observable label
+and charges the less elastic more; and second-degree discrimination uses
+a self-selecting menu to sort indirectly, trading distortion at the
+bottom for information rent at the top, which is exactly the pricing
+incarnation of the screening of Chapter 3. Nonlinear pricing turns
+second-degree discrimination into two practical families of tools: the
 two-part tariff (per-unit price pushed to marginal cost, fixed fee
 sweeping up the surplus) and bundling (smoothing valuation differences
-to extract one more layer); intertemporally, a durable-goods monopolist
-that can commit optimally holds a constant price (Stokey), skimming
-requires myopia or perishability, penetration relies on network effects,
-while one that cannot commit is pushed by the Coase conjecture toward
-competitive pricing, and the scarcity rent of an exhaustible stock
-follows Hotelling’s Rule, growing at the interest rate. The next section
-moves from a single firm to several firms and looks at how competition
-pushes prices down.</p>
+to extract one more layer). Versioning carries the same screening over
+to the quality of information goods, deliberately degrading the low-end
+version under a convex cost of quality or valuations that do not scale
+proportionally with type. Intertemporally, a durable-goods monopolist
+that can commit optimally holds a constant price (Stokey); skimming
+requires myopia or perishability, and penetration relies on network
+effects and similar forces. A monopolist that cannot commit is pushed by
+the Coase conjecture toward competitive pricing, and the scarcity rent
+of an exhaustible stock follows Hotelling’s Rule, growing at the
+interest rate. The next section moves from a single firm to several
+firms and looks at how competition pushes prices down.</p>
 <h2 id="imperfect-competition-the-several-faces-of-oligopoly">4
 Imperfect Competition: The Several Faces of Oligopoly</h2>
 <p>Monopoly is one firm dominating, perfect competition is countless
@@ -717,12 +754,12 @@ id="product-differentiation-hotelling-and-the-softening-of-competition">4.4
 Product Differentiation: Hotelling and the Softening of Competition</h3>
 <p>The second exit from the Bertrand paradox is product differentiation.
 The premise of the paradox is that products are completely
-undifferentiated and buyers look only at price, but once the two firms’
+undifferentiated and buyers look only at price. Once the two firms’
 products differ in buyers’ eyes (brand, interface, ecosystem, location),
-the logic of cutting a penny to grab all demand fails, because there are
-always buyers who, out of preference, are willing to pay a bit more for
-you, and price competition softens accordingly. Hotelling’s linear city
-model is the classic way to capture this.</p>
+the logic of cutting a penny to grab all demand fails, because some
+buyers always prefer your product enough to pay a bit more for it, and
+price competition softens accordingly. The linear city model of
+Hotelling (1929) is the classic way to capture this.</p>
 <p>Let buyers be uniformly distributed on a “street” of length 1 (this
 street can be real geography, or a product characteristic space, such as
 the spectrum of interface styles), with two firms at the two ends 0 and
@@ -778,11 +815,10 @@ entering.” The key here is still commitment: a purely verbal threat that
 threat of Chapter 2), but if the incumbent sinks an irreversible cost in
 advance (excess capacity, R&amp;D, locking in users), it turns the
 threat into a credible deterrent. Entry deterrence is therefore another
-battlefield for strategic commitment, and this series will take it up
-directly when it covers entry and market structure later on; here we
-need only know that market power depends not only on how many firms
-there are now, but also on how strongly potential entrants are
-deterred.</p>
+battlefield for strategic commitment, and we take it up directly later
+in this chapter. Here we need only know that market power depends not
+only on how many firms there are now but also on how strongly potential
+entrants are deterred.</p>
 <h3
 id="vertical-relations-double-marginalization-vertical-integration-and-rpm">4.6
 Vertical Relations: Double Marginalization, Vertical Integration, and
@@ -806,27 +842,29 @@ price 7 and profit 25; when upstream and downstream are separate, the
 wholesale price is pushed up to 7, the retail price shoots up to 9.5,
 and the two together earn only 18.75.</p>
 <p>The root of the disease is that when the downstream firm marks up, it
-cares only about its own profit and ignores that this drags down the
-upstream firm’s sales; this vertical externality has nothing to do with
-horizontal competition and is purely a product of the chain structure.
-Several remedies can cure it and pull the outcome back to the integrated
-monopoly optimum: direct vertical integration (the two merge and
-internalize the externality); a two-part contract between upstream and
-downstream (upstream pushes the wholesale price down to marginal cost
-<span class="math inline">w = c</span>, eliminating the downstream
-markup, then uses a fixed franchise fee to sweep up the downstream
-profit, exactly the vertical version of the two-part tariff of Section
-3.4); or resale price maintenance (RPM, with upstream directly
-stipulating the retail price equal to the integrated monopoly price 7).
-These moves look different in method, but all serve to remove for the
-downstream firm that redundant markup. This structure fits information
-systems especially well: whether a platform goes marketplace (the
-commission is roughly upstream, the seller’s pricing roughly downstream)
-or reseller (integrated pricing on its own account) is essentially a
-choice of vertical structure, and the wholesale-versus-agency fight in
-e-books and app stores is asking exactly who resolves double
-marginalization. The Nash-in-Nash bargaining of the supply side later in
-this series is about how upstream and downstream haggle over that <span
+cares only about its own profit and ignores the fact that this drags
+down the upstream firm’s sales; this vertical externality has nothing to
+do with horizontal competition and is purely a product of the chain
+structure. Several remedies can cure it and pull the outcome back to the
+integrated monopoly optimum: direct vertical integration (the two merge
+and internalize the externality); a two-part contract between upstream
+and downstream (upstream pushes the wholesale price down to marginal
+cost, <span class="math inline">w = c</span>, which eliminates the
+upstream markup so that only the downstream markup remains on the chain,
+equal to the integrated monopoly markup; upstream then uses a fixed
+franchise fee to sweep up the downstream profit, exactly the vertical
+version of the two-part tariff of Section 3.4); or resale price
+maintenance (RPM, with upstream directly stipulating the retail price
+equal to the integrated monopoly price 7). These moves differ in method,
+but all serve to remove that redundant markup on the downstream firm’s
+behalf. This structure fits information systems especially well: whether
+a platform goes marketplace (the commission is roughly upstream, the
+seller’s pricing roughly downstream) or reseller (integrated pricing on
+its own account) is essentially a choice of vertical structure, and the
+fight between the wholesale and agency models in e-books and app stores
+is precisely about who resolves double marginalization. Applied models
+of upstream-downstream bargaining (such as Nash-in-Nash) are about how
+upstream and downstream haggle over that <span
 class="math inline">w</span>.</p>
 <h3 id="a-taxonomy-of-entry-deterrence">4.7 A Taxonomy of Entry
 Deterrence</h3>
@@ -848,52 +886,39 @@ from cross-market reputation or the financing advantage of deep pockets.
 The fourth is product proliferation and preemption: filling up the
 product space so no profitable gap is left for the entrant.</p>
 <p>The truly delicate part is the mnemonic taxonomy of Fudenberg and
-Tirole (1984): whether the incumbent should over-invest or under-invest
-depends on whether the post-entry actions are strategic substitutes
-(like quantities, the Cournot type) or strategic complements (like
-prices, the Bertrand type). Under strategic substitutes it is best to
-strike the top dog posture, growing yourself big and fierce
-(overinvestment) to intimidate; under strategic complements it is
-instead best to strike the puppy dog posture, making yourself small and
-meek (underinvestment) to avoid provoking a brutal price war, and the
-other two cells are lean and hungry and fat cat. The most
-counterintuitive lesson of this taxonomy is that deterring entry does
-not always mean “making yourself big and fierce”; sometimes showing
-weakness is optimal. The through-line across these four families is
-still the commitment of Chapter 2: only a sunk and observable commitment
-makes deterrence credible. So market power depends not only on how many
-firms there are right now, but also on how tightly potential entrants
-are shut out, and the full treatment is left to the entry chapter later
-in this series.</p>
-<p>To summarize: the outcome of an oligopoly depends on the dimension of
-competition and the number of repetitions. Cournot quantity competition
-is mild and leaves market power; Bertrand price competition is brutal
-and reproduces the zero profit of perfect competition; but the three
-exits of capacity constraints (Kreps-Scheinkman pulls Bertrand back to
-Cournot), product differentiation (Hotelling’s <span
-class="math inline">p = c + t</span>), and repeated interaction (tacit
-collusion) can all lift the price back up from marginal cost. Vertical
-relations bring another problem, where double marginalization on the
-chain pushes the price even higher than integrated monopoly, resolved
-only by integration, a two-part tariff, or RPM; while entry deterrence
-relies on credible commitment to keep potential competition outside the
-door, and whether to act fierce or show weakness depends on whether
-competition is in strategic substitutes or strategic complements. The
-next section grounds these mechanisms in real research.</p>
+Tirole (1984), which crosses two axes: whether investment makes the
+incumbent tough or soft after entry, and whether the post-entry actions
+are strategic substitutes (like quantities, the Cournot type) or
+strategic complements (like prices, the Bertrand type). To deter entry,
+the incumbent must always look tough, whatever the slope of the reaction
+curves: if investment makes it tough, it over-invests (top dog); if
+investment makes it soft, it under-invests (lean and hungry). Only when
+it accommodates entry does the slope matter. Under strategic substitutes
+it is again top dog or lean and hungry; under strategic complements it
+is instead best to adopt the puppy dog posture (under-investing when
+investment makes it tough, staying small and meek) or the fat cat
+posture (over-investing when investment makes it soft), so as not to
+provoke a brutal price war. The most counterintuitive lesson of this
+taxonomy is that when entry is accommodated, showing weakness is
+sometimes optimal. The common thread across these four cases is still
+the commitment of Chapter 2: only a sunk and observable commitment makes
+deterrence credible. So market power depends not only on how many firms
+there are right now, but also on how tightly potential entrants are shut
+out.</p>
 <h3 id="pass-through-markups-and-empirical-predictions">4.8
 Pass-through, Markups, and Empirical Predictions</h3>
 <p>The most useful empirical restrictions of price theory are often not
-directional judgments like “the price will rise,” but how large the
-derivative of price with respect to cost, demand, and rival shocks is.
-Take linear demand <span class="math inline">Q=a-bp</span>: the
+directional judgments like “the price will rise,” but the size of the
+derivative of price with respect to cost, demand, and rival shocks. Take
+linear inverse demand <span class="math inline">p=a-bQ</span>: the
 single-product monopoly price is <span
-class="math inline">p=(a+bc)/(2b)</span>, so the pass-through of
-marginal cost is</p>
+class="math inline">p=(a+c)/2</span>, so the pass-through of marginal
+cost is</p>
 <p><span class="math display">\frac{\partial p}{\partial
 c}=\frac{1}{2}.</span></p>
 <p>Switching to symmetric <span class="math inline">n</span>-firm
-Cournot competition with inverse demand <span
-class="math inline">P=a-bQ</span>, the price becomes <span
+Cournot competition with the same inverse demand <span
+class="math inline">p=a-bQ</span>, the price becomes <span
 class="math inline">p=(a+nc)/(n+1)</span>, and pass-through is <span
 class="math inline">n/(n+1)</span>, approaching 1 as the number of firms
 grows. This difference gives a prediction consistent with conduct: the
@@ -904,14 +929,13 @@ pass-through of <span class="math inline">0.5</span> alone does not let
 you conclude the market is a monopoly; you also have to pin down the
 shape of demand.</p>
 <p>In differentiated Bertrand competition, a rise in one product’s cost
-not only raises its own price but also, through strategic
-complementarity (prices are strategic complements), pushes the rival’s
-price up along with it. The sign and magnitude of this cross-price
-response depend on the demand substitution matrix and the ownership
-structure of the products. If a rival’s price is observed to be
-perfectly still, it could genuinely be strategic independence, or the
-cost shock may simply not have been cleanly isolated, or price
-adjustment itself may be sticky, and these must be told apart.</p>
+not only raises its own price but also, through the strategic
+complementarity of prices, pushes the rival’s price up along with it.
+The sign and magnitude of this cross-price response depend on the demand
+substitution matrix and the ownership structure of the products. If a
+rival’s price is observed not to move at all, this could reflect genuine
+strategic independence, a cost shock that was not cleanly isolated, or
+sticky price adjustment, and these possibilities must be told apart.</p>
 <p>The predictions of price discrimination must also put price, sales,
 and composition together. Once third-degree price discrimination is
 allowed, the prices of the segments each move by the inverse elasticity
@@ -982,6 +1006,26 @@ fixating on one price coefficient alone. To truly identify conduct, you
 need exogenous cost shifters, demand rotators that can rotate the demand
 curve, ownership changes, or institutional experiments, forcing the
 candidate models to give distinct responses to the same shock.</p>
+<p>To summarize: the outcome of an oligopoly depends on the dimension of
+competition and the number of repetitions. Cournot quantity competition
+is mild and leaves market power; Bertrand price competition is brutal
+and reproduces the zero profit of perfect competition. Three exits,
+however, can lift the price back up from marginal cost: capacity
+constraints (Kreps-Scheinkman pulls Bertrand back to Cournot), product
+differentiation (Hotelling’s <span class="math inline">p = c +
+t</span>), and repeated interaction (tacit collusion). Vertical
+relations bring a further problem: double marginalization along the
+chain pushes the price even above the integrated monopoly level, and
+only integration, a two-part tariff, or RPM resolves it. Entry
+deterrence relies on credible commitment to keep potential competition
+out. Deterring entry always calls for looking tough, whereas under
+accommodation, whether to act fierce or show weakness depends on whether
+competition is in strategic substitutes or strategic complements.
+Section 4.8 then gives testable comparative statics: the same cost shock
+passes through by different amounts under different competitive
+structures, and identifying conduct requires the joint response of
+several outcome variables. The next section grounds these mechanisms in
+real research.</p>
 <h2 id="anchor-papers">5 Anchor Papers</h2>
 <p>The theory of pricing and competition only shows its weight when
 grounded in real markets. This section picks two classics, one that
@@ -998,29 +1042,28 @@ against real pricing data, and is a model of empirical price
 discrimination.</p>
 <p>Method: Broadway theaters charge different prices for different seats
 and different purchase channels (full-price window, discount coupons,
-same-day discount booth) for the same performance, involving both
+same-day discount booth) for the same performance, which involves both
 third-degree discrimination by observable label and second-degree
 discrimination by self-selecting menu. The author builds and estimates a
-demand model, and on that basis simulates how box-office revenue and
+demand model, and on that basis simulates how the theater’s profit and
 consumer welfare would change if pricing switched to a single price or
-to perfect price discrimination, thereby quantifying where the current
-discrimination scheme sits relative to these two extremes.</p>
-<p>Results: Price discrimination significantly raised theater revenue
-relative to single pricing, on the order of a few percent, a sizable
-range; the effect on total social welfare, however, is small, and price
-discrimination mainly transfers surplus from consumers to the theater
-rather than growing the pie. This finding that “discrimination mainly
-transfers surplus and does not necessarily improve efficiency” is
-exactly the empirical confirmation of the welfare analysis of Section
-3.2 of this chapter.</p>
+to other alternative pricing policies, and thereby quantifies the gains
+and losses of the current discrimination scheme relative to uniform
+pricing.</p>
+<p>Results: Relative to uniform pricing, the observed price
+discrimination raises the theater’s profit by about 5%, while aggregate
+consumer welfare is almost unchanged, so discrimination mainly lets the
+firm earn more rather than transferring surplus from consumers. This
+finding, that the firm gains while consumers as a whole barely lose, is
+a reminder that the welfare effect of price discrimination must be
+estimated, not presumed.</p>
 <p>Significance and limitations: This paper demonstrates how to turn
 abstract price discrimination theory into an estimable structural model
 that supports counterfactuals, and is a forerunner of the structural
 pricing analysis later in this series. The limitation is that the
 conclusions depend on the functional form of demand and the
 specification of consumer heterogeneity, and the credibility of the
-counterfactuals (especially the unobservable extreme of perfect price
-discrimination) hinges on these specifications, which is the same class
+counterfactuals hinges on these specifications. This is the same class
 of problem as the sensitivity of welfare measurement to functional form
 discussed in Chapter 1.</p>
 </div>
@@ -1033,16 +1076,16 @@ railroad-freight cartel, and is a founding work of empirical collusion
 research and conduct tests.</p>
 <p>Method: A 19th-century American railroad freight cartel (the Joint
 Executive Committee) at times maintained high freight rates and at times
-erupted into price wars. Green and Porter’s theory holds that when the
-cartel cannot perfectly observe whether members are secretly cutting
-prices and can only observe prices contaminated by demand noise,
-rational collusion must be sustained by “entering a stretch of punitive
-price war whenever the price is abnormally low,” so a price war is an
-equilibrium phenomenon that sustains collusion rather than a breakdown
-of it. Porter uses a switching regression (a regression that switches
-between the two states of collusion and price war) to estimate pricing
-behavior under these two states and tests whether the data fit this
-theory.</p>
+erupted into price wars. The theory of Green and Porter (1984) holds
+that when the cartel cannot perfectly observe whether members are
+secretly cutting prices and can only observe prices contaminated by
+demand noise, rational collusion must be sustained by “entering a
+stretch of punitive price war whenever the price is abnormally low.” A
+price war is therefore an equilibrium phenomenon that sustains collusion
+rather than a breakdown of it. Porter uses a switching regression (a
+regression that switches between the two states of collusion and price
+war) to estimate pricing behavior under these two states and tests
+whether the data fit this theory.</p>
 <p>Results: The data support the pattern of alternating collusion and
 price wars, the estimated freight rates under the two states differ
 significantly, and rates in the price-war period are markedly lower.
@@ -1059,14 +1102,14 @@ collusion” from “competition itself” is always delicate in
 identification: observing a low price does not necessarily let you infer
 the behavioral pattern behind it.</p>
 </div>
-<p>Together the two papers mark the empirical landing point of this
-chapter: Leslie measures price discrimination against real pricing and
-confirms that discrimination mainly transfers surplus, and Porter
+<p>Together, the two papers mark this chapter’s empirical anchor: Leslie
+measures price discrimination against real pricing and finds that the
+firm gains while aggregate consumer welfare barely changes, and Porter
 measures collusion and price wars against a real cartel and confirms
 that a price war can be part of collusion. Both foreshadow the core task
-of the structural industrial organization to come, inferring firms’
-pricing behavior and market power from observed prices and
-quantities.</p>
+of structural industrial organization, taken up later in the book:
+inferring firms’ pricing behavior and market power from observed prices
+and quantities.</p>
 <h2 id="running-case-pricing-and-competition-in-the-cirrus-market">6
 Running Case: Pricing and Competition in the Cirrus Market</h2>
 <p>Now let us run the models of Sections 3 and 4 fully on the Cirrus
@@ -1095,8 +1138,8 @@ formula of Section 2 checks out numerically.</p>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>lerner <span class="ot">&lt;-</span> (pm <span class="sc">-</span> cost)<span class="sc">/</span>pm; elas <span class="ot">&lt;-</span> (pm<span class="sc">/</span>qm)  <span class="co"># |eps| = 1 * p/q</span></span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">qm =</span> qm, <span class="at">pm =</span> pm, <span class="at">profit_m =</span> profit_m, <span class="at">CS_m =</span> CS_m, <span class="at">DWL =</span> DWL,</span>
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">lerner =</span> lerner, <span class="at">inv_elas =</span> <span class="dv">1</span><span class="sc">/</span>elas)</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;       qm       pm profit_m     CS_m      DWL   lerner inv_elas</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  5.00000  7.00000 25.00000 12.50000 12.50000  0.71429  0.71429</span></span></code></pre></div>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;         qm         pm   profit_m       CS_m        DWL     lerner   inv_elas</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  5.0000000  7.0000000 25.0000000 12.5000000 12.5000000  0.7142857  0.7142857</span></span></code></pre></div>
 <h3 id="third-degree-price-discrimination">6.2 Third-Degree Price
 Discrimination</h3>
 <p>Suppose Cirrus can split merchants into two observable segments, with
@@ -1118,35 +1161,39 @@ markup.</p>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>q2 <span class="ot">&lt;-</span> (<span class="dv">8</span>  <span class="sc">-</span> cost)<span class="sc">/</span><span class="dv">2</span>; p2 <span class="ot">&lt;-</span> <span class="dv">8</span>  <span class="sc">-</span> q2        <span class="co"># segment 2</span></span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">p1 =</span> p1, <span class="at">e1 =</span> p1<span class="sc">/</span>q1, <span class="at">markup1 =</span> (p1 <span class="sc">-</span> cost)<span class="sc">/</span>p1,</span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">p2 =</span> p2, <span class="at">e2 =</span> p2<span class="sc">/</span>q2, <span class="at">markup2 =</span> (p2 <span class="sc">-</span> cost)<span class="sc">/</span>p2)</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;       p1       e1  markup1       p2       e2  markup2</span></span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;  7.00000  1.40000  0.71429  5.00000  1.66667  0.60000</span></span></code></pre></div>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;        p1        e1   markup1        p2        e2   markup2</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; 7.0000000 1.4000000 0.7142857 5.0000000 1.6666667 0.6000000</span></span></code></pre></div>
 <h3 id="second-degree-price-discrimination-a-tiered-commission-menu">6.3
 Second-Degree Price Discrimination: A Tiered Commission Menu</h3>
 <p>Now to the core of this chapter’s running case. Cirrus cannot tell
 which type a merchant belongs to; it only knows there are two types of
 merchants in the market, a high-activity type <span
 class="math inline">\theta_H = 10</span> and a low-activity type <span
-class="math inline">\theta_L = 6</span>, each half of the market. Each
+class="math inline">\theta_L = 6</span>, each half of the market, so the
+share of high types is <span class="math inline">\mu = 1/2</span>. Each
 merchant’s gross value from usage <span class="math inline">q</span> is
-<span class="math inline">\theta q - q^2/2</span>, paying total price
-<span class="math inline">T</span> (the platform’s marginal cost is set
-to 0 to focus on the discrimination mechanism). Cirrus designs a
+<span class="math inline">\theta q - q^2/2</span>, and it pays a total
+price <span class="math inline">T</span> (the platform’s marginal cost
+is set to 0 to focus on the discrimination mechanism). Cirrus designs a
 two-tier menu <span class="math inline">\{(q_L, T_L), (q_H,
 T_H)\}</span> for merchants to self-select, which must satisfy the IC
 and IR of both types.</p>
-<p>First set up the single-price benchmark for comparison, noting that
-it must be computed within the same two-type characterization to be
-comparable with the menu. If Cirrus can only offer a single plan rather
-than a menu, it earns at most 25: serving both types requires pushing
-the plan down to a level the low type will accept, dragged down by the
-low end (the optimal single plan serving both types earns only 18), so
-it is better to simply offer only the high type a plan of <span
-class="math inline">q = 10</span> priced at 50, with a one-half chance
-of a sale and an expectation of exactly 25. This 25 is the ceiling for a
-single price in this two-type market, and it happens to equal the
-monopoly profit under linear demand in Section 6.1. Whether the menu can
-break through it is the value of second-degree discrimination.</p>
-<p>By the screening solution of Chapter 3, the high type gets the
+<p>First set up the single-package benchmark for comparison; to be
+comparable with the menu, it must be computed within the same two-type
+setup. If Cirrus can offer only a single plan rather than a menu, it
+earns at most 25. Serving both types requires pushing the plan down to a
+level the low type will accept, so the low end drags profit down (the
+optimal single plan serving both types earns only 18). It is better
+simply to offer a plan of <span class="math inline">q = 10</span> priced
+at 50 to the high type alone, which sells with probability one half for
+an expected profit of exactly 25. This 25 is the ceiling for a single
+package in this two-type market, and it equals the monopoly profit under
+linear demand in Section 6.1 only by coincidence. A uniform per-unit
+price does worse: the best is <span class="math inline">p = 4</span>,
+with profit 16. The value of second-degree discrimination lies in
+whether the menu can break through that 25.</p>
+<p>Following the screening logic of Chapter 3, the explicit solution
+with two types and quadratic valuation is: the high type gets the
 efficient quantity <span class="math inline">q_H = \theta_H = 10</span>
 (no distortion at the top), and the low type’s quantity is held down to
 <span class="math inline">q_L = \theta_L - \frac{\mu}{1-\mu}(\theta_H -
@@ -1158,7 +1205,7 @@ below its efficient quantity 6). On pricing, the low type’s IR binds,
 8</span>, so its payment is <span class="math inline">T_H = (\theta_H
 q_H - q_H^2/2) - 8 = 50 - 8 = 42</span>. Cirrus’s expected profit <span
 class="math inline">\frac{1}{2}\times 42 + \frac{1}{2}\times 10 =
-26</span> breaks through the single-price ceiling of 25.</p>
+26</span> breaks through the single-package ceiling of 25.</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>thH <span class="ot">&lt;-</span> <span class="dv">10</span>; thL <span class="ot">&lt;-</span> <span class="dv">6</span>; mu <span class="ot">&lt;-</span> <span class="fl">0.5</span></span>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>qH <span class="ot">&lt;-</span> thH                                    <span class="co"># no distortion at the top</span></span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>qL <span class="ot">&lt;-</span> thL <span class="sc">-</span> (mu<span class="sc">/</span>(<span class="dv">1</span> <span class="sc">-</span> mu))<span class="sc">*</span>(thH <span class="sc">-</span> thL)        <span class="co"># distortion at the bottom</span></span>
@@ -1172,22 +1219,24 @@ class="math inline">\frac{1}{2}\times 42 + \frac{1}{2}\times 10 =
 <span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>uL_own   <span class="ot">&lt;-</span> thL<span class="sc">*</span>qL <span class="sc">-</span> qL<span class="sc">^</span><span class="dv">2</span><span class="sc">/</span><span class="dv">2</span> <span class="sc">-</span> TL</span>
 <span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(<span class="at">qL =</span> qL, <span class="at">qH =</span> qH, <span class="at">rentH =</span> rentH, <span class="at">TL =</span> TL, <span class="at">TH =</span> TH, <span class="at">profit2 =</span> profit2,</span>
 <span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">uH_own =</span> uH_own, <span class="at">uH_mimic =</span> uH_mimic, <span class="at">uL_own =</span> uL_own)</span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;      qL      qH   rentH      TL      TH profit2  uH_own uH_mimic  uL_own</span></span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;       2      10       8      10      42      26       8        8       0</span></span></code></pre></div>
-<p>The self-check confirms the menu holds: the high type gets utility 8
-by choosing its own tier, and only 8 by pretending to be the low type
-(IC binds exactly), and the low type gets 0 by choosing its own tier (IR
-binds). Compared with first-degree discrimination under full
-information, where Cirrus could price to each type, Cirrus could have
-earned <span class="math inline">\frac{1}{2}\times\frac{\theta_H^2}{2} +
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;       qL       qH    rentH       TL       TH  profit2   uH_own uH_mimic</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;        2       10        8       10       42       26        8        8</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   uL_own</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;        0</span></span></code></pre></div>
+<p>The self-check confirms that the menu works: the high type gets
+utility 8 by choosing its own tier, and only 8 by pretending to be the
+low type (IC binds exactly), and the low type gets 0 by choosing its own
+tier (IR binds). Under first-degree discrimination with full
+information, where it could price to each type, Cirrus could have earned
+<span class="math inline">\frac{1}{2}\times\frac{\theta_H^2}{2} +
 \frac{1}{2}\times\frac{\theta_L^2}{2} = \frac{1}{2}\times 50 +
-\frac{1}{2}\times 18 = 34</span>, and information asymmetry costs it 8
-in lost profit; this 8 is exactly the price of information, part flowing
-as information rent to the high type and part evaporating into
-deadweight loss from the distortion at the bottom. Second-degree
-discrimination lifts profit from the single-price 25 to 26, approaching
-but not reaching the full-discrimination 34, and this gap is the ceiling
-that private information sets for the platform.</p>
+\frac{1}{2}\times 18 = 34</span>, so information asymmetry costs it 8 in
+lost profit. This 8 is exactly the price of information: part flows to
+the high type as information rent, and part evaporates as deadweight
+loss from the distortion at the bottom. Second-degree discrimination
+lifts profit from the single-package 25 to 26, approaching but not
+reaching the full-discrimination 34, and this gap is the ceiling that
+private information sets for the platform.</p>
 <h3 id="oligopoly-cournot-bertrand-and-differentiation">6.4 Oligopoly:
 Cournot, Bertrand, and Differentiation</h3>
 <p>Now let the rival platform Nimbus enter. If the two play Cournot
@@ -1262,9 +1311,12 @@ premium ad slots) as an exhaustible resource, with marginal placement
 cost <span class="math inline">c = 2</span>, interest rate <span
 class="math inline">r = 0.05</span>, and initial scarcity rent <span
 class="math inline">4</span> (initial price <span
-class="math inline">6</span>). Hotelling’s Rule says the rent must grow
-at <span class="math inline">r</span> and its present value stays
-constant:</p>
+class="math inline">6</span>). Here Cirrus is treated as a price taker
+for these slots, so the rent is price minus marginal cost; if it has
+pricing power over them, it is marginal revenue minus marginal cost that
+grows at <span class="math inline">r</span>, and the price path differs.
+Hotelling’s Rule says the rent must grow at <span
+class="math inline">r</span> and its present value stays constant:</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>r <span class="ot">&lt;-</span> <span class="fl">0.05</span>; rent0 <span class="ot">&lt;-</span> <span class="dv">4</span>; cext <span class="ot">&lt;-</span> <span class="dv">2</span>; t <span class="ot">&lt;-</span> <span class="dv">0</span><span class="sc">:</span><span class="dv">2</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>rent <span class="ot">&lt;-</span> rent0<span class="sc">*</span>(<span class="dv">1</span> <span class="sc">+</span> r)<span class="sc">^</span>t; price <span class="ot">&lt;-</span> cext <span class="sc">+</span> rent; pv <span class="ot">&lt;-</span> rent<span class="sc">/</span>(<span class="dv">1</span> <span class="sc">+</span> r)<span class="sc">^</span>t</span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="fu">rbind</span>(<span class="at">t =</span> t, <span class="at">rent =</span> <span class="fu">round</span>(rent, <span class="dv">4</span>), <span class="at">price =</span> <span class="fu">round</span>(price, <span class="dv">4</span>), <span class="at">pv_rent =</span> <span class="fu">round</span>(pv, <span class="dv">4</span>))</span>
@@ -1311,24 +1363,26 @@ marginalization. Any one of vertical integration, a two-part wholesale
 contract, or RPM can pull the outcome back to the integrated optimum of
 <span class="math inline">p = 7</span> and profit <span
 class="math inline">25</span>.</p>
-<p>The accounts of this section now balance, and they finally settle
-that 25 caught in the middle from Section 1. In the same Cirrus market,
-facing two types of merchants, single-price monopoly earns 25, the
-self-selecting menu of second-degree discrimination lifts it to 26, and
-first-degree discrimination under full information can in theory reach
-34 (the upper bound set by information); switch to homogeneous merchants
-and the two-part tariff instrument, and it can sweep up all the surplus
-50 at once (the upper bound set by the pricing instrument); once a rival
-enters, Cournot competition pushes the price down to 5.33 and profit to
-22.2, differentiation gives a Hotelling price of 3, and an
-undifferentiated Bertrand price war zeroes out profit (the lower bound
-set by competition); and once split into a vertical chain, double
-marginalization pushes the price past integrated monopoly and total
-profit actually falls to 18.75. That 25 is neither a ceiling nor a
-floor; it is just the reading of the one cell “single price plus
-exclusive integration,” and the pricing instrument, competitive
-structure, and vertical organization together determine where in this
-wide range the platform ends up.</p>
+<p>The accounts of this section now balance, and they finally put the 25
+of Section 1, caught in the middle, in its proper place. Across the
+versions of the Cirrus market, facing two types of merchants, a single
+package earns at most 25 (equal to the 25 of Section 1 only by
+coincidence), the self-selecting menu of second-degree discrimination
+lifts profit to 26, and first-degree discrimination under full
+information could in theory reach 34 (the upper bound set by
+information). With homogeneous merchants and the two-part tariff as the
+instrument, Cirrus can sweep up the entire surplus of 50 at once (the
+upper bound set by the pricing instrument). Once a rival enters, Cournot
+competition pushes the price down to 5.33 and profit to 22.2,
+differentiation gives a Hotelling price of 3, and an undifferentiated
+Bertrand price war wipes out profit (the lower bound set by
+competition). And once the market is split into a vertical chain, double
+marginalization pushes the price above the integrated monopoly level,
+and total profit actually falls to 18.75. That 25 is neither a ceiling
+nor a floor; it is just the reading for one cell, “single price plus
+exclusive integration.” The pricing instrument, competitive structure,
+and vertical organization together determine where in this wide range
+the platform ends up.</p>
 <h2 id="failure-modes-and-robustness-in-pricing-analysis">7 Failure
 Modes and Robustness in Pricing Analysis</h2>
 <p>The pricing and competition models of this chapter are clean and
@@ -1337,21 +1391,22 @@ platforms easily goes astray, and this section lays them out one at a
 time.</p>
 <p>The welfare of price discrimination is ambiguous and cannot be taken
 for granted. Intuitively discrimination “harms consumers,” but this
-judgment is both incomplete and often wrong. Third-degree discrimination
-relative to single pricing may raise or lower total social output and
-total welfare, with the direction depending on the curvature of the
-segments’ demand, and there is no universal sign; its reliable effect is
-only to shift surplus from consumers to the firm (Leslie’s empirical
-work is exactly this). More counterintuitive is that first-degree
-discrimination is the most efficient (largest output, zero DWL) yet the
-harshest on consumers. And one more layer is often overlooked:
-discrimination can sometimes let a low-valuation group that a single
-high price would shut out afford the good, thereby expanding the market
-and improving their welfare. So judging price discrimination cannot rest
-on “some people paid more”; you have to compute output, welfare, and
-distribution separately, consistent with the discipline of Chapter 1
-that stresses defining the welfare measure first and passing judgment
-after.</p>
+judgment is both incomplete and often wrong. Relative to uniform
+pricing, third-degree discrimination may raise or lower total output and
+total welfare; the direction depends on the curvature of demand in each
+segment, and there is no universal sign. Its only reliable effect is
+that the firm’s profit does not fall, since the firm can always revert
+to a single price (Leslie finds profit up about 5% with aggregate
+consumer welfare almost unchanged). More counterintuitive is that
+first-degree discrimination is the most efficient (largest output, zero
+DWL) yet the harshest on consumers. And one more layer is often
+overlooked: discrimination can sometimes let a low-valuation group that
+a single high price would shut out afford the good, thereby expanding
+the market and improving their welfare. So judging price discrimination
+cannot rest on “some people paid more”; you have to compute output,
+welfare, and distribution separately. This is consistent with the
+discipline of Chapter 1: define the welfare measure first, and pass
+judgment afterward.</p>
 <p>The fragility of the Bertrand paradox reminds us that the model is
 extremely sensitive to its assumptions. The startling conclusion that
 price competition reproduces perfect competition rests entirely on the
@@ -1424,26 +1479,27 @@ behavioral primitives they need to estimate.</p>
 <div class="readings">
 <p>Required reading, in suggested reading order:</p>
 <ul>
-<li>Mas-Colell, Whinston and Green, Microeconomic Theory, Chapter 14.
-The authoritative reference on monopoly, price discrimination, and
-oligopoly, the full source for Sections 3 and 4 of this chapter, where
-the formal treatments of Cournot, Bertrand, and price discrimination all
-live.</li>
-<li>Nolan Miller, Notes on Microeconomic Theory, Chapter 9 (Monopoly).
-The intuition-building groundwork for monopoly pricing and price
-discrimination, more patient than MWG, good to read first to build the
-geometric picture.</li>
-<li>Tirole, The Theory of Industrial Organization, Chapters 1 to 5. The
-standard graduate textbook of industrial organization, with the fullest
-treatment of price discrimination, oligopoly, and dynamic pricing, where
-every section of this chapter can be deepened.</li>
+<li>Mas-Colell, Whinston and Green (1995, Microeconomic Theory), Chapter
+12 (Market Power), with second-degree discrimination as screening in
+Section 14.C. The authoritative reference on monopoly, price
+discrimination, and oligopoly, and the full source for Sections 3 and 4
+of this chapter; the formal treatments of Cournot, Bertrand, and price
+discrimination are all there.</li>
+<li>Nolan Miller (2006, Notes on Microeconomic Theory), Chapter 9
+(Monopoly). The intuition-building groundwork for monopoly pricing and
+price discrimination, more patient than MWG, good to read first to build
+the geometric picture.</li>
+<li>Tirole (1988, The Theory of Industrial Organization), Chapters 1 to
+9. The standard graduate textbook of industrial organization, with the
+fullest treatment of price discrimination, oligopoly, and dynamic
+pricing; every section of this chapter can be taken further there.</li>
 </ul>
 <p>Further reading:</p>
 <ul>
-<li>Leslie (2004). The model of structural empirical price
-discrimination, essential reading for the information systems and
-platform pricing direction; focus on the construction of the two
-counterfactuals, single pricing and perfect discrimination.</li>
+<li>Leslie (2004). The exemplar of structural empirical work on price
+discrimination, and essential reading for research on information
+systems and platform pricing; focus on how the uniform-pricing
+counterfactual is constructed.</li>
 <li>Porter (1983). The empirical classic on collusion and price wars, to
 be read against the folk theorem of Chapter 2 to understand why a price
 war can be part of collusion.</li>
@@ -1459,7 +1515,7 @@ commitment problem, the source of the Coase conjecture.</li>
 <li>Oi (1971) and Adams and Yellen (1976). The two founding works on
 two-part tariffs and bundling, the source of the nonlinear pricing of
 Section 3.4, direct theory for SaaS and platform pricing.</li>
-<li>Shapiro and Varian (1999), Information Rules. The source of the
+<li>Shapiro and Varian (1999, Information Rules). The source of the
 framework for information-good versioning and quality menus, on which
 Section 3.5 is based.</li>
 <li>Hotelling (1931) and Stokey (1979). The former is the origin of
@@ -1496,6 +1552,13 @@ class="uri">https://doi.org/10.2307/2231658</a></li>
 <li>Fudenberg, D., &amp; Tirole, J. (1984). The fat-cat effect, the
 puppy-dog ploy, and the lean and hungry look. <em>American Economic
 Review, 74</em>(2), 361-366.</li>
+<li>Green, E. J., &amp; Porter, R. H. (1984). Noncooperative collusion
+under imperfect price information. <em>Econometrica, 52</em>(1), 87-100.
+<a href="https://doi.org/10.2307/1911462"
+class="uri">https://doi.org/10.2307/1911462</a></li>
+<li>Hotelling, H. (1929). Stability in competition. <em>The Economic
+Journal, 39</em>(153), 41-57. <a href="https://doi.org/10.2307/2224214"
+class="uri">https://doi.org/10.2307/2224214</a></li>
 <li>Hotelling, H. (1931). The economics of exhaustible resources.
 <em>Journal of Political Economy, 39</em>(2), 137-175. <a
 href="https://doi.org/10.1086/254195"
@@ -1505,8 +1568,8 @@ and Bertrand competition yield Cournot outcomes. <em>The Bell Journal of
 Economics, 14</em>(2), 326-337. <a
 href="https://doi.org/10.2307/3003636"
 class="uri">https://doi.org/10.2307/3003636</a></li>
-<li>Leslie, P. (2004). Price discrimination in Broadway theater.
-<em>RAND Journal of Economics, 35</em>(3), 520-541. <a
+<li>Leslie, P. (2004). Price discrimination in Broadway theater. <em>The
+RAND Journal of Economics, 35</em>(3), 520-541. <a
 href="https://doi.org/10.2307/1593706"
 class="uri">https://doi.org/10.2307/1593706</a></li>
 <li>Mas-Colell, A., Whinston, M. D., &amp; Green, J. R. (1995).
@@ -1525,13 +1588,17 @@ class="uri">https://doi.org/10.2307/1881841</a></li>
 Executive Committee, 1880-1886. <em>The Bell Journal of Economics,
 14</em>(2), 301-314. <a href="https://doi.org/10.2307/3003634"
 class="uri">https://doi.org/10.2307/3003634</a></li>
+<li>Salant, S. W. (1989). When is inducing self-selection suboptimal for
+a monopolist? <em>The Quarterly Journal of Economics, 104</em>(2),
+391-397. <a href="https://doi.org/10.2307/2937854"
+class="uri">https://doi.org/10.2307/2937854</a></li>
+<li>Shapiro, C., &amp; Varian, H. R. (1999). <em>Information rules: A
+strategic guide to the network economy</em>. Harvard Business School
+Press.</li>
 <li>Spengler, J. J. (1950). Vertical integration and antitrust policy.
 <em>Journal of Political Economy, 58</em>(4), 347-352. <a
 href="https://doi.org/10.1086/256964"
 class="uri">https://doi.org/10.1086/256964</a></li>
-<li>Shapiro, C., &amp; Varian, H. R. (1999). <em>Information rules: A
-strategic guide to the network economy</em>. Harvard Business School
-Press.</li>
 <li>Stokey, N. L. (1979). Intertemporal price discrimination. <em>The
 Quarterly Journal of Economics, 93</em>(3), 355-371. <a
 href="https://doi.org/10.2307/1883163"
@@ -1541,7 +1608,8 @@ MIT Press.</li>
 </ul>
 </div>
     <footer class="page-footer">
-<span>Foundations of Information Systems Economics: Empirical Methods for Information Systems Economics</span>
+<span>Foundations of Information Systems Economics: Empirical Methods
+for Information Systems Economics</span>
     </footer>
   </main>
 </div>
@@ -1577,6 +1645,6 @@ MIT Press.</li>
   window.addEventListener('resize', fitMath);
 }());
 </script>
-<script defer src="assets/notes.js?v=notes-ui-20260822"></script>
+<script defer src="assets/notes.js?v=notes-ui-20261022c"></script>
 </body>
 </html>

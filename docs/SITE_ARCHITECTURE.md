@@ -76,16 +76,34 @@ Each page uses YAML front matter for its permalink, title, and layout settings. 
 
 Location: `notes/is-economics-methods/`
 
-- `index.html` is the collection cover and chapter index.
-- `src/*.md` contains the editable chapter sources and metadata.
-- Root-level chapter `.html` files are the published Pandoc outputs.
-- `assets/template.html` defines the shared chapter page structure.
-- `assets/style.css` controls the complete lecture-note theme.
-- `assets/katex/` contains local math-rendering assets.
-- `validate_book.py` checks the collection structure.
-- `inline_figures.py` is a post-Pandoc figure-processing utility.
+The collection is the introduction plus 35 numbered chapters. Its master copy is the English workspace `notes_v3_en` in iCloud. `scripts/sync_is_notes.py` generates the site copy from it and replays the site's presentation layer on top of the book: the site metadata, the topbar and theme switch, the versioned stylesheet and `notes.js`, and the restyled cover.
 
-For chapter content changes, edit the matching file in `src/` and regenerate its HTML. If HTML must be edited directly, keep the corresponding Markdown metadata and content synchronized so a future regeneration does not undo the change.
+- `index.html` is the collection cover and chapter index.
+- Root-level chapter `.html` files are the published Pandoc outputs.
+- `src/*.md` contains the chapter sources with the site metadata. They are not published.
+- `code/` holds each chapter's R code. It is mirrored into the repository for reference but, like `src/`, excluded from the served site.
+- `assets/template.html` defines the shared chapter page structure.
+- `assets/style.css` controls the complete lecture-note theme. It is the site's own file: the sync script reads it from this folder, so edit it here.
+- `assets/notes.js` provides the topbar, theme switch, mobile sidebar, and previous/next chapter links. Its chapter order is generated from the book's table of contents.
+- `assets/katex/` contains local math-rendering assets.
+- `inline_figures.py` is a post-Pandoc figure-processing utility.
+- The 23 numbered file names of the earlier 27-chapter edition, listed in `scripts/is_notes_redirects.tsv`, are redirect pages. Each names its new page as an absolute canonical URL built from `url` and `baseurl` in `_config.yml`. A moved chapter redirects at once and keeps the `#anchor`. A split chapter (old 05, 07, and 14) is a landing page that links its new chapters, does not redirect, carries `noindex`, and names the first new chapter as canonical. Defaults in `_config.yml` keep all 23 pages out of `sitemap.xml`.
+
+The book's validator `validate_book.py`, its `tools/`, and `toc_v3.tsv` stay in the workspace and are not published.
+
+For chapter content changes, edit the book in `notes_v3_en`, not the HTML here, then sync from the repository root:
+
+```bash
+python3 scripts/sync_is_notes.py build --src "<path to notes_v3_en>" --site notes/is-economics-methods --redirects scripts/is_notes_redirects.tsv --version notes-ui-YYYYMMDD --out <build folder>
+python3 scripts/sync_is_notes.py install --build <build folder> --dest notes/is-economics-methods
+python3 scripts/sync_is_notes.py check --site-root _site --collection notes/is-economics-methods --redirects scripts/is_notes_redirects.tsv
+```
+
+- `build` renders every page with the book's Pandoc command. A new `--version` date makes returning readers' browsers fetch the new stylesheet and `notes.js`; add a letter (`notes-ui-YYYYMMDDb`) for a second release on the same day.
+- `build` expects Pandoc 3.12.1. The script's golden test registers the output differences of that version, and another version prints a warning.
+- `install` mirrors the build into this folder and deletes everything else in it.
+- Run `check` after a complete Jekyll build. It must report 0 errors: it checks links and anchors, the redirect pages, that no sources or tooling are published, and that `sitemap.xml` lists exactly the 37 pages.
+- The script's tests run with `python3 -m unittest discover -s scripts/tests`.
 
 ### From Choices to Counterfactuals
 

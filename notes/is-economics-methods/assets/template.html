@@ -11,7 +11,8 @@ $if(description-meta)$
   <meta name="description" content="$description-meta$" />
 $endif$
   <title>$if(title)$$title$ | $endif$$if(sidebartitle)$$sidebartitle$$else$Lecture Notes$endif$</title>
-  <link rel="stylesheet" href="assets/style.css?v=notes-ui-20260822" />
+<script>(function(){var t=null;try{t=localStorage.getItem('theme');}catch(e){}if(t!=='dark'&&t!=='light'){t=(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light';}document.documentElement.setAttribute('data-theme',t);})();</script>
+  <link rel="stylesheet" href="assets/style.css?v=notes-ui-20261022c" />
 $for(css)$
   <link rel="stylesheet" href="$css$" />
 $endfor$
@@ -46,33 +47,43 @@ $endif$
       <div class="nav-label">This series</div>
       <a href="index.html">Home · Overview</a>
       <a href="introduction.html">Introduction · How to Use</a>
+      <!-- TOC:FILE-NAV -->
       <a href="01_consumer_producer_welfare.html">01 Consumer, Producer &amp; Welfare</a>
       <a href="02_game_theory.html">02 Game Theory</a>
       <a href="03_information_mechanism_design.html">03 Information &amp; Mechanism Design</a>
       <a href="04_pricing_imperfect_competition.html">04 Pricing &amp; Imperfect Competition</a>
-      <a href="05_estimation_mle_gmm.html">05 Estimation: MLE &amp; GMM</a>
-      <a href="06_inference.html">06 Inference: Bootstrap &amp; Clustering</a>
-      <a href="07_panel_dynamic_panel.html">07 Panel &amp; Dynamic Panel</a>
-      <a href="08_nonparametrics.html">08 Nonparametrics &amp; Semiparametrics</a>
-      <a href="09_potential_outcomes.html">09 Potential Outcomes &amp; Selection</a>
-      <a href="10_research_design_architecture.html">10 Research Design</a>
-      <a href="11_measurement_digital_traces.html">11 Measurement &amp; Digital Traces</a>
-      <a href="12_iv_late_mte.html">12 IV: LATE &amp; MTE</a>
-      <a href="13_did_event_studies.html">13 DiD &amp; Event Studies</a>
-      <a href="14_rdd_synthetic_control.html">14 RDD &amp; Synthetic Control</a>
-      <a href="15_sensitivity_partial_identification.html">15 Sensitivity &amp; Partial Identification</a>
-      <a href="16_causal_ml_dml.html">16 Causal ML &amp; DML</a>
-      <a href="17_digital_experimentation.html">17 Digital Experimentation</a>
-      <a href="18_interference_marketplace_experiments.html">18 Interference &amp; Marketplace Experiments</a>
-      <a href="19_discrete_choice.html">19 Discrete Choice &amp; Mixed Logit</a>
-      <a href="20_demand_blp.html">20 Demand Estimation &amp; BLP</a>
-      <a href="21_supply_markups_mergers.html">21 Supply, Markups &amp; Mergers</a>
-      <a href="22_entry_partial_id.html">22 Entry &amp; Partial Identification</a>
-      <a href="23_dynamic_structural.html">23 Dynamic Structural Models</a>
-      <a href="24_platforms_networks.html">24 Platforms &amp; Network Effects</a>
-      <a href="25_search_advertising.html">25 Search, Advertising &amp; Information Goods</a>
-      <a href="26_ai_algorithms_data.html">26 AI, Adoption &amp; Data Economics</a>
-      <a href="27_quick_reference.html">27 Quick Reference &amp; Tools</a>
+      <a href="05_m_estimation_nonlinear_regression.html">05 M-Estimation &amp; Nonlinear Regression</a>
+      <a href="06_maximum_likelihood.html">06 Maximum Likelihood</a>
+      <a href="07_gmm_minimum_distance.html">07 GMM &amp; Minimum Distance</a>
+      <a href="08_inference.html">08 Inference: Bootstrap &amp; Clustering</a>
+      <a href="09_iv_system_estimation.html">09 Instrumental Variables &amp; System Estimation</a>
+      <a href="10_linear_panel_fe_re.html">10 Linear Panels: FE, RE, FD &amp; CRE</a>
+      <a href="11_dynamic_panel.html">11 Dynamic Panels</a>
+      <a href="12_binary_multinomial_response.html">12 Binary &amp; Multinomial Response Models</a>
+      <a href="13_quantile_regression.html">13 Quantile Regression</a>
+      <a href="14_nonparametrics.html">14 Nonparametrics &amp; Semiparametrics</a>
+      <a href="15_potential_outcomes.html">15 Potential Outcomes &amp; Selection</a>
+      <a href="16_research_design_architecture.html">16 Research Design</a>
+      <a href="17_measurement_digital_traces.html">17 Measurement &amp; Digital Traces</a>
+      <a href="18_iv_late_mte.html">18 IV: LATE &amp; MTE</a>
+      <a href="19_did_event_studies.html">19 DiD &amp; Event Studies</a>
+      <a href="20_did_beyond_binary.html">20 DiD II: Non-Binary Treatments</a>
+      <a href="21_regression_discontinuity.html">21 Regression Discontinuity</a>
+      <a href="22_synthetic_control_factor_models.html">22 Synthetic Control &amp; Panel Factor Models</a>
+      <a href="23_sensitivity_partial_identification.html">23 Sensitivity &amp; Partial Identification</a>
+      <a href="24_causal_ml_dml.html">24 Causal ML &amp; DML</a>
+      <a href="25_digital_experimentation.html">25 Digital Experimentation</a>
+      <a href="26_interference_marketplace_experiments.html">26 Interference &amp; Marketplace Experiments</a>
+      <a href="27_discrete_choice.html">27 Discrete Choice &amp; Mixed Logit</a>
+      <a href="28_demand_blp.html">28 Demand Estimation &amp; BLP</a>
+      <a href="29_supply_markups_mergers.html">29 Supply, Markups &amp; Mergers</a>
+      <a href="30_entry_partial_id.html">30 Entry &amp; Partial Identification</a>
+      <a href="31_dynamic_structural.html">31 Dynamic Structural Models</a>
+      <a href="32_platforms_networks.html">32 Platforms &amp; Network Effects</a>
+      <a href="33_search_advertising.html">33 Search, Advertising &amp; Experience Goods</a>
+      <a href="34_ai_algorithms_data.html">34 AI, Adoption &amp; Data Economics</a>
+      <a href="35_quick_reference.html">35 Quick Reference &amp; Tools</a>
+      <!-- /TOC:FILE-NAV -->
     </div>
   </nav>
   <main class="main-content" id="top">
@@ -125,6 +136,6 @@ $if(series)$<span>$series$</span>$endif$
   window.addEventListener('resize', fitMath);
 }());
 </script>
-<script defer src="assets/notes.js?v=notes-ui-20260822"></script>
+<script defer src="assets/notes.js?v=notes-ui-20261022c"></script>
 </body>
 </html>
