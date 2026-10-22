@@ -1,0 +1,13 @@
+{
+  "bhs2003_mgmtsci_p1587_publisher_titles": 321,
+  "bhs2003_mgmtsci_p1589_rank_cutoff": 100000,
+  "bhs2003_mgmtsci_p1590_welfare_year": 2000,
+  "bhs2003_mgmtsci_p1590_variety_cs_2000_low_100m_usd": 7.31,
+  "bhs2003_mgmtsci_p1590_variety_cs_2000_high_100m_usd": 10.3,
+  "bhs2003_mgmtsci_p1590_variety_cs_2000_high_usd_bn": 1.03,
+  "bhs2003_mgmtsci_p1590_valuation_cap_multiple_of_price": 5,
+  "bhs2003_mgmtsci_p1590_cs_cut_excl_above_5x_low_pct": 28.0,
+  "bhs2003_mgmtsci_p1590_cs_cut_excl_above_5x_high_pct": 40.6,
+  "bhs2003_mgmtsci_p1591_variety_over_price_gain_low": 7.3,
+  "bhs2003_mgmtsci_p1591_variety_over_price_gain_high": 10.0
+}

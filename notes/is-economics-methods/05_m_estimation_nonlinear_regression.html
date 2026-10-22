@@ -132,20 +132,20 @@ sales. Section 1 shows that the first approach gives an answer that
 depends on whether sales are recorded in dollars or in cents.</p>
 <p>This is the first chapter of Part II, and it asks how far a single
 idea can go: an estimator is the minimizer of some sample objective
-function. OLS (ordinary least squares), NLS (nonlinear least squares),
-Poisson regression, maximum likelihood, and quantile regression are all
-special cases of M-estimation: choose a loss <span
-class="math inline">q(w,\theta)</span> for a single observation, average
-it over the sample, and find the <span class="math inline">\theta</span>
-that makes the average loss smallest. The payoff of unifying them is not
-tidy notation. It is that three questions need answering only once: what
-the population minimizer is (identification), whether the sample
-minimizer comes close to it (consistency), and how it fluctuates around
-the population minimizer (asymptotic normality and the sandwich
-variance). The answer to the first question also tells us something that
-is often overlooked: when the model is misspecified, the estimator still
-converges; it just converges to the best approximation that the loss
-function itself picks out.</p>
+function. OLS, NLS (nonlinear least squares), Poisson regression,
+maximum likelihood, and quantile regression are all special cases of
+M-estimation: choose a loss <span class="math inline">q(w,\theta)</span>
+for a single observation, average it over the sample, and find the <span
+class="math inline">\theta</span> that makes the average loss smallest.
+The payoff of unifying them is not tidy notation. It is that three
+questions need answering only once: what the population minimizer is
+(identification), whether the sample minimizer comes close to it
+(consistency), and how it fluctuates around the population minimizer
+(asymptotic normality and the sandwich variance). The answer to the
+first question also tells us something that is often overlooked: when
+the model is misspecified, the estimator still converges; it just
+converges to the best approximation that the loss function itself picks
+out.</p>
 <p>The chapter proceeds as follows. Section 2 writes down Spotlight’s
 causal quantity and the estimands of Larkspur’s other three data blocks.
 Section 3, the most detailed in the chapter, first gives the
@@ -582,8 +582,7 @@ sits on the valley floor (Section 3.7 gives the proof).</p>
 valley floor is unique, it may be very flat: a broad swath of <span
 class="math inline">\theta</span> values all give nearly the same low
 population loss. The steepness of the valley is measured by the expected
-Hessian (the matrix of second derivatives), <span
-class="math inline">A_0 = \mathbb{E}[\nabla^2_\theta
+Hessian, <span class="math inline">A_0 = \mathbb{E}[\nabla^2_\theta
 q(w,\theta_0)]</span>, and Section 3.4 shows that this is exactly the
 “bread” on both sides of the asymptotic variance.</p>
 <div class="intuition">

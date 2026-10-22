@@ -162,10 +162,11 @@ class="math inline">x_i</span>, for example) rather than being forced
 into the uniform notation above.</p>
 <h3 id="part-i-microeconomic-foundations">Part I Microeconomic
 Foundations</h3>
-<p>Part I is pure theory: the main text works through its demonstrations
-by hand in base R, with no dedicated estimation package. The cards below
-give the primitives that the later chapters on identification and
-structural estimation borrow again and again.</p>
+<p>Part I consists of theory chapters: the main text works through its
+hand calculations and simulation demonstrations in base R, with no
+dedicated estimation package. The cards below give the primitives that
+the later chapters on identification and structural estimation borrow
+again and again.</p>
 <div class="theorem"
 data-label="Consumer duality (Roy / Shephard / the four duality identities) · Chapter 1 §3.3 to §3.4">
 <p><span class="math display">x_\ell(p, w) = -\frac{\partial v(p,
@@ -173,115 +174,144 @@ w)/\partial p_\ell}{\partial v(p, w)/\partial w}, \qquad \frac{\partial
 e(p, \bar u)}{\partial p_\ell} = h_\ell(p, \bar u)</span></p>
 <p><span class="math display">e(p, v(p, w)) = w, \qquad h_\ell(p, \bar
 u) = x_\ell(p, e(p, \bar u))</span></p>
-<p>In words: the indirect utility <span class="math inline">v</span> and
-the expenditure function <span class="math inline">e</span> are inverses
-of each other; differentiating with respect to price reads Walrasian
-demand <span class="math inline">x</span> and Hicksian demand <span
-class="math inline">h</span> straight off the value function, and the
-four objects pin one another down pairwise.</p>
+<p>In words: when <span class="math inline">u</span> is continuous and
+C.3 holds (Theorem 4), <span class="math inline">v</span> and <span
+class="math inline">e</span> are inverses of each other at fixed prices;
+add C.4(b), and the price slopes of the two value functions are
+Walrasian demand <span class="math inline">x</span> and Hicksian demand
+<span class="math inline">h</span> (Theorem 5, a local result).</p>
 </div>
 <div class="theorem" data-label="Slutsky equation · Chapter 1 §3.5">
 <p><span class="math display">\underbrace{\frac{\partial x_\ell(p,
 w)}{\partial p_k}}_{\text{total}} = \underbrace{\frac{\partial h_\ell(p,
 \bar u)}{\partial p_k}}_{\text{substitution}}\; \underbrace{-\; x_k(p,
 w)\,\frac{\partial x_\ell(p, w)}{\partial w}}_{\text{income}}</span></p>
-<p>In words: the observable price slope of demand splits into a
-compensated substitution effect and a purchasing-power income effect,
-and the substitution piece corresponds to a negative semidefinite
-Slutsky matrix.</p>
+<p>In words: with <span class="math inline">u</span> continuous and C.3
+and C.4(b) in force (Theorem 6), the price slope of demand splits into a
+substitution term and an income term; if <span
+class="math inline">h</span> is continuously differentiable, the
+observable Slutsky matrix <span class="math inline">S(p, w)</span>
+equals the Hessian of <span class="math inline">e</span>, so it is
+symmetric and negative semidefinite, with <span class="math inline">S(p,
+w)\,p = 0</span>.</p>
 </div>
 <div class="theorem"
 data-label="Welfare measures CV / EV · Chapter 1 §4.1">
 <p><span class="math display">\mathrm{CV} = e(p^1, u^0) - e(p^1, u^1) =
 e(p^1, u^0) - w, \qquad \mathrm{EV} = e(p^0, u^0) - e(p^0, u^1) = w -
 e(p^0, u^1)</span></p>
-<p>In words: the money-metric welfare of a price change is the
-difference between two values of the expenditure function: CV is priced
-at the new prices and EV at the old ones. CV, EV, and <span
+<p>In words: CV, EV, and <span
 class="math inline">\Delta\mathrm{CS}</span> (the loss in consumer
-surplus) are all signed as losses (positive for a price increase), the
-opposite of MWG’s sign convention; for a price increase on a normal
-good, the ordering is <span class="math inline">\mathrm{EV} \leq
-\Delta\mathrm{CS} \leq \mathrm{CV}</span>.</p>
+surplus) are all signed as losses, the opposite of MWG’s sign; CV is
+priced at the new prices and EV at the old ones. With <span
+class="math inline">u</span> continuous, C.3 and C.4(b) holding, and
+only <span class="math inline">p_1</span> changing (Theorem 10), CV and
+EV are areas under Hicksian demand; for a normal good, <span
+class="math inline">\mathrm{EV} \leq \Delta\mathrm{CS} \leq
+\mathrm{CV}</span> for price increases and decreases alike, the ordering
+reverses for an inferior good, and with no income effect the three are
+equal.</p>
 </div>
 <div class="theorem"
 data-label="Arrow-Pratt risk aversion · Chapter 1 §4.3">
 <p><span class="math display">A(w) = -\frac{u&#39;&#39;(w)}{u&#39;(w)},
-\qquad \pi \approx
-\tfrac{1}{2}A(w)\,\mathrm{Var}(\widetilde\varepsilon)</span></p>
-<p>In words: the curvature of the Bernoulli utility function measures
-risk aversion; for a small zero-mean risk added to wealth <span
-class="math inline">w</span>, written <span
-class="math inline">\widetilde\varepsilon</span>, the risk premium is
-roughly half the coefficient of absolute risk aversion times the
-variance of the risk.</p>
+\qquad \pi(w) \approx
+\tfrac{1}{2}A(w)\operatorname{Var}(\widetilde\varepsilon)</span></p>
+<p>In words: within expected utility (U.1, U.2, Theorem 15), requiring
+at every <span class="math inline">x</span> that <span
+class="math inline">A(x; u_2) \geq A(x; u_1)</span> is equivalent to
+requiring that, for any distribution of payoffs, the certainty
+equivalent under <span class="math inline">u_2</span> be no higher than
+under <span class="math inline">u_1</span> (Theorem 16); for a small
+zero-mean risk <span class="math inline">\widetilde\varepsilon</span>,
+the premium is roughly half of <span class="math inline">A(w)</span>
+times the variance.</p>
 </div>
 <div class="theorem" data-label="Nash equilibrium · Chapter 2 §3.2">
 <p><span class="math display">u_i(s_i^*, s_{-i}^*) \geq u_i(s_i,
 s_{-i}^*) \quad \text{for all } s_i,\ \text{all } i</span></p>
 <p>In words: every player’s strategy is a best response to the others’,
-so no one has an incentive to deviate unilaterally; in a finite game, an
-equilibrium is guaranteed to exist once mixed strategies are
-allowed.</p>
+so no one has an incentive to deviate unilaterally; in a finite game
+(G.1(a)), an equilibrium is guaranteed to exist once mixed strategies
+are allowed (Theorem 2), and a continuous game under G.2 has a
+pure-strategy equilibrium (Chapter 2 §3.3, Theorem 3).</p>
 </div>
 <div class="theorem"
-data-label="Repeated-game cooperation threshold (grim trigger) · Chapter 2 §4">
+data-label="Repeated-game cooperation threshold (grim trigger) · Chapter 2 §4.1">
 <p><span class="math display">\frac{R}{1-\delta} \geq T + \frac{\delta
 P}{1-\delta} \quad\Longleftrightarrow\quad \delta \geq \frac{T - R}{T -
 P}</span></p>
-<p>In words: the discounted value of cooperating forever is at least
-that of defecting once and then being punished forever, so the
+<p>In words: when <span class="math inline">T &gt; R &gt; P</span>, the
+punishment profile is a Nash equilibrium of the stage game, and play is
+repeated infinitely often (G.3), grim trigger is an SPE if and only if
+the discounted value of cooperating forever is at least that of
+defecting once and then being punished forever (Theorem 16), so the
 cooperation threshold is set by the ratio of the temptation to the
-severity of punishment; the folk theorem says that, in two-player games
-or in games with more players that satisfy a dimensionality condition,
-any feasible payoff profile strictly above the minmax can be supported
-when <span class="math inline">\delta</span> is large enough.</p>
+severity of punishment; the folk theorem (G.1(a), G.3, Theorem 17) says
+that, in two-player games or in games with more players that satisfy a
+dimensionality condition, any feasible payoff profile strictly above the
+minmax is the average payoff of some SPE when <span
+class="math inline">\delta</span> is large enough.</p>
 </div>
 <div class="theorem" data-label="VCG mechanism · Chapter 3 §3.6">
-<p><span class="math display">t_i = \max_{a}\sum_{j \neq i} \hat v_j(a)
-\;-\; \sum_{j \neq i} \hat v_j(a^*)</span></p>
-<p>In words: each agent pays the externality it imposes on everyone
-else, so private self-interest and total social welfare differ only by a
-constant that is independent of the agent’s own report, and
-truth-telling becomes a dominant strategy (the revelation principle
-guarantees that we need only study direct, truthful mechanisms of this
-kind).</p>
+<p><span class="math display">t_i = \max_{a}\sum_{j \neq i} v_j&#39;(a)
+\;-\; \sum_{j \neq i} v_j&#39;(a^*)</span></p>
+<p>In words: with quasilinear private values (Theorem 8), each agent
+pays the externality it imposes on everyone else, so private
+self-interest and total social welfare differ only by a constant that is
+independent of the agent’s own report, and truthful reporting becomes a
+(weakly) dominant strategy, at the price of a budget that is in general
+not balanced (the revelation principle guarantees that we need only
+study direct mechanisms with truthful reporting, Chapter 3 §3.5, Theorem
+6).</p>
 </div>
 <div class="theorem"
 data-label="Revenue equivalence and the Myerson reserve · Chapter 3 §4.1 to §4.3">
-<p><span class="math display">b(v) = \frac{n-1}{n}\, v, \qquad r^\ast:\
-r = \frac{1 - F(r)}{f(r)}</span></p>
-<p>In words: every auction with risk-neutral bidders and independent
-private values (drawn from an interval with a strictly positive density)
-that awards the object to the bidder with the highest valuation and
-leaves the lowest type zero rent earns the same expected revenue in
-Bayesian Nash equilibrium; the optimal reserve is where the virtual
-value equals zero. With values uniform on <span class="math inline">[0,
-1]</span>, the left formula is the symmetric equilibrium bid in a
-first-price auction, and the optimal reserve is <span
+<p><span class="math display">b(v) = \frac{n-1}{n}\, v, \qquad
+\Psi(r^\ast) = r^\ast - \frac{1 - F(r^\ast)}{f(r^\ast)} = 0</span></p>
+<p>In words: with risk-neutral bidders and independent private values
+(I.1, I.2), if the Bayesian Nash equilibria of two auctions give each
+bidder the same probability of winning at every profile of values and
+give the lowest type the same expected utility, the two earn the same
+expected revenue (Theorem 12); when the seller values the object at
+zero, the virtual value <span class="math inline">\Psi</span> is
+increasing, and bidders are symmetric (I.1’), a second-price or
+first-price auction with reserve price <span
+class="math inline">r^\ast</span> maximizes revenue, and <span
+class="math inline">r^\ast</span> does not depend on the number of
+bidders (Theorem 13). With values uniform on <span
+class="math inline">[0, 1]</span>, the left formula is the symmetric
+equilibrium bid in a first-price auction (Theorem 11), and <span
 class="math inline">r^\ast = 1/2</span>.</p>
 </div>
 <div class="theorem"
 data-label="Lerner index / monopoly markup · Chapter 4 §2">
 <p><span class="math display">\underbrace{p(q) + q\,\frac{dp}{dq}}_{MR}
 = \underbrace{c&#39;(q)}_{MC}, \qquad \frac{p - c&#39;}{p} =
-\frac{1}{|\varepsilon|}</span></p>
-<p>In words: the monopolist sets marginal revenue equal to marginal
-cost, the markup equals the reciprocal of the price elasticity of
-demand, and the less elastic demand is, the greater the market power;
+\frac{1}{\lvert\mathcal{E}\rvert}</span></p>
+<p>In words: under D.1 (Theorem 1), the monopolist sets marginal revenue
+equal to marginal cost, and at the monopoly price the Lerner index
+equals the reciprocal of the absolute price elasticity of demand (not a
+causal relation); with positive marginal cost, demand is elastic there;
 this inverse-elasticity relation is the starting point for recovering
 markups from demand in Chapter 29.</p>
 </div>
 <div class="theorem"
 data-label="Cournot and Bertrand · Chapter 4 §4.1 to §4.2">
-<p><span class="math display">\text{Cournot}:\ p &gt; c \qquad\qquad
-\text{Bertrand}:\ p = c = mc</span></p>
-<p>In words: the dimension of competition determines market power.
-Cournot competition in quantities leaves a markup, while Bertrand
-competition in prices drives price down to marginal cost when products
-are homogeneous and costs identical (the Bertrand paradox); capacity
-constraints, product differentiation, or repeated play can push price
-back up.</p>
+<p><span class="math display">\text{Cournot}:\ p&#39;(Q^\ast)\,Q^\ast/n
++ p(Q^\ast) = c,\ \ p(Q^\ast) &gt; c \qquad\qquad \text{Bertrand}:\ p_1
+= p_2 = c</span></p>
+<p>In words: the dimension of competition determines market power. With
+a common marginal cost <span class="math inline">c</span> (D.2), Cournot
+competition in quantities has a pure-strategy equilibrium under D.1 and
+O.1, and the symmetric equilibrium price is above <span
+class="math inline">c</span> and, as <span class="math inline">n \to
+\infty</span>, tends to <span class="math inline">c</span> (Theorem 7);
+in Bertrand competition in prices with a homogeneous product and <span
+class="math inline">c &gt; 0</span>, the unique equilibrium is <span
+class="math inline">p_1 = p_2 = c</span> (Theorem 8, the Bertrand
+paradox). Capacity constraints, product differentiation, or repeated
+play can push price back up.</p>
 </div>
 <h3 id="part-ii-econometric-core">Part II Econometric Core</h3>
 <p>Part II is the machinery of estimation and inference: every
@@ -1341,10 +1371,12 @@ e^{V_{ij}^{\text{pre}}}\big)\Big]\, dF_i</span></p>
 <p>In words: a merger flips the corresponding cross-terms of the
 ownership matrix from 0 to 1, and re-solving the FOC with <span
 class="math inline">mc</span> and demand held fixed gives the
-post-merger prices; the change in consumer surplus is the change in the
-log-sum expected maximum utility from before to after the merger,
-divided by the marginal utility of price <span
-class="math inline">\alpha_i</span>.</p>
+post-merger prices; <span class="math inline">\Delta CS</span> is the
+change in the log-sum from before to after the merger, divided by <span
+class="math inline">\alpha_i</span> (the marginal utility of income,
+that is, the price coefficient, which must not vary with income), and is
+signed as a gain, the opposite of Chapter 1’s <span
+class="math inline">\Delta\mathrm{CS}</span>.</p>
 </div>
 <div class="theorem"
 data-label="Entry games and Bresnahan-Reiss · Chapter 30 §2, §4.1">
