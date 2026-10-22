@@ -580,8 +580,8 @@ post-merger prices.</p>
 class="math inline">4.8\%</span> after the merger, brand 2’s rises <span
 class="math inline">7.3\%</span>, and the four non-merging rival brands
 barely move (rising about <span class="math inline">0.3\%</span>). Brand
-2’s price rises more not because it starts with a higher markup rate
-(brand 1 has both the higher markup and the higher markup rate) but
+2’s price rises more not because it starts with a higher Lerner index
+(brand 1 has both the higher markup and the higher Lerner index) but
 because the customers brand 2 loses usually go to brand 1 at a higher
 rate than the reverse, and brand 1 earns a larger margin on each of
 them, so the merged firm recaptures more profit from these customers.
@@ -627,11 +627,17 @@ screen.</p>
 measured by the log-sum (inclusive value) of discrete choice, which is
 the result of Small and Rosen (1981): a consumer’s expected maximum
 utility is <span class="math inline">\log(1 + \sum_j e^{V_{ij}})</span>,
-divided by the marginal utility of price <span
+divided by the marginal utility of income (the price coefficient) <span
 class="math inline">\alpha_i</span> to convert to dollars, then
 integrated over the taste distribution to give aggregate consumer
-surplus. The difference between the two log-sums before and after the
-merger is the change in consumer surplus:</p>
+surplus. This conversion requires that <span
+class="math inline">\alpha_i</span> not vary with income, that is, no
+income effect, in which case CV, EV, and consumer surplus coincide
+(Theorem 10 (iii) in Section 4.1 of Chapter 1). The difference between
+the post-merger and pre-merger log-sums is the change in consumer
+surplus, <span class="math inline">\Delta CS</span>, signed as a gain,
+the opposite of Chapter 1’s convention of signing <span
+class="math inline">\Delta\mathrm{CS}</span> as a loss:</p>
 <p><span class="math display">\Delta CS = \int
 \frac{1}{\alpha_i}\Big[\log\big(1 + \textstyle\sum_j
 e^{V_{ij}^{\text{post}}}\big) - \log\big(1 + \textstyle\sum_j
@@ -2375,10 +2381,10 @@ curvature of demand, with random coefficients and logit giving different
 pass-through, so the quantitative conclusion of the efficiency defense
 also depends on the demand specification. Finally, converting to dollars
 in the welfare measure via the log-sum requires the marginal utility of
-price, and if the model allows some consumers to have a positive price
-coefficient (the old problem of normal random coefficients), the welfare
-conversion breaks, which is one reason practice often sets the price
-coefficient as log-normal.</p>
+income (the price coefficient), and if the model allows some consumers
+to have a positive price coefficient (the old problem of normal random
+coefficients), the welfare conversion breaks, which is one reason
+practice often sets the price coefficient as log-normal.</p>
 <p>Stringing these failure modes together, the credibility of the supply
 side comes down in the end to two things: whether the conduct assumption
 is right, and whether the previous chapter’s demand (especially

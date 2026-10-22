@@ -24,68 +24,68 @@ Each card gives one core method: its name, the key formula, and a one-line gloss
 
 ### Part I Microeconomic Foundations
 
-Part I is pure theory: the main text works through its demonstrations by hand in base R, with no dedicated estimation package. The cards below give the primitives that the later chapters on identification and structural estimation borrow again and again.
+Part I consists of theory chapters: the main text works through its hand calculations and simulation demonstrations in base R, with no dedicated estimation package. The cards below give the primitives that the later chapters on identification and structural estimation borrow again and again.
 
 ::: {.theorem data-label="Consumer duality (Roy / Shephard / the four duality identities) · Chapter 1 §3.3 to §3.4"}
 $$x_\ell(p, w) = -\frac{\partial v(p, w)/\partial p_\ell}{\partial v(p, w)/\partial w}, \qquad \frac{\partial e(p, \bar u)}{\partial p_\ell} = h_\ell(p, \bar u)$$
 
 $$e(p, v(p, w)) = w, \qquad h_\ell(p, \bar u) = x_\ell(p, e(p, \bar u))$$
 
-In words: the indirect utility $v$ and the expenditure function $e$ are inverses of each other; differentiating with respect to price reads Walrasian demand $x$ and Hicksian demand $h$ straight off the value function, and the four objects pin one another down pairwise.
+In words: when $u$ is continuous and C.3 holds (Theorem 4), $v$ and $e$ are inverses of each other at fixed prices; add C.4(b), and the price slopes of the two value functions are Walrasian demand $x$ and Hicksian demand $h$ (Theorem 5, a local result).
 :::
 
 ::: {.theorem data-label="Slutsky equation · Chapter 1 §3.5"}
 $$\underbrace{\frac{\partial x_\ell(p, w)}{\partial p_k}}_{\text{total}} = \underbrace{\frac{\partial h_\ell(p, \bar u)}{\partial p_k}}_{\text{substitution}}\; \underbrace{-\; x_k(p, w)\,\frac{\partial x_\ell(p, w)}{\partial w}}_{\text{income}}$$
 
-In words: the observable price slope of demand splits into a compensated substitution effect and a purchasing-power income effect, and the substitution piece corresponds to a negative semidefinite Slutsky matrix.
+In words: with $u$ continuous and C.3 and C.4(b) in force (Theorem 6), the price slope of demand splits into a substitution term and an income term; if $h$ is continuously differentiable, the observable Slutsky matrix $S(p, w)$ equals the Hessian of $e$, so it is symmetric and negative semidefinite, with $S(p, w)\,p = 0$.
 :::
 
 ::: {.theorem data-label="Welfare measures CV / EV · Chapter 1 §4.1"}
 $$\mathrm{CV} = e(p^1, u^0) - e(p^1, u^1) = e(p^1, u^0) - w, \qquad \mathrm{EV} = e(p^0, u^0) - e(p^0, u^1) = w - e(p^0, u^1)$$
 
-In words: the money-metric welfare of a price change is the difference between two values of the expenditure function: CV is priced at the new prices and EV at the old ones. CV, EV, and $\Delta\mathrm{CS}$ (the loss in consumer surplus) are all signed as losses (positive for a price increase), the opposite of MWG's sign convention; for a price increase on a normal good, the ordering is $\mathrm{EV} \leq \Delta\mathrm{CS} \leq \mathrm{CV}$.
+In words: CV, EV, and $\Delta\mathrm{CS}$ (the loss in consumer surplus) are all signed as losses, the opposite of MWG's sign; CV is priced at the new prices and EV at the old ones. With $u$ continuous, C.3 and C.4(b) holding, and only $p_1$ changing (Theorem 10), CV and EV are areas under Hicksian demand; for a normal good, $\mathrm{EV} \leq \Delta\mathrm{CS} \leq \mathrm{CV}$ for price increases and decreases alike, the ordering reverses for an inferior good, and with no income effect the three are equal.
 :::
 
 ::: {.theorem data-label="Arrow-Pratt risk aversion · Chapter 1 §4.3"}
-$$A(w) = -\frac{u''(w)}{u'(w)}, \qquad \pi \approx \tfrac{1}{2}A(w)\,\mathrm{Var}(\widetilde\varepsilon)$$
+$$A(w) = -\frac{u''(w)}{u'(w)}, \qquad \pi(w) \approx \tfrac{1}{2}A(w)\operatorname{Var}(\widetilde\varepsilon)$$
 
-In words: the curvature of the Bernoulli utility function measures risk aversion; for a small zero-mean risk added to wealth $w$, written $\widetilde\varepsilon$, the risk premium is roughly half the coefficient of absolute risk aversion times the variance of the risk.
+In words: within expected utility (U.1, U.2, Theorem 15), requiring at every $x$ that $A(x; u_2) \geq A(x; u_1)$ is equivalent to requiring that, for any distribution of payoffs, the certainty equivalent under $u_2$ be no higher than under $u_1$ (Theorem 16); for a small zero-mean risk $\widetilde\varepsilon$, the premium is roughly half of $A(w)$ times the variance.
 :::
 
 ::: {.theorem data-label="Nash equilibrium · Chapter 2 §3.2"}
 $$u_i(s_i^*, s_{-i}^*) \geq u_i(s_i, s_{-i}^*) \quad \text{for all } s_i,\ \text{all } i$$
 
-In words: every player's strategy is a best response to the others', so no one has an incentive to deviate unilaterally; in a finite game, an equilibrium is guaranteed to exist once mixed strategies are allowed.
+In words: every player's strategy is a best response to the others', so no one has an incentive to deviate unilaterally; in a finite game (G.1(a)), an equilibrium is guaranteed to exist once mixed strategies are allowed (Theorem 2), and a continuous game under G.2 has a pure-strategy equilibrium (Chapter 2 §3.3, Theorem 3).
 :::
 
-::: {.theorem data-label="Repeated-game cooperation threshold (grim trigger) · Chapter 2 §4"}
+::: {.theorem data-label="Repeated-game cooperation threshold (grim trigger) · Chapter 2 §4.1"}
 $$\frac{R}{1-\delta} \geq T + \frac{\delta P}{1-\delta} \quad\Longleftrightarrow\quad \delta \geq \frac{T - R}{T - P}$$
 
-In words: the discounted value of cooperating forever is at least that of defecting once and then being punished forever, so the cooperation threshold is set by the ratio of the temptation to the severity of punishment; the folk theorem says that, in two-player games or in games with more players that satisfy a dimensionality condition, any feasible payoff profile strictly above the minmax can be supported when $\delta$ is large enough.
+In words: when $T > R > P$, the punishment profile is a Nash equilibrium of the stage game, and play is repeated infinitely often (G.3), grim trigger is an SPE if and only if the discounted value of cooperating forever is at least that of defecting once and then being punished forever (Theorem 16), so the cooperation threshold is set by the ratio of the temptation to the severity of punishment; the folk theorem (G.1(a), G.3, Theorem 17) says that, in two-player games or in games with more players that satisfy a dimensionality condition, any feasible payoff profile strictly above the minmax is the average payoff of some SPE when $\delta$ is large enough.
 :::
 
 ::: {.theorem data-label="VCG mechanism · Chapter 3 §3.6"}
-$$t_i = \max_{a}\sum_{j \neq i} \hat v_j(a) \;-\; \sum_{j \neq i} \hat v_j(a^*)$$
+$$t_i = \max_{a}\sum_{j \neq i} v_j'(a) \;-\; \sum_{j \neq i} v_j'(a^*)$$
 
-In words: each agent pays the externality it imposes on everyone else, so private self-interest and total social welfare differ only by a constant that is independent of the agent's own report, and truth-telling becomes a dominant strategy (the revelation principle guarantees that we need only study direct, truthful mechanisms of this kind).
+In words: with quasilinear private values (Theorem 8), each agent pays the externality it imposes on everyone else, so private self-interest and total social welfare differ only by a constant that is independent of the agent's own report, and truthful reporting becomes a (weakly) dominant strategy, at the price of a budget that is in general not balanced (the revelation principle guarantees that we need only study direct mechanisms with truthful reporting, Chapter 3 §3.5, Theorem 6).
 :::
 
 ::: {.theorem data-label="Revenue equivalence and the Myerson reserve · Chapter 3 §4.1 to §4.3"}
-$$b(v) = \frac{n-1}{n}\, v, \qquad r^\ast:\ r = \frac{1 - F(r)}{f(r)}$$
+$$b(v) = \frac{n-1}{n}\, v, \qquad \Psi(r^\ast) = r^\ast - \frac{1 - F(r^\ast)}{f(r^\ast)} = 0$$
 
-In words: every auction with risk-neutral bidders and independent private values (drawn from an interval with a strictly positive density) that awards the object to the bidder with the highest valuation and leaves the lowest type zero rent earns the same expected revenue in Bayesian Nash equilibrium; the optimal reserve is where the virtual value equals zero. With values uniform on $[0, 1]$, the left formula is the symmetric equilibrium bid in a first-price auction, and the optimal reserve is $r^\ast = 1/2$.
+In words: with risk-neutral bidders and independent private values (I.1, I.2), if the Bayesian Nash equilibria of two auctions give each bidder the same probability of winning at every profile of values and give the lowest type the same expected utility, the two earn the same expected revenue (Theorem 12); when the seller values the object at zero, the virtual value $\Psi$ is increasing, and bidders are symmetric (I.1'), a second-price or first-price auction with reserve price $r^\ast$ maximizes revenue, and $r^\ast$ does not depend on the number of bidders (Theorem 13). With values uniform on $[0, 1]$, the left formula is the symmetric equilibrium bid in a first-price auction (Theorem 11), and $r^\ast = 1/2$.
 :::
 
 ::: {.theorem data-label="Lerner index / monopoly markup · Chapter 4 §2"}
-$$\underbrace{p(q) + q\,\frac{dp}{dq}}_{MR} = \underbrace{c'(q)}_{MC}, \qquad \frac{p - c'}{p} = \frac{1}{|\varepsilon|}$$
+$$\underbrace{p(q) + q\,\frac{dp}{dq}}_{MR} = \underbrace{c'(q)}_{MC}, \qquad \frac{p - c'}{p} = \frac{1}{\lvert\mathcal{E}\rvert}$$
 
-In words: the monopolist sets marginal revenue equal to marginal cost, the markup equals the reciprocal of the price elasticity of demand, and the less elastic demand is, the greater the market power; this inverse-elasticity relation is the starting point for recovering markups from demand in Chapter 29.
+In words: under D.1 (Theorem 1), the monopolist sets marginal revenue equal to marginal cost, and at the monopoly price the Lerner index equals the reciprocal of the absolute price elasticity of demand (not a causal relation); with positive marginal cost, demand is elastic there; this inverse-elasticity relation is the starting point for recovering markups from demand in Chapter 29.
 :::
 
 ::: {.theorem data-label="Cournot and Bertrand · Chapter 4 §4.1 to §4.2"}
-$$\text{Cournot}:\ p > c \qquad\qquad \text{Bertrand}:\ p = c = mc$$
+$$\text{Cournot}:\ p'(Q^\ast)\,Q^\ast/n + p(Q^\ast) = c,\ \ p(Q^\ast) > c \qquad\qquad \text{Bertrand}:\ p_1 = p_2 = c$$
 
-In words: the dimension of competition determines market power. Cournot competition in quantities leaves a markup, while Bertrand competition in prices drives price down to marginal cost when products are homogeneous and costs identical (the Bertrand paradox); capacity constraints, product differentiation, or repeated play can push price back up.
+In words: the dimension of competition determines market power. With a common marginal cost $c$ (D.2), Cournot competition in quantities has a pure-strategy equilibrium under D.1 and O.1, and the symmetric equilibrium price is above $c$ and, as $n \to \infty$, tends to $c$ (Theorem 7); in Bertrand competition in prices with a homogeneous product and $c > 0$, the unique equilibrium is $p_1 = p_2 = c$ (Theorem 8, the Bertrand paradox). Capacity constraints, product differentiation, or repeated play can push price back up.
 :::
 
 ### Part II Econometric Core
@@ -555,7 +555,7 @@ In words: the diversion ratio measures how much of the volume lost by $j$ after 
 ::: {.theorem data-label="Merger simulation and log-sum welfare · Chapter 29 §4.2, §4.4"}
 $$\Delta CS = \int \frac{1}{\alpha_i}\Big[\log\big(1 + \textstyle\sum_j e^{V_{ij}^{\text{post}}}\big) - \log\big(1 + \textstyle\sum_j e^{V_{ij}^{\text{pre}}}\big)\Big]\, dF_i$$
 
-In words: a merger flips the corresponding cross-terms of the ownership matrix from 0 to 1, and re-solving the FOC with $mc$ and demand held fixed gives the post-merger prices; the change in consumer surplus is the change in the log-sum expected maximum utility from before to after the merger, divided by the marginal utility of price $\alpha_i$.
+In words: a merger flips the corresponding cross-terms of the ownership matrix from 0 to 1, and re-solving the FOC with $mc$ and demand held fixed gives the post-merger prices; $\Delta CS$ is the change in the log-sum from before to after the merger, divided by $\alpha_i$ (the marginal utility of income, that is, the price coefficient, which must not vary with income), and is signed as a gain, the opposite of Chapter 1's $\Delta\mathrm{CS}$.
 :::
 
 ::: {.theorem data-label="Entry games and Bresnahan-Reiss · Chapter 30 §2, §4.1"}

@@ -1,28 +1,93 @@
-<svg viewBox="0 0 700 320" xmlns="http://www.w3.org/2000/svg" font-family="-apple-system, 'Noto Sans SC', sans-serif">
-  <line x1="70" y1="30" x2="70" y2="290" stroke="#94a1b2" stroke-width="1.5"/>
-  <line x1="70" y1="290" x2="640" y2="290" stroke="#94a1b2" stroke-width="1.5"/>
-  <text x="70" y="22" text-anchor="start" font-size="13" fill="#64748b">price p</text>
-  <text x="640" y="310" text-anchor="end" font-size="13" fill="#64748b">quantity q →</text>
-
-  <polygon points="70.0,59.2 70.0,155.4 299.2,155.4" fill="#2b6cb0" opacity="0.14"/>
-  <polygon points="70.0,155.4 299.2,155.4 299.2,251.5 70.0,251.5" fill="#7c7f46" opacity="0.16"/>
-  <polygon points="299.2,155.4 528.3,251.5 299.2,251.5" fill="#c53030" opacity="0.18"/>
-
-  <line x1="70.0" y1="59.2" x2="620.0" y2="290.0" stroke="#1a365d" stroke-width="2.5"/>
-  <text x="615" y="220" text-anchor="end" font-size="12" fill="#1a365d">demand p = 12 - q</text>
-  <line x1="70.0" y1="59.2" x2="345.0" y2="290.0" stroke="#2b6cb0" stroke-width="1.8" stroke-dasharray="6 4"/>
-  <text x="350" y="285" text-anchor="start" font-size="12" fill="#2b6cb0">MR</text>
-  <line x1="70.0" y1="251.5" x2="620.0" y2="251.5" stroke="#c53030" stroke-width="1.8"/>
-  <text x="628" y="247" text-anchor="end" font-size="12" fill="#c53030">MC = 2</text>
-
-  <line x1="299.2" y1="155.4" x2="299.2" y2="290" stroke="#cfccc4" stroke-width="1.2" stroke-dasharray="4 4"/>
-  <line x1="70" y1="155.4" x2="299.2" y2="155.4" stroke="#cfccc4" stroke-width="1.2" stroke-dasharray="4 4"/>
-  <circle cx="299.2" cy="155.4" r="4.5" fill="#1a365d"/>
-  <text x="62" y="159" text-anchor="end" font-size="12" fill="#2d3748">7</text>
-  <text x="299.2" y="305" text-anchor="middle" font-size="12" fill="#2d3748">qm=5</text>
-  <text x="528.3" y="305" text-anchor="middle" font-size="12" fill="#64748b">qc=10</text>
-
-  <text x="120" y="128" text-anchor="middle" font-size="12" fill="#2b6cb0">CS=12.5</text>
-  <text x="185" y="210" text-anchor="middle" font-size="12" fill="#5a5d33">profit=25</text>
-  <text x="382" y="228" text-anchor="middle" font-size="12" fill="#c53030">DWL=12.5</text>
+<?xml version='1.0' encoding='UTF-8' ?>
+<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='576.00pt' height='345.60pt' viewBox='0 0 576.00 345.60'>
+<g class='svglite'>
+<defs>
+  <style type='text/css'><![CDATA[
+    .svglite line, .svglite polyline, .svglite polygon, .svglite path, .svglite rect, .svglite circle {
+      fill: none;
+      stroke: #000000;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-miterlimit: 10.00;
+    }
+    .svglite text {
+      white-space: pre;
+    }
+    .svglite g.glyphgroup path {
+      fill: inherit;
+      stroke: none;
+    }
+  ]]></style>
+</defs>
+<rect width='100%' height='100%' style='stroke: none; fill: #FFFFFF;'/>
+<defs>
+  <clipPath id='cpMC4wMHw1NzYuMDB8MC4wMHwzNDUuNjA='>
+    <rect x='0.00' y='0.00' width='576.00' height='345.60' />
+  </clipPath>
+</defs>
+<g clip-path='url(#cpMC4wMHw1NzYuMDB8MC4wMHwzNDUuNjA=)'>
+<rect x='0.00' y='0.00' width='576.00' height='345.60' style='stroke-width: 1.07; stroke: none; fill: #FFFFFF;' />
+</g>
+<defs>
+  <clipPath id='cpMzMuMTN8NTcwLjUyfDUuNDh8Mjc0Ljkx'>
+    <rect x='33.13' y='5.48' width='537.39' height='269.43' />
+  </clipPath>
+</defs>
+<g clip-path='url(#cpMzMuMTN8NTcwLjUyfDUuNDh8Mjc0Ljkx)'>
+<polyline points='33.13,274.91 570.52,274.91 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='33.13,232.64 570.52,232.64 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='33.13,190.38 570.52,190.38 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='33.13,148.12 570.52,148.12 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='33.13,105.85 570.52,105.85 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='33.13,63.59 570.52,63.59 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='33.13,21.33 570.52,21.33 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='33.13,274.91 33.13,5.48 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='111.18,274.91 111.18,5.48 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='189.23,274.91 189.23,5.48 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='267.29,274.91 267.29,5.48 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='345.34,274.91 345.34,5.48 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='423.39,274.91 423.39,5.48 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polyline points='501.44,274.91 501.44,5.48 ' style='stroke-width: 1.07; stroke: #EBEBEB; stroke-linecap: butt;' />
+<polygon points='33.13,126.99 33.13,21.33 228.26,126.99 ' style='stroke-width: 1.07; stroke: none; stroke-linecap: butt; fill: #0072B2; fill-opacity: 0.22;' />
+<polygon points='228.26,126.99 228.26,232.64 423.39,232.64 ' style='stroke-width: 1.07; stroke: none; stroke-linecap: butt; fill: #D55E00; fill-opacity: 0.22;' />
+<polygon points='33.13,232.64 228.26,232.64 228.26,126.99 33.13,126.99 ' style='stroke-width: 1.07; stroke: none; stroke-linecap: butt; fill: #009E73; fill-opacity: 0.22;' />
+<line x1='228.26' y1='274.91' x2='228.26' y2='126.99' style='stroke-width: 0.85; stroke: #404040; stroke-dasharray: 1.14,3.41; stroke-linecap: butt;' />
+<line x1='423.39' y1='274.91' x2='423.39' y2='232.64' style='stroke-width: 0.85; stroke: #404040; stroke-dasharray: 1.14,3.41; stroke-linecap: butt;' />
+<line x1='33.13' y1='126.99' x2='228.26' y2='126.99' style='stroke-width: 0.85; stroke: #404040; stroke-dasharray: 1.14,3.41; stroke-linecap: butt;' />
+<polyline points='33.13,21.33 501.44,274.91 ' style='stroke-width: 1.71; stroke: #404040; stroke-linecap: butt;' />
+<polyline points='33.13,21.33 267.29,274.91 ' style='stroke-width: 1.71; stroke: #CC79A7; stroke-dasharray: 9.10,9.10; stroke-linecap: butt;' />
+<polyline points='33.13,232.64 501.44,232.64 ' style='stroke-width: 1.71; stroke: #0072B2; stroke-linecap: butt;' />
+<circle cx='228.26' cy='126.99' r='2.70' style='stroke-width: 0.71; stroke: #404040; fill: #404040;' />
+<circle cx='423.39' cy='232.64' r='2.70' style='stroke-width: 0.71; stroke: #404040; fill: #404040;' />
+<text x='236.06' y='122.84' style='font-size: 9.10px;fill: #404040; font-family: "Arial";' textLength='90.58px' lengthAdjust='spacingAndGlyphs'>Monopoly: q = 5, p = 7</text>
+<text x='431.20' y='226.39' style='font-size: 9.10px;fill: #404040; font-family: "Arial";' textLength='104.73px' lengthAdjust='spacingAndGlyphs'>Competition: q = 10, p = 2</text>
+<text x='165.82' y='113.33' text-anchor='middle' style='font-size: 9.10px;fill: #404040; font-family: "Arial";' textLength='40.72px' lengthAdjust='spacingAndGlyphs'>CS = 12.5</text>
+<text x='130.69' y='183.07' text-anchor='middle' style='font-size: 9.10px;fill: #404040; font-family: "Arial";' textLength='41.73px' lengthAdjust='spacingAndGlyphs'>Profit = 25</text>
+<text x='293.30' y='200.68' text-anchor='middle' style='font-size: 9.10px;fill: #404040; font-family: "Arial";' textLength='47.95px' lengthAdjust='spacingAndGlyphs'>DWL = 12.5</text>
+</g>
+<g clip-path='url(#cpMC4wMHw1NzYuMDB8MC4wMHwzNDUuNjA=)'>
+<text x='28.20' y='278.06' text-anchor='end' style='font-size: 8.80px;fill: #4D4D4D; font-family: "Arial";' textLength='4.89px' lengthAdjust='spacingAndGlyphs'>0</text>
+<text x='28.20' y='235.79' text-anchor='end' style='font-size: 8.80px;fill: #4D4D4D; font-family: "Arial";' textLength='4.89px' lengthAdjust='spacingAndGlyphs'>2</text>
+<text x='28.20' y='193.53' text-anchor='end' style='font-size: 8.80px;fill: #4D4D4D; font-family: "Arial";' textLength='4.89px' lengthAdjust='spacingAndGlyphs'>4</text>
+<text x='28.20' y='151.27' text-anchor='end' style='font-size: 8.80px;fill: #4D4D4D; font-family: "Arial";' textLength='4.89px' lengthAdjust='spacingAndGlyphs'>6</text>
+<text x='28.20' y='109.00' text-anchor='end' style='font-size: 8.80px;fill: #4D4D4D; font-family: "Arial";' textLength='4.89px' lengthAdjust='spacingAndGlyphs'>8</text>
+<text x='28.20' y='66.74' text-anchor='end' style='font-size: 8.80px;fill: #4D4D4D; font-family: "Arial";' textLength='9.78px' lengthAdjust='spacingAndGlyphs'>10</text>
+<text x='28.20' y='24.48' text-anchor='end' style='font-size: 8.80px;fill: #4D4D4D; font-family: "Arial";' textLength='9.78px' lengthAdjust='spacingAndGlyphs'>12</text>
+<text x='33.13' y='286.14' text-anchor='middle' style='font-size: 8.80px;fill: #4D4D4D; font-family: "Arial";' textLength='4.89px' lengthAdjust='spacingAndGlyphs'>0</text>
+<text x='111.18' y='286.14' text-anchor='middle' style='font-size: 8.80px;fill: #4D4D4D; font-family: "Arial";' textLength='4.89px' lengthAdjust='spacingAndGlyphs'>2</text>
+<text x='189.23' y='286.14' text-anchor='middle' style='font-size: 8.80px;fill: #4D4D4D; font-family: "Arial";' textLength='4.89px' lengthAdjust='spacingAndGlyphs'>4</text>
+<text x='267.29' y='286.14' text-anchor='middle' style='font-size: 8.80px;fill: #4D4D4D; font-family: "Arial";' textLength='4.89px' lengthAdjust='spacingAndGlyphs'>6</text>
+<text x='345.34' y='286.14' text-anchor='middle' style='font-size: 8.80px;fill: #4D4D4D; font-family: "Arial";' textLength='4.89px' lengthAdjust='spacingAndGlyphs'>8</text>
+<text x='423.39' y='286.14' text-anchor='middle' style='font-size: 8.80px;fill: #4D4D4D; font-family: "Arial";' textLength='9.78px' lengthAdjust='spacingAndGlyphs'>10</text>
+<text x='501.44' y='286.14' text-anchor='middle' style='font-size: 8.80px;fill: #4D4D4D; font-family: "Arial";' textLength='9.78px' lengthAdjust='spacingAndGlyphs'>12</text>
+<text x='301.82' y='298.60' text-anchor='middle' style='font-size: 11.00px; font-family: "Arial";' textLength='94.22px' lengthAdjust='spacingAndGlyphs'>Operating activity q</text>
+<text transform='translate(13.36,140.19) rotate(-90)' text-anchor='middle' style='font-size: 11.00px; font-family: "Arial";' textLength='156.56px' lengthAdjust='spacingAndGlyphs'>Price p (USD per unit of activity)</text>
+<line x1='125.02' y1='326.00' x2='138.84' y2='326.00' style='stroke-width: 1.71; stroke: #404040; stroke-linecap: butt;' />
+<line x1='226.32' y1='326.00' x2='240.14' y2='326.00' style='stroke-width: 1.71; stroke: #CC79A7; stroke-dasharray: 9.10,9.10; stroke-linecap: butt;' />
+<line x1='376.00' y1='326.00' x2='389.82' y2='326.00' style='stroke-width: 1.71; stroke: #0072B2; stroke-linecap: butt;' />
+<text x='146.05' y='329.15' style='font-size: 8.80px; font-family: "Arial";' textLength='73.06px' lengthAdjust='spacingAndGlyphs'>Demand p = 12 - q</text>
+<text x='247.35' y='329.15' style='font-size: 8.80px; font-family: "Arial";' textLength='121.44px' lengthAdjust='spacingAndGlyphs'>Marginal revenue MR = 12 - 2q</text>
+<text x='397.03' y='329.15' style='font-size: 8.80px; font-family: "Arial";' textLength='83.33px' lengthAdjust='spacingAndGlyphs'>Marginal cost MC = 2</text>
+</g>
+</g>
 </svg>
