@@ -207,17 +207,19 @@ back at <span class="math inline">4.08</span>, both hugging the
 truth.</p>
 <p>Mis-estimating the structural parameters is not even the worst of it;
 the worst is that it will get the policy counterfactual wrong. Suppose
-the platform rolls out a subsidy that cuts the upgrade cost by <span
-class="math inline">30\%</span>, how many merchants would upgrade early
-as a result? The true answer is that the per-period upgrade rate rises
-by <span class="math inline">0.053</span> (from <span
+the platform rolls out a subsidy that pays merchants a fixed <span
+class="math inline">1.2</span> units of utility per upgrade (the true
+upgrade cost is <span class="math inline">4.0</span>, so the subsidy is
+exactly <span class="math inline">30\%</span> of it): how many merchants
+would upgrade early as a result? The true answer is that the per-period
+upgrade rate rises by <span class="math inline">0.053</span> (from <span
 class="math inline">0.162</span> to <span
 class="math inline">0.215</span>). The dynamic model, using its
-estimated parameters to compute this counterfactual, also gets <span
-class="math inline">0.053</span>, matching the truth. The myopic model
-gets <span class="math inline">0.076</span> instead, overstating the
-subsidy’s effect by forty percent. A model that gets even the discount
-factor wrong will get both the parameter estimates and the
+estimated parameters to compute this counterfactual, gets <span
+class="math inline">0.051</span>, close to the truth. The myopic model
+gets <span class="math inline">0.093</span> instead, overstating the
+subsidy’s effect by more than seventy percent. A model that gets even
+the discount factor wrong will get both the parameter estimates and the
 counterfactual wrong, and the counterfactual is exactly what the
 platform needs most when making this subsidy decision.</p>
 <p>What this chapter is about is precisely how to correctly estimate
@@ -229,8 +231,10 @@ not identified and has to lean on extra restrictions. Section 4 gives
 the two main routes to estimation, Rust’s nested fixed point and
 Hotz-Miller’s CCP method, the latter cleverly sidestepping the inner
 fixed point. Section 6 will run all of this on the Nimbus data, showing
-how the myopic errors get corrected one by one, and how the
-counterfactual is computed and what its credibility rests on.</p>
+how the myopic errors get corrected one by one and how the subsidy
+counterfactual is computed; Section 7 then explains why the subsidy is a
+fixed amount per upgrade rather than a proportional cut in the upgrade
+cost.</p>
 <h2 id="the-economic-model-and-the-estimand">2 The Economic Model and
 the Estimand</h2>
 <p>Before rolling up our sleeves, let us write down the dynamic decision
@@ -605,24 +609,24 @@ predict new behavior. The procedure is to plug in the changed
 environment (such as a reduced upgrade cost), re-solve the
 value-function fixed point, and compute the new choice probabilities and
 the steady-state behavior they produce. On Nimbus, simulating the
-platform subsidizing the upgrade cost by <span
-class="math inline">30\%</span>: using the true parameters, the
-per-period upgrade rate rises from <span
-class="math inline">0.162</span> to <span
+platform paying a fixed subsidy of <span class="math inline">1.2</span>
+units of utility per upgrade: using the true parameters, the per-period
+upgrade rate rises from <span class="math inline">0.162</span> to <span
 class="math inline">0.215</span>, an increase of <span
 class="math inline">0.053</span>; using the dynamically estimated
-parameters, it rises by <span class="math inline">0.053</span>, matching
+parameters, it rises by <span class="math inline">0.051</span>, close to
 the truth; using the myopic model’s parameters, it rises by <span
-class="math inline">0.076</span>, overstating by forty percent. The
-credibility of the counterfactual rests on whether the structural
-parameters are estimated correctly and on the assumption that the
-parameters really do not change after the policy change; this
-proportional cost cut also rests on the normalization that keeping the
-tool costs nothing at <span class="math inline">x = 0</span> (Section
-7). The reason the dynamic model is worth that large computational cost
-is precisely that it builds in forward-looking behavior, so it can
-credibly predict how a forward-looking decision-maker would respond to a
-new policy, while the myopic model errs systematically at this step.</p>
+class="math inline">0.093</span>, overstating by more than seventy
+percent. The credibility of the counterfactual rests on whether the
+structural parameters are estimated correctly and on the assumption that
+the parameters really do not change after the policy change. The subsidy
+is a fixed amount per upgrade because counterfactuals of this kind do
+not depend on the normalization of Section 3.3, while a proportional
+cost cut does (Section 7). The reason the dynamic model is worth that
+large computational cost is precisely that it builds in forward-looking
+behavior, so it can credibly predict how a forward-looking
+decision-maker would respond to a new policy, while the myopic model
+errs systematically at this step.</p>
 <p>The route of this section is now complete: NFXP does outer maximum
 likelihood and inner fixed-point solving; MPEC turns the fixed point
 into a constraint, the same estimator with another algorithm;
@@ -966,13 +970,15 @@ probabilities themselves measure value, and using them lets one sidestep
 the expensive inner fixed point.</p>
 <h3 id="counterfactual-the-upgrade-subsidy">6.5 Counterfactual: The
 Upgrade Subsidy</h3>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># cut the upgrade cost by 30%, re-solve the model, compare upgrade rates</span></span>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>s  <span class="ot">&lt;-</span> <span class="fl">1.2</span>                                         <span class="co"># s = 0.3 * 4.0</span></span>
 <span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>cf <span class="ot">&lt;-</span> <span class="cf">function</span>(th1, RC, bet)</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(<span class="at">base =</span> <span class="fu">agg</span>(<span class="fu">solve_V</span>(th1, RC, bet)), <span class="at">sub =</span> <span class="fu">agg</span>(<span class="fu">solve_V</span>(th1, RC<span class="sc">*</span><span class="fl">0.7</span>, bet)))</span></code></pre></div>
-<p>Simulate the platform subsidizing the upgrade cost by <span
-class="math inline">30\%</span>. Using the true parameters, the
-per-period upgrade rate rises from <span
-class="math inline">0.162</span> to <span
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(<span class="at">base =</span> <span class="fu">agg</span>(<span class="fu">solve_V</span>(th1, RC, bet)), <span class="at">sub =</span> <span class="fu">agg</span>(<span class="fu">solve_V</span>(th1, RC <span class="sc">-</span> s, bet)))</span></code></pre></div>
+<p>Simulate the platform paying a fixed subsidy of <span
+class="math inline">s = 1.2</span> units of utility per upgrade; the
+true upgrade cost is <span class="math inline">4.0</span>, so this is
+<span class="math inline">30\%</span> of it (Section 7 explains why the
+amount is fixed). Using the true parameters, the per-period upgrade rate
+rises from <span class="math inline">0.162</span> to <span
 class="math inline">0.215</span>, an increase of <span
 class="math inline">0.053</span> (the baseline rate <span
 class="math inline">0.162</span> is the model-implied steady-state
@@ -980,17 +986,19 @@ upgrade rate, on a different footing from the finite-sample upgrade rate
 <span class="math inline">0.146</span> obtained in Section 6.1 by
 starting from <span class="math inline">x=0</span> and simulating only
 30 periods). Using the dynamically estimated parameters, it rises by
-<span class="math inline">0.053</span>, matching the truth, a match that
-also presupposes the normalization that keeping the tool costs nothing
-at <span class="math inline">x = 0</span> (Section 7). Using the myopic
-model’s parameters, it rises by <span class="math inline">0.076</span>,
-overstating the subsidy’s effect by forty percent. This is the payoff of
+<span class="math inline">0.051</span>, <span
+class="math inline">0.96</span> times the truth; the gap comes from the
+estimation error in <span class="math inline">\theta_1</span> and <span
+class="math inline">RC</span>. Using the myopic model’s parameters, it
+rises by <span class="math inline">0.093</span>, <span
+class="math inline">1.76</span> times the truth, overstating the
+subsidy’s effect by more than seventy percent. This is the payoff of
 structural estimation: the correct dynamic model not only estimates the
-parameters right but, under this normalization, also reproduces the true
-counterfactual, while the myopic model errs at both ends, parameters and
+parameters right but also produces a counterfactual close to the truth,
+while the myopic model errs at both ends, parameters and
 counterfactual.</p>
 <figure>
-<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' viewBox='0 0 590.40 316.80' role="img" aria-label="The myopic model’s twofold error. Left: it estimates the friction cost of obsolescence \theta_1 as 0.42, while the truth is only 0.15, and the dynamic model estimates it back at 0.15. Right: it predicts a 30\% upgrade subsidy raises the upgrade rate by 0.076, while the truth is 0.053, and the dynamic model computes 0.053. Cut out foresight, and both parameter estimation and the counterfactual are systematically biased." style="max-width:100%;height:auto;display:block;margin:0 auto">
+<svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' viewBox='0 0 590.40 316.80' role="img" aria-label="The myopic model’s twofold error. Left: it estimates the friction cost of obsolescence \theta_1 as 0.42, while the truth is only 0.15, and the dynamic model estimates it back at 0.15. Right: it predicts that a fixed subsidy of 1.2 units of utility per upgrade raises the upgrade rate by 0.093, while the truth is 0.053, and the dynamic model computes 0.051. Cut out foresight, and both parameter estimation and the counterfactual are systematically biased." style="max-width:100%;height:auto;display:block;margin:0 auto">
 <g class='svglite'>
 <defs>
   <style type='text/css'><![CDATA[
@@ -1079,8 +1087,8 @@ counterfactual.</p>
   </clipPath>
 </defs>
 <g clip-path='url(#g2_cpMjk1LjIwfDU5MC40MHwwLjAwfDMxNi44MA==)'>
-<rect x='369.39' y='133.15' width='58.43' height='123.17' style='stroke-width: 0.75; stroke: none; fill: #1A365D;' />
-<rect x='439.50' y='134.34' width='58.43' height='121.98' style='stroke-width: 0.75; stroke: none; fill: #2B6CB0;' />
+<rect x='369.39' y='155.62' width='58.43' height='100.70' style='stroke-width: 0.75; stroke: none; fill: #1A365D;' />
+<rect x='439.50' y='159.27' width='58.43' height='97.05' style='stroke-width: 0.75; stroke: none; fill: #2B6CB0;' />
 <rect x='509.62' y='78.91' width='58.43' height='177.41' style='stroke-width: 0.75; stroke: none; fill: #C53030;' />
 </g>
 <g clip-path='url(#g2_cpMC4wMHw1OTAuNDB8MC4wMHwzMTYuODA=)'>
@@ -1089,25 +1097,27 @@ counterfactual.</p>
 <text x='538.84' y='282.24' text-anchor='middle' style='font-size: 11.40px; font-family: "Arial";' textLength='36.08px' lengthAdjust='spacingAndGlyphs'>myopic</text>
 </g>
 <g clip-path='url(#g2_cpMjk1LjIwfDU5MC40MHwwLjAwfDMxNi44MA==)'>
-<text transform='translate(315.36,145.44) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Arial";' textLength='178.73px' lengthAdjust='spacingAndGlyphs'>Delta upgrade rate (30% subsidy)</text>
+<text transform='translate(315.36,145.44) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Arial";' textLength='191.06px' lengthAdjust='spacingAndGlyphs'>Delta upgrade rate (subsidy s = 1.2)</text>
 </g>
 <g clip-path='url(#g2_cpMC4wMHw1OTAuNDB8MC4wMHwzMTYuODA=)'>
-<line x1='361.44' y1='256.32' x2='361.44' y2='70.57' style='stroke-width: 0.75;' />
+<line x1='361.44' y1='256.32' x2='361.44' y2='66.48' style='stroke-width: 0.75;' />
 <line x1='361.44' y1='256.32' x2='354.24' y2='256.32' style='stroke-width: 0.75;' />
-<line x1='361.44' y1='209.88' x2='354.24' y2='209.88' style='stroke-width: 0.75;' />
-<line x1='361.44' y1='163.44' x2='354.24' y2='163.44' style='stroke-width: 0.75;' />
-<line x1='361.44' y1='117.00' x2='354.24' y2='117.00' style='stroke-width: 0.75;' />
-<line x1='361.44' y1='70.57' x2='354.24' y2='70.57' style='stroke-width: 0.75;' />
+<line x1='361.44' y1='218.35' x2='354.24' y2='218.35' style='stroke-width: 0.75;' />
+<line x1='361.44' y1='180.38' x2='354.24' y2='180.38' style='stroke-width: 0.75;' />
+<line x1='361.44' y1='142.42' x2='354.24' y2='142.42' style='stroke-width: 0.75;' />
+<line x1='361.44' y1='104.45' x2='354.24' y2='104.45' style='stroke-width: 0.75;' />
+<line x1='361.44' y1='66.48' x2='354.24' y2='66.48' style='stroke-width: 0.75;' />
 <text transform='translate(344.16,256.32) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Arial";' textLength='23.34px' lengthAdjust='spacingAndGlyphs'>0.00</text>
-<text transform='translate(344.16,209.88) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Arial";' textLength='23.34px' lengthAdjust='spacingAndGlyphs'>0.02</text>
-<text transform='translate(344.16,163.44) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Arial";' textLength='23.34px' lengthAdjust='spacingAndGlyphs'>0.04</text>
-<text transform='translate(344.16,117.00) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Arial";' textLength='23.34px' lengthAdjust='spacingAndGlyphs'>0.06</text>
-<text transform='translate(344.16,70.57) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Arial";' textLength='23.34px' lengthAdjust='spacingAndGlyphs'>0.08</text>
+<text transform='translate(344.16,218.35) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Arial";' textLength='23.34px' lengthAdjust='spacingAndGlyphs'>0.02</text>
+<text transform='translate(344.16,180.38) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Arial";' textLength='23.34px' lengthAdjust='spacingAndGlyphs'>0.04</text>
+<text transform='translate(344.16,142.42) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Arial";' textLength='23.34px' lengthAdjust='spacingAndGlyphs'>0.06</text>
+<text transform='translate(344.16,104.45) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Arial";' textLength='23.34px' lengthAdjust='spacingAndGlyphs'>0.08</text>
+<text transform='translate(344.16,66.48) rotate(-90)' text-anchor='middle' style='font-size: 12.00px; font-family: "Arial";' textLength='23.34px' lengthAdjust='spacingAndGlyphs'>0.10</text>
 </g>
 <g clip-path='url(#g2_cpMzYxLjQ0fDU3Ni4wMHwzNC41NnwyNTYuMzI=)'>
-<text x='398.60' y='129.87' text-anchor='middle' style='font-size: 10.80px; font-family: "Arial";' textLength='27.00px' lengthAdjust='spacingAndGlyphs'>0.053</text>
-<text x='468.72' y='131.06' text-anchor='middle' style='font-size: 10.80px; font-family: "Arial";' textLength='27.00px' lengthAdjust='spacingAndGlyphs'>0.053</text>
-<text x='538.84' y='75.63' text-anchor='middle' style='font-size: 10.80px; font-family: "Arial";' textLength='27.00px' lengthAdjust='spacingAndGlyphs'>0.076</text>
+<text x='398.60' y='152.33' text-anchor='middle' style='font-size: 10.80px; font-family: "Arial";' textLength='27.00px' lengthAdjust='spacingAndGlyphs'>0.053</text>
+<text x='468.72' y='155.99' text-anchor='middle' style='font-size: 10.80px; font-family: "Arial";' textLength='27.00px' lengthAdjust='spacingAndGlyphs'>0.051</text>
+<text x='538.84' y='75.63' text-anchor='middle' style='font-size: 10.80px; font-family: "Arial";' textLength='27.00px' lengthAdjust='spacingAndGlyphs'>0.093</text>
 </g>
 <g clip-path='url(#g2_cpMjk1LjIwfDU5MC40MHwwLjAwfDMxNi44MA==)'>
 <text x='468.72' y='21.15' text-anchor='middle' style='font-size: 10.80px;fill: #1A365D; font-family: "Arial";' textLength='216.66px' lengthAdjust='spacingAndGlyphs'>...and mis-predicts the subsidy counterfactual</text>
@@ -1119,11 +1129,12 @@ it estimates the friction cost of obsolescence <span
 class="math inline">\theta_1</span> as <span
 class="math inline">0.42</span>, while the truth is only <span
 class="math inline">0.15</span>, and the dynamic model estimates it back
-at <span class="math inline">0.15</span>. Right: it predicts a <span
-class="math inline">30\%</span> upgrade subsidy raises the upgrade rate
-by <span class="math inline">0.076</span>, while the truth is <span
+at <span class="math inline">0.15</span>. Right: it predicts that a
+fixed subsidy of <span class="math inline">1.2</span> units of utility
+per upgrade raises the upgrade rate by <span
+class="math inline">0.093</span>, while the truth is <span
 class="math inline">0.053</span>, and the dynamic model computes <span
-class="math inline">0.053</span>. Cut out foresight, and both parameter
+class="math inline">0.051</span>. Cut out foresight, and both parameter
 estimation and the counterfactual are systematically
 biased.</figcaption>
 </figure>
@@ -1142,10 +1153,11 @@ class="math inline">RC</span> back at <span
 class="math inline">4.082</span>, and Hotz-Miller CCP, without solving a
 fixed point, also gives <span class="math inline">0.149</span> and <span
 class="math inline">4.015</span>, both close to the truth; and for the
-counterfactual of a <span class="math inline">30\%</span> upgrade
-subsidy, the dynamic model computes the true <span
-class="math inline">0.053</span>, while the myopic model errs at <span
-class="math inline">0.076</span>. Only when the forward-looking behavior
+counterfactual of a fixed subsidy of <span
+class="math inline">1.2</span> per upgrade, the truth is <span
+class="math inline">0.053</span>, the dynamic model computes <span
+class="math inline">0.051</span>, and the myopic model errs at <span
+class="math inline">0.093</span>. Only when the forward-looking behavior
 is estimated correctly are the parameters and the counterfactual
 correct, and that is the meaning of the entire computational cost of a
 dynamic structural model.</p>
@@ -1198,18 +1210,34 @@ transitions in the data and the latter is known in advance, so neither
 depends on which normalization of Section 3.3 is used. Changing one
 action’s utility proportionally is generally not identified, because the
 result uses the level of utility, and the level is exactly what the
-normalization sets. The <span class="math inline">30\%</span> cut in the
-upgrade cost in Section 6.5 belongs to the second class: it relies on
-the normalization that keeping the tool costs nothing at <span
-class="math inline">x = 0</span>, and in the Nimbus simulation the
-counterfactual matches the truth because the model that generated the
-data and defines the truth satisfies this same normalization, which the
-estimator also imposes; the counterfactual in Rust’s bus model that
-changes the replacement cost proportionally is likewise not identified
-(see Kalouptsidi, Scott and Souza-Rodrigues 2021, Sections 3.2 to 3.4).
-The remedy is to restrict counterfactuals to the range in which there is
-reason for the parameters to stay fixed, and to state clearly which
-assumptions, untested by the data, the counterfactual depends on.</p>
+normalization sets. The subsidy in Section 6.5 is a fixed <span
+class="math inline">1.2</span> units of utility per upgrade, so it
+belongs to the first class and does not depend on the normalization;
+cutting the upgrade cost by <span class="math inline">30\%</span> would
+belong to the second. Nimbus shows the difference directly. In the true
+model, raise the cost of keeping the tool by <span
+class="math inline">\kappa</span> in every state (at <span
+class="math inline">x = 0</span> it goes from zero to <span
+class="math inline">\kappa</span>; the slope <span
+class="math inline">\theta_1</span> is unchanged) and the upgrade cost
+to <span class="math inline">4.0 + \kappa</span>: both actions’ payoffs
+fall by <span class="math inline">\kappa</span> in every state, so the
+choice probabilities (that is, the data) do not change. With <span
+class="math inline">\kappa = 1</span> and <span
+class="math inline">\kappa = -1</span>, the fixed subsidy’s effect is
+still <span class="math inline">0.053</span>, but the effect of the
+<span class="math inline">30\%</span> cut moves from <span
+class="math inline">0.053</span> (at <span class="math inline">\kappa =
+0</span>) to <span class="math inline">0.072</span> and <span
+class="math inline">0.037</span> respectively, because the amount cut,
+<span class="math inline">0.3\,(4.0 + \kappa)</span>, moves with the
+normalization. The counterfactual in Rust’s bus model that changes the
+replacement cost proportionally is likewise not identified (see
+Kalouptsidi, Scott and Souza-Rodrigues 2021, Sections 3.2 to 3.4). The
+remedy is to restrict counterfactuals to the range in which there is
+reason for the parameters to stay fixed, to prefer the kind that does
+not depend on the normalization, and to state clearly which assumptions,
+untested by the data, the counterfactual depends on.</p>
 <p>There are a few more concrete gates. The state space must be
 discretized, and too few notches lose the dynamics while too many make
 computation explode; the curse of dimensionality is the perennial

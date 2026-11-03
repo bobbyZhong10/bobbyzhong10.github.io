@@ -9,8 +9,11 @@ dat<-D$dat; Tr<-D$Tr; xs<-D$xs; K<-D$K; beta<-D$beta; pj<-D$pj; truth<-D$truth
 Tkeep<-Tr$Pk; Tup<-Tr$P0
 
 ## ---- full solve (for counterfactuals) ----
-solve_V<-function(theta1,RC,beta,tol=1e-12,maxit=5000){
-  u0<- -theta1*xs; u1<-rep(-RC,K); V<-rep(0,K)
+## kappa = cost of keeping the tool at x = 0; the keep cost is kappa + theta1*x in
+## every state. The chapter's model normalizes kappa to 0; the normalization
+## check below sets it to +-1.
+solve_V<-function(theta1,RC,beta,tol=1e-12,maxit=5000,kappa=0){
+  u0<- -theta1*xs - kappa; u1<-rep(-RC,K); V<-rep(0,K)
   for(it in 1:maxit){ v0<-u0+beta*(Tkeep%*%V); v1<-u1+beta*(Tup%*%V)
     m<-pmax(v0,v1); Vn<-as.vector(m+log(exp(v0-m)+exp(v1-m)))
     if(max(abs(Vn-V))<tol){V<-Vn;break}; V<-Vn }
@@ -65,30 +68,53 @@ cat("theta1 =",round(coef(ccp)[1],3)," RC =",round(coef(ccp)[2],3),
     "  (truth 0.15, 4.0 ; NFXP 0.154, 4.082)\n")
 
 ## ==========================================================
-## Counterfactual: platform subsidizes upgrades, RC -> RC*(1-s), s=0.30.
+## Counterfactual: platform pays a fixed subsidy s per upgrade, in utility
+## units: RC -> RC - s, s = 1.2 (= 30% of the true RC 4.0). Adding a known
+## amount to one action's payoff is identified (Kalouptsidi, Scott and
+## Souza-Rodrigues 2021); a proportional cut RC -> 0.7*RC is not (check below).
 ## Predict change in upgrade rate & mean staleness. Compare DYNAMIC-correct
 ## estimates vs MYOPIC-wrong estimates vs TRUTH.
 ## ==========================================================
-s_sub<-0.30
+s_sub<-1.2
 cf<-function(th1,RC,bet){
-  base<-agg(solve_V(th1,RC,bet)); sub<-agg(solve_V(th1,RC*(1-s_sub),bet))
+  base<-agg(solve_V(th1,RC,bet)); sub<-agg(solve_V(th1,RC-s_sub,bet))
   c(base_up=base["uprate"], sub_up=sub["uprate"],
     d_up=sub["uprate"]-base["uprate"], base_stale=base["stale"], sub_stale=sub["stale"])
 }
 cf_true<-cf(truth$theta1, truth$RC, beta)
 cf_dyn <-cf(D$nfxp$par[1], D$nfxp$par[2], beta)
 cf_myo <-cf(D$myopic[1],  D$myopic[2],  0)          # myopic uses beta=0 for its counterfactual too
-cat("\n=== counterfactual: 30% upgrade subsidy, change in upgrade rate ===\n")
+cat("\n=== counterfactual: fixed subsidy s = 1.2 per upgrade, change in upgrade rate ===\n")
 cat("TRUTH  : baseline up-rate",round(cf_true["base_up.uprate"],3),
     "-> subsidy",round(cf_true["sub_up.uprate"],3),
     " (Delta",round(cf_true["d_up.uprate"],3),")\n")
 cat("DYNAMIC: Delta up-rate",round(cf_dyn["d_up.uprate"],3),
-    " (matches truth)\n")
+    sprintf("(%.2f x truth)\n", cf_dyn["d_up.uprate"]/cf_true["d_up.uprate"]))
 cat("MYOPIC : Delta up-rate",round(cf_myo["d_up.uprate"],3),
-    " (biased)\n")
+    sprintf("(%.2f x truth)\n", cf_myo["d_up.uprate"]/cf_true["d_up.uprate"]))
+
+## ---- normalization check (true model) ----
+## Raise the keep cost by kappa in every state (kappa at x = 0, slope theta1
+## unchanged) and raise RC by kappa: both actions' payoffs shift by -kappa in
+## every state, so the choice probabilities (the data) are unchanged. The
+## fixed subsidy's effect should not move; the effect of a proportional 30%
+## cut of the upgrade cost does.
+nc<-t(sapply(c(-1,0,1), function(kap){
+  RCk<-truth$RC+kap
+  s0<-solve_V(truth$theta1, RCk,       beta, kappa=kap)
+  sf<-solve_V(truth$theta1, RCk-s_sub, beta, kappa=kap)
+  sp<-solve_V(truth$theta1, RCk*0.7,   beta, kappa=kap)
+  c(kappa=kap, RC=RCk, ccp_gap=max(abs(s0$Pup-D$sol$Pup)),
+    d_fixed=unname(agg(sf)["uprate"]-agg(s0)["uprate"]),
+    d_prop =unname(agg(sp)["uprate"]-agg(s0)["uprate"]))
+}))
+cat("\n=== normalization check: keep cost + kappa in every state, RC -> RC + kappa ===\n")
+for(r in 1:nrow(nc)) cat(sprintf(
+  "kappa %+d: RC %.1f | max CCP change %.1e | Delta fixed s=1.2 %.3f | Delta 30%% cut %.3f\n",
+  as.integer(nc[r,"kappa"]), nc[r,"RC"], nc[r,"ccp_gap"], nc[r,"d_fixed"], nc[r,"d_prop"]))
 
 saveRDS(list(Phat=P1, ccp=coef(ccp), cf_true=cf_true, cf_dyn=cf_dyn, cf_myo=cf_myo,
-             sol=D$sol), "ch31_ccp.rds")
+             norm_check=nc, sol=D$sol), "ch31_ccp.rds")
 
 ## ---------- Figure 1: optimal policy P(upgrade|x) vs staleness ----------
 svglite::svglite("../../assets/fig/fig_31_policy.svg", width=8.2, height=4.4)
@@ -116,7 +142,7 @@ title(main="Myopic overstates staleness cost",cex.main=0.95,font.main=1,col.main
 # right: counterfactual Delta upgrade rate
 dd<-c(truth=cf_true["d_up.uprate"], dynamic=cf_dyn["d_up.uprate"], myopic=cf_myo["d_up.uprate"])
 bp2<-barplot(dd, col=c("#1a365d","#2b6cb0","#c53030"), border=NA,
-    names.arg=c("truth","dynamic","myopic"), ylab="Delta upgrade rate (30% subsidy)",
+    names.arg=c("truth","dynamic","myopic"), ylab="Delta upgrade rate (subsidy s = 1.2)",
     cex.names=0.95, ylim=c(0,max(dd)*1.25))
 text(bp2, dd+max(dd)*0.04, sprintf("%.3f",dd), cex=0.9)
 title(main="...and mis-predicts the subsidy counterfactual",cex.main=0.9,font.main=1,col.main="#1a365d")

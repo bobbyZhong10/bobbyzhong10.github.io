@@ -2,7 +2,7 @@
 # 04_matching_ipw_aipw.R  —  Study B (observational, CIA arm), ATT estimators
 #   - propensity score (logit)
 #   - nearest-neighbour matching (MatchIt, 1:1 on PS, ATT) point estimate
-#     with the Abadie-Imbens SE (via Matching::Match on the same PS)
+#     with the robust Abadie-Imbens SE (via Matching::Match on the same PS)
 #   - IPW: Horvitz-Thompson (un-normalized) and Hajek (normalized), ATT
 #   - AIPW / doubly-robust ATT
 #   Point estimate + SE for each.
@@ -24,7 +24,9 @@ obs$e  <- predict(ps_fit, type = "response")
 # ============================================================================
 # (1) Nearest-neighbour matching on the PS (ATT)
 # ============================================================================
-# MatchIt: 1:1 NN on the logit of the PS, with replacement (ATT target)
+# MatchIt: 1:1 NN on the PS, with replacement (ATT target). link = "logit"
+# names the PS model; MatchIt matches on the PS itself (probability scale),
+# whereas Match below matches on its logit (the linear predictor).
 mi <- matchit(update(Xrhs, D ~ .), data = obs, method = "nearest",
               distance = "glm", link = "logit", estimand = "ATT",
               replace = TRUE)
@@ -32,12 +34,25 @@ mdat <- match.data(mi)
 fit_m <- lm(Y ~ D, data = mdat, weights = weights)
 match_pt <- coef(fit_m)["D"]
 
-# genuine Abadie-Imbens variance via Matching::Match on the same linear PS
+# genuine Abadie-Imbens variance via Matching::Match on the same linear PS.
+# Var.calc = 1: heteroskedasticity-robust AI (2006) variance, sigma^2(X, D)
+# estimated from J = 1 within-group nearest neighbour (AI 2006 eq. 14,
+# factor J/(J+1) = 1/2). The default Var.calc = 0 assumes homoskedasticity.
+# distance.tolerance = 0: the default 1e-5 counts controls at nearly equal
+# PS distance as ties (here about 5 controls per adopter) and pools such ties
+# in the variance step too; 0 keeps the matching 1:1 and the variance J = 1.
 lps <- predict(ps_fit)            # linear predictor (logit PS)
 mout <- Match(Y = obs$Y, Tr = obs$D, X = lps, estimand = "ATT",
-              M = 1, replace = TRUE, ties = TRUE, BiasAdjust = FALSE)
+              M = 1, replace = TRUE, ties = TRUE, BiasAdjust = FALSE,
+              Var.calc = 1, distance.tolerance = 0)
 match_ai_pt <- mout$est[1]
-match_ai_se <- mout$se[1]         # Abadie-Imbens SE
+match_ai_se <- mout$se[1]         # Abadie-Imbens SE (robust, J = 1)
+
+# for contrast: the same matching with the homoskedastic default Var.calc = 0
+mout_h <- Match(Y = obs$Y, Tr = obs$D, X = lps, estimand = "ATT",
+                M = 1, replace = TRUE, ties = TRUE, BiasAdjust = FALSE,
+                distance.tolerance = 0)
+match_ai_se_homo <- mout_h$se[1]
 
 # a naive (wrong) SE for contrast: OLS SE on the matched sample
 match_naive_se <- summary(fit_m)$coefficients["D","Std. Error"]
@@ -91,8 +106,8 @@ se_boot <- apply(boot, 2, sd)
 cat("==== Study B : matching / IPW / AIPW (CIA arm) ====\n")
 cat(sprintf("propensity range        : [%.4f, %.4f]\n", min(obs$e), max(obs$e)))
 cat(sprintf("NN matching (MatchIt)    : %.4f\n", match_pt))
-cat(sprintf("NN matching (Matching)   : %.4f  AI-SE %.4f  (naive OLS-SE %.4f)\n",
-            match_ai_pt, match_ai_se, match_naive_se))
+cat(sprintf("NN matching (Matching)   : %.4f  AI-SE %.4f  (homoskedastic AI-SE %.4f; naive OLS-SE %.4f)\n",
+            match_ai_pt, match_ai_se, match_ai_se_homo, match_naive_se))
 cat(sprintf("IPW Horvitz-Thompson     : %.4f  SE %.4f\n", ipw_pt["ht"],    se_boot["ht"]))
 cat(sprintf("IPW Hajek                : %.4f  SE %.4f\n", ipw_pt["hajek"], se_boot["hajek"]))
 cat(sprintf("AIPW (doubly robust)     : %.4f  SE %.4f\n", aipw_pt,         se_boot["aipw"]))
@@ -100,7 +115,8 @@ cat(sprintf("true ATT (CIA)           : %.4f\n", d$truths$true_ATT_cia))
 
 saveRDS(list(
   match_pt = match_pt, match_ai_pt = match_ai_pt,
-  match_ai_se = match_ai_se, match_naive_se = match_naive_se,
+  match_ai_se = match_ai_se, match_ai_se_homo = match_ai_se_homo,
+  match_naive_se = match_naive_se,
   ipw_ht = ipw_pt["ht"], se_ht = se_boot["ht"],
   ipw_hajek = ipw_pt["hajek"], se_hajek = se_boot["hajek"],
   aipw = aipw_pt, se_aipw = se_boot["aipw"],

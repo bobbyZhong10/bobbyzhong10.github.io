@@ -33,8 +33,9 @@ cat(sprintf("  naive diff-in-means       : %s   SE %s   (bias vs ATT = %s)\n",
             r3(rn$naive), r3(rn$se_naive), r3(rn$naive - tr$true_ATT_cia)))
 cat(sprintf("  OLS regression adjustment : %s   SE %s\n", r3(rn$ols_att), r3(rn$se_ols_att)))
 cat(sprintf("  NN matching (MatchIt pt)  : %s\n", r3(rm4$match_pt)))
-cat(sprintf("  NN matching (AI SE)       : %s   AI-SE %s  (naive OLS-SE %s)\n",
-            r3(rm4$match_ai_pt), r3(rm4$match_ai_se), r3(rm4$match_naive_se)))
+cat(sprintf("  NN matching (AI SE)       : %s   AI-SE %s  (homoskedastic AI-SE %s; naive OLS-SE %s)\n",
+            r3(rm4$match_ai_pt), r3(rm4$match_ai_se), r3(rm4$match_ai_se_homo),
+            r3(rm4$match_naive_se)))
 cat(sprintf("  IPW Horvitz-Thompson      : %s   SE %s\n", r3(rm4$ipw_ht), r3(rm4$se_ht)))
 cat(sprintf("  IPW Hajek                 : %s   SE %s\n", r3(rm4$ipw_hajek), r3(rm4$se_hajek)))
 cat(sprintf("  AIPW (doubly robust)      : %s   SE %s\n", r3(rm4$aipw), r3(rm4$se_aipw)))
