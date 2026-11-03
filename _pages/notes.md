@@ -11,7 +11,7 @@ description: "Research notes on information systems economics, empirical methods
   <section class="notes-collection" aria-labelledby="research-notes-heading">
     <div class="notes-collection__header">
       <h2 id="research-notes-heading">Research Notes: Methods &amp; Applications</h2>
-      <p class="notes-intro">Many of the theories and empirical tools I rely on are scattered across textbooks, course notes, and seminar materials, with few integrated resources aimed at information systems scholars. I have therefore organized a series of notes that bring them together by topic.</p>
+      <p class="notes-intro">These are study notes I keep while learning the theory and empirical methods used in information systems research. They bring together material scattered across textbooks, course notes, and seminar readings, organized by topic. I prepared them with substantial help from AI tools; any errors are my own.</p>
     </div>
 
     <div class="notes-collection__body">

@@ -8,10 +8,12 @@ newsreader_font: true
 
 # Research
 
+<!-- Quote card hidden 2026-11-02. To restore it, delete this comment's opening and closing markers.
 <section class="research-quote-card">
   <blockquote>Much of what the IS field is about relates to information processing for decision making. With the advent of the Internet and all its evolving technologies, the decision-making IS environments have proliferated and expanded in complexity, reaching billions of individuals and consumers. These environments are characterized by increasing information richness and interactive decision making, often resulting in economic transactions: crowdsourcing and collective intelligence, electronic marketplaces, personalization and recommendation systems, synthetic and virtual environments of augmented reality, games and gamification, just to name a few.</blockquote>
   <div class="research-quote-card__cite">— MIS Quarterly, 2013</div>
 </section>
+-->
 
 <section class="content-card content-card--research-focus" markdown="1">
 ## Research Interests
@@ -32,7 +34,7 @@ newsreader_font: true
   <li class="research-entry">
     <div class="research-entry__title"><em>When Do Anthropomorphic Emojis Enhance Information Sharing? A Visual-Linguistic Synergy Perspective</em></div>
     <div class="research-entry__authors"><strong>Yunzhou Zhong</strong>, <a href="https://ef.hksyu.edu/about-us/staff-list/detail/lee-tin-yun">Philip Tin Yun Lee</a>, <a href="https://scholar.xjtlu.edu.cn/en/persons/BingjieDeng/">Bingjie Deng</a></div>
-    <div class="research-entry__meta">Invited for resubmission</div>
+    <div class="research-entry__meta">Revise and resubmit · Earlier version: PACIS 2025</div>
     <div class="research-entry__actions">
       <button type="button" class="research-entry__button" data-abstract-toggle aria-expanded="false" aria-controls="abstract-anthropomorphic-emojis">Abstract</button>
     </div>
@@ -60,7 +62,7 @@ newsreader_font: true
 
 <ul class="research-entry-list">
   <li class="research-entry">
-    <div class="research-entry__title"><em>Who Pays When Algorithms Price? Algorithmic Cost Allocation in Ride-Hailing Markets</em></div>
+    <div class="research-entry__title"><em>Who Pays for Idle Time? Access Control under New York City’s Minimum Pay Rule</em></div>
     <div class="research-entry__authors"><strong>Yunzhou Zhong</strong>, <a href="https://oid.wharton.upenn.edu/profile/lhitt/">Lorin Hitt</a></div>
     <div class="research-entry__meta">Work in progress</div>
   </li>
