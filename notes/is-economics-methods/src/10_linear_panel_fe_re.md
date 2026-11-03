@@ -4,7 +4,7 @@ subtitle: "Unobserved Effects and the Within Transformation"
 seriesline: "Foundations of Information Systems Economics · Chapter 10"
 series: "Foundations of Information Systems Economics: Empirical Methods for Information Systems Economics"
 sidebartitle: "Foundations of Information Systems Economics"
-sidebarsub: "Theory · Methods · Applications"
+sidebarsub: "Empirical Methods for Information Systems Economics"
 chapterlabel: "Chapter 10 · Linear Panels: FE, RE, FD & CRE"
 ---
 

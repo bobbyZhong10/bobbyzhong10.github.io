@@ -4,7 +4,7 @@ subtitle: "From Latent Utility to Marginal Effects"
 seriesline: "Foundations of Information Systems Economics · Chapter 12"
 series: "Foundations of Information Systems Economics: Empirical Methods for Information Systems Economics"
 sidebartitle: "Foundations of Information Systems Economics"
-sidebarsub: "Theory · Methods · Applications"
+sidebarsub: "Empirical Methods for Information Systems Economics"
 chapterlabel: "Chapter 12 · Binary & Multinomial Response Models"
 ---
 

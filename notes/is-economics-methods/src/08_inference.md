@@ -4,7 +4,7 @@ subtitle: "Honest Standard Errors"
 seriesline: "Foundations of Information Systems Economics · Chapter 8"
 series: "Foundations of Information Systems Economics: Empirical Methods for Information Systems Economics"
 sidebartitle: "Foundations of Information Systems Economics"
-sidebarsub: "Theory · Methods · Applications"
+sidebarsub: "Empirical Methods for Information Systems Economics"
 chapterlabel: "Chapter 8 · Inference: Delta Method, Bootstrap, Clustering & Testing"
 ---
 

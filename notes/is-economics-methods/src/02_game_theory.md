@@ -4,7 +4,7 @@ subtitle: "Strategic Interaction, Equilibrium, and Credible Threats"
 seriesline: "Foundations of Information Systems Economics · Chapter 2"
 series: "Foundations of Information Systems Economics: Empirical Methods for Information Systems Economics"
 sidebartitle: "Foundations of Information Systems Economics"
-sidebarsub: "Theory · Methods · Applications"
+sidebarsub: "Empirical Methods for Information Systems Economics"
 chapterlabel: "Chapter 2 · Game Theory"
 ---
 

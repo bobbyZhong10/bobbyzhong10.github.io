@@ -34,6 +34,7 @@ NOTES_ROOT = (Path.home() / "Library/Mobile Documents/com~apple~CloudDocs/Resear
 NOTES_EN = Path(os.environ.get("IS_NOTES_EN", NOTES_ROOT / "notes_en"))
 NOTES_V3_EN = Path(os.environ.get("IS_NOTES_V3_EN", NOTES_ROOT / "notes_v3_en"))
 GOLDEN_COMMIT = "6964e91"
+GOLDEN_SIDEBARSUB = "Theory · Methods · Applications"  # the site layer's sidebar subtitle at GOLDEN_COMMIT
 COLLECTION = "notes/is-economics-methods"
 OLD_VERSION = "notes-ui-20260822"
 NEW_VERSION = "notes-ui-20261022b"  # a letter suffix marks a second release on one day
@@ -101,6 +102,11 @@ NORMALIZATIONS = [
      '03_information_mechanism_design: online `| IS Economics · Empirical Methods</title>` vs '
      '`| Foundations of Information Systems Economics</title>`',
      r"\| IS Economics · Empirical Methods</title>", "| Foundations of Information Systems Economics</title>"),
+    ("S2", "the sidebar subtitle was renamed after the pre-release site (2026-11-03); the replay writes the "
+     "site layer's current SIDEBARSUB",
+     f'every chapter: online `<div class="sidebar-subtitle">{GOLDEN_SIDEBARSUB}</div>` vs '
+     f'`<div class="sidebar-subtitle">{sync.SIDEBARSUB}</div>`',
+     re.escape(GOLDEN_SIDEBARSUB), sync.SIDEBARSUB),
 ]
 
 # The frozen notes_en still ships KaTeX 0.16.22; commit 6964e91 upgraded the site copy to 0.19.0
@@ -112,7 +118,7 @@ OVERLAY_SUFFIXES = (".html", ".md")
 OVERLAY_FILES = {"assets/notes.js", "assets/template.html", "assets/style.css"}
 
 
-ONLINE_ONLY = {"S1"}
+ONLINE_ONLY = {"S1", "S2"}
 
 
 def norm(text: str, skip: str | None = None, online: bool = False) -> str:
@@ -212,11 +218,13 @@ class TestGoldenV2Overlay(unittest.TestCase):
         cls.tmp.cleanup()
 
     def test_src_markdown_byte_identical(self):
+        # Byte for byte once the golden sidebarsub line carries the renamed subtitle (rule S2).
         online_md = sorted(p for p in self.tree if p.startswith("src/"))
         self.assertEqual(online_md, sorted(f"src/{p.name}" for p in (self.out / "src").glob("*.md")))
+        old, new = (f'sidebarsub: "{sub}"'.encode() for sub in (GOLDEN_SIDEBARSUB, sync.SIDEBARSUB))
         for path in online_md:
             with self.subTest(path=path):
-                self.assertEqual(online(path, binary=True), (self.out / path).read_bytes())
+                self.assertEqual(online(path, binary=True).replace(old, new), (self.out / path).read_bytes())
 
     def test_notes_js_byte_identical(self):
         self.assertEqual(online("assets/notes.js", binary=True), (self.out / "assets/notes.js").read_bytes())

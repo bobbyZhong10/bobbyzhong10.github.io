@@ -4,7 +4,7 @@ subtitle: "From Fixed Effects to Arellano-Bond"
 seriesline: "Foundations of Information Systems Economics · Chapter 11"
 series: "Foundations of Information Systems Economics: Empirical Methods for Information Systems Economics"
 sidebartitle: "Foundations of Information Systems Economics"
-sidebarsub: "Theory · Methods · Applications"
+sidebarsub: "Empirical Methods for Information Systems Economics"
 chapterlabel: "Chapter 11 · Dynamic Panels"
 ---
 

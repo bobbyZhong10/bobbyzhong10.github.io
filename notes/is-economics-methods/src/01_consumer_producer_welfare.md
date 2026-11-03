@@ -4,7 +4,7 @@ subtitle: "Duality, Demand, and the Measurement of Welfare"
 seriesline: "Foundations of Information Systems Economics · Chapter 1"
 series: "Foundations of Information Systems Economics: Empirical Methods for Information Systems Economics"
 sidebartitle: "Foundations of Information Systems Economics"
-sidebarsub: "Theory · Methods · Applications"
+sidebarsub: "Empirical Methods for Information Systems Economics"
 chapterlabel: "Chapter 1 · Consumer, Producer & Welfare"
 ---
 

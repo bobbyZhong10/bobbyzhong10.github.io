@@ -38,10 +38,11 @@ from pathlib import Path
 from urllib.parse import unquote, urlsplit
 
 
-# Site layer, verbatim from the pre-release site (commit 6964e91).
+# Site layer, verbatim from the pre-release site (commit 6964e91), except SIDEBARSUB: on 2026-11-03 it
+# took the cover subtitle in place of "Theory · Methods · Applications", so the book has one subtitle.
 SERIES = "Foundations of Information Systems Economics: Empirical Methods for Information Systems Economics"
 SIDEBARTITLE = "Foundations of Information Systems Economics"
-SIDEBARSUB = "Theory · Methods · Applications"
+SIDEBARSUB = "Empirical Methods for Information Systems Economics"
 INTRO_BODYCLASS = "notes-introduction"
 THEME_INIT = "<script>(function(){var t=null;try{t=localStorage.getItem('theme');}catch(e){}if(t!=='dark'&&t!=='light'){t=(window.matchMedia&&window.matchMedia('(prefers-color-scheme: dark)').matches)?'dark':'light';}document.documentElement.setAttribute('data-theme',t);})();</script>"  # noqa: E501
 TOPBAR = """<div class="notes-topbar">

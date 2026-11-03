@@ -14,7 +14,7 @@ description: "Academic background and PhD-level coursework of Yunzhou (Bobby) Zh
   <div class="academic-entry">
     <div class="academic-entry__title"><a href="https://www.lps.upenn.edu/degree-programs/mbds">Master of Behavioral and Decision Sciences</a></div>
     <div class="academic-entry__context"><a href="https://www.upenn.edu/">University of Pennsylvania</a></div>
-    <div class="academic-entry__meta">Aug. 2025 – Expected Dec. 2026</div>
+    <div class="academic-entry__meta">Aug. 2025 – Dec. 2026 (expected)</div>
   </div>
   <div class="academic-entry">
     <div class="academic-entry__title"><a href="https://www.xjtlu.edu.cn/en/study/undergraduate/information-management-and-information-systems">Bachelor of Science with Honours &amp; Bachelor of Management in Information Management and Information Systems <span class="academic-entry__qualifier">(dual degree)</span></a></div>

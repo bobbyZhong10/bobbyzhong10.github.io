@@ -4,7 +4,7 @@ subtitle: "Causal Design When One Unit's Treatment Changes Another's Outcome"
 seriesline: "Foundations of Information Systems Economics · Chapter 26"
 series: "Foundations of Information Systems Economics: Empirical Methods for Information Systems Economics"
 sidebartitle: "Foundations of Information Systems Economics"
-sidebarsub: "Theory · Methods · Applications"
+sidebarsub: "Empirical Methods for Information Systems Economics"
 chapterlabel: "Chapter 26 · Interference, Marketplace Experiments & Equilibrium Effects"
 ---
 

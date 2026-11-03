@@ -4,7 +4,7 @@ subtitle: "From Randomized Experiments to Selection on Observables"
 seriesline: "Foundations of Information Systems Economics · Chapter 15"
 series: "Foundations of Information Systems Economics: Empirical Methods for Information Systems Economics"
 sidebartitle: "Foundations of Information Systems Economics"
-sidebarsub: "Theory · Methods · Applications"
+sidebarsub: "Empirical Methods for Information Systems Economics"
 chapterlabel: "Chapter 15 · Potential Outcomes, Experiments & Selection-on-Observables"
 ---
 

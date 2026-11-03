@@ -4,7 +4,7 @@ subtitle: "Optimal Stopping, Rust, and CCP Estimation"
 seriesline: "Foundations of Information Systems Economics · Chapter 31"
 series: "Foundations of Information Systems Economics: Empirical Methods for Information Systems Economics"
 sidebartitle: "Foundations of Information Systems Economics"
-sidebarsub: "Theory · Methods · Applications"
+sidebarsub: "Empirical Methods for Information Systems Economics"
 chapterlabel: "Chapter 31 · Dynamic Structural Models"
 ---
 

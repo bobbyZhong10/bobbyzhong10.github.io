@@ -4,7 +4,7 @@ subtitle: "Local Effects at the Cutoff"
 seriesline: "Foundations of Information Systems Economics · Chapter 21"
 series: "Foundations of Information Systems Economics: Empirical Methods for Information Systems Economics"
 sidebartitle: "Foundations of Information Systems Economics"
-sidebarsub: "Theory · Methods · Applications"
+sidebarsub: "Empirical Methods for Information Systems Economics"
 chapterlabel: "Chapter 21 · Regression Discontinuity Designs"
 ---
 

@@ -4,7 +4,7 @@ subtitle: "The Extremum Estimator and Its Sandwich"
 seriesline: "Foundations of Information Systems Economics · Chapter 5"
 series: "Foundations of Information Systems Economics: Empirical Methods for Information Systems Economics"
 sidebartitle: "Foundations of Information Systems Economics"
-sidebarsub: "Theory · Methods · Applications"
+sidebarsub: "Empirical Methods for Information Systems Economics"
 chapterlabel: "Chapter 5 · M-Estimation & Nonlinear Regression"
 ---
 

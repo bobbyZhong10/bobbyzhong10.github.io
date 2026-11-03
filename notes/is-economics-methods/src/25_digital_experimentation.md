@@ -4,7 +4,7 @@ subtitle: "Designing A/B Tests That Can Actually Detect What Matters"
 seriesline: "Foundations of Information Systems Economics · Chapter 25"
 series: "Foundations of Information Systems Economics: Empirical Methods for Information Systems Economics"
 sidebartitle: "Foundations of Information Systems Economics"
-sidebarsub: "Theory · Methods · Applications"
+sidebarsub: "Empirical Methods for Information Systems Economics"
 chapterlabel: "Chapter 25 · Digital Experimentation"
 ---
 

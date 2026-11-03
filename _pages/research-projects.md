@@ -19,7 +19,7 @@ newsreader_font: true
 ## Research Interests
 
 - **Topics:** Digital Platforms, Platform Competition, Human-AI Interaction, Social Media, Online Word of Mouth
-- **Methods:** Econometrics, Text Analysis, Natural/Field Experiments, Laboratory Experiments, Machine Learning
+- **Methods:** Econometrics, Text Analysis, Natural Experiments, Field and Laboratory Experiments, Machine Learning
 </section>
 
 <div class="content-card research-record">
@@ -113,15 +113,15 @@ newsreader_font: true
   </li>
   <li class="research-entry">
     <div class="research-entry__title"><em>When Personalization Backfires: Skepticism and Decision Confidence in Platform-Mediated Information</em></div>
-    <div class="research-entry__meta">32nd Americas Conference on Information Systems · Reno, NV · Aug. 2026 </div>
+    <div class="research-entry__meta">Americas Conference on Information Systems · Reno, NV · Aug. 2026</div>
   </li>
   <li class="research-entry">
     <div class="research-entry__title"><em>How Are We Mobilized to Express on Social Media? Identity, Persuasion, and Social Norms</em></div>
-    <div class="research-entry__meta">86th Annual Meeting of the Academy of Management · Philadelphia, PA · Aug. 2026</div>
+    <div class="research-entry__meta">Academy of Management Annual Meeting · Philadelphia, PA · Aug. 2026</div>
   </li>
   <li class="research-entry">
     <div class="research-entry__title"><em>Evaluating the Impact of Anthropomorphic Emojis on Digital Sustainability Content Engagement</em></div>
-    <div class="research-entry__meta">29th Pacific Asia Conference on Information Systems · Kuala Lumpur, Malaysia · Jul. 2025</div>
+    <div class="research-entry__meta">Pacific Asia Conference on Information Systems · Kuala Lumpur, Malaysia · Jul. 2025</div>
   </li>
 </ul>
 </section>

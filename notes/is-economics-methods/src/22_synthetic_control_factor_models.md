@@ -4,7 +4,7 @@ subtitle: "Building the Counterfactual from Donors"
 seriesline: "Foundations of Information Systems Economics · Chapter 22"
 series: "Foundations of Information Systems Economics: Empirical Methods for Information Systems Economics"
 sidebartitle: "Foundations of Information Systems Economics"
-sidebarsub: "Theory · Methods · Applications"
+sidebarsub: "Empirical Methods for Information Systems Economics"
 chapterlabel: "Chapter 22 · Synthetic Control and Panel Factor Models"
 ---
 

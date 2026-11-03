@@ -4,7 +4,7 @@ subtitle: "Beyond the Clean 0-to-1 Switch"
 seriesline: "Foundations of Information Systems Economics · Chapter 20"
 series: "Foundations of Information Systems Economics: Empirical Methods for Information Systems Economics"
 sidebartitle: "Foundations of Information Systems Economics"
-sidebarsub: "Theory · Methods · Applications"
+sidebarsub: "Empirical Methods for Information Systems Economics"
 chapterlabel: "Chapter 20 · DiD II: Fuzzy, Continuous & Switching Treatments"
 ---
 

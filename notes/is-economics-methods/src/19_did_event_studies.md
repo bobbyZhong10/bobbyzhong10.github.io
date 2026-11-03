@@ -4,7 +4,7 @@ subtitle: "From the 2×2 Table to Staggered Adoption"
 seriesline: "Foundations of Information Systems Economics · Chapter 19"
 series: "Foundations of Information Systems Economics: Empirical Methods for Information Systems Economics"
 sidebartitle: "Foundations of Information Systems Economics"
-sidebarsub: "Theory · Methods · Applications"
+sidebarsub: "Empirical Methods for Information Systems Economics"
 chapterlabel: "Chapter 19 · Difference-in-Differences & Event Studies"
 ---
 

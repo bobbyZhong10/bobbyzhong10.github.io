@@ -4,7 +4,7 @@ subtitle: "Units, Treatments, Estimands, and Assignment Mechanisms"
 seriesline: "Foundations of Information Systems Economics · Chapter 16"
 series: "Foundations of Information Systems Economics: Empirical Methods for Information Systems Economics"
 sidebartitle: "Foundations of Information Systems Economics"
-sidebarsub: "Theory · Methods · Applications"
+sidebarsub: "Empirical Methods for Information Systems Economics"
 chapterlabel: "Chapter 16 · From an Economic Question to a Research Design"
 ---
 

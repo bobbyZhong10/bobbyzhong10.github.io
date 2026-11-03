@@ -4,7 +4,7 @@ subtitle: "From Market Shares to Elasticities and Substitution"
 seriesline: "Foundations of Information Systems Economics · Chapter 28"
 series: "Foundations of Information Systems Economics: Empirical Methods for Information Systems Economics"
 sidebartitle: "Foundations of Information Systems Economics"
-sidebarsub: "Theory · Methods · Applications"
+sidebarsub: "Empirical Methods for Information Systems Economics"
 chapterlabel: "Chapter 28 · Demand Estimation: Berry Inversion & BLP"
 ---
 

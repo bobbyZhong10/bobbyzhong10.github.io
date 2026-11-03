@@ -4,7 +4,7 @@ subtitle: "What Remains When Identification Assumptions Are Not Exact"
 seriesline: "Foundations of Information Systems Economics · Chapter 23"
 series: "Foundations of Information Systems Economics: Empirical Methods for Information Systems Economics"
 sidebartitle: "Foundations of Information Systems Economics"
-sidebarsub: "Theory · Methods · Applications"
+sidebarsub: "Empirical Methods for Information Systems Economics"
 chapterlabel: "Chapter 23 · Sensitivity, Negative Controls & Partial Identification"
 ---
 
