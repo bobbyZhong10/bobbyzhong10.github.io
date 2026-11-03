@@ -739,12 +739,28 @@ point estimate is the mean difference between treated and control
 blocks, and the variance estimate must confront time autocorrelation:
 adjacent blocks’ outcomes are usually positively correlated, the
 independence assumption fails, and you need a block-level or
-autocorrelation-robust variance estimate. Bojinov, Simchi-Levi, and Zhao
-(2023) give the optimal design and the corresponding inference theory
-for switchbacks. Both designs trade sample size (the number of
-independent units) for robustness to interference, and when reporting
-you should honestly disclose this variance cost, rather than applying a
-user-level formula that understates the uncertainty.</p>
+autocorrelation-robust variance estimate. The switchback design itself
+also has an optimal solution: assuming the treatment’s carryover lasts
+at most <span class="math inline">m</span> periods, the minimax optimal
+design (smallest variance in the worst case) flips a fair coin at each
+randomization point and re-randomizes once every <span
+class="math inline">m</span> periods (the first and last blocks are
+<span class="math inline">2m</span> periods long each), so block length
+should be set by how long the carryover physically lasts rather than by
+the granularity of a single period. Estimation uses the Horvitz-Thompson
+estimator (weighting by the inverse of the known assignment
+probabilities), comparing the time points at which the most recent <span
+class="math inline">m+1</span> periods, the current one included, were
+all treated with those at which they were all control. Inference has two
+routes: an exact randomization <span class="math inline">p</span> value,
+obtained by redrawing assignment paths from the design under the sharp
+null of no effect at any time point, or conservative tests and
+confidence intervals from a finite-population central limit theorem (see
+Bojinov, Simchi-Levi and Zhao 2023, Sections 2.4, 3 and 4). Both designs
+trade sample size (the number of independent units) for robustness to
+interference, and when reporting you should honestly disclose this
+variance cost, rather than applying a user-level formula that
+understates the uncertainty.</p>
 <p>The practical points of this section are as follows: a power analysis
 takes three inputs available before the experiment starts (the minimum
 effect you care about, the outcome standard deviation, the test level

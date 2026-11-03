@@ -36,15 +36,21 @@ Sampling uncertainty comes from observing only a finite sample and is expressed 
 
 ### 2.2 Parameterizing Omitted-Variable Bias
 
-In a linear model, the bias that an unobserved $U$ imparts to the treatment coefficient is jointly determined by two relationships: how much $U$ predicts $D$ given $X$, and how much $U$ predicts $Y$ given $(D,X)$. Cinelli and Hazlett use partial $R^2$ to put both on a comparable scale:
+In a linear model, the bias that an unobserved $U$ imparts to the treatment coefficient is jointly determined by two relationships: how much $U$, given $X$, predicts $D$, and how much $U$, given $(D,X)$, predicts $Y$. Cinelli and Hazlett use partial $R^2$ to put both on a comparable scale:
 
 $$R^2_{D\sim U\mid X},\qquad R^2_{Y\sim U\mid D,X}.$$
 
-If either one is close to zero, the bias is limited. Simply saying "there might be unobserved confounding" is too broad; a sensitivity contour asks where the two partial $R^2$ values would have to fall before the adjusted effect reaches zero.
+After controlling for $X$, the first is the share of the residual variance of $D$ explained by $U$; after controlling for $(D,X)$, the second is the share of the residual variance of $Y$ explained by $U$. By the Frisch-Waugh-Lovell theorem, the bias is the product of two coefficients: the coefficient, after controlling for $X$, from regressing $U$ on $D$ (how much $U$ differs between the two groups), multiplied by the coefficient, after controlling for $(D,X)$, from regressing $Y$ on $U$ (the impact of $U$ on the outcome). Writing each coefficient as a partial correlation times a ratio of standard deviations, where the ratio of $U$'s two residual standard deviations equals $1/\sqrt{1-R^2_{D\sim U\mid X}}$, and expressing the remaining ratio of standard deviations through the standard error and residual degrees of freedom of the regression without $U$, gives
+
+$$|\widehat{\mathrm{bias}}|=\widehat{\mathrm{se}}(\widehat\tau)\,\sqrt{\mathrm{df}}\,\sqrt{\frac{R^2_{Y\sim U\mid D,X}\,R^2_{D\sim U\mid X}}{1-R^2_{D\sim U\mid X}}},$$
+
+where $\widehat{\mathrm{se}}(\widehat\tau)$ and $\mathrm{df}$ are the standard error of the treatment coefficient and the residual degrees of freedom in the naive regression without $U$ (see Cinelli and Hazlett 2020, Section 4.1, equations (7) to (9) and (13)).
+
+If $R^2_{D\sim U\mid X}$ is close to zero, the bias must be small; if $R^2_{Y\sim U\mid D,X}$ is close to zero, the bias is also small as long as $R^2_{D\sim U\mid X}$ is not close to one. Simply saying "there might be unobserved confounding" is too broad; a sensitivity contour asks where the two partial $R^2$ values would have to fall before the adjusted effect reaches zero.
 
 ### 2.3 Robustness Value
 
-The robustness value is the smallest equal-strength partial $R^2$ needed to drive the estimate down to some benchmark. Nova's robustness value for the point estimate against zero is $0.287$. Intuitively, an unobserved confounder would have to explain about $28.7\%$ of the residual variance in both adoption and sales, after controlling for $X$, before it could push $0.696$ all the way to zero.
+The robustness value is the smallest equal-strength partial $R^2$ needed to drive the estimate down to some benchmark. With zero as the benchmark, setting both partial $R^2$ values equal to $\mathrm{RV}$ and the bias equal to $|\widehat\tau|$ in the formula of Section 2.2 gives the quadratic equation $\mathrm{RV}^2=f^2(1-\mathrm{RV})$, whose positive root is $\mathrm{RV}=\frac{1}{2}\big(\sqrt{f^4+4f^2}-f^2\big)$, where $f=|\widehat\tau|/\big(\widehat{\mathrm{se}}(\widehat\tau)\sqrt{\mathrm{df}}\big)$ is the t-value of the treatment coefficient divided by $\sqrt{\mathrm{df}}$ (see Cinelli and Hazlett 2020, Section 4.3, equation (18)). Plugging in the t-value and $\mathrm{df}$ of Nova's regression, the robustness value of the point estimate against zero is $0.287$. Intuitively, after controlling for $X$, an unobserved confounder would have to explain about $28.7\%$ of the residual variance in both adoption and sales before it could push $0.696$ all the way to zero.
 
 The number is neither large nor small in itself; it has to be compared against observed benchmark covariates (Sections 3.3 and 4.7).
 
@@ -92,7 +98,7 @@ In matched observational studies, Rosenbaum uses $\Gamma$ to denote how much the
 
 ### 3.5 Lee Bounds and Selective Retention
 
-If treatment is randomized and affects sample selection monotonically, for example if it can only raise and never lower survey response, Lee bounds trim the outcome distribution of the treatment group to construct effect bounds for the always-observed subgroup. Monotonicity is not a free assumption; when a platform treatment can make some users stay while others leave, simple trimming loses its guarantee.
+If treatment is randomized and affects sample selection monotonically, for example if it can only raise and never lower survey response, Lee bounds construct effect bounds for the always-observed subgroup (people who would respond whichever group they were assigned to). Let the observed shares in the treatment and control groups be $q_1>q_0$. Under monotonicity, everyone observed in the control group belongs to this subgroup, so the control group's observed mean is the subgroup's mean under control; the observed treated, by contrast, include people observed only because of the treatment, who make up a share $(q_1-q_0)/q_1$ of them. We cannot tell who they are, and the worst case puts them at one end of the outcome distribution, so the treated group's observed outcomes are trimmed by this share: trimming the lower tail and subtracting the control group's observed mean gives the upper bound; trimming the upper tail gives the lower bound. For a continuous outcome, under these assumptions neither bound can be tightened (see Lee 2009, Proposition 1). Monotonicity is not a free assumption; when a platform treatment can make some users stay while others leave, simple trimming loses its guarantee.
 
 ### 3.6 Honest DiD Sensitivity
 
@@ -163,7 +169,7 @@ Following Section 3.9, let the net benefit of implementing the policy be
 
 $$\Pi(\tau)=N_{\mathrm{aff}}\tau-C,$$
 
-where $N_{\mathrm{aff}}$ is the scale of those affected and $C$ is the deployment and opportunity cost. If $\tau\in[\tau_L(\eta),\tau_U(\eta)]$ when the sensitivity parameter is $\eta$, then robust decisions come in three kinds: when $N_{\mathrm{aff}}\tau_L-C>0$, implementing still dominates under the given departure; when $N_{\mathrm{aff}}\tau_U-C<0$, not implementing still dominates; and the remaining region shows that identification uncertainty is enough to change the decision.
+where $N_{\mathrm{aff}}$ is the scale of those affected and $C$ is the deployment and opportunity cost. If, under the sensitivity parameter $\eta$, $\tau\in[\tau_L(\eta),\tau_U(\eta)]$, then robust decisions come in three kinds: when $N_{\mathrm{aff}}\tau_L-C>0$, implementing still dominates under the given departure; when $N_{\mathrm{aff}}\tau_U-C<0$, not implementing still dominates; and the remaining region shows that identification uncertainty is enough to change the decision.
 
 A small effect that is statistically "still positive" may not be enough to cover the deployment cost; an effect whose interval straddles zero may still be worth piloting when the deployment cost is very low and the downside is bounded. A high-standard empirical report should present both the statistical breakdown frontier and the policy frontier, and state transparently where the cost, scale, and loss function come from.
 
@@ -229,7 +235,7 @@ pre_policy_complaints <- 0.55*u_management + 0.20*x + rnorm(N,sd=0.80)
 
 ### 6.2 Robustness Contour
 
-Nova's robustness value is $0.287$. In the figure, the horizontal axis is the partial $R^2$ of $U$ for adoption, the vertical axis is the partial $R^2$ of $U$ for sales, and the color gives the adjusted effect.
+Nova's robustness value is $0.287$. In the figure, the horizontal axis measures how much $U$ explains adoption, as a partial $R^2$, the vertical axis how much $U$ explains sales, as a partial $R^2$, and the color gives the adjusted effect.
 
 ![Omitted-variable sensitivity contour. As the unobserved factor predicts both adoption and sales more strongly, the adjusted effect moves from the naive 0.696 toward zero.](assets/fig/fig_23_robustness_contour.svg)
 

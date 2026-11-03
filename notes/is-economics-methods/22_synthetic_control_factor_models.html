@@ -642,15 +642,27 @@ is the number of treated units, and the total number of units is <span
 class="math inline">N = N_1 + J</span>), and for each post-period <span
 class="math inline">\hat\nu_t</span> is <span
 class="math inline">1/(\mathcal{T} - T_0)</span>. The donors’ unit
-weights solve equation (2.1) of the paper, an SC problem with an
-intercept <span class="math inline">\omega_0</span> and a ridge penalty
-<span class="math inline">\zeta_{\mathrm{sdid}}</span>, where the
-intercept plays the same role as the <span
-class="math inline">\omega_0</span> of Section 3.2; the pre-period time
-weights solve equation (2.3). Unlike pure SC, SDID keeps the unit fixed
-effects, so it does not require an exact match in levels, only parallel
-trends after weighting; unlike DiD, it does not give all donors and all
-periods equal weight.</p>
+weights solve an SC problem with an intercept <span
+class="math inline">\omega_0</span> and a ridge penalty <span
+class="math inline">\zeta_{\mathrm{sdid}}</span>: choose <span
+class="math inline">\omega</span> in the simplex over the donors to
+minimize <span class="math inline">\sum_{t \leq T_0}\big(\omega_0 +
+\sum_j \omega_j Y_{jt} - \bar Y_{1t}\big)^2 + \zeta_{\mathrm{sdid}}^2
+T_0\|\omega\|_2^2</span>, where <span class="math inline">\bar
+Y_{1t}</span> is the treated units’ average in period <span
+class="math inline">t</span> and the intercept plays the same role as
+the <span class="math inline">\omega_0</span> of Section 3.2. The
+pre-period time weights choose <span class="math inline">\nu</span> in
+the simplex over the pre-periods, with an intercept <span
+class="math inline">\nu_0</span>, to minimize <span
+class="math inline">\sum_j\big(\nu_0 + \sum_{t \leq T_0}\nu_t Y_{jt} -
+\bar Y_{j,\mathrm{post}}\big)^2</span>, so that the donors’ weighted
+pre-period outcomes best predict their own post-period means; this
+problem has no penalty (see AAHIW 2021, Section 2.1, equations (2.1) and
+(2.3)). Unlike pure SC, SDID keeps the unit fixed effects, so it does
+not require an exact match in levels, only parallel trends after
+weighting; unlike DiD, it does not give all donors and all periods equal
+weight.</p>
 <div class="theorem">
 <p><strong>Proposition 2 (SDID nests DiD and SC; stated here from AAHIW
 2021 equations (1.1) to (1.3), (2.4), (2.5), and footnote 5, unnumbered
@@ -685,25 +697,27 @@ class="math inline">\alpha_i</span> and <span
 class="math inline">\lambda_t</span> can be partialled out one at a
 time, and <span class="math inline">\tau</span> is determined only by
 the weighted means of the treated block and the other three blocks,
-which gives the expression above, the “adjusted outcomes” of SDID in
-equation (2.4) together with (2.5) of the paper (the post-period mean
-minus the time-weighted pre-period mean). Step two (algebra, (i)): with
-uniform weights substituted in, the adjusted outcome becomes the DiD
-version in (2.5), the post-period mean minus the pre-period mean, which
-on a balanced panel coincides term by term with the 2x2 formula; with a
-single treated unit and a single adoption date, the TWFE coefficient is
-the same double difference. Step three (algebra, (ii)): without <span
-class="math inline">\alpha_i</span>, the <span
-class="math inline">\lambda_t</span> of each post-period only needs to
-fit the weighted means of the two groups, the first-order condition for
-<span class="math inline">\tau</span> gives the average post-period gap,
-and the pre-period observations affect only <span
-class="math inline">\lambda_t</span>; footnote 5 says that the SC unit
-weights are those of equation (2.1) with the intercept removed and only
-SC’s own tiny regularization kept (penalty <span
-class="math inline">10^{-6}\hat\sigma</span>, where <span
+which gives the expression above: the treated units’ “adjusted outcome”
+(the post-period mean minus the time-weighted pre-period mean) minus the
+weighted average of the donors’ adjusted outcomes (see AAHIW 2021,
+Section 2.2, equations (2.4) and (2.5)). Step two (algebra, (i)): with
+uniform weights substituted in, the adjusted outcome becomes the one DiD
+uses, the post-period mean minus the pre-period mean (see equation (2.5)
+in the same section), which on a balanced panel coincides term by term
+with the 2x2 formula; with a single treated unit and a single adoption
+date, the TWFE coefficient is the same double difference. Step three
+(algebra, (ii)): without <span class="math inline">\alpha_i</span>, the
+<span class="math inline">\lambda_t</span> of each post-period only
+needs to fit the weighted means of the two groups, the first-order
+condition for <span class="math inline">\tau</span> gives the average
+post-period gap, and the pre-period observations affect only <span
+class="math inline">\lambda_t</span>; the SC unit weights solve the
+unit-weight problem above with the intercept removed and <span
+class="math inline">\zeta_{\mathrm{sdid}}</span> replaced by a tiny
+<span class="math inline">10^{-6}\hat\sigma</span>, where <span
 class="math inline">\hat\sigma</span> is the standard deviation of the
-first differences of the donors’ pre-period outcomes).</p>
+first differences of the donors’ pre-period outcomes (see AAHIW 2021,
+Section 2.1, footnote 5).</p>
 <p>Numerical confirmation on Aster: in <code>synthdid</code>,
 <code>did_estimate</code> (with both sets of weights uniform) gives
 0.244, and its absolute difference from the 2x2 DiD of Section 1 is
@@ -731,10 +745,11 @@ class="math inline">N_1(\mathcal{T} - T_0)\max\{N_1, \mathcal{T} -
 T_0\}\log^2 J</span>; (3) the matrix formed by the systematic component
 has only a few large singular values; (4) the oracle weights (the
 data-independent weights obtained by replacing the objective functions
-of equations (2.1) and (2.3) with their expectations) are sufficiently
-dispersed and fit well enough on the donors and the pre-periods that the
-bias of the double difference they produce, with respect to the
-systematic component, is <span
+of the unit-weight and time-weight problems above with their
+expectations; see AAHIW 2021, equations (2.1) and (2.3) and Section 4.2)
+are sufficiently dispersed and fit well enough on the donors and the
+pre-periods that the bias of the double difference they produce, with
+respect to the systematic component, is <span
 class="math inline">o\big((N_1(\mathcal{T} -
 T_0))^{-1/2}\big)</span>.</p>
 </div>
@@ -786,20 +801,24 @@ about 1.0 between the treated city and the weighted donors (the
 pre-period difference weighted by the time weights). Theorem 2 requires
 <span class="math inline">N_1(\mathcal{T} - T_0)</span> to go to
 infinity, whereas S1 has only 1 treated city, 12 post-period months, and
-20 donors, far from this framework. With a single treated unit the
-jackknife variance is not defined either, so S1 can use only the placebo
-variance, computed by repeatedly drawing one donor at random to serve as
-the treated unit, 500 times: SDID gives 0.057 with a standard error of
-0.035, and its 95% interval [-0.012, 0.125] covers the truth of 0.095,
-yet the error of the point estimate is -0.038, larger than that of SC.
-The time weights are one reason: they put all of their weight on a
-single period, month 24, so the base period of the double difference is
-that one month alone, and that month’s noise enters the estimate in
-full. The loadings of the treated city in S1 already lie in the convex
-hull of the donors’ loadings, and SC’s pre-period fit has already
-reached the scale of the noise (Section 3.1), so SDID’s two layers of
-insurance go unused. SDID is not better on every dataset; its value
-shows when A3 fails, which is the situation of the next subsection.</p>
+20 donors, far from this framework; and the square of the default <span
+class="math inline">\zeta_{\mathrm{sdid}}</span> in
+<code>synthdid</code> (Section 4.3) falls short of Theorem 2’s rate
+condition by a factor of <span class="math inline">\log J</span>. With a
+single treated unit the jackknife variance is not defined either, so S1
+can use only the placebo variance, computed by repeatedly drawing one
+donor at random to serve as the treated unit, 500 times: SDID gives
+0.057 with a standard error of 0.035, and its 95% interval [-0.012,
+0.125] covers the truth of 0.095, yet the error of the point estimate is
+-0.038, larger than that of SC. The time weights are one reason: they
+put all of their weight on a single period, month 24, so the base period
+of the double difference is that one month alone, and that month’s noise
+enters the estimate in full. The loadings of the treated city in S1
+already lie in the convex hull of the donors’ loadings, and SC’s
+pre-period fit has already reached the scale of the noise (Section 3.1),
+so SDID’s two layers of insurance go unused. SDID is not better on every
+dataset; its value shows when A3 fails, which is the situation of the
+next subsection.</p>
 <h3 id="imperfect-fit-augmented-sc-and-penalized-sc">3.4 Imperfect Fit:
 Augmented SC and Penalized SC</h3>
 <p>Theorem 1 requires a perfect fit, which is exactly what S2 cannot
@@ -1042,14 +1061,32 @@ two sets of weights coincide.</p>
 0</span>, with probability at least <span class="math inline">1 -
 6\exp(-\Delta^2/2) - \exp\big(-2(\log 2 + J\log 5)\Delta^2\big)</span>,
 <span class="math inline">\big|Y_{1t}(0) - \sum_j \hat
-w^{\mathrm{aug}}_j Y_{jt}\big|</span> is no larger than the sum of the
-four terms in equation (24) of the paper: (a) the residual pre-period
-imbalance, shrunk by ridge along the singular directions of <span
-class="math inline">\mathbf{X}_0</span>; (b) the additional
-approximation error from extrapolation; (c) SC’s own approximation
-error, the cost of balancing noisy outcomes rather than loadings; and
-(d) the post-period noise, <span class="math inline">\Delta\sigma\big(1
-+ \|\hat{\mathbf{w}}^{\mathrm{aug}}\|_2\big)</span>. As <span
+w^{\mathrm{aug}}_j Y_{jt}\big|</span> is no larger than the sum of four
+terms. Let <span class="math inline">s_k</span> be the singular values
+of <span class="math inline">\mathbf{X}_0</span> and <span
+class="math inline">h_k</span> the component of SC’s pre-period residual
+<span class="math inline">\mathbf{X}_1 -
+\mathbf{X}_0\hat{\mathbf{w}}^{\mathrm{sc}}</span> along the
+corresponding singular direction; the first three terms share the factor
+<span class="math inline">r f_{\max}^2/\sqrt{T_0}</span> (<span
+class="math inline">r</span> is the number of factors and <span
+class="math inline">f_{\max}</span> the bound on the factors): (a) the
+residual pre-period imbalance, the norm of the <span
+class="math inline">h_k</span> each multiplied by <span
+class="math inline">\zeta_{\mathrm{ridge}}/(s_k^2 +
+\zeta_{\mathrm{ridge}})</span>, which ridge shrinks along the singular
+directions; (b) the additional approximation error from extrapolation,
+the norm of the <span class="math inline">h_k</span> each multiplied by
+<span class="math inline">\sqrt{J}\,s_k\sigma/(s_k^2 +
+\zeta_{\mathrm{ridge}})</span>, times <span class="math inline">4(1 +
+\Delta)</span>; (c) SC’s own approximation error, the cost of balancing
+noisy outcomes rather than loadings, which does not depend on <span
+class="math inline">\zeta_{\mathrm{ridge}}</span> and grows with the
+number of donors as <span class="math inline">\sqrt{\log(2J)}</span>;
+and (d) the post-period noise, <span
+class="math inline">\Delta\sigma\big(1 +
+\|\hat{\mathbf{w}}^{\mathrm{aug}}\|_2\big)</span> (see BMFR 2021,
+Section 5.2, equation (24)). As <span
 class="math inline">\zeta_{\mathrm{ridge}} \to \infty</span>, ASC
 reverts to SC.</p>
 </div>
@@ -1134,8 +1171,14 @@ smallest -0.069, the largest 0.489, summing to one), and the pre-period
 RMSPE falls from SC’s 0.111 to 0.027. Penalized SC does not solve the
 extrapolation problem: the penalty only pushes the weights toward donors
 close to the treated unit, but even the nearest donor’s level is below
-Aster-Capital’s, so the penalty cannot reach it. Leave-one-out
-cross-validation as in §4.1 of Abadie and L’Hour (2021) selects <span
+Aster-Capital’s, so the penalty cannot reach it. The penalty is chosen
+by leave-one-out cross-validation: each donor in turn plays the treated
+unit, the other donors are fitted to its pre-period with a given <span
+class="math inline">\zeta_{\mathrm{pen}}</span> and then predict its
+post-period outcomes, and the <span
+class="math inline">\zeta_{\mathrm{pen}}</span> with the smallest sum of
+squared prediction errors over all donors and post-periods is kept (see
+Abadie and L’Hour 2021, Section 4.1). This selects <span
 class="math inline">\zeta_{\mathrm{pen}} = 0.0018</span>, which still
 uses SC’s 3 donors and gives an estimate of -0.119, almost the same as
 SC and no sparser; only when the penalty rises to about 0.032 does the
@@ -1478,15 +1521,21 @@ into <span class="math inline">\mathbf{L}</span> as well. Under A9, if
 <span class="math inline">\mathrm{rank}(\mathbf{L}) = r</span>, <span
 class="math inline">\mathcal{T}</span> is at least some constant
 multiple of <span class="math inline">\log(N + \mathcal{T})</span>, and
-<span class="math inline">\zeta_{\mathrm{nn}}</span> is of the order
-given in the paper, then with probability at least <span
-class="math inline">1 - 2(N + \mathcal{T})^{-2}</span>, <span
-class="math inline">\|\mathbf{L} -
+<span class="math inline">\zeta_{\mathrm{nn}}</span> is a constant
+multiple of <span class="math inline">\sigma\max\{\sqrt{N\log(N +
+\mathcal{T})},\ \sqrt{\mathcal{T}}\log^{3/2}(N +
+\mathcal{T})\}/|\mathcal{O}|</span> (<span
+class="math inline">\sigma</span> is the sub-Gaussian scale of the
+noise; the numerator is the order of a high-probability bound on the
+spectral norm of the noise matrix on the untreated cells), then with
+probability at least <span class="math inline">1 - 2(N +
+\mathcal{T})^{-2}</span>, <span class="math inline">\|\mathbf{L} -
 \hat{\mathbf{L}}\|_F/\sqrt{N\mathcal{T}}</span> is bounded by a quantity
 that increases with <span class="math inline">r</span>, <span
-class="math inline">L_{\max}</span>, the noise scale, and <span
-class="math inline">\log(N + \mathcal{T})</span>, and that goes to zero
-only when <span class="math inline">Np_c^2</span> and <span
+class="math inline">L_{\max}</span>, <span
+class="math inline">\sigma</span>, and <span class="math inline">\log(N
++ \mathcal{T})</span>, and that goes to zero only when <span
+class="math inline">Np_c^2</span> and <span
 class="math inline">\mathcal{T}p_c^2</span> both grow faster than the
 logarithmic factors; <span class="math inline">p_c</span> is the
 smallest probability that a unit is still untreated in the last
@@ -1851,15 +1900,16 @@ is invariant to permutations of the data, then <span
 class="math inline">\Pr(\hat p_{\mathrm{cf}} \leq \alpha) \leq
 \alpha</span>: the test is exactly valid in finite samples, whatever the
 choice of <span class="math inline">\Pi</span>. (ii) If A11 holds, with
-<span class="math inline">\Pi_{\mathrm{all}}</span> paired with
-Assumption 2.1 and <span class="math inline">\Pi_{\to}</span> with
-Assumption 2.2, the density of the statistic is bounded, and the number
-of post-periods is fixed, then <span class="math inline">|\Pr(\hat
-p_{\mathrm{cf}} \leq \alpha) - \alpha| \leq C\big(\big((\mathcal{T} -
-T_0)/T_0\big)^{1/4}\log\mathcal{T} + \Delta_{\mathcal{T}} +
-\sqrt{\Delta_{\mathcal{T}}} + \Delta&#39;_{\mathcal{T}}\big)</span>,
-where the constant <span class="math inline">C</span> does not depend on
-<span class="math inline">\mathcal{T}</span>.</p>
+<span class="math inline">\Pi_{\mathrm{all}}</span> paired with the
+i.i.d. case of A11 (2) and <span class="math inline">\Pi_{\to}</span>
+with the stationary strong-mixing case, the density of the statistic is
+bounded, and the number of post-periods is fixed, then <span
+class="math inline">|\Pr(\hat p_{\mathrm{cf}} \leq \alpha) - \alpha|
+\leq C\big(\big((\mathcal{T} - T_0)/T_0\big)^{1/4}\log\mathcal{T} +
+\Delta_{\mathcal{T}} + \sqrt{\Delta_{\mathcal{T}}} +
+\Delta&#39;_{\mathcal{T}}\big)</span>, where the constant <span
+class="math inline">C</span> does not depend on <span
+class="math inline">\mathcal{T}</span>.</p>
 <p><strong>Lemma 2 (prediction intervals; Cattaneo, Feng and Titiunik
 2021 Lemma 1, arXiv v4)</strong> Split <span
 class="math inline">\hat\tau_{1t} - \tau_{1t}</span> into an in-sample
@@ -1911,35 +1961,47 @@ least one part of the error must fall outside its own interval. Step two
 (the two coverage conditions): the union bound gives this event a
 probability of at most <span class="math inline">\alpha_{\mathrm{in}} +
 \alpha_{\mathrm{out}}</span>. The difficulty lies in the two intervals
-themselves: the in-sample part is approximated by simulation following
-Theorems 1 and 2 of the paper, and the out-of-sample part requires an
-assumption about the distribution of the post-period noise; this chapter
-uses a Gaussian bound.</p>
+themselves. The in-sample part is the post-period donor outcomes times
+the estimation error of the weights; that error is the solution of a
+quadratic program with simplex constraints, and the only random term in
+its objective is approximately normal. Replace that term with a normal
+vector drawn with the estimated covariance; for each draw, over the
+weight deviations that satisfy the constraints and leave the simulated
+quadratic objective no higher than at the truth, find the smallest and
+largest in-sample error; the <span
+class="math inline">\alpha_{\mathrm{in}}/2</span> quantile of the
+smallest values and the <span class="math inline">1 -
+\alpha_{\mathrm{in}}/2</span> quantile of the largest give <span
+class="math inline">[a_{\mathrm{in}}, b_{\mathrm{in}}]</span> (see
+Cattaneo, Feng and Titiunik 2021, Section 4, Theorems 1 and 2). The
+out-of-sample part requires an assumption about the distribution of the
+post-period noise; this chapter uses a Gaussian bound.</p>
 <p>In words: the conformal test asks whether this post-period effect
 path is compatible with zero; its randomness comes from time rather than
 from units, so it does not need many donors. What it needs is A11 (1):
 the reform only shifts the outcome and does not change the distribution
 of the shocks; if the reform also changes volatility, the p-value tests
 the joint hypothesis of a zero effect and an unchanged distribution. The
-shocks in S1 are i.i.d. by construction and satisfy Assumption 2.1, and
-9,999 random permutations give <span class="math inline">\hat
-p_{\mathrm{cf}} = 0.082</span>; assuming only Assumption 2.2 and using
-the 36 cyclic shifts, the p-value is 0.222 (0.111 when the statistic
-uses the sum of squares instead). At the 10% level the former rejects
-and the latter does not; the difference lies not in the data but in
-whether you are willing to assume independent shocks or only weakly
-dependent ones. Under cyclic shifts the p-value moves in steps of 1/36
-and cannot hit a level of exactly 10%, so the test is slightly
-conservative; two further features cost power: the fit under the null
-must absorb an effect that ramps up month by month, and the statistics
-of adjacent shifts are close to one another. Prediction intervals answer
-a different question: where each month’s effect lies. On S1, allowing
-0.05 error for each of the in-sample and out-of-sample parts, all 12
-monthly intervals cover that month’s truth, with an average length of
-0.141; intervals that use only the in-sample part cover just 9 months,
-so the out-of-sample uncertainty cannot be left out. When the shocks are
-heavy-tailed or serially correlated, the out-of-sample Gaussian bound is
-too narrow, and coverage may fall below the nominal level.</p>
+shocks in S1 are i.i.d. by construction and satisfy the first case of
+A11 (2), and 9,999 random permutations give <span
+class="math inline">\hat p_{\mathrm{cf}} = 0.082</span>; assuming only
+the second case (stationary and strong mixing) and using the 36 cyclic
+shifts, the p-value is 0.222 (0.111 when the statistic uses the sum of
+squares instead). At the 10% level the former rejects and the latter
+does not; the difference lies not in the data but in whether you are
+willing to assume independent shocks or only weakly dependent ones.
+Under cyclic shifts the p-value moves in steps of 1/36 and cannot hit a
+level of exactly 10%, so the test is slightly conservative; two further
+features cost power: the fit under the null must absorb an effect that
+ramps up month by month, and the statistics of adjacent shifts are close
+to one another. Prediction intervals answer a different question: where
+each month’s effect lies. On S1, allowing 0.05 error for each of the
+in-sample and out-of-sample parts, all 12 monthly intervals cover that
+month’s truth, with an average length of 0.141; intervals that use only
+the in-sample part cover just 9 months, so the out-of-sample uncertainty
+cannot be left out. When the shocks are heavy-tailed or serially
+correlated, the out-of-sample Gaussian bound is too narrow, and coverage
+may fall below the nominal level.</p>
 <h3 id="sc-for-experimental-design">3.8 SC for Experimental Design</h3>
 <p>The previous seven subsections all repair things after the fact:
 treatment has already happened, and we look for a credible set of
@@ -2122,8 +2184,15 @@ period.</p>
 <p><strong>Theorem 9 (bias bound for the synthetic design; Abadie and
 Zhao Theorem 1, arXiv v5 equation (15))</strong> Suppose A12 holds,
 <span class="math inline">\mathbf{w}^{\mathrm{tr}}</span> and <span
-class="math inline">\mathbf{w}^{\mathrm{co}}</span> solve design problem
-(6) of the paper, and the estimator is <span
+class="math inline">\mathbf{w}^{\mathrm{co}}</span> solve the design
+problem: with both sets of weights on the simplex, no city carrying
+positive weight on both sides, and the number of pilot cities within a
+given range, minimize <span class="math inline">\|\bar{\mathbf{X}} -
+\sum_i w^{\mathrm{tr}}_i\mathbf{X}_i\|^2 + \|\bar{\mathbf{X}} - \sum_i
+w^{\mathrm{co}}_i\mathbf{X}_i\|^2</span>, where <span
+class="math inline">\bar{\mathbf{X}}</span> is the average of the
+predictors over all cities (see Abadie and Zhao 2026, arXiv v5, Section
+2, problem (6)); and the estimator is <span
 class="math inline">\hat\tau_t = \sum_i w^{\mathrm{tr}}_i Y_{it} -
 \sum_i w^{\mathrm{co}}_i Y_{it}</span>. Then for every pilot period
 <span class="math inline">t</span>,</p>
@@ -2135,10 +2204,11 @@ f_{\max})\,r}{\xi}\,\sqrt{2\log(2N)}\,\frac{\sigma}{\sqrt{T_E}},</span></p>
 upper bound on the factor coefficients in the treated state, and <span
 class="math inline">N</span> is the total number of candidate cities
 (written <span class="math inline">J</span> in the paper). If A12 (3)
-holds only approximately (Assumption 4 of the paper: a fit error no
-larger than <span class="math inline">d</span>), the right-hand side
-gains a term proportional to <span class="math inline">d</span>
-(equation (16) of the paper).</p>
+holds only approximately, with each side’s root-mean-square fit error to
+the all-city average, averaged over predictors, no larger than <span
+class="math inline">d</span> (see Assumption 4 of the same paper), the
+right-hand side gains a term proportional to <span
+class="math inline">d</span> (see equation (16) of the same paper).</p>
 </div>
 <p>The proof sketch has three steps (see the paper’s appendix). Step one
 (A12 (3)): the weighted averages of both sides equal the overall average
@@ -2161,15 +2231,16 @@ when no outcomes exist yet, so the researcher has no opportunity to
 choose weights based on outcomes. The design for S4 picks Metro-01, 09,
 14, 16, and 27 (weights 0.185, 0.203, 0.273, 0.082, and 0.256), with a
 historical fit error of 0.0034, which is not zero, so what applies is
-equation (16) with its <span class="math inline">d</span> term. Over 500
-replicated pilot periods, the RMSE of the synthetic design is 0.0087,
-while picking 5 cities at random and running DiD gives 0.077, 8.8 times
-as large. Comparing means directly after random selection gives an RMSE
-as high as 0.212, mostly noise from differences in intrinsic levels
-across cities, which DiD removes, so the factor of 8.8 is the fair
-comparison. The bias of the synthetic design (0.0062) is conditional on
-this particular history and is not the expected bias bounded by Theorem
-9, but its sources are of the same kind, the overfitting term and the
+the bound of Theorem 9 with its <span class="math inline">d</span> term
+(see Abadie and Zhao 2026, arXiv v5, equation (16)). Over 500 replicated
+pilot periods, the RMSE of the synthetic design is 0.0087, while picking
+5 cities at random and running DiD gives 0.077, 8.8 times as large.
+Comparing means directly after random selection gives an RMSE as high as
+0.212, mostly noise from differences in intrinsic levels across cities,
+which DiD removes, so the factor of 8.8 is the fair comparison. The bias
+of the synthetic design (0.0062) is conditional on this particular
+history and is not the expected bias bounded by Theorem 9, but its
+sources are of the same kind, the overfitting term and the
 approximate-fit term: with only 24 fitting months and 40 candidate
 cities, overfitting the noise is its main risk. Its point of failure is
 A12 (1): if the pilot period brings a shock not seen in the history, or
@@ -2315,8 +2386,10 @@ the package’s cross-validation</td>
 <td>SDID</td>
 <td><code>synthdid</code></td>
 <td>Unit and time weights, <span
-class="math inline">\zeta_{\mathrm{sdid}}</span> from equation (2.2) of
-the paper</td>
+class="math inline">\zeta_{\mathrm{sdid}} = (N_1(\mathcal{T} -
+T_0))^{1/4}\hat\sigma</span> with <span
+class="math inline">\hat\sigma</span> as in Section 3.3 (see AAHIW 2021,
+Section 2.1, equation (2.2))</td>
 <td>Placebo variance</td>
 </tr>
 <tr>
@@ -2336,8 +2409,16 @@ cross-validated, then refitted with a tightened tolerance</td>
 <tr>
 <td>multisynth</td>
 <td><code>augsynth::multisynth</code></td>
-<td><span class="math inline">\pi_{\mathrm{pool}}</span> by the
-heuristic of §4.2 of Ben-Michael, Feller and Rothstein (2022)</td>
+<td><span class="math inline">\pi_{\mathrm{pool}}</span> set to a ratio
+under separate SCs: the length of the adopting cities’ pre-period gaps
+averaged by event time (a city with no pre-period at that event time
+counts as zero, and the divisor is always the number of adopting
+cities), divided by the average length of each city’s own pre-period gap
+vector; lengths are not normalized by the number of pre-periods, and
+when all cities have equally many pre-periods the ratio is <span
+class="math inline">q^{\mathrm{pool}}</span> over the average of the
+cities’ fit errors (see Ben-Michael, Feller and Rothstein 2022, Section
+4.2)</td>
 <td>Bootstrap</td>
 </tr>
 <tr>
@@ -2361,7 +2442,8 @@ heuristic of §4.2 of Ben-Michael, Feller and Rothstein (2022)</td>
 <tr>
 <td>Synthetic design</td>
 <td><code>sc_weights</code> plus local search</td>
-<td>Design problem (6) of the paper</td>
+<td>The pilot design problem of Theorem 9 (see Abadie and Zhao 2026,
+arXiv v5, problem (6))</td>
 <td>Replicated pilot periods</td>
 </tr>
 </tbody>
@@ -2852,13 +2934,13 @@ matters; its conformal p-value is 0.204: extrapolation removes most of
 the bias but does not buy enough precision to reject a zero effect. The
 placebo standard error of SDID is 0.037, and its interval [-0.042,
 0.104] covers the truth of 0.079. The penalty of penalized SC is chosen
-by leave-one-out cross-validation as in §4.1 of Abadie and L’Hour
-(2021), with each donor taking a turn as the treated unit; if one
-instead uses the rule of §4.2 of the paper, holding out a stretch at the
-end of the treated city’s own pre-period for validation, the penalty is
-0.178, only 2 donors remain, and the estimate is -0.160. Neither rule
-fixes the sign: the penalty governs uniqueness and sparsity, not
-extrapolation.</p>
+by the leave-one-out cross-validation of Section 3.4, with each donor
+taking a turn as the treated unit (see Abadie and L’Hour 2021, Section
+4.1); if one instead uses the other rule, holding out a stretch at the
+end of the treated city’s own pre-period for validation (see Section 4.2
+of the same paper), the penalty is 0.178, only 2 donors remain, and the
+estimate is -0.160. Neither rule fixes the sign: the penalty governs
+uniqueness and sparsity, not extrapolation.</p>
 <h3 id="s3-staggered-adoption">6.5 S3: Staggered Adoption</h3>
 <p>The design parameters of S3 are as follows: 80 metros and 48 months;
 20 cities that cannot be selected because of existing contracts are
@@ -3006,9 +3088,10 @@ of history; the common demand shock is an AR(1) with coefficient 0.7 and
 innovation standard deviation 0.05, and the idiosyncratic noise has
 standard deviation 0.02; the pilot lasts 6 months, and once piloted,
 every city has an effect of 0.04; evaluation uses 500 replicated pilot
-periods that redraw only the shocks of the pilot period. Design problem
-(6) of the paper searches over all pilot sets; here we solve two simplex
-problems for each candidate set and run a local search across sets:</p>
+periods that redraw only the shocks of the pilot period. The pilot
+design problem of Theorem 9 searches over all pilot sets (see Abadie and
+Zhao 2026, arXiv v5, problem (6)); here we solve two simplex problems
+for each candidate set and run a local search across sets:</p>
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># X: 24 history months x 40 metros; xb: the 40-metro average history</span></span>
 <span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>fit_set <span class="ot">&lt;-</span> <span class="cf">function</span>(S) {                                     <span class="co"># S: candidate pilot metros</span></span>
 <span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  C <span class="ot">&lt;-</span> <span class="fu">setdiff</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">40</span>, S)</span>

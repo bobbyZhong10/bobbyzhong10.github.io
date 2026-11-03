@@ -770,9 +770,14 @@ class="math inline">Y_i</span> need not have a mean. The sufficient
 condition means that there are data near the true quantile (a positive
 density) and no perfect collinearity among the regressors. QR.3
 corresponds to M.2 of Chapter 5: the check function is continuous
-everywhere, and Wooldridge (2010) p. 449 notes that the consistency of
-LAD comes from Theorem 12.2, and the same argument covers a general
-<span class="math inline">\tau</span>.</p>
+everywhere. So for LAD (<span class="math inline">\tau = 1/2</span>), as
+for a general <span class="math inline">\tau</span>, consistency comes
+directly from Theorem 2 of Chapter 5: if the population objective has a
+unique minimizer (M.1), the parameter set is compact, and the objective
+is continuous in the parameter and dominated by a function with finite
+expectation (M.2), then the sample minimizer converges in probability to
+the population minimizer (see Wooldridge 2010, Section 12.10, p. 449,
+and its Theorem 12.2).</p>
 <div class="theorem">
 <p><strong>Theorem 2 (consistency of QR; Wooldridge 2010 §12.10.1,
 p. 451, via Theorem 12.2, p. 404; Koenker and Bassett 1978)</strong>
@@ -916,16 +921,30 @@ class="math inline">b</span> and zero at <span
 class="math inline">\beta(\tau)</span> (QR.1 makes <span
 class="math inline">F_{Y \mid X}(X_i&#39;\beta(\tau) \mid X_i) =
 \tau</span>), with Jacobian <span class="math inline">A_0(\tau)</span>
-(equation (12.112)). Step three (QR.4(b)(c)): the difference between the
+(equation (12.112)). Step three (QR.4): the difference between the
 sample score and its expectation is asymptotically the same at <span
 class="math inline">\hat\beta(\tau)</span> and at <span
-class="math inline">\beta(\tau)</span>; this is a stochastic
-equicontinuity argument, for which Wooldridge draws on Huber (1967) and
-Newey and McFadden (1994) §7; combined with step two, and using the
-invertibility of <span class="math inline">A_0(\tau)</span>, it gives
-the linear representation (equation (12.113)). Step four (QR.1,
-QR.4(c)): the <span class="math inline">s_i(\beta(\tau))</span> are
-independent and identically distributed, and QR.1 gives <span
+class="math inline">\beta(\tau)</span>. The score jumps, but few
+observations jump: when <span class="math inline">b</span> moves by a
+small amount <span class="math inline">d</span>, <span
+class="math inline">s_i(b)</span> changes only for observations with
+<span class="math inline">\lvert Y_i - X_i&#39;b \rvert \le \lVert X_i
+\rVert d</span>, and with a bounded conditional density (QR.4(a)) the
+share of such observations is at most a constant times <span
+class="math inline">d</span>; hence <span
+class="math inline">n^{-1/2}\sum_i\{s_i(b) - \mathbb{E}[s_i(b)]\}</span>
+barely moves within a small neighborhood of <span
+class="math inline">\beta(\tau)</span>, and replacing <span
+class="math inline">\hat\beta(\tau)</span> with <span
+class="math inline">\beta(\tau)</span> costs only <span
+class="math inline">o_p(1)</span>. This is stochastic equicontinuity
+(see Huber 1967, Section 4, condition (N-3) and Lemma 3; Newey and
+McFadden 1994, Section 7; Wooldridge 2010, Section 12.10.2). Combined
+with step two, and using the invertibility of <span
+class="math inline">A_0(\tau)</span> (QR.4(b)), it gives the linear
+representation (equation (12.113)). Step four (QR.1, QR.4(c)): the <span
+class="math inline">s_i(\beta(\tau))</span> are independent and
+identically distributed, and QR.1 gives <span
 class="math inline">\mathbb{E}[\mathbf{1}\{Y_i &lt;
 X_i&#39;\beta(\tau)\} \mid X_i] = \tau</span>, so the mean is zero and
 the variance is <span class="math inline">\tau(1 -
@@ -1025,18 +1044,24 @@ class="math inline">X</span> decides how large a share each region gets,
 and <span class="math inline">\bar f_\tau</span> is what Angrist,
 Chernozhukov and Fernández-Val call the importance weight; the denser
 the conditional distribution near the true quantile, the more the
-approximation error there matters. In their census example the
-importance weights are fairly flat, and QR nearly coincides with the
-minimum-distance fit weighted only by the distribution of <span
-class="math inline">X</span> (Chapter 7). The pooled QR on Q4 is a case
-in point: it faithfully approximates the conditional quantile of revenue
-given only the promotion share, but that conditional quantile mixes in
-the differences in merchant size, so 1.823 is far from 0.7845, and no
-number of periods can correct it. Conversely, when the only regressor is
-a treatment indicator taking the values 0 and 1, the model is saturated
-and cannot be misspecified: on Q1, a QR on <span
-class="math inline">D_i</span> alone gives a coefficient that is exactly
-the difference between the two groups’ sample quantiles.</p>
+approximation error there matters. Their example takes US-born black and
+white men aged 40 to 49 in the US census and looks at the conditional
+quantiles of the log weekly wage given years of schooling: schooling is
+discrete and the samples are large, so the conditional quantile at each
+level of schooling can be computed directly, and the QR line can be set
+against the minimum-distance fit weighted only by the distribution of
+<span class="math inline">X</span> (Chapter 7). In the 1980, 1990, and
+2000 censuses the importance weights are fairly flat at every quantile,
+and the two lines nearly coincide (see Angrist, Chernozhukov and
+Fernández-Val 2006, working paper version, Sections 2.2 and 4.2). The
+pooled QR on Q4 is a case in point: it faithfully approximates the
+conditional quantile of revenue given only the promotion share, but that
+conditional quantile mixes in the differences in merchant size, so 1.823
+is far from 0.7845, and no number of periods can correct it. Conversely,
+when the only regressor is a treatment indicator taking the values 0 and
+1, the model is saturated and cannot be misspecified: on Q1, a QR on
+<span class="math inline">D_i</span> alone gives a coefficient that is
+exactly the difference between the two groups’ sample quantiles.</p>
 <h3
 id="randomized-experiments-selection-on-observables-and-rank-invariance">3.5
 Randomized Experiments, Selection on Observables, and Rank
@@ -1519,14 +1544,24 @@ class="math inline">\bar F_0</span>; the counterfactual distribution
 after the share rises by 0.1 is <span class="math inline">(p + 0.1)\bar
 F_1 + (0.9 - p)\bar F_0</span>, and inverting it by linear interpolation
 between thresholds gives the counterfactual quantiles. It suits changes
-that are finite and not too small, and the theory of inference is in
-Theorem 5.2 and Corollary 5.3 of the arXiv version of Chernozhukov,
-Fernández-Val and Melly (2013). On Q2, with the share rising from twenty
-to thirty percent, the true discrete effect per unit of share at the
-90th percentile is 0.632 and distribution regression gives 0.736; at the
-median the truth is 0.505 and the estimate 0.510. There are only point
-estimates here, and from this one estimate alone there is no telling how
-much of the gap between 0.736 and the truth is sampling error.</p>
+that are finite and not too small. Inference rests on a result about
+whole processes: when the link is correctly specified and the
+conditional density is bounded and continuous, among other conditions,
+the coefficients at the thresholds, as a function of <span
+class="math inline">y</span>, together with the empirical distribution
+of the covariates, converge jointly to a Gaussian process after scaling
+by <span class="math inline">\sqrt n</span>, and so do the
+counterfactual distribution and the counterfactual quantiles; the
+bootstrap distribution is asymptotically the same as this limit, so it
+can be used to build uniform confidence bands for the whole
+counterfactual distribution or quantile curve (see Chernozhukov,
+Fernández-Val and Melly 2013, arXiv version, Theorem 5.2 and Corollary
+5.3). On Q2, with the share rising from twenty to thirty percent, the
+true discrete effect per unit of share at the 90th percentile is 0.632
+and distribution regression gives 0.736; at the median the truth is
+0.505 and the estimate 0.510. There are only point estimates here, and
+from this one estimate alone there is no telling how much of the gap
+between 0.736 and the truth is sampling error.</p>
 <h3 id="endogenous-treatment-and-instrumental-variables">3.7 Endogenous
 Treatment and Instrumental Variables</h3>
 <p>On block Q3, a QR of log monthly revenue on AdBoost adoption and
@@ -1604,20 +1639,41 @@ a merchant of rank <span class="math inline">\tau</span> is switched
 from not adopting to adopting. This is not the compliers’ effect; rank
 similarity makes the merchants moved by the instrument representative of
 all merchants. Theorem 7 gives only a moment condition; to solve it
-uniquely for <span class="math inline">\beta_D(\tau)</span>, the
-instrument must actually move adoption, and a full-rank condition must
-guarantee that the solution is unique (the identification conditions of
-Chernozhukov and Hansen 2005). Otherwise the moment condition only marks
-out an identified set, and with a weak instrument the acceptance set can
-be very wide, which is why the confidence sets below are reported by
-inverting over a grid. Estimation uses the inverse QR of Chernozhukov
-and Hansen (2006, 2008): at each point <span
-class="math inline">b</span> of a grid, run a QR of <span
-class="math inline">Y_i - D_ib</span> on <span class="math inline">(1,
-X_i, Z_i)</span> and look for the point at which the coefficient on
-<span class="math inline">Z_i</span>, as a function of <span
-class="math inline">b</span>, is zero; the grid points at which the
-coefficient on <span class="math inline">Z_i</span> has a <span
+uniquely for <span class="math inline">\beta_D(\tau)</span>, a full-rank
+condition is also needed. Take the case where, given <span
+class="math inline">X_i</span>, both <span
+class="math inline">D_i</span> and <span class="math inline">Z_i</span>
+are binary: the unknowns are the structural quantiles in the two states,
+<span class="math inline">q_0 = X_i&#39;\beta_X(\tau)</span> and <span
+class="math inline">q_1 = \beta_D(\tau) + X_i&#39;\beta_X(\tau)</span>,
+and the equations are, in the groups <span class="math inline">Z_i =
+0</span> and <span class="math inline">Z_i = 1</span> separately, <span
+class="math inline">\Pr(Y_i \le q_{D_i} \mid Z_i) = \tau</span>. In the
+Jacobian of these equations with respect to <span
+class="math inline">(q_0, q_1)</span>, row <span
+class="math inline">z</span> holds the joint density of <span
+class="math inline">(Y_i, D_i)</span> given <span
+class="math inline">Z_i = z</span> at <span class="math inline">(q_0,
+0)</span> and at <span class="math inline">(q_1, 1)</span>; if it is
+continuous and has full rank at the true values (the two rows are not
+proportional: the instrument changes the joint density of <span
+class="math inline">(Y_i, D_i)</span> at these two points by different
+factors), they are the only solution nearby; uniqueness over a larger
+region needs stronger conditions, which require the instrument’s effect
+on the joint distribution of <span class="math inline">(Y_i, D_i)</span>
+to be rich enough, and at the least the instrument cannot be independent
+of adoption (see Chernozhukov and Hansen 2013, review, arXiv version,
+Section 3.1, Theorem 2; Chernozhukov and Hansen 2005). When these
+conditions fail, the moment condition only marks out an identified set,
+and with a weak instrument the acceptance set can be very wide, which is
+why the confidence sets below are reported by inverting over a grid.
+Estimation uses the inverse QR of Chernozhukov and Hansen (2006, 2008):
+at each point <span class="math inline">b</span> of a grid, run a QR of
+<span class="math inline">Y_i - D_ib</span> on <span
+class="math inline">(1, X_i, Z_i)</span> and look for the point at which
+the coefficient on <span class="math inline">Z_i</span>, as a function
+of <span class="math inline">b</span>, is zero; the grid points at which
+the coefficient on <span class="math inline">Z_i</span> has a <span
 class="math inline">t</span> statistic no larger than the critical value
 form the confidence set, which does not rely on a strong first stage and
 follows the same idea as the AR set of Section 3.5 of Chapter 9. When
@@ -1772,8 +1828,8 @@ class="math inline">Y_{it} - \hat\alpha_i</span>) is consistent and
 asymptotically normal when <span
 class="math inline">N/\mathcal{T}^{a&#39;} \to 0</span> (for some <span
 class="math inline">a&#39; &gt; 1</span>), but Besstremyannaya and
-Golovan (2019) point out that this rate condition is not strong
-enough.</p>
+Golovan (2019) point out that this rate condition is not strong enough
+(step three of the proof sketch shows one source of the weakness).</p>
 </div>
 <p>The proof sketch has three steps. Step one (PQR.1): quantiles are not
 additive, so the conditional quantile of <span
@@ -1802,7 +1858,31 @@ the within-merchant average of <span class="math inline">Y_{it} -
 X_{it}&#39;\hat\beta</span>; its error vanishes only as <span
 class="math inline">\mathcal{T} \to \infty</span>, so (iii) likewise
 requires <span class="math inline">\mathcal{T}</span> to grow relative
-to <span class="math inline">N</span>.</p>
+to <span class="math inline">N</span>. At this point Canay’s proof
+expands the error in <span class="math inline">\hat\alpha_i</span> only
+to first order and then uses <span class="math inline">\max_i \lvert
+\hat\alpha_i - \alpha_i \rvert \to 0</span> (which is what <span
+class="math inline">N/\mathcal{T}^{a&#39;} \to 0</span> is there to
+deliver) to argue that the remainder is negligible. Two terms are
+dropped this way: one is the second-order term in each merchant’s error,
+which with a smooth conditional density is of order about <span
+class="math inline">1/\mathcal{T}</span> for every merchant and
+generally has a nonzero mean (it is zero, for example, when the
+conditional density has zero slope at the quantile); the other comes
+from <span class="math inline">\hat\alpha_i</span> being built from the
+merchant’s own observations and so being correlated with them, which
+Canay’s appendix likewise dismisses using the <span
+class="math inline">\max_i</span> condition (Lemma A.1(b)), and it is
+also of order <span class="math inline">1/\mathcal{T}</span>. Together
+they generally still leave a bias of order <span
+class="math inline">1/\mathcal{T}</span>, which after scaling by <span
+class="math inline">\sqrt{N\mathcal{T}}</span> is of order <span
+class="math inline">\sqrt{N/\mathcal{T}}</span> and vanishes only if
+<span class="math inline">N/\mathcal{T} \to 0</span>, whereas <span
+class="math inline">a&#39; &gt; 1</span> allows <span
+class="math inline">N</span> to grow faster than <span
+class="math inline">\mathcal{T}</span> (derived here from the proofs of
+Lemmas A.1 and A.2 and Theorem 4.1 in the appendix of Canay 2011).</p>
 <p>In words: under PQR.1, both estimators aim at <span
 class="math inline">\beta(\tau)</span>, the slope of the conditional
 quantile given the merchant effect; if the merchant effect also changes
@@ -2360,8 +2440,12 @@ and Sheather (1988)</td>
 </tr>
 <tr>
 <td><code>"ker"</code></td>
-<td>Kernel weighting of the residuals, of the form of equation
-(12.118)</td>
+<td>Kernel weighting of the residuals <span class="math inline">\hat
+u_i</span>, <span class="math inline">(nh_n)^{-1}\sum_i K(\hat
+u_i/h_n)X_iX_i&#39;</span>; with <span class="math inline">K</span> the
+uniform density on <span class="math inline">[-1, 1]</span>, only
+observations with <span class="math inline">\lvert \hat u_i \rvert \le
+h_n</span> count (see Wooldridge 2010, equation (12.118))</td>
 <td>Same as above</td>
 </tr>
 <tr>
@@ -2394,7 +2478,13 @@ the Hall-Sheather bandwidth is of this order. The QR objective is not
 smooth, but the estimator itself is asymptotically normal, and the pairs
 bootstrap of Section 3.3 of Chapter 8 still applies to it (Wooldridge
 2010 p. 457); with panel and clustered data, resample by unit, or use
-the cluster-robust estimators of equations (12.124) and (12.125).</p>
+the cluster-robust sandwich: the filling sums each unit’s scores over
+periods before taking the outer product, <span
+class="math inline">N^{-1}\sum_i(\sum_t s_{it})(\sum_t
+s_{it})&#39;</span>, so that all correlation across periods is counted,
+and the bread is still estimated from the observations whose residuals
+in each period fall within the bandwidth (see Wooldridge 2010, Section
+12.10.3, equations (12.124) and (12.125)).</p>
 <p>The other estimators each have their own form of inference. If RIF
 regression treats the RIF as data, the OLS sandwich misses the
 estimation error of the two steps, the quantile and the density: at the
@@ -3258,8 +3348,16 @@ to match, and the QTT cannot be point identified over that stretch; with
 a discrete outcome only bounds are available. The fuzzy version further
 requires the control region’s adoption rate not to change, and the
 switchers’ distribution, obtained by subtraction, is least stable in the
-tails. With panel data, Callaway and Li (2019) give the QTT under
-another set of assumptions.</p>
+tails. With panel data, Callaway and Li (2019) identify the QTT under
+another set of assumptions: first, a distributional form of parallel
+trends, under which the change in untreated outcomes <span
+class="math inline">Y_{it}(0) - Y_{i,t-1}(0)</span> is independent of
+treatment; second, copula stability, under which the copula between the
+treated group’s change in untreated outcomes and its level in the
+previous period is the same in the treatment period as in the period
+before. The second requires at least three periods of data on the same
+units, two of them before treatment (see Callaway and Li 2019, working
+paper version, Section 3 and Theorem 1).</p>
 <p>Last come computation and conventions. QR curves estimated separately
 at different levels can cross, producing the absurd result that the 90th
 percentile lies below the 75th somewhere; the rearrangement of

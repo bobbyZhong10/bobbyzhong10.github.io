@@ -448,7 +448,22 @@ happens to be zero, the Delta method and the naive bootstrap fail
 together (the warning at the end of Section 3.3). When the denominator
 is near zero, the bootstrap of the next subsection can trace out the
 skew of the ratio’s distribution, but the interval itself should be the
-Fieller interval of Section 7.</p>
+Fieller interval, which avoids the division: for each candidate ratio
+<span class="math inline">c</span>, test <span
+class="math inline">\beta_{time} - c\,\beta_{fee} = 0</span> and collect
+the values of <span class="math inline">c</span> that are not rejected,
+that is, the <span class="math inline">c</span> satisfying <span
+class="math inline">(\hat\beta_{time} - c\,\hat\beta_{fee})^2 \le
+z^2(V_{tt} - 2c\,V_{tf} + c^2V_{ff})</span>, where <span
+class="math inline">z</span> is the normal critical value. This is a
+quadratic inequality in <span class="math inline">c</span> whose leading
+coefficient <span class="math inline">\hat\beta_{fee}^2 -
+z^2V_{ff}</span> is positive when the denominator is significant at the
+same level (<span class="math inline">|\hat\beta_{fee}| &gt;
+z\sqrt{V_{ff}}</span>), so the solution set is a bounded interval; when
+the denominator is insignificant it is negative, and the set is two rays
+or the whole real line (derived here; the reasoning is the same as for
+the shape of the AR set in Chapter 9).</p>
 </div>
 <h3 id="the-bootstrap-simulating-the-sampling-distribution-directly">3.3
 The Bootstrap: Simulating the Sampling Distribution Directly</h3>
@@ -1046,10 +1061,35 @@ massive data.</p>
 <p>Data: large-scale A/B test metrics on Microsoft’s online
 experimentation platform, with sample sizes routinely in the tens of
 millions.</p>
-<p>Results: the paper gives a deployable Delta-method recipe that makes
-inference for ratio metrics both correct (folding within-user
-correlation into the variance) and efficient at industrial scale,
-becoming a practical reference for online experiment analysis. It
+<p>Results: the core of the recipe is to write a metric defined at the
+analysis unit (here the page view) as a ratio of two averages at the
+randomization unit. Take the click rate per page view: for user <span
+class="math inline">i</span>, let <span class="math inline">S_i</span>
+be the total clicks and <span class="math inline">N_i</span> the page
+views; the metric <span class="math inline">\bar Y = \bar S/\bar
+N</span> is not an average of independent observations, but <span
+class="math inline">(S_i, N_i)</span> is independent and identically
+distributed across users, so the Delta method for a ratio gives <span
+class="math inline">\mathrm{Var}(\bar Y) \approx \big(\sigma_S^2 -
+2(\mu_S/\mu_N)\sigma_{SN} +
+(\mu_S/\mu_N)^2\sigma_N^2\big)/(G\mu_N^2)</span>, where <span
+class="math inline">\mu_S</span> and <span
+class="math inline">\mu_N</span> are the means of <span
+class="math inline">S_i</span> and <span class="math inline">N_i</span>,
+<span class="math inline">\sigma_S^2</span>, <span
+class="math inline">\sigma_N^2</span> and <span
+class="math inline">\sigma_{SN}</span> their variances and covariance,
+and <span class="math inline">G</span> is the number of users.
+Within-user correlation enters the variance this way, and the
+computation needs only user-level sums, sums of squares and
+cross-products, which a distributed system aggregates directly, with no
+bootstrap or mixed-effects model. In the authors’ simulation, the naive
+standard error that treats page views as independent observations is
+only about three fifths of the true standard deviation, and the
+Delta-method standard error matches the true value; the mixed-effects
+model also gets the standard error about right, but its point estimate
+is biased, because it gives every user the same weight and so estimates
+a different quantity (see Deng, Knoblich and Lu 2018, Section 3). It
 demonstrates how the two main threads of this chapter (the Delta method
 for nonlinear functions and variance corrections for correlated data)
 converge in real platform data science.</p>

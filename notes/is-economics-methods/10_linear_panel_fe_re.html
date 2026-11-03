@@ -391,11 +391,11 @@ sketches of two to six steps, each step naming the assumptions it uses.
 Finally, an “In words” paragraph answers four questions: under which
 assumptions it estimates which quantity, what it estimates when the
 specification is wrong, who sets the weights, and what Nimbus’s numbers
-say. The two parts of Wooldridge (2010) on panels have numbered
-assumptions but no numbered theorems, so the theorem boxes cite
-assumption labels, sections, and equation numbers; the theorem numbering
-is this chapter’s own. The large-sample theory is always <span
-class="math inline">N \to \infty</span> with <span
+say. Theorem numbers are this chapter’s own, and each theorem box names
+the assumption labels, sections, and equation numbers it rests on (see
+Wooldridge 2010, Chapters 10 and 11, where the assumptions are numbered
+but the results carry no theorem numbers). The large-sample theory is
+always <span class="math inline">N \to \infty</span> with <span
 class="math inline">T</span> fixed.</p>
 <h3 id="strict-exogeneity-and-pooled-ols">3.1 Strict Exogeneity and
 Pooled OLS</h3>
@@ -1218,35 +1218,39 @@ RE.1(b) implies <span class="math inline">\xi = 0</span>, the
 cluster-robust variance of the Mundlak regression does not depend on
 RE.3 (Section 3.4 of Chapter 8), and the Wald statistic gives (ii).</p>
 <p>In words: the Hausman test is aimed not at “whether RE is right” but
-at the moment condition of equation (10.87), namely whether the unit
-mean is correlated with the individual effect; when strict exogeneity
-fails, FE and RE are both biased, and the test loses this meaning. When
-RE.3 fails, the covariance in step two is generally not zero, and the
-two variances in the classical formula are no longer the true asymptotic
-variances either, so <span
-class="math inline">\mathrm{Avar}(\hat\beta_{FE} - \hat\beta_{RE}) \neq
-\mathrm{Avar}(\hat\beta_{FE}) - \mathrm{Avar}(\hat\beta_{RE})</span>:
-the limit of the classical statistic is not <span
-class="math inline">\chi^2_k</span>, and whether it is too large or too
-small cannot be told in advance. On P7, across 2,000 replications, the
-standard deviation of the difference between FE and RE is 0.0105, while
-the classical formula gives only 0.0073 on average, a ratio of 1.45, so
-the statistic is inflated by roughly the square of that ratio: the
-classical <span class="math inline">H</span> averages 2.09 and the
-robust statistic averages 0.98, against a mean of 1 for <span
-class="math inline">\chi^2_1</span>. The weights are set by the
-auxiliary assumption: the classical version quietly puts RE.3 into the
-null, while the robust version requires only RE.1. On P1 both clearly
-reject RE: 3362.02 for the classical test and 798.95 for the robust one,
-both with negligible <span class="math inline">p</span>-values. When the
-null fails, both statistics diverge, and since they use different
-variance estimators, their values need not be close.</p>
-<p>Once time-invariant controls are put into RE, equation (10.87) tests
-whether the part of <span class="math inline">\bar X_i</span> that the
-controls cannot explain is correlated with <span
-class="math inline">\alpha_i</span>: with rich enough controls, RE can
-be close to FE even if <span class="math inline">\bar X_i</span> itself
-is correlated with talent (Wooldridge 2010 p. 331).</p>
+at whether the unit mean is correlated with the individual effect. With
+no time-invariant controls in RE, the null hypothesis is <span
+class="math inline">\mathrm{Cov}(\bar X_i, \alpha_i) = 0</span> (see
+Wooldridge 2010, Section 10.7.3); when strict exogeneity fails, FE and
+RE are both biased, and the test loses this meaning. When RE.3 fails,
+the covariance in step two is generally not zero, and the two variances
+in the classical formula are no longer the true asymptotic variances
+either, so <span class="math inline">\mathrm{Avar}(\hat\beta_{FE} -
+\hat\beta_{RE}) \neq \mathrm{Avar}(\hat\beta_{FE}) -
+\mathrm{Avar}(\hat\beta_{RE})</span>: the limit of the classical
+statistic is not <span class="math inline">\chi^2_k</span>, and whether
+it is too large or too small cannot be told in advance. On P7, across
+2,000 replications, the standard deviation of the difference between FE
+and RE is 0.0105, while the classical formula gives only 0.0073 on
+average, a ratio of 1.45, so the statistic is inflated by roughly the
+square of that ratio: the classical <span class="math inline">H</span>
+averages 2.09 and the robust statistic averages 0.98, against a mean of
+1 for <span class="math inline">\chi^2_1</span>. The weights are set by
+the auxiliary assumption: the classical version quietly puts RE.3 into
+the null, while the robust version requires only RE.1. On P1 both
+clearly reject RE: 3362.02 for the classical test and 798.95 for the
+robust one, both with negligible <span
+class="math inline">p</span>-values. When the null fails, both
+statistics diverge, and since they use different variance estimators,
+their values need not be close.</p>
+<p>Once time-invariant controls are put into RE, the null hypothesis of
+the Hausman test becomes: the part of <span class="math inline">\bar
+X_i</span> left after subtracting its linear projection on those
+controls is uncorrelated with <span class="math inline">\alpha_i</span>.
+With rich enough controls, that remainder can be unrelated to talent
+even when <span class="math inline">\bar X_i</span> itself is correlated
+with it, and RE can then be close to FE (see Wooldridge 2010, Section
+10.7.3, equation (10.87), p. 331).</p>
 <h3 id="hausman-taylor-time-invariant-regressors">3.7 Hausman-Taylor:
 Time-Invariant Regressors</h3>
 <p>In block P4, “Nimbus Certified merchant” status <span
@@ -2407,12 +2411,20 @@ different subscription networks according to taste, and there may be
 unobservable associations between users and videos that are correlated
 with the regressors. The authors first apply <span
 class="math inline">\rho</span>-differencing to remove serial
-correlation, then use exclusion restrictions to handle self-selection
-into subscription networks, and finally estimate by Hausman-Taylor:
-exogenous time-varying variables instrument the endogenous time-varying
-variables, and the means of the exogenous time-varying variables
-instrument the endogenous time-invariant variables, the same structure
-as Theorem 8 of this chapter.</p>
+correlation: they estimate the first-order autocorrelation of the error,
+<span class="math inline">\hat\rho</span>, and replace every variable by
+itself minus <span class="math inline">\hat\rho</span> times its
+previous value. They then use exclusion restrictions to handle
+self-selection into subscription networks: a user’s (log) numbers of
+subscriptions and subscribers outside the group instrument the
+out-degree and in-degree centralities of the subscriber network inside
+the group, and these two outside counts are left out of the equation for
+view growth. Finally they estimate by Hausman-Taylor: exogenous
+time-varying variables instrument the endogenous time-varying variables,
+and the means of the exogenous time-varying variables instrument the
+endogenous time-invariant variables, the same structure as Theorem 8 of
+this chapter (see Oh, Susarla and Tan 2008, Sections 4.3.2 and
+4.3.3).</p>
 <p>Data: 4,106 videos uploaded by 913 users in a music and blogging
 interest group on YouTube, observed every 5 days over 2 months, 11
 observation points in all, with friends, subscribers, and subscriptions
@@ -3192,9 +3204,29 @@ error. If merchants leave one after another because of low talent, FE is
 unaffected; if they leave because of one bad month, the remaining sample
 is systematically tilted toward good shocks, and on P6 the bias is about
 a tenth of the true value and does not vanish however large the sample.
-The selection-indicator test of Section 3.9 can help here; when a
-refreshment sample is available, Hirano, Imbens, Ridder and Rubin (2001)
-give a model that can identify more general attrition mechanisms.</p>
+The selection-indicator test of Section 3.9 can help here. When a
+refreshment sample is available (a batch of units newly drawn from the
+original population in the second period and observed only then), more
+general attrition mechanisms can be identified. With two periods, let
+the probability of staying in the sample depend on the outcomes of both
+periods, <span class="math inline">\Pr(s_{i2} = 1 \mid Y_{i1}, Y_{i2}) =
+G\big(\kappa_0 + \kappa_1(Y_{i1}) + \kappa_2(Y_{i2})\big)</span>, where
+<span class="math inline">G</span> is a chosen continuous increasing
+function that tends to 0 at minus infinity and to 1 at plus infinity
+(logistic, say), <span class="math inline">\kappa_1(\cdot)</span> and
+<span class="math inline">\kappa_2(\cdot)</span> are arbitrary functions
+(each zero at one point), and the two periods enter additively, without
+an interaction. The panel alone cannot identify this model; the
+refreshment sample supplies the marginal distribution of the
+second-period outcome, and with this information the model is identified
+and has no testable implications (the paper assumes the outcomes take
+finitely many values, possibly very many). Missing at random, which
+depends only on the earlier outcome (<span
+class="math inline">\kappa_2(\cdot) \equiv 0</span>), and Hausman-Wise
+attrition, which depends only on the current outcome (<span
+class="math inline">\kappa_1(\cdot) \equiv 0</span>), are both special
+cases (see Hirano, Imbens, Ridder and Rubin 2001; the content follows
+its 1998 NBER working-paper version, Sections 4.2 and 5).</p>
 <p>FE can remove only time-invariant heterogeneity. If a merchant’s
 “talent” itself changes, with some shops growing and others declining,
 and promotion follows these trends, demeaning is not enough. The random

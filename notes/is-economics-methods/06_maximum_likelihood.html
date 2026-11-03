@@ -803,12 +803,14 @@ p. 479)</strong> In addition to ML.1 and ML.2: (a) <span
 class="math inline">\theta_0</span> is in the interior of <span
 class="math inline">\Theta</span>; (b) <span class="math inline">\ln f(y
 \mid x;\cdot)</span> is twice continuously differentiable on the
-interior of <span class="math inline">\Theta</span>; (c) integration and
-differentiation can be interchanged in equations (13.21) and (13.25);
-(d) every element of <span class="math inline">\nabla^2_\theta \ln
-f</span> is dominated by a function with finite expectation; (e) <span
-class="math inline">A_0 = \mathbb{E}[\nabla^2_\theta
-q(w,\theta_0)]</span> is positive definite.</p>
+interior of <span class="math inline">\Theta</span>; (c) both
+differentiations of <span class="math inline">\int f(y \mid
+x;\theta)\,dy = 1</span> above can be carried out under the integral
+sign (equations (13.21) and (13.25)); (d) every element of <span
+class="math inline">\nabla^2_\theta \ln f</span> is dominated by a
+function with finite expectation; (e) <span class="math inline">A_0 =
+\mathbb{E}[\nabla^2_\theta q(w,\theta_0)]</span> is positive
+definite.</p>
 </div>
 <p>Condition (c) is the new one. It rules out models in which the
 support of <span class="math inline">y</span> changes with the
@@ -935,8 +937,14 @@ Step three (step one): the difference between the two equals <span
 class="math inline">D_0^{-1}\,\mathbb{E}\big[(g -
 D_0\,I(\theta_0)^{-1}s)(g -
 D_0\,I(\theta_0)^{-1}s)&#39;\big]\,D_0^{-1\prime}</span>, a variance
-matrix and hence positive semidefinite (Lemma 14.1 and equation (14.51),
-with the proportionality constant equal to 1).</p>
+matrix and hence positive semidefinite. Expanding it uses only two
+equalities: <span class="math inline">\mathbb{E}[s\,s&#39;] =
+I(\theta_0)</span> (Theorem 3 (ii)) and <span
+class="math inline">\mathbb{E}[g\,s&#39;] = D_0</span> (step one); the
+general efficiency lemma allows the right sides of both to be multiplied
+by the same positive constant, and here that constant is 1 (see
+Wooldridge 2010, Section 14.4.1, Lemma 14.1, equations (14.49) and
+(14.50), and Theorem 14.3, equation (14.51)).</p>
 <p>In words: under ML.1 through ML.3, MLE is asymptotically the most
 efficient member of the large class of estimators whose moment functions
 have conditional mean zero under the model at every parameter value.
@@ -1017,7 +1025,12 @@ no way to determine <span class="math inline">\theta_4</span>; the
 interior condition rules out nulls on the boundary, such as a test that
 a variance is zero, where neither Wald nor LR is <span
 class="math inline">\chi^2_\nu</span> any longer (Wooldridge 2010
-p. 420, p. 481), though LM can still be used in some cases (p. 424).</p>
+p. 420, p. 481). LM uses only the restricted estimate: if the null sets
+just a subset of the parameters to zero (a variance of zero, for
+instance) and the other parameters are interior under <span
+class="math inline">H_0</span>, the derivation of LM goes through even
+though <span class="math inline">\theta_0</span> then lies on the
+boundary (p. 424).</p>
 <div class="theorem">
 <p><strong>Theorem 5 (the trinity of tests; Wooldridge 2010 §12.6,
 equations (12.63), (12.68), (12.69), (12.76), (12.77), and (12.79),
@@ -1037,11 +1050,22 @@ misspecified, but M.1 through M.3 of Chapter 5 hold at the pseudo-true
 value <span class="math inline">\theta_*</span> (QML.1 of Section 3.6),
 TR.1 holds at <span class="math inline">\theta_*</span>, and the null is
 written <span class="math inline">H_0: R(\theta_*) = 0</span>. Then in
-general <span class="math inline">A_* \neq B_*</span>; with the variance
-in the middle of W replaced by the sandwich and LM replaced by the
-robust form of equation (12.68), both still converge in distribution to
-<span class="math inline">\chi^2_\nu</span>, but LR no longer does
-(Wooldridge 2010 p. 504).</p>
+general <span class="math inline">A_* \neq B_*</span>. Replace the
+variance in the middle of W by the sandwich and LM by the robust
+form</p>
+<p><span class="math display">\mathrm{LM}_{\mathrm{rob}} =
+n^{-1}\Big(\textstyle\sum_{i=1}^n \tilde s_i\Big)&#39;\tilde
+A^{-1}\tilde R&#39;\big(\tilde R\tilde A^{-1}\tilde B\tilde A^{-1}\tilde
+R&#39;\big)^{-1}\tilde R\tilde A^{-1}\Big(\textstyle\sum_{i=1}^n \tilde
+s_i\Big),</span></p>
+<p>where <span class="math inline">\tilde s_i =
+s_i(\hat\theta_r)</span>, <span class="math inline">\tilde R =
+\nabla_\theta R(\hat\theta_r)</span>, <span class="math inline">\tilde A
+= n^{-1}\sum_i \nabla^2_\theta q(w_i,\hat\theta_r)</span>, and <span
+class="math inline">\tilde B = n^{-1}\sum_i \tilde s_i\tilde
+s_i&#39;</span> (equation (12.68)). With these replacements, both still
+converge in distribution to <span class="math inline">\chi^2_\nu</span>,
+but LR no longer does (Wooldridge 2010 p. 504).</p>
 </div>
 <p>The proof sketch has four steps. Step one (TR.1, Theorem 3 of Chapter
 5): the Delta method (a first-order expansion of <span
@@ -1055,17 +1079,32 @@ form built from a consistent estimate of this variance gives <span
 class="math inline">\chi^2_\nu</span> (equation (12.63)). Under correct
 specification this asymptotic variance is <span
 class="math inline">I(\theta_0)^{-1}</span>, which gives the W above.
-Step two (TR.1): expand the sample score at the restricted estimate
-around <span class="math inline">\theta_0</span> (equations (12.66) and
-(12.67)); the restriction makes <span class="math inline">\nabla
-R\,\sqrt n(\hat\theta_r - \theta_0)</span> converge to zero in
-probability, which gives the robust LM (equation (12.68)), and under
-<span class="math inline">A_0 = B_0</span> this simplifies to the form
-above (equation (12.69)). Step three (ML.1, via Theorem 3 (ii)): take a
-second-order expansion of <span class="math inline">\sum_i q(w_i,
-\hat\theta_r)</span> around <span class="math inline">\hat\theta</span>;
-the first-order term vanishes by the unrestricted first-order condition
-(equation (12.76)), and substituting the linear representation of <span
+Step two (TR.1; the reduction uses Theorem 3 (ii)): expand the sample
+score at the restricted estimate around <span
+class="math inline">\theta_0</span> (equations (12.66) and (12.67)); the
+restriction makes <span class="math inline">\nabla R\,\sqrt
+n(\hat\theta_r - \theta_0)</span> converge to zero in probability, so
+<span class="math inline">\tilde R\tilde A^{-1}n^{-1/2}\sum_i \tilde
+s_i</span> is asymptotically normal with a variance that <span
+class="math inline">\tilde R\tilde A^{-1}\tilde B\tilde A^{-1}\tilde
+R&#39;</span> estimates consistently, and the quadratic form weighted by
+its inverse is the <span
+class="math inline">\mathrm{LM}_{\mathrm{rob}}</span> of (ii) (equation
+(12.68)). Under <span class="math inline">A_0 = B_0</span> we may take
+<span class="math inline">\tilde B = \tilde A</span>; the first-order
+condition of the restricted problem gives <span
+class="math inline">\sum_i \tilde s_i = \tilde R&#39;\mu</span>, where
+<span class="math inline">\mu</span> is some <span
+class="math inline">\nu \times 1</span> vector, and substituting it
+makes the matrices in the middle cancel, so <span
+class="math inline">\mathrm{LM}_{\mathrm{rob}}</span> becomes <span
+class="math inline">n^{-1}(\sum_i \tilde s_i)&#39;\tilde A^{-1}(\sum_i
+\tilde s_i)</span>, the LM above (equation (12.69)). Step three (ML.1,
+via Theorem 3 (ii)): take a second-order expansion of <span
+class="math inline">\sum_i q(w_i, \hat\theta_r)</span> around <span
+class="math inline">\hat\theta</span>; the first-order term vanishes by
+the unrestricted first-order condition (equation (12.76)), and
+substituting the linear representation of <span
 class="math inline">\sqrt n(\hat\theta_r - \hat\theta)</span> shows that
 LR equals a quadratic form in the score with <span
 class="math inline">A_0^{-1}</span> in the middle, plus <span
@@ -1474,7 +1513,25 @@ MLE maximizes its sum over the sample (equation (13.45)). The difference
 from CMLE is that the conditional density of each period is correctly
 specified, but their product need not be the joint density of <span
 class="math inline">(y_{i1}, \ldots, y_{iM})</span>. The name resembles
-the partial likelihood of Cox (1975), but the meaning is different.</p>
+the partial likelihood of Cox (1975), but the meaning is different.
+Cox’s partial likelihood is used for the proportional hazard model <span
+class="math inline">h(t \mid x) =
+\exp(x&#39;\beta)\,h^{\mathrm{base}}(t)</span> with the baseline hazard
+left unrestricted: at each observed cancellation time <span
+class="math inline">t</span>, given that exactly one person cancels at
+that moment, the conditional probability that it is <span
+class="math inline">i</span> is <span
+class="math inline">\exp(x_i&#39;\beta)/\sum_{k \in
+\mathcal{R}(t)}\exp(x_k&#39;\beta)</span>, where <span
+class="math inline">\mathcal{R}(t)</span> is the risk set: people whose
+subscription has lasted to <span class="math inline">t</span> without
+cancellation or censoring, including the one who cancels at that moment.
+The baseline hazard cancels between numerator and denominator, and
+maximizing the product of these conditional probabilities estimates
+<span class="math inline">\beta</span> without estimating the baseline
+hazard (the conditional probability follows directly from the
+proportional form; for the method, see Wooldridge 2010, Section
+22.5.1).</p>
 <div class="assumption">
 <p><strong>PL.1 (Wooldridge 2010 §13.8.1, p. 486)</strong> For each
 <span class="math inline">m</span>, <span class="math inline">f_m(\cdot
@@ -1727,19 +1784,23 @@ z_i]</span> with respect to <span class="math inline">\gamma</span>
 being zero at <span class="math inline">\gamma_0</span>, that is, to the
 effect of <span class="math inline">\gamma</span> on the second-step
 score being exactly offset by the change in the distribution of <span
-class="math inline">v</span>. Wooldridge derives equation (13.67) from
-equations (13.66) and (13.39); the derivation of equation (13.39)
-requires that conditional expectations taken under the model do not
-change with the parameter (equation (13.40)), and this chapter states
-that requirement separately as condition (b). Inverse probability
-weighting is an example: if Sorrel observed durations only for people
-who completed a survey, with <span class="math inline">v_i</span>
-indicating whether the survey was completed, and the second step
-weighted by the inverse of the estimated response probability, with
-response depending only on <span class="math inline">z_i</span>, then
-estimating the response probability would actually be more efficient
-than using the true probability. C4 does not satisfy (b): the
-second-step likelihood does not contain <span
+class="math inline">v</span>. Condition (a) only guarantees that the
+first-step score is also the score of the conditional density of <span
+class="math inline">v_i</span> given <span class="math inline">(w_i,
+z_i)</span>; a sufficient condition for the derivative to be zero is
+that this conditional expectation, taken under the first-step model,
+does not vary with <span class="math inline">\gamma</span> at all, which
+does not hold automatically in a general two-step problem, so this
+chapter states (b) as a separate condition (see Wooldridge 2010, Section
+13.10.2, equations (13.66) and (13.67), and Section 13.7, equations
+(13.39) and (13.40)). Inverse probability weighting is an example: if
+Sorrel observed durations only for people who completed a survey, with
+<span class="math inline">v_i</span> indicating whether the survey was
+completed, and the second step weighted by the inverse of the estimated
+response probability, with response depending only on <span
+class="math inline">z_i</span>, then estimating the response probability
+would actually be more efficient than using the true probability. C4
+does not satisfy (b): the second-step likelihood does not contain <span
 class="math inline">v_i</span> at all, and <span
 class="math inline">\gamma</span> enters only through the index <span
 class="math inline">z_i&#39;\gamma</span>, so there is nothing to
@@ -2585,9 +2646,17 @@ sensitivity analysis on the censoring mechanism, to see how the
 conclusions change under different assumptions, such as “censored users
 leave earlier or later.” A closely related trap is a sample of only
 those still subscribed on some given day: such a sample systematically
-oversamples long durations, which Kiefer calls length-biased sampling,
-and the likelihood must be modified for truncation (Wooldridge 2010
-§22.3.3).</p>
+oversamples long durations, which Kiefer calls length-biased sampling.
+The fix is to write the likelihood conditional on still being subscribed
+on the sampling date: the original likelihood contribution of person
+<span class="math inline">i</span>, subscribed for <span
+class="math inline">b_i</span> months by that date, is divided by <span
+class="math inline">S(b_i \mid x_i;\theta)</span>, that is, <span
+class="math inline">\ln S(b_i \mid x_i;\theta)</span> is subtracted from
+the log-likelihood, which requires knowing when each person started the
+subscription and following people for some time after the sampling date:
+a person censored on the sampling date contributes nothing to this
+likelihood (see Wooldridge 2010, Section 22.3.3).</p>
 <p>A misspecified duration distribution is the second kind of risk. The
 Weibull can draw only a monotone hazard, and C2 shows that it then
 delivers a plausible-looking pseudo-true value, with the shape parameter

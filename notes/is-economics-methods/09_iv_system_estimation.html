@@ -1698,11 +1698,27 @@ single instrument, guaranteeing that a nominal 5% test rejects at most
 only a rate of at most 15%, with a corresponding critical value of 8.96.
 All of these critical values assume homoskedasticity. When the errors
 are heteroskedastic, serially correlated, or clustered by group, use the
-effective F statistic <span class="math inline">F_{\mathrm{eff}}</span>
-of Montiel Olea and Pflueger (2013); for its simplified test with a bias
-tolerance of 10%, the critical value is at most 23.1, and with a single
-instrument it is 23.11 (following their April 2013 working-paper
-version, p. 3 and Table 1).</p>
+effective F statistic of Montiel Olea and Pflueger (2013). After
+partialling out the exogenous variables in the equation, write <span
+class="math inline">\tilde{\mathbf{Z}}</span> for the excluded
+instruments and <span class="math inline">\hat\pi</span> for their
+first-stage coefficients, and let <span class="math inline">\hat
+V_\pi</span> be a robust variance estimate of <span
+class="math inline">\hat\pi</span> (HAC under serial correlation,
+clustered for grouped data); then <span
+class="math inline">F_{\mathrm{eff}} =
+\hat\pi&#39;\tilde{\mathbf{Z}}&#39;\tilde{\mathbf{Z}}\hat\pi/\mathrm{tr}(\hat
+V_\pi\tilde{\mathbf{Z}}&#39;\tilde{\mathbf{Z}})</span>. Under
+homoskedasticity it is the usual first-stage F, and with a single
+instrument it is the robust F. Its null hypothesis is “the Nagar
+approximation to the bias of 2SLS (a tractable proxy for the asymptotic
+bias) exceeds 10% of a worst-case benchmark,” a benchmark that under
+homoskedasticity is the bias of OLS; the simplified test takes a
+conservative critical value that guards against the worst
+heteroskedasticity and correlation in the second stage, at most about
+23.1, and 23.11 with a single instrument (see Montiel Olea and Pflueger
+2013, April 2013 working-paper version, Section 2.2, equation (3), Table
+1, and pp. 2-3).</p>
 <p>With a single instrument, the tF of Lee, McCrary, Moreira and Porter
 (2022) takes a different approach: instead of first screening samples by
 F, it lets the critical value of the <span class="math inline">t</span>
@@ -1795,7 +1811,12 @@ class="math inline">\hat\Omega</span> taken from equation (7.40)
 known <span class="math inline">\Omega</span>: <span
 class="math inline">\sqrt n</span> times the difference between the two
 goes to zero in probability; FGLS is asymptotically normal, and its
-fully robust variance estimator is equation (7.52).</p>
+fully robust variance estimator is <span
+class="math inline">\big(\sum_i\mathbf{X}_i&#39;\hat\Omega^{-1}\mathbf{X}_i\big)^{-1}\big(\sum_i\mathbf{X}_i&#39;\hat\Omega^{-1}\check{\boldsymbol\varepsilon}_i\check{\boldsymbol\varepsilon}_i&#39;\hat\Omega^{-1}\mathbf{X}_i\big)\big(\sum_i\mathbf{X}_i&#39;\hat\Omega^{-1}\mathbf{X}_i\big)^{-1}</span>,
+where <span class="math inline">\check{\boldsymbol\varepsilon}_i =
+\mathbf{y}_i - \mathbf{X}_i\hat\beta_{FGLS}</span> are the FGLS
+residuals, while <span class="math inline">\hat\Omega</span> still uses
+the SOLS residuals (equation (7.52)).</p>
 <p>(iii) If <span class="math inline">\hat\Omega</span> converges to
 some positive definite matrix <span class="math inline">\Omega_*</span>,
 not necessarily equal to <span class="math inline">\Omega</span>, then
@@ -1803,8 +1824,8 @@ as long as SGLS.1 holds and <span
 class="math inline">\mathbb{E}[\mathbf{X}_i&#39;\Omega_*^{-1}\mathbf{X}_i]</span>
 is nonsingular, FGLS is still consistent and asymptotically normal and
 is asymptotically equivalent to GLS weighted by <span
-class="math inline">\Omega_*</span>, and its variance must use equation
-(7.52).</p>
+class="math inline">\Omega_*</span>, and its variance must use the
+robust variance of (ii).</p>
 <p>(iv) If SGLS.3 also holds, <span
 class="math inline">\mathrm{Avar}\big(\sqrt n(\hat\beta_{FGLS} -
 \beta)\big) =
@@ -1846,7 +1867,7 @@ only in precision. Even if the structure of <span
 class="math inline">\hat\Omega</span> is misspecified, FGLS remains
 consistent as long as the regressors are exogenous with respect to the
 error of every equation; only the conventional variance is wrong, and
-the robust equation (7.52) fixes it. The random effects estimator of
+the robust variance of (ii) fixes it. The random effects estimator of
 Chapter 10 is a case in point: the equations become the <span
 class="math inline">T</span> periods of one unit, <span
 class="math inline">\Omega</span> is the <span class="math inline">T
@@ -1979,9 +2000,11 @@ class="math inline">W</span> symmetric and positive definite.</p>
 class="math inline">\mathbb{E}[\mathbf{Z}_i&#39;\boldsymbol\varepsilon_i\boldsymbol\varepsilon_i&#39;\mathbf{Z}_i]
 = \mathbb{E}[\mathbf{Z}_i&#39;\Omega\mathbf{Z}_i]</span>.</p>
 </div>
-<p>Wooldridge’s SIV.4 says that the weight is the efficient weight; here
-it is written directly into the theorem. SIV.5 is the system version of
-2SLS.3, and <span
+<p>SIV.4 is not listed separately above: it requires the efficient
+weight <span class="math inline">W = S_0^{-1}</span>, which this chapter
+writes directly into Theorem 8 (ii), so the labels jump from SIV.3 to
+SIV.5 (see Wooldridge 2010, Section 8.3.3, p. 218). SIV.5 is the system
+version of 2SLS.3, and <span
 class="math inline">\mathbb{E}[\boldsymbol\varepsilon_i\boldsymbol\varepsilon_i&#39;
 \mid \mathbf{Z}_i] = \Omega</span> is a sufficient condition for it
 (equation (8.41)); it restricts the conditional variance, not <span
@@ -2057,12 +2080,27 @@ efficient GMM and the variance collapses to equation (8.45), which is
 = I_M \otimes \mathbf{z}_i&#39;</span>, <span
 class="math inline">\mathbf{Z}&#39;\mathbf{Z}</span> is block diagonal,
 and the normal equations of system 2SLS separate equation by equation
-(p. 217). The equality of 3SLS and GIV is an algebraic result (cited in
-Wooldridge 2010 p. 225). GIV and traditional 3SLS differ only in the
-first stage, which the former in effect estimates by FGLS and the latter
-by OLS; since the first stages of all equations have the same
-regressors, the two give the same result (Theorem 7 (ii)), so all three
-coincide (p. 225), which is (iv).</p>
+(p. 217). The equality of 3SLS and GIV is algebra too: <span
+class="math inline">\hat\Omega^{-1}\mathbf{Z}_i =
+\mathbf{Z}_i(\hat\Omega^{-1} \otimes I_r)</span>, so the sample moments
+that GIV uses, <span
+class="math inline">\sum_i\mathbf{Z}_i&#39;\hat\Omega^{-1}(\mathbf{y}_i
+- \mathbf{X}_i\beta)</span>, are the original sample moments
+premultiplied by the invertible matrix <span
+class="math inline">\hat\Omega^{-1} \otimes I_r</span>; GIV weights
+these moments by <span
+class="math inline">\big(\sum_i\mathbf{Z}_i&#39;\hat\Omega^{-1}\mathbf{Z}_i\big)^{-1}
+= \hat\Omega \otimes
+\big(\sum_i\mathbf{z}_i\mathbf{z}_i&#39;\big)^{-1}</span>, so in terms
+of the original sample moments the weight becomes <span
+class="math inline">\hat\Omega^{-1} \otimes
+\big(\sum_i\mathbf{z}_i\mathbf{z}_i&#39;\big)^{-1}</span>, which differs
+from the 3SLS weight only by a constant factor (derived here; see
+Wooldridge 2010, Section 8.4.2, p. 225). GIV and traditional 3SLS differ
+only in the first stage, which the former in effect estimates by FGLS
+and the latter by OLS; since the first stages of all equations have the
+same regressors, the two give the same result (Theorem 7 (ii)), so all
+three coincide (p. 225), which is (iv).</p>
 <p>In words: under SIV.1 through SIV.3, system 2SLS, 3SLS, and the
 minimum chi-square estimator all estimate the same <span
 class="math inline">\beta</span>; they differ only in precision, and
@@ -2089,18 +2127,23 @@ used for both, the ratio is 0.855. The ratio of the population
 asymptotic standard errors is 0.857, and the ratio of the two sampling
 standard deviations across 1,000 Monte Carlo replications is 0.837, so
 all four ratios put the gain at about 15%. The robust 3SLS standard
-error, 0.082, is close to the conventional one. In panel data, where the
-<span class="math inline">T</span> periods of one unit are treated as
-<span class="math inline">T</span> equations, system 2SLS is pooled 2SLS
-when each period uses the same number of instruments and <span
-class="math inline">\mathbf{Z}_i</span> is stacked as in Wooldridge
-(2010) equation (8.22) (p. 217). The Hausman-Taylor estimator of Chapter
-10 applies this to the equation after quasi-demeaning (defined in
-Chapter 10): its consistency and asymptotic normality come from Theorems
-2 and 3 and from this theorem, its order and rank conditions are checked
-through 2SLS.2(b) and SIV.2 (Theorem 1 (i) and (ii) gives their form in
-simultaneous equations), and the strength of its first stage is judged
-as in Section 3.5.</p>
+error, 0.082, is close to the conventional one. Panel data treat the
+<span class="math inline">T</span> periods of one unit as <span
+class="math inline">T</span> equations. When each period has the same
+number of instruments, they can be stacked on top of one another into
+<span class="math inline">\mathbf{Z}_i</span>, whose row <span
+class="math inline">t</span> is <span
+class="math inline">\mathbf{z}_{it}&#39;</span>; system 2SLS is then
+pooled 2SLS, which treats the panel as one long cross section. If the
+instruments are instead placed block-diagonally by period, system 2SLS
+runs the first stage period by period, and the result generally differs
+(see Wooldridge 2010, equation (8.22) and Section 8.3.2, p. 217). The
+Hausman-Taylor estimator of Chapter 10 applies this to the equation
+after quasi-demeaning (defined in Chapter 10): its consistency and
+asymptotic normality come from Theorems 2 and 3 and from this theorem,
+its order and rank conditions are checked through 2SLS.2(b) and SIV.2
+(Theorem 1 (i) and (ii) gives their form in simultaneous equations), and
+the strength of its first stage is judged as in Section 3.5.</p>
 <h3 id="the-trade-off-between-robustness-and-efficiency">3.8 The
 Trade-Off Between Robustness and Efficiency</h3>
 <p>The gain of 3SLS has a price. In block S1m the buyer equation is
@@ -2402,7 +2445,7 @@ class="math inline">J</span> with its degrees of freedom; the
 homoskedastic Sargan test has the correct rejection rate only when the
 errors are homoskedastic.</li>
 <li>Endogeneity: <span class="math inline">\hat\rho</span> from the
-control function regression, with its robust <span
+control function regression of Theorem 4 (i), with its robust <span
 class="math inline">t</span>.</li>
 <li>System estimation: equation-by-equation 2SLS side by side with 3SLS,
 and the <span class="math inline">J</span> of each equation reported
@@ -2492,12 +2535,35 @@ point estimate is reliable, and inference should switch to AR or tF.
 LIML’s advantage under weak instruments rests on a finding of Staiger
 and Stock: it is approximately median unbiased (the introduction of TWP
 151). Under exact identification it is the same as 2SLS, and in the S3
-sample both are <span class="math inline">-4.795</span>; the Fuller
-correction (<span class="math inline">b = 1</span>) gives 2.280
-(standard error 0.460), not far from the OLS estimate of 2.418, yet the
-95% interval built from this standard error does not contain the truth,
-1.2. When the first-stage F is only 0.019, no point estimate helps; only
-the AR set remains honest.</p>
+sample both are <span class="math inline">-4.795</span>. LIML belongs to
+the k-class of estimators <span class="math inline">\hat\beta(\kappa) =
+[\mathbf{X}&#39;(I -
+\kappa\mathbf{M}_{\mathbf{Z}})\mathbf{X}]^{-1}\mathbf{X}&#39;(I -
+\kappa\mathbf{M}_{\mathbf{Z}})\mathbf{y}</span>, where <span
+class="math inline">\mathbf{X}</span>, <span
+class="math inline">\mathbf{Z}</span> and <span
+class="math inline">\mathbf{y}</span> are the data matrices of the
+single equation and <span class="math inline">\mathbf{M}_{\mathbf{Z}} =
+I - \mathbf{P}_{\mathbf{Z}}</span>: <span class="math inline">\kappa =
+0</span> is OLS, <span class="math inline">\kappa = 1</span> is 2SLS,
+and under exact identification LIML’s <span
+class="math inline">\kappa</span> is also 1. The Fuller correction
+lowers LIML’s <span class="math inline">\kappa</span> by <span
+class="math inline">b/(n - r)</span>, with the constant <span
+class="math inline">b</span> chosen by the researcher; with <span
+class="math inline">b = 1</span> it is unbiased to second order (see
+Section 2.2 of the working-paper version of Stock and Yogo 2005). With
+<span class="math inline">\kappa</span> between 0 and 1, the estimator
+is a matrix-weighted average of 2SLS and OLS with weights <span
+class="math inline">\kappa\mathbf{X}&#39;\mathbf{P}_{\mathbf{Z}}\mathbf{X}</span>
+and <span class="math inline">(1 -
+\kappa)\mathbf{X}&#39;\mathbf{X}</span>, closer to OLS the weaker the
+first stage (derived here): in this sample the Fuller correction (<span
+class="math inline">b = 1</span>) gives 2.280 (standard error 0.460),
+not far from the OLS estimate of 2.418, yet the 95% interval built from
+this standard error does not contain the truth, 1.2. When the
+first-stage F is only 0.019, no point estimate helps; only the AR set
+remains honest.</p>
 <h3 id="software">4.4 Software</h3>
 <p>In R, single-equation 2SLS uses <code>ivreg::ivreg(y ~ x | z)</code>;
 <code>summary(fit, vcov. = function(x) sandwich::vcovHC(x, type = "HC0"), diagnostics = TRUE)</code>
@@ -2578,14 +2644,24 @@ interval widens to <span class="math inline">[-0.441, 0.490]</span>.</p>
 <p>Limitations: with many weak instruments, 2SLS is pulled toward OLS,
 as Theorem 5 (i) predicts, so in these specifications “IV is close to
 OLS” may be merely an artifact of weak instruments; Bound, Jaeger and
-Baker (1995) pointed out the problems of 2SLS in this setting
-(Wooldridge 2010 p. 111). Staiger and Stock conclude that, by the
-statistics they consider reliable, the return to education is higher
-than in the original paper, but the intervals are wider than the
-original 2SLS intervals; for the cohort born 1940 to 1949, the
-overidentifying restrictions are rejected and the AR sets of the first
-three specifications are empty, so they rely only on the 1930 to 1939
-cohort.</p>
+Baker (1995) show that these instruments (quarter of birth and its
+interactions with year and state of birth) are very weak and too
+numerous relative to their contribution to explaining years of
+education, so that even with a very large sample 2SLS can behave poorly;
+the lesson is that even when the instruments are uncorrelated with the
+error, one should not use too many overidentifying restrictions (see
+Wooldridge 2010, Section 5.2.6, p. 111). Staiger and Stock judge by
+weak-instrument asymptotics that 2SLS is trustworthy when the
+first-stage F is high and the instruments are few, and otherwise rely on
+LIML and AR intervals; by these statistics, the return to education lies
+between 8% and 10%, above the original paper’s 2SLS estimates, which
+approach OLS (about 6%) as instruments are added, and a typical interval
+runs from about 6% to 14%, wider than the original 2SLS intervals. For
+the cohort born 1940 to 1949, in the three specifications without
+state-of-birth interactions (3, 30, and 28 instruments) the
+overidentifying restrictions are rejected and the AR sets are empty, so
+they rely only on the 1930 to 1939 cohort (see the abstract, Section 5,
+and Table 11 of TWP 151).</p>
 </div>
 <p>This study made the “natural experiment” the standard narrative of
 IV: the instrument comes from an accidental detail of institutions
@@ -2610,7 +2686,12 @@ the buyer equation, buyer quality only the seller equation); external
 instruments (national indices of consumer expectations, confidence, and
 satisfaction for the buyer base, and an entrepreneur confidence index
 and components of the purchasing managers’ index for the seller base);
-and the control function of Petrin and Train (2010).</p>
+and a control function: regress the endogenous variables on the
+instruments, then enter the residuals from that step in the model as
+extra explanatory variables, so that they absorb the part of the error
+that is correlated with the endogenous variables, the same idea as the
+regression of Theorem 4 (i) in this chapter (see Petrin and Train 2010,
+Section 2.2 of the 2003 NBER working-paper version).</p>
 <p>Data: daily data on the installed bases and new users of both sides
 of Taobao, from May 11, 2003, to December 31, 2012; the installed base
 is the cumulative number of registered users (pp. 876-877).</p>
@@ -2643,16 +2724,26 @@ This section follows the March 2022 revision of its NBER Working Paper
 <p>Method: with one instrument and one endogenous regressor, the
 conventional practice is to check first whether the first-stage F
 exceeds 10 and then multiply the standard error by <span
-class="math inline">\pm 1.96</span>. Using the asymptotic representation
-of Stock and Yogo (2005), the authors construct a critical value <span
+class="math inline">\pm 1.96</span>. The authors use the weak-instrument
+asymptotic representation of Stock and Yogo (2005): under the null,
+<span class="math inline">t^2</span> is a function of two jointly normal
+variables, one the <span class="math inline">t</span> value of the
+first-stage coefficient (whose square is <span
+class="math inline">F_{\mathrm{fs}}</span>), the other a standard normal
+whose square is the AR statistic; their correlation is that of the
+instrument times the structural error with the instrument times the
+first-stage error, which under homoskedasticity is the correlation of
+the two errors. From this they construct a critical value <span
 class="math inline">c_{\mathrm{tF}}(F_{\mathrm{fs}})</span> that varies
-smoothly with F and guarantees that the probability of <span
+smoothly with F and guarantees, whatever that correlation and however
+strong the first stage, that the probability of <span
 class="math inline">t^2</span> exceeding it is at most the nominal
-level; restated as an adjustment factor for the standard error, it
-multiplies the conventional standard error by a number that decreases as
-F increases (Section 3.5). As long as the first stage and 2SLS use the
-same robust variance, it applies equally to heteroskedasticity and
-clustering.</p>
+level; with a weak first stage the worst case is perfect correlation
+(see Sections II.A and III.B of that draft); restated as an adjustment
+factor for the standard error, it multiplies the conventional standard
+error by a number that decreases as F increases (Section 3.5). As long
+as the first stage and 2SLS use the same robust variance, it applies
+equally to heteroskedasticity and clustering.</p>
 <p>Data: of the 757 papers in the American Economic Review from 2013 to
 2019, 123 use IV, and 61 of these use only exactly identified
 single-instrument specifications, 1,311 specifications in all.</p>
@@ -2812,11 +2903,15 @@ equation gains nothing from the system. The diagnostics follow.</p>
 the buyer equation is 174.7, with a sample fee coefficient of <span
 class="math inline">-0.138</span> close to the population value <span
 class="math inline">-0.143</span>; that of the seller equation is 57.39,
-above 19.93, the strictest Stock-Yogo critical value for two
-instruments, and its effective F is 56.76. The control function’s <span
-class="math inline">t</span> value of 35.53 shows that the number of
-sellers is clearly endogenous, and the single overidentifying
-restriction of the seller equation is not rejected.</p>
+above 19.93: under the rejection-rate criterion of Section 3.5, with one
+endogenous regressor and two instruments, F must exceed this value to
+guarantee that a nominal 5% Wald test rejects at most 10% of the time,
+the strictest Stock-Yogo threshold for two instruments (see Table 2 of
+the working-paper version of Stock and Yogo 2005); its effective F is
+56.76. The control function’s <span class="math inline">t</span> value
+of 35.53 shows that the number of sellers is clearly endogenous, and the
+single overidentifying restriction of the seller equation is not
+rejected.</p>
 <h3 id="block-s1m-one-misspecified-equation">6.3 Block S1m: One
 Misspecified Equation</h3>
 <p><code>fit_S1</code> computes, for one sample, both the 2SLS of the
@@ -3378,18 +3473,23 @@ up front, using the effective F under heteroskedasticity or clustering,
 and with a single instrument to report the AR set directly and accept
 that it may be unbounded. Do not pick specifications by whether F
 exceeds 10 and then report conventional intervals: Lee et al. point out
-that inference done this way is still distorted, and Andrews, Stock and
-Sun (2019) discuss the distortions that come from selectively dropping
-specifications. Young (2022) replicates 1,309 regressions estimated by
-2SLS in 30 papers in the journals of the American Economic Association
-and finds that when errors are not independent and identically
-distributed and a few observations have high leverage, F-based
-weak-instrument pretests carry almost no information about the actual
-rejection rates and biases of tests, and that IV tests also have low
-power. With many weak instruments things are worse: the 28 instruments
-of Section 5.1 pushed 2SLS onto OLS. The many-moment bias of Section 3.5
-of Chapter 7 and instrument proliferation in the dynamic panels of
-Chapter 11 are the same problem.</p>
+that inference done this way is still distorted, and in the simulations
+of Andrews, Stock and Sun (2019) calibrated to published studies,
+keeping only the draws with effective F above 10 pushes the maximal
+rejection rate of nominal 5% <span class="math inline">t</span> tests
+across specifications above 70%, against less than 35% without
+screening; moving the threshold to another value moves the distortion to
+the neighborhood of the new threshold (see Andrews, Stock and Sun 2019,
+2018 draft, Section 4.1). Young (2022) replicates 1,309 regressions
+estimated by 2SLS in 30 papers in the journals of the American Economic
+Association and finds that when errors are not independent and
+identically distributed and a few observations have high leverage,
+F-based weak-instrument pretests carry almost no information about the
+actual rejection rates and biases of tests, and that IV tests also have
+low power. With many weak instruments things are worse: the 28
+instruments of Section 5.1 pushed 2SLS onto OLS. The many-moment bias of
+Section 3.5 of Chapter 7 and instrument proliferation in the dynamic
+panels of Chapter 11 are the same problem.</p>
 <p>Heteroskedastic errors throw homoskedastic tests off. In S4v the
 errors vary with one of the instruments, the homoskedastic Sargan test
 rejects too often, and the robust <span class="math inline">J</span>

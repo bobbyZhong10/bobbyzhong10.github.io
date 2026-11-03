@@ -366,13 +366,20 @@ pushes the price to the expected value): <span class="math inline">p
 1</span>, a contradiction; <span class="math inline">p \leq 1</span>
 requires <span class="math inline">p = \lambda p/2</span>, which for
 <span class="math inline">\lambda &lt; 2</span> leaves only <span
-class="math inline">p = 0</span>. MWG writes the same example with the
-reservation value equal to <span class="math inline">\alpha</span> times
-productivity, and <span class="math inline">\alpha = 1/\lambda &gt;
-1/2</span> is exactly the unraveling condition; Akerlof’s original
-example has <span class="math inline">\alpha = 2/3</span> (MWG footnote
-10), that is, this section’s <span class="math inline">\lambda =
-1.5</span>.</p>
+class="math inline">p = 0</span>. The same example can be written as a
+labor market: a worker’s productivity at a firm corresponds to this
+section’s buyer value <span class="math inline">\lambda\theta</span>,
+and the reservation value of staying home corresponds to the seller
+value <span class="math inline">\theta</span>, so their ratio is <span
+class="math inline">\alpha = 1/\lambda</span>; at wage <span
+class="math inline">w</span> the workers willing to be hired have
+average productivity <span class="math inline">w/(2\alpha)</span>, which
+for <span class="math inline">\alpha &gt; 1/2</span> is below <span
+class="math inline">w</span>, exactly the unraveling condition.
+Akerlof’s original example has <span class="math inline">\alpha =
+2/3</span>, that is, this section’s <span class="math inline">\lambda =
+1.5</span> (see MWG, Section 13.B, Example 13.B.1 and footnote 10,
+p. 442).</p>
 <p>In words: in a market with asymmetric information about quality,
 where price is the only contractible term, which types trade is decided
 by a fixed point: the average value of the sellers a price attracts must
@@ -849,9 +856,12 @@ class="math inline">e</span>.</p>
 <p>K.1 says that high performance is evidence of effort; first-order
 stochastic dominance does not imply it (MWG Figure 14.B.1). K.2 says
 that effort raises the probability of high performance at a decreasing
-rate; this condition is strong, and MWG also notes that the known
-sufficient conditions are all demanding (p. 504); Jewitt (1988) gives
-another set of sufficient conditions.</p>
+rate; this condition is strong: what the first-order approach really
+needs is that the agent’s expected utility be concave in effort, which
+depends both on the distribution of performance and on the shape of the
+contract itself, and the known conditions that guarantee it are all
+demanding (see MWG, Appendix 14.AA, p. 504); Jewitt (1988) gives another
+set of sufficient conditions.</p>
 <div class="theorem">
 <p><strong>Theorem 4 (the first-order approach and the informativeness
 principle; Rogerson 1985; Holmström 1979, Proposition 3, p. 84; MWG
@@ -906,16 +916,23 @@ class="math inline">x</span>. A measure that creates no value should be
 written into the contract as long as it helps the principal separate
 luck from effort; a pure-noise measure only adds risk for the agent.
 When K.1 or K.2 fails, the “optimal contract” may not actually be
-optimal, and one must turn to the analysis of Grossman and Hart (1983),
-which does not rely on the first-order approach. The result is
-determined by the joint distribution of the signals: a measure unrelated
-to effort but correlated with the noise in performance is also
-informative, and with a positive correlation it enters the contract with
-a negative weight, which is where relative performance evaluation comes
-from. In the data, pay-performance sensitivity should change after a
-monitoring technology goes live; variation in the rollout date can be
-handled with the event studies of Chapter 19. The V3 numbers (Section
-6.5): when only the report rate is added, its weight is <span
+optimal, and one must turn to a two-step method that does not rely on
+the first-order approach: with effort restricted to finitely many
+levels, first find for each level the cheapest contract that implements
+it, a problem whose objective is convex and whose constraints are all
+linear once the agent’s utility at each outcome is the choice variable,
+so its first-order conditions are both necessary and sufficient; then
+compare the principal’s profit across levels and take the best (see MWG,
+Appendix 14.AA, equation (14.AA.1), and Section 14.B, footnote 7;
+Grossman and Hart 1983). The result is determined by the joint
+distribution of the signals: a measure unrelated to effort but
+correlated with the noise in performance is also informative, and with a
+positive correlation it enters the contract with a negative weight,
+which is where relative performance evaluation comes from. In the data,
+pay-performance sensitivity should change after a monitoring technology
+goes live; variation in the rollout date can be handled with the event
+studies of Chapter 19. The V3 numbers (Section 6.5): when only the
+report rate is added, its weight is <span
 class="math inline">-0.5</span>; when only the peer benchmark is added,
 its weight is <span class="math inline">-0.2632</span>, exactly <span
 class="math inline">-0.6</span> times the weight of 0.4386 that this
@@ -1201,10 +1218,48 @@ worse for the reporter, or at best as good, so truthful reporting is
 dominant; the same holds for any <span class="math inline">h_i</span>.
 Payments are nonnegative because the largest total value of the others
 without <span class="math inline">i</span> is no lower than their total
-value under any alternative. For the proof of the first half of (ii),
-see MWG pp. 879-880, and MWG does not prove the second half; this book
-only states it, because the proof has to rule out non-Groves payments
-one by one on a rich domain of values.</p>
+value under any alternative. The first half of (ii) takes two steps
+(values can be any function). Any payment can be written as <span
+class="math inline">t_i = h_i - \sum_{j \neq i} v_j&#39;(a^\ast)</span>,
+where <span class="math inline">h_i</span> may at first depend on all
+the reports; what must be shown is that it does not vary with <span
+class="math inline">i</span>’s own report. Step one: if two reports lead
+to the same alternative but different <span
+class="math inline">h_i</span>, the one that pays more gains by
+switching to the other report. Step two: let reports <span
+class="math inline">v_i</span> and <span class="math inline">\hat
+v_i</span> lead to different alternatives <span
+class="math inline">a</span> and <span class="math inline">\hat
+a</span>, where <span class="math inline">\hat v_i</span> gives the
+larger <span class="math inline">h_i</span>; take a type whose value at
+<span class="math inline">a</span> exactly offsets the others’ total
+value at <span class="math inline">a</span>, whose value at <span
+class="math inline">\hat a</span> offsets the others’ total value at
+<span class="math inline">\hat a</span> plus <span
+class="math inline">\varepsilon</span>, and whose values elsewhere are
+very low, so that total value is 0 at <span
+class="math inline">a</span>, while at <span class="math inline">\hat
+a</span> it is <span class="math inline">\varepsilon</span>. Reporting
+truthfully, it gets <span class="math inline">\hat a</span> and, by step
+one, pays what <span class="math inline">\hat v_i</span> pays, the
+larger <span class="math inline">h_i</span>, so its net utility is <span
+class="math inline">\varepsilon</span> minus that; reporting <span
+class="math inline">v_i</span>, it gets <span
+class="math inline">a</span>, and its net utility is <span
+class="math inline">-h_i</span> with the smaller <span
+class="math inline">h_i</span>; for small enough <span
+class="math inline">\varepsilon</span> the misreport is better, a
+contradiction (see MWG, Proposition 23.C.5 and equation (23.C.10),
+pp. 879-880). For the second half, take two agents and two alternatives:
+<span class="math inline">d_i</span> is <span
+class="math inline">i</span>’s difference in value between them (the
+other alternative’s value normalized to zero), and budget balance
+requires <span class="math inline">h_1(d_2) + h_2(d_1) = \max(d_1 + d_2,
+0)</span>; take <span class="math inline">d_1, d_2 \in \{1, -1\}</span>:
+the right side sums to 2 over the two same-sign profiles and to 0 over
+the two opposite-sign ones, while the left side is the sum of the same
+four terms in both cases, a contradiction (derived here); the general
+case is not proved here (see MWG, Proposition 23.C.6, p. 880).</p>
 <p>In words: with quasilinear private values, VCG prices by externality,
 turning each participant’s net utility into total social welfare minus a
 constant beyond its control, so individual self-interest and efficiency
@@ -1307,21 +1362,28 @@ act; if <span class="math inline">\mathrm{cav}\,\mathcal{V}(\mu_0) =
 Without commitment we are back to the cheap talk of Section 3.8; when
 the receiver does not update by Bayes’ rule or has other sources of
 information, “the mean posterior equals the prior” no longer
-characterizes the feasible set. In the unified framework of Bergemann
-and Morris (2019), signals can be taken to be action recommendations
-that the receiver is willing to obey. The result is determined by the
-sender’s objective and the receiver’s action threshold, here the step at
-0.5. The data must record both the disclosure policy and the actions;
-the predictions are in the table of Section 4.7, and testing them takes
-exogenous variation in the prior or the threshold. Vireo’s numbers:
-<span class="math inline">\mathcal{V}(\mu)</span> jumps from 0 to 1 at
-0.5, and the concave closure on <span class="math inline">[0,
-0.5]</span> is the straight line <span class="math inline">2\mu</span>,
-which takes the value 0.6 at the prior 0.3, matching the hand-computed
-purchase probability exactly; the probability that a bad product is
-slipped into the recommendations is <span class="math inline">3/7
-\approx 0.429</span>, and optimal disclosure doubles the purchase
-probability of full disclosure.</p>
+characterizes the feasible set. With many receivers the same logic
+applies: any signal ends up inducing some action, so signals can be
+labeled by the actions they induce, and it suffices to consider action
+recommendations that the receivers are willing to obey; when the
+designer can condition on the state and on the receivers’ own
+information and can pick the equilibrium, the attainable outcomes are
+exactly the Bayes correlated equilibria, the decision rules that satisfy
+these obedience constraints, which are linear in the recommendation
+probabilities (see Bergemann and Morris 2019, Section 2, Proposition 1).
+The result is determined by the sender’s objective and the receiver’s
+action threshold, here the step at 0.5. The data must record both the
+disclosure policy and the actions; the predictions are in the table of
+Section 4.7, and testing them takes exogenous variation in the prior or
+the threshold. Vireo’s numbers: <span
+class="math inline">\mathcal{V}(\mu)</span> jumps from 0 to 1 at 0.5,
+and the concave closure on <span class="math inline">[0, 0.5]</span> is
+the straight line <span class="math inline">2\mu</span>, which takes the
+value 0.6 at the prior 0.3, matching the hand-computed purchase
+probability exactly; the probability that a bad product is slipped into
+the recommendations is <span class="math inline">3/7 \approx
+0.429</span>, and optimal disclosure doubles the purchase probability of
+full disclosure.</p>
 <h3 id="cheap-talk-soft-information-without-commitment">3.8 Cheap Talk:
 Soft Information Without Commitment</h3>
 <p>The power of Bayesian persuasion comes from commitment. A great deal
@@ -2132,12 +2194,25 @@ expected deficit of <span class="math inline">1/6</span>, equal to the
 entire gains from trade; by step three (MWG Exercise 23.E.7 (a),
 pp. 922-923), in the uniform case no efficient, BIC, and IR mechanism
 has a smaller deficit. With discrete types the theorem can be
-circumvented (MWG Exercise 23.E.3, p. 922). The result is determined by
-the overlap of the two distributions and by “no money from outside”;
-real platforms therefore make do with posted prices, commissions, and
-thickening the market. In the data, values and costs must first be
-recovered from bids (the logic of Section 4.4) before the forgone
-mutually beneficial trades become visible.</p>
+circumvented: the incentive constraints are just a few inequalities, and
+the envelope formula no longer pins down payments. For example, let the
+cost be 0 or 4 and the value 2 or 6, each with probability <span
+class="math inline">1/2</span>, independently; trade happens except when
+value 2 meets cost 4, at price 3 for value 6 and cost 0, 4 for value 6
+and cost 4, and 2 for value 2 and cost 0. Every price lies between cost
+and value, truthful reports give the four types expected payoffs of
+<span class="math inline">5/2</span>, 0, <span
+class="math inline">5/2</span>, 0 (value 6, value 2, cost 0, cost 4 in
+turn), and misreports give only 2, <span
+class="math inline">-3/2</span>, 2, <span
+class="math inline">-3/2</span>, so all three conditions of the theorem
+hold, individual rationality even ex post (see MWG, Exercise 23.E.3,
+p. 922). The result is determined by the overlap of the two
+distributions and by “no money from outside”; real platforms therefore
+make do with posted prices, commissions, and thickening the market. In
+the data, values and costs must first be recovered from bids (the logic
+of Section 4.4) before the forgone mutually beneficial trades become
+visible.</p>
 <h3 id="matching-and-market-design">4.6 Matching and Market Design</h3>
 <p>Auctions allocate objects through prices, but platforms also face a
 large class of allocation problems that bypass prices and pair up two
@@ -2232,17 +2307,39 @@ mechanism that always selects the proposer-optimal stable matching (DA
 run from the proposing side), truthful reporting is a dominant strategy
 for every proposer.</p>
 </div>
-<p>The proof sketch: (i) uses Roth’s counterexample. Construct a 3-by-3
-preference profile with exactly two stable matchings, one optimal for
-the men and one optimal for the women; if the mechanism picks the
-former, some woman swaps the last two entries on her list, which makes
-the latter the unique stable matching, and she gains; if the mechanism
-picks the latter, some man gains by the same maneuver; so whichever the
-mechanism picks, someone gains by misreporting. The proof of (ii) is
-longer; see Roth (1982), §5, and Dubins and Freedman (1981). What it
-says is that a proposer’s misreport can only change the set of stable
-matchings; it cannot get the proposer anyone better than its best stable
-partner under its true preferences.</p>
+<p>The proof sketch: (i) uses a counterexample. Three workers 1, 2, 3
+and three firms A, B, C have these preferences: worker 1 <span
+class="math inline">B \succ A \succ C</span>, workers 2 and 3 both <span
+class="math inline">A \succ B \succ C</span>; firm A <span
+class="math inline">1 \succ 3 \succ 2</span>, B <span
+class="math inline">3 \succ 1 \succ 2</span>, C <span
+class="math inline">1 \succ 2 \succ 3</span>. Checking the six pairings
+one by one, there are exactly two stable matchings: the worker-optimal
+<span class="math inline">(1B, 2C, 3A)</span> and the firm-optimal <span
+class="math inline">(1A, 2C, 3B)</span>. If the mechanism picks the
+former, firm A swaps the last two entries on its list and reports <span
+class="math inline">1 \succ 2 \succ 3</span>, which makes the latter the
+unique stable matching and moves A’s partner from worker 3 to worker 1,
+whom it prefers; if the mechanism picks the latter, worker 1 swaps its
+last two entries and reports <span class="math inline">B \succ C \succ
+A</span>, which makes the former the unique stable matching and moves
+its partner from A to B; so whichever the mechanism picks, someone gains
+by misreporting (see Roth 1982, proof of Theorem 3, pp. 622-623). Part
+(ii) says that a proposer’s misreport can change the set of stable
+matchings but cannot get the proposer anyone better than its best stable
+partner under its true preferences. The proof is longer; its idea has
+three steps. Step one: whatever a misreport achieves, a simple misreport
+achieves too, one that puts the partner obtained by misreporting at the
+top of the list. Step two: if such a misreport does not make the
+misreporter worse off, it makes no proposer worse off, so after the
+misreport no proposer proposes to a receiver it did not propose to under
+truthful reports (that would mean ending up with someone worse than its
+original partner). Step three: by induction backward from the last step
+of DA under truthful reports, every proposer matched at the
+misreporter’s step or later keeps the same partner as under truthful
+reports; the misreporter is among them, so the misreport does not pay
+(see Roth 1982, Section 5, Lemmas 1 and 2 and the proof of Theorem 5,
+pp. 624-626; Dubins and Freedman 1981).</p>
 <p>In words: stability and universal truth-telling cannot both be had.
 DA protects only the proposing side, and a receiver may gain by
 truncating its preference list: if it cuts the list so that the last
@@ -2365,15 +2462,33 @@ does.</p>
 Experiment,” <em>Journal of Political Economy</em>. It takes Theorem 13
 from the blackboard to an online advertising platform.</p>
 <p>Method: a large-scale field experiment that sets reserve prices for
-online advertising auctions according to optimal auction theory, adapted
-to the setting of sponsored search. By Theorem 13, the reserve price
-depends on the value distribution, which must be estimated first, and
-this is exactly what an inversion of the kind in Section 4.4 is for; for
-how the paper estimates it, see the original.</p>
-<p>Results: consistent with the theory, revenue rose significantly after
-the new reserve prices were introduced. The platform, the size of the
-increase, and the exact algorithm for the reserve prices are left to the
-original paper; this book cites no numbers from it.</p>
+online advertising auctions according to optimal auction theory. The
+theory is adapted by replacing the probability of winning the single
+object with the expected number of clicks: with symmetric bidders and
+increasing <span class="math inline">\Psi</span>, in the lowest-revenue
+locally envy-free equilibrium of Section 5.1, GSP with reserve price
+<span class="math inline">r^\ast</span> (<span
+class="math inline">\Psi(r^\ast) = 0</span>) is the revenue-maximizing
+mechanism. By Theorem 13, the reserve price depends on the value
+distribution, which must first be recovered from bids, but GSP is not a
+first-price auction and the inversion formula of Section 4.4 does not
+carry over: each keyword’s values are assumed lognormal, three moments
+(the number of bidders and the mean and standard deviation of the bids
+below the top position) are simulated under the equilibrium bids of the
+paper in Section 5.1 and matched to the observed ones, which estimates
+the distribution’s parameters and the number of potential bidders, and
+<span class="math inline">\Psi(r^\ast) = 0</span> then gives the reserve
+price (see Ostrovsky and Schwarz 2023).</p>
+<p>Results: the experiment ran on Yahoo!’s sponsored search; keywords
+were randomly assigned to treatment and control, and the control group
+kept the old uniform reserve price, while in the treatment group the
+reserve price was converted to each advertiser through the ad’s quality
+score and, to be conservative, set between the old reserve price and the
+theoretical optimum. Difference-in-differences on the change from before
+to after shows that revenue rose after the new reserve prices were
+introduced, consistent with the theory, with the increase concentrated
+in keywords with high search volume, high theoretical reserve prices,
+and few bidders (see Ostrovsky and Schwarz 2023).</p>
 <p>Limitations: the gain from a reserve price hinges on how accurately
 the value distribution is estimated, and it can be eroded by bidders’
 responses: participation may fall and bids may adjust; if treated and
@@ -2395,11 +2510,9 @@ from adverse selection.</p>
 <p>Results: online disclosure is an important determinant of prices; the
 cost of disclosure affects how much sellers disclose and also the
 transaction prices.</p>
-<p>Limitations: for the size of the effects and the details of
-identification, see the original paper; disclosure is itself the
-seller’s choice, and sellers of good cars are more willing to disclose,
-which is exactly the selection problem flagged in the table of Section
-4.7.</p>
+<p>Limitations: disclosure is itself the seller’s choice, and sellers of
+good cars are more willing to disclose, which is exactly the selection
+problem flagged in the table of Section 4.7.</p>
 </div>
 <h2 id="running-case-settling-vireos-accounts">6 Running Case: Settling
 Vireo’s Accounts</h2>

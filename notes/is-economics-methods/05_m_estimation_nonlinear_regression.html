@@ -158,10 +158,13 @@ variance estimator, Section 5 examines three anchoring papers, Section 6
 runs the whole toolkit on Larkspur, and Section 7 discusses failure
 modes. The objective function <span class="math inline">q</span>, the
 sandwich’s bread <span class="math inline">A_0</span> and filling <span
-class="math inline">B_0</span>, and Wooldridge (2010) Theorem 12.3, all
-set up in this chapter, return in Chapter 6 (maximum likelihood),
-Chapter 7 (GMM, the generalized method of moments), Chapter 8
-(inference), and Chapters 12 and 13.</p>
+class="math inline">B_0</span>, and the asymptotic normality theorem of
+Section 3.4 (Theorem 3: <span class="math inline">\sqrt n(\hat\theta -
+\theta_0)</span> is asymptotically normal with the sandwich variance
+<span class="math inline">A_0^{-1}B_0A_0^{-1}</span>; see Wooldridge
+2010, Section 12.3, Theorem 12.3), all set up in this chapter, return in
+Chapter 6 (maximum likelihood), Chapter 7 (GMM, the generalized method
+of moments), Chapter 8 (inference), and Chapters 12 and 13.</p>
 <h2 id="an-effect-that-changes-with-the-unit-of-measurement">1 An Effect
 That Changes with the Unit of Measurement</h2>
 <div class="case">
@@ -2360,8 +2363,11 @@ in the middle becomes <span class="math inline">n^{-1}\sum_i (\hat s_i +
 (equation (12.62)); this is the algorithm of <code>two_step_vcov</code>
 in Section 6.4. Other routes are to write the two steps as one stacked
 system of moment conditions (Newey 1984) or to bootstrap the entire
-two-step procedure; the formula of Murphy and Topel (1985) and bootstrap
-practice are left to Section 4.4 of Chapter 8.</p>
+two-step procedure. The two-step correction above, which replaces the
+filling with the outer product of <span class="math inline">\hat s_i +
+\hat\Gamma\hat\psi_i</span>, is what applied work usually calls the
+Murphy-Topel variance (Murphy and Topel 1985); its practice and that of
+the bootstrap are left to Section 4.4 of Chapter 8.</p>
 <p>Why is M3’s <span class="math inline">\Gamma_0</span> not zero? The
 second-step score is <span class="math inline">s = -m\,(1, t)&#39;\,(y -
 m)</span> with <span class="math inline">m = \exp(\beta_0 + \beta_1
@@ -2507,13 +2513,23 @@ class="math inline">A_0</span> does not depend on the variance.
 Moreover, <span class="math inline">B_0 = \mathbb{E}\big[\mathbb{E}[(y -
 \exp(x&#39;\theta_0))^2 \mid x]\,xx&#39;\big] =
 \mathbb{E}[\mathrm{Var}(y \mid x)\,xx&#39;]</span>; Theorem 3 gives
-(ii), and substituting PML.3 gives (iii). The fully robust variance
-estimator is equation (18.14), and the estimator of <span
-class="math inline">\sigma^2</span> is equation (18.15). When the mean
-is misspecified, PML.1 no longer holds. Provided the pseudo-true value
-<span class="math inline">\theta_*</span> is the unique interior
-minimizer of <span class="math inline">\mathbb{E}[q]</span>, and M.2 and
-M.3 hold at that point, the conclusion of Section 3.4 holds at <span
+(ii), and substituting PML.3 gives (iii). The corresponding estimators:
+the fully robust variance estimator is <span class="math inline">\hat
+A^{-1}\hat B\hat A^{-1}/n</span>, where <span class="math inline">\hat A
+= n^{-1}\sum_i \exp(x_i&#39;\hat\theta)\,x_ix_i&#39;</span>, <span
+class="math inline">\hat B = n^{-1}\sum_i \hat
+u_i^2\,x_ix_i&#39;</span>, and <span class="math inline">\hat u_i = y_i
+- \exp(x_i&#39;\hat\theta)</span>; under PML.3, <span
+class="math inline">\sigma^2</span> is estimated by the Pearson
+dispersion <span class="math inline">\hat\sigma^2 = (n - k)^{-1}\sum_i
+\hat u_i^2/\exp(x_i&#39;\hat\theta)</span>, where the denominator <span
+class="math inline">n - k</span> is the degrees-of-freedom adjustment of
+the GLM literature (see Wooldridge 2010, Section 18.2.3, equations
+(18.14) and (18.15)). When the mean is misspecified, PML.1 no longer
+holds. Provided the pseudo-true value <span
+class="math inline">\theta_*</span> is the unique interior minimizer of
+<span class="math inline">\mathbb{E}[q]</span>, and M.2 and M.3 hold at
+that point, the conclusion of Section 3.4 holds at <span
 class="math inline">\theta_*</span> instead: the expected score is zero
 there (M.3(e)), that is, <span
 class="math inline">\mathbb{E}[(\exp(x&#39;\theta_*) - y)\,x] =
@@ -3719,12 +3735,19 @@ enough: Wooldridge (2010) §18.2 recommends putting squares,
 interactions, and logs of the regressors inside the exponential, which
 is often enough. The second is to run specification tests: tests of the
 RESET kind, which Santos Silva and Tenreyro (2006) use, can be run for
-both NLS and PPML. The third is to look at NLS and PPML together: when
-the mean is correctly specified the two have the same probability limit.
-On M2m their pseudo-true values differ by 0.058 and the sample estimates
-are 0.441 and 0.484; a gap like this is itself an alarm. For inference,
-when the mean may be wrong, use the fully robust variance with the
-sample Hessian.</p>
+both NLS and PPML. One version extends the mean to <span
+class="math inline">\exp(x&#39;\theta + \delta_1(x&#39;\theta)^2 +
+\delta_2(x&#39;\theta)^3)</span> and tests <span
+class="math inline">\delta_1 = \delta_2 = 0</span>; a rejection says the
+exponential form misses some nonlinearity. A score test (the LM of
+Section 3.5 in the next chapter) needs only the estimate of the original
+model, and it has a version robust to the variance specification (see
+Wooldridge 2010, Sections 6.2.3, 12.6.2, and 18.2.5). The third is to
+look at NLS and PPML together: when the mean is correctly specified the
+two have the same probability limit. On M2m their pseudo-true values
+differ by 0.058 and the sample estimates are 0.441 and 0.484; a gap like
+this is itself an alarm. For inference, when the mean may be wrong, use
+the fully robust variance with the sample Hessian.</p>
 <p>Reporting the wrong standard error is the most common trap, and it is
 harder to spot than a wrong point estimate, because the point estimate
 looks perfectly normal. The core discipline is to think through which

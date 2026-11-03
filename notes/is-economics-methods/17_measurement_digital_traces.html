@@ -474,14 +474,27 @@ lower the variance of the correction term, and the closer PPI comes to
 the precision of “holding twenty thousand true labels.” Conversely, when
 the prediction contains no information, the extra term in basic PPI only
 adds variance, and the interval ends up wider than gold-only’s, the more
-so the noisier the prediction. To guarantee that efficiency never falls
-below gold-only, switch to the adaptive variant with power tuning, the
-PPI++ of Angelopoulos, Duchi, and Zrnic (2024), which automatically
-withdraws the weight on the predictions when they are useless and falls
-back exactly to gold-only. This is the precise meaning, in terms of
-variance, of “predictions for precision, labels for debiasing,” and it
-is why PPI does not require believing in advance that the model is
-unbiased.</p>
+so the noisier the prediction. To guarantee that efficiency does not
+fall below gold-only, multiply the prediction term by a tuning
+coefficient <span class="math inline">\lambda</span>; in the simplified
+form above this is <span
+class="math inline">\widehat\theta_{\lambda}=\widehat\theta_{gold,labeled}+\lambda\big(\widehat\theta_{pred,all}-\widehat\theta_{pred,labeled}\big)</span>:
+<span class="math inline">\lambda=1</span> is basic PPI and <span
+class="math inline">\lambda=0</span> is gold-only, and since the two
+prediction-based estimators in the parentheses estimate the same
+quantity, no value of <span class="math inline">\lambda</span>
+introduces bias. <span class="math inline">\lambda</span> is set to the
+value that minimizes the asymptotic variance of the estimator, computed
+directly from sample quantities such as the covariance between truth and
+prediction; when the predictions contain no information this optimal
+value is zero and the estimator falls back to gold-only, so in large
+samples its efficiency is no lower than that of either gold-only or
+basic PPI. Choosing <span class="math inline">\lambda</span> from the
+data in this way is called power tuning, and PPI with it is called PPI++
+(see Angelopoulos, Duchi, and Zrnic 2024, Sections 2.2 and 6). This is
+the precise meaning, in terms of variance, of “predictions for
+precision, labels for debiasing,” and it is why PPI does not require
+believing in advance that the model is unbiased.</p>
 <h3 id="model-training-and-inferential-reuse">3.4 Model Training and
 Inferential Reuse</h3>
 <p>There is a lazy practice that is especially tempting and especially

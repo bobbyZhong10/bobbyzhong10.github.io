@@ -440,9 +440,19 @@ class="math inline">w</span>. Step four (C.4): a convex combination of
 two optimal bundles is still affordable, and convexity makes it no worse
 than either, so the set of optima is convex; strict convexity makes it
 strictly better, contradicting optimality, so the optimal bundle is
-unique, which is (iv). For the quasiconvexity of <span
-class="math inline">v</span>, see the proof that follows MWG Proposition
-3.D.3; MWG does not prove continuity (p. 56).</p>
+unique, which is (iv). The quasiconvexity of <span
+class="math inline">v</span> (no assumption needed, not even C.4):
+suppose <span class="math inline">v</span> at both <span
+class="math inline">(p, w)</span> and <span class="math inline">(p&#39;,
+w&#39;)</span> is at most <span class="math inline">\bar v</span>; any
+bundle affordable at a weighted average of the two is affordable at one
+or both of the original price and budget pairs, so <span
+class="math inline">v</span> at the average is also at most <span
+class="math inline">\bar v</span>. Continuity is not proved here: when
+preferences are strictly convex, it follows from <span
+class="math inline">v(p, w) = u(x(p, w))</span> and the continuity of
+demand (see MWG, Section 3.D, the proof of Proposition 3.D.3,
+pp. 56-57).</p>
 <p>In words: under C.1 to C.4(b), the subscriber’s choice is a
 single-valued function <span class="math inline">x(p, w)</span> that
 depends only on relative prices and the real budget, and she spends the
@@ -456,12 +466,10 @@ change in price can make the choice jump among several bundles, and the
 later theorems that rely on differentiability have to be rewritten. The
 intuition for the quasiconvexity of indirect utility in prices is that
 averaging two price vectors cannot leave her better off than the better
-of the two, because any bundle affordable at the averaged prices is
-affordable at one or both of the original price vectors. These
-properties are determined by preferences; homogeneity of degree zero and
-Walras’ law can be tested directly against data, and Section 3.6 takes
-them as given. Plover’s numbers: at USD 2 she chooses <span
-class="math inline">(20, 60)</span>, at USD 4 she chooses <span
+of the two. These properties are determined by preferences; homogeneity
+of degree zero and Walras’ law can be tested directly against data, and
+Section 3.6 takes them as given. Plover’s numbers: at USD 2 she chooses
+<span class="math inline">(20, 60)</span>, at USD 4 she chooses <span
 class="math inline">(10, 60)</span>, and both times she spends exactly
 USD 100.</p>
 <h3 id="the-emp-the-expenditure-function-and-compensated-demand">3.2 The
@@ -651,10 +659,10 @@ w)/\partial p_\ell}{\partial v(p, w)/\partial w}</span></p>
 <p>Both conclusions are local; they hold where the optimal solution is
 locally unique (MWG footnote 15).</p>
 </div>
-<p>The proof sketch has three steps, following MWG’s third proof (the
-envelope theorem, p. 69) and assuming that the optimal solution is
-differentiable in prices. Step one (C.4(b)): strict convexity makes
-<span class="math inline">h</span> and <span
+<p>The proof sketch has three steps; it uses the envelope theorem and
+assumes that the optimal solution is interior and differentiable in
+prices (see MWG, Proposition 3.G.1, Proof 3, p. 69). Step one (C.4(b)):
+strict convexity makes <span class="math inline">h</span> and <span
 class="math inline">x</span> single-valued, so the derivative of the
 value function with respect to a parameter is meaningful. Step two (no
 assumption needed): prices appear only in the objective <span
@@ -890,25 +898,30 @@ continuously differentiable, and homogeneous of degree zero, and let it
 satisfy Walras’ law. Then there is a rational preference whose Walrasian
 demand is <span class="math inline">x(p, w)</span> if and only if the
 Slutsky matrix <span class="math inline">S(p, w)</span> is symmetric and
-negative semidefinite everywhere (for the technical conditions, see MWG
+negative semidefinite everywhere (a few weak technical conditions are
+also needed; with two goods, for example, such regularity conditions
+ensure that the ordinary differential equation in the proof below has a
+solution from any initial point; see MWG, Section 3.H, p. 79, and
 footnote 19). With two goods, symmetry holds automatically, and only
 negative semidefiniteness needs checking.</p>
 </div>
-<p>The proof sketch has three steps; MWG itself describes its treatment
-in this section as not fully rigorous. Necessity (Theorem 6, using C.3
-and C.4(b)): if demand comes from such a preference, <span
-class="math inline">S</span> is the substitution matrix, symmetric and
-negative semidefinite. Sufficiency, step one (symmetry, plus homogeneity
-of degree zero and Walras’ law): Shephard’s lemma and duality give a
-system of partial differential equations with <span
-class="math inline">e</span> as the unknown function, <span
-class="math inline">\partial e/\partial p_\ell = x_\ell(p, e)</span>,
-and symmetry is exactly the consistency condition for it to have a
-solution (with many goods by the Frobenius theorem; with two goods it is
-an ordinary differential equation, equation (3.H.1)). Sufficiency, step
-two (negative semidefiniteness): the solved <span
-class="math inline">e</span> is concave in prices, and MWG Proposition
-3.H.1 (p. 77) builds from it the upper contour sets <span
+<p>The proof sketch has three steps, and the sufficiency half is not
+fully rigorous: the conditions under which the system of differential
+equations has a solution are not proved here; the sketch borrows the
+Frobenius theorem and the regularity conditions above (see MWG, Section
+3.H, pp. 75-80). Necessity (Theorem 6, using C.3 and C.4(b)): if demand
+comes from such a preference, <span class="math inline">S</span> is the
+substitution matrix, symmetric and negative semidefinite. Sufficiency,
+step one (symmetry, plus homogeneity of degree zero and Walras’ law):
+Shephard’s lemma and duality give a system of partial differential
+equations with <span class="math inline">e</span> as the unknown
+function, <span class="math inline">\partial e/\partial p_\ell =
+x_\ell(p, e)</span>, and symmetry is exactly the consistency condition
+for it to have a solution (with many goods by the Frobenius theorem;
+with two goods it is an ordinary differential equation, equation
+(3.H.1)). Sufficiency, step two (negative semidefiniteness): the solved
+<span class="math inline">e</span> is concave in prices, and MWG
+Proposition 3.H.1 (p. 77) builds from it the upper contour sets <span
 class="math inline">\{x : p \cdot x \geq e(p, \bar u) \text{ for all } p
 \gg 0\}</span>; the preference these sets define has <span
 class="math inline">e</span> as its expenditure function.</p>
@@ -955,11 +968,16 @@ class="math inline">x^t \mathrel{R} x^s</span>, <span
 class="math inline">x^s \mathrel{P^{\mathrm{d}}} x^t</span> does not
 hold. Its predecessors are the WARP (weak axiom of revealed preference)
 of Samuelson (1938) and the SARP (strong axiom of revealed preference)
-of Houthakker (1950); MWG Proposition 3.J.1 (p. 91) says that a
+of Houthakker (1950): WARP requires that two different bundles are never
+each directly revealed preferred to the other, and SARP extends this
+requirement to chains of <span class="math inline">R</span>, so that
+different bundles can form no revealed preference cycle at all; GARP
+forbids only cycles with a strict link and allows indifference. A
 single-valued demand function defined on all budgets and satisfying SARP
 can be rationalized by a rational preference, which is the version with
-infinitely many observations. The version for finitely many observations
-follows.</p>
+infinitely many observations (see MWG, Definition 2.F.1, p. 29, and
+Definition 3.J.1 and Proposition 3.J.1, p. 91). The version for finitely
+many observations follows.</p>
 <div class="theorem">
 <p><strong>Theorem 8 (Afriat’s theorem; Afriat 1967; Varian
 1982)</strong> For finitely many observations <span
@@ -1142,11 +1160,18 @@ consumer: it generates aggregate demand, and this representative
 consumer’s preferences do not depend on which social welfare function is
 chosen.</p>
 </div>
-<p>The proof sketch has two steps and proves only sufficiency: MWG
-leaves it as Exercise 4.B.1, does not prove necessity, and stresses that
-the result is local. Step one (Roy’s identity of Theorem 5, using C.3
-and C.4(b)): apply Roy’s identity to <span
-class="math inline">v_i</span>,</p>
+<p>The proof sketch has two steps and proves only sufficiency. For
+necessity, only the first half is given: if moving wealth between people
+leaves aggregate demand unchanged, each good’s wealth effect <span
+class="math inline">\partial x_{\ell i}/\partial w_i</span> must be the
+same for everyone and must not vary with wealth, which is exactly
+parallel straight expansion paths; the half that derives the Gorman form
+from this is deeper and is not proved here. The result is local: the
+argument ignores the boundary where consumption cannot be negative, so
+it holds only where everyone’s demand is interior (see MWG, Section 4.B,
+Proposition 4.B.1, equation (4.B.1), and Exercise 4.B.1, p. 107). Step
+one (Roy’s identity of Theorem 5, using C.3 and C.4(b)): apply Roy’s
+identity to <span class="math inline">v_i</span>,</p>
 <p><span class="math display">x_{\ell i}(p, w_i) = -\frac{\partial
 v_i/\partial p_\ell}{\partial v_i/\partial w_i} = -\frac{\partial
 a_i/\partial p_\ell}{b(p)} - \frac{\partial b/\partial p_\ell}{b(p)}\,
@@ -1161,7 +1186,26 @@ a_i/\partial p_\ell}{b(p)} - \frac{\partial b/\partial p_\ell}{b(p)}\,
 W</span></p>
 <p>which is exactly the demand that Roy’s identity gives for the
 indirect utility <span class="math inline">\sum_i a_i(p) +
-b(p)\,W</span>. For the argument for (ii), see MWG Example 4.D.2.</p>
+b(p)\,W</span>. Part (ii) takes one more step (the social welfare
+function is increasing and concave): when wealth is distributed
+optimally, the first-order condition makes “the marginal social value of
+a person’s utility times that person’s marginal utility of wealth” equal
+across people, and under the Gorman form everyone’s marginal utility of
+wealth is <span class="math inline">b(p)</span>, so at the optimum the
+marginal social value of each person’s utility is the same. The sum of
+utilities always equals <span class="math inline">\sum_i a_i(p) +
+b(p)\,W</span>, whatever the distribution; if this sum at <span
+class="math inline">(p, W)</span> is no larger than at <span
+class="math inline">(p&#39;, W&#39;)</span>, a linear expansion of the
+concave welfare function at the optimal distribution for <span
+class="math inline">(p&#39;, W&#39;)</span>, whose gradient has equal
+components, shows that welfare at <span class="math inline">(p,
+W)</span> is no larger than at <span class="math inline">(p&#39;,
+W&#39;)</span> either. The value function of social welfare therefore
+ranks situations exactly as <span class="math inline">\sum_i a_i(p) +
+b(p)\,W</span> does, and the representative consumer’s preferences do
+not depend on the welfare function (see MWG, Section 4.D, Example 4.D.2,
+p. 119).</p>
 <p>In words: the Gorman form characterizes “aggregate demand recognizes
 only total wealth,” that is, everyone spends an increment of income in
 the same way: the marginal budget shares are the same for everyone,
@@ -1418,11 +1462,15 @@ with the opposite sign. Willig (1976) turns this approximation into
 error bounds: when the income elasticity is bounded above and below
 along the path and <span class="math inline">\Delta\mathrm{CS}/w</span>
 is small, <span class="math inline">(\mathrm{CV} -
-\Delta\mathrm{CS})/\Delta\mathrm{CS}</span> lies between correction
-terms computed from the two elasticity bounds; for the exact form of the
-bounds and their range of validity, see the original paper. MWG does not
-give these bounds and says only, on p. 89, that the error is small when
-income effects are small.</p>
+\Delta\mathrm{CS})/\Delta\mathrm{CS}</span> lies between two values
+computed from the two elasticity bounds. To first order in <span
+class="math inline">\Delta\mathrm{CS}/w</span>, a bound of this kind can
+be derived directly: replacing the elasticity in step two by its lower
+and upper bounds along the path puts the relative error between the
+lower and the upper bound, each multiplied by <span
+class="math inline">\Delta\mathrm{CS}/(2w)</span> (derived here). When
+both bounds are close to zero (small income effects), so is the relative
+error (see MWG, Section 3.I, p. 89).</p>
 <p>In words: the relative gap between consumer surplus and CV is about
 half the income elasticity times the loss as a share of the budget. When
 the income effect is small, or when the spending takes up only a small
@@ -1568,10 +1616,18 @@ of functions linear in <span class="math inline">r</span>, and so is
 concave, by the same argument as in step three of Theorem 3. Step two
 (P.1, unique optimum): prices appear only in the objective, so the
 derivative of the value function with respect to a price equals the
-direct derivative of the objective, which gives the two lemmas; MWG also
-notes that they follow directly from the duality theorem (Proposition
-3.F.1), a route that does not require the optimal solution to be
-differentiable. Step three (P.1, P.2(a)): cost minimization is the same
+direct derivative of the objective, which gives the two lemmas; the
+lemmas also follow without assuming a differentiable optimal solution:
+the cost function is the infimum of the linear function <span
+class="math inline">r \cdot z</span> over the set <span
+class="math inline">\{z : f(z) \geq y\}</span>, that is, the support
+function of that set; the duality theorem says that the support function
+of a closed set is differentiable at a price vector if and only if the
+minimizer there is unique, and its gradient is then that minimizer, so a
+unique optimum by itself gives Shephard’s lemma; the profit function
+takes a supremum, and the same argument gives Hotelling’s lemma (see
+MWG, Proposition 3.F.1, p. 66, and the discussion after Proposition
+5.C.1, p. 138). Step three (P.1, P.2(a)): cost minimization is the same
 mathematical problem as the EMP; replace <span
 class="math inline">u</span> with <span class="math inline">f</span>,
 <span class="math inline">\bar u</span> with <span
@@ -1695,9 +1751,16 @@ F&#39; + (1 - \alpha) F&#39;&#39;</span>.</p>
 risk of death makes any lottery unacceptable.” U.2 is the core: mixing
 each of two lotteries with a third in the same proportion does not
 change their ranking; it allows any attitude toward risk but requires
-preferences to be linear in probabilities. Experiments such as the
-Allais paradox show again and again that real people violate it
-systematically (Section 7).</p>
+preferences to be linear in probabilities. The best-known counterexample
+is the Allais paradox: in a first pair of lotteries, many people prefer
+a sure medium prize to “10% a prize five times as large, 89% the medium
+prize, 1% nothing”; in a second pair, the same people choose “10% the
+large prize, 90% nothing” over “11% the medium prize, 89% nothing.” The
+two pairs differ only in a common component, “89% the medium prize”
+replaced by “89% nothing”, and U.2 requires the same ranking in both, so
+these choices violate it (see MWG, Section 6.B, Example 6.B.2,
+pp. 179-180). Experiments of this kind show again and again that real
+people violate independence systematically (Section 7).</p>
 <div class="theorem">
 <p><strong>Theorem 15 (expected utility theorem; MWG Propositions 6.B.3,
 p. 176; 6.B.2, p. 173)</strong> Under U.1 and U.2, there is a Bernoulli
@@ -1799,9 +1862,9 @@ required by <span class="math inline">u_1</span>; (v) whenever <span
 class="math inline">u_2</span> finds a lottery no worse than some sure
 amount of wealth, so does <span class="math inline">u_1</span>.</p>
 </div>
-<p>The proof sketch has two steps and proves only the equivalence of (i)
-and (ii); for the rest, see MWG Exercises 6.C.6 and 6.C.7. Step one
-(increasing): the two utilities rank money the same way, so <span
+<p>The proof sketch has three steps: the first two prove the equivalence
+of (i) and (ii), and the third outlines the other three conditions. Step
+one (increasing): the two utilities rank money the same way, so <span
 class="math inline">u_2</span> can always be written as some increasing
 function of <span class="math inline">u_1</span>. Step two (twice
 differentiable): differentiating this composite function twice, the
@@ -1810,8 +1873,21 @@ coefficient of <span class="math inline">u_1</span> minus “the ratio of
 the second to the first derivative of the transformation, times <span
 class="math inline">u_1&#39;</span>”; since <span
 class="math inline">u_1&#39; &gt; 0</span>, (i) holds if and only if the
-second derivative of the transformation is nonpositive, which is
-(ii).</p>
+second derivative of the transformation is nonpositive, which is (ii).
+Step three ((ii) and Jensen’s inequality): <span class="math inline">u_2
+= \psi(u_1)</span> with <span class="math inline">\psi</span> increasing
+and concave, so for any lottery <span
+class="math inline">\mathbb{E}\,u_2 = \mathbb{E}\,\psi(u_1) \leq
+\psi(\mathbb{E}\,u_1)</span>; the right side is the value of <span
+class="math inline">u_2</span> at <span class="math inline">u_1</span>’s
+certainty equivalent, so <span class="math inline">u_2</span>’s
+certainty equivalent is lower, which is (iii). Condition (v) restates
+(iii) as a comparison with a sure amount of wealth, and the two imply
+each other. Applying (iii) to a symmetric two-point lottery gives (iv),
+and letting the risk shrink to zero, a second-order expansion makes the
+probability premium about one quarter of the risk times the Arrow-Pratt
+coefficient, which returns to (i) (see MWG, Section 6.C, Exercises 6.C.6
+and 6.C.7).</p>
 <p>In words: within the expected-utility framework, the five ways of
 saying “more risk averse” are equivalent, and the measure is the
 Arrow-Pratt coefficient, whose division by <span
@@ -1851,7 +1927,7 @@ mean-preserving spread of <span class="math inline">F</span>; for all
 G(\tilde x)\, d\tilde x \geq \int_0^x F(\tilde x)\, d\tilde
 x</span>.</p>
 </div>
-<p>The proof sketch has two steps. Step one ((i), using monotonicity
+<p>The proof sketch has three steps. Step one ((i), using monotonicity
 only): integrating by parts, <span class="math inline">\int u\, dF -
 \int u\, dG = -\int u&#39;(x)\,\big[F(x) - G(x)\big]\, dx</span>, which
 is nonnegative when <span class="math inline">u&#39; \geq 0</span> and
@@ -1862,8 +1938,24 @@ concavity): integrating by parts once more, the difference becomes <span
 class="math inline">\int u&#39;&#39;(x)\,\big[\int_0^x (F - G)\big]\,
 dx</span> plus a boundary term; equal means make the boundary term zero,
 and <span class="math inline">u&#39;&#39; \leq 0</span> together with
-the integral condition gives nonnegativity. MWG states (ii) without
-proof; for the full argument, see Rothschild and Stiglitz (1970).</p>
+the integral condition gives nonnegativity, so the integral condition
+implies second-order dominance. Step three (the other directions, using
+<span class="math inline">u</span> nondecreasing and concave): the
+converse needs only <span class="math inline">u(\tilde x) = \min(\tilde
+x, x)</span>: it is nondecreasing and concave, its expectation is <span
+class="math inline">\int_0^x [1 - F(\tilde x)]\, d\tilde x</span>, so
+second-order dominance gives the integral condition at every <span
+class="math inline">x</span>. That a mean-preserving spread implies
+second-order dominance follows from Jensen’s inequality: <span
+class="math inline">G</span> adds to each outcome of <span
+class="math inline">F</span> a noise with conditional mean zero, and for
+a concave <span class="math inline">u</span> the expected utility after
+the noise is no larger than <span class="math inline">u</span> at the
+original outcome, so <span class="math inline">F</span> is no worse than
+<span class="math inline">G</span>. Constructing such a noise from
+second-order dominance, the reverse direction, is not proved here (see
+MWG, Section 6.D, Example 6.D.2 and Proposition 6.D.2, pp. 197-199;
+Rothschild and Stiglitz 1970).</p>
 <p>In words: once a dominance relation can be verified, there is no need
 to know the particular utility to conclude how a whole class of people
 ranks two prospects: first-order dominance holds for everyone who

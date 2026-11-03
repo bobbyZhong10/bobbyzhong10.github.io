@@ -1128,10 +1128,14 @@ common to the city (say, the local economy improving), but not a trend
 that small sellers share across the whole platform. The same comparison
 in the control cities measures exactly the “natural” trend gap between
 small and large sellers. Subtracting one from the other gives triple
-differences (DDD), whose regression form is in Wooldridge (2010) §6.5.2.
-The sample analog printed in that section has only three terms and omits
-the change for the ineligible group in the control cities; the complete
-four-term form is Theorem 3 below.</p>
+differences (DDD). As a regression, it is OLS of the outcome on three
+dummies (treated city, eligible seller, post period), their three
+pairwise interactions, and the triple interaction; the coefficient on
+the triple interaction is the DDD estimate (see Wooldridge 2010, Section
+6.5.2, equation (6.55)). The sample analog Wooldridge prints right after
+it has only three terms and omits the change for the ineligible group in
+the control cities; the complete four-term form is Theorem 3 below (see
+equation (6.56) in the same section).</p>
 <p>We follow Wooldridge’s labels and write them in upright type: <span
 class="math inline">\mathrm{B}</span> and <span
 class="math inline">\mathrm{A}</span> denote treated and control cities,
@@ -1181,12 +1185,26 @@ two terms zero.</p>
 <p>In words: DDD still estimates the treated cell’s own ATT; the
 parallel trends requirement has merely moved from trends to differences
 in trends. Ortiz-Villavicencio and Sant’Anna (2025) raise two warnings.
-When conditioning on covariates is needed, neither “subtracting two
-DiDs” nor a three-way fixed effects regression generally identifies this
-ATT. In a staggered setting, pooling all not-yet-treated units into one
-control group introduces additional bias, which calls for a dedicated
-DDD estimator (the R package triplediff). The Kestrel simulation has no
-such structure, so no numbers are given here.</p>
+First, when A6 holds only conditional on covariates, neither
+“subtracting two DiDs” nor a three-way fixed effects regression
+generally identifies this ATT: the DiD in the control cities averages
+over the covariate distribution of its own eligible sellers, whereas the
+ATT needs the trends of all three untreated cells weighted by the
+covariate distribution of the <span
+class="math inline">\mathrm{BE}</span> cell. The correct form is a
+combination of three DiDs, each using one untreated cell, which can be
+estimated by regression adjustment, inverse probability weighting, or
+doubly robust methods (see Section 3.1 and Remark 4.1 of the same
+paper). Second, in a staggered setting, pooling all not-yet-treated
+units into one control group is also biased: the share of eligible
+sellers differs across the cities that open at different times, so the
+pooled eligible and ineligible groups mix the city groups in different
+proportions, and the city-group trends that A6 allows no longer cancel
+in their difference; the remedy is to use one not-yet-opened group of
+cities at a time as the control and combine the resulting estimates with
+GMM weights (see Section 3.2 of the same paper; the R package triplediff
+implements these estimators). The Kestrel simulation has no such
+structure, so no numbers are given here.</p>
 <h3 id="testability-and-pre-trends">3.8 Testability and Pre-Trends</h3>
 <p>This section closes with testability, where misuse is most common. A1
 is an assertion about the counterfactual, and the counterfactual is
@@ -1877,11 +1895,23 @@ McCaffrey 2002 small-sample correction plus Satterthwaite degrees of
 freedom); the wild cluster bootstrap-t (Cameron, Gelbach and Miller
 2008, R package fwildclusterboot); and when the treated clusters number
 in the single digits, even the wild bootstrap is unreliable, and the
-honest fallback is randomization inference along the lines of Conley and
-Taber (2011) and MacKinnon and Webb (2020). Kestrel has 60 cities and
-three cohorts, so the baseline CR1 suffices; if your application has
-only a dozen or so cities, CR2 and the wild bootstrap belong in the main
-table, not the appendix.</p>
+honest fallback is randomization inference. Conley and Taber (2011) note
+that with few treated groups the DiD estimator equals the true effect
+plus a noise term that does not vanish as the sample grows; if, beyond
+the city and period fixed effects, treatment is assigned as if at
+random, the shocks of treated and control groups share one distribution,
+so the distribution of that noise can be estimated from the residuals of
+the many control clusters and used for tests and, by inversion,
+confidence intervals. MacKinnon and Webb (2020) reassign treatment
+status across clusters, recompute the statistic each time, and see which
+tail of this re-randomization distribution the actual statistic falls
+in; when clusters differ a lot, re-randomizing coefficients can mislead,
+and re-randomizing <span class="math inline">t</span>-statistics is
+usually more reliable (see Conley and Taber 2011, Sections I and II;
+MacKinnon and Webb 2020). Kestrel has 60 cities and three cohorts, so
+the baseline CR1 suffices; if your application has only a dozen or so
+cities, CR2 and the wild bootstrap belong in the main table, not the
+appendix.</p>
 <h3
 id="the-estimator-family-clean-comparisons-plus-explicit-weights">4.8
 The Estimator Family: Clean Comparisons plus Explicit Weights</h3>
@@ -1932,8 +1962,14 @@ effects</td>
 <td>Stacked DiD (Wing, Freedman and Hollingsworth 2024)</td>
 <td>Each cohort is paired with clean controls inside its event window to
 form a sub-experiment; the stacked data are then regressed</td>
-<td>With corrective sample weights, identifies a trimmed aggregate
-ATT</td>
+<td>Unweighted, treated and control trends are averaged across
+sub-experiments with different weights, so no average effect is
+identified; with the sample weight “the sub-experiment’s share of all
+treated units divided by its share of all control units” on control
+observations, it identifies the trimmed aggregate ATT, the ATT over the
+cohorts identified at every period of the event window, weighted by each
+cohort’s share of all treated units (see Section 4, equation (2), and
+Sections 5.2 and 5.3 of the same paper)</td>
 <td>Not estimated</td>
 </tr>
 <tr>
@@ -3197,9 +3233,20 @@ the Rambachan-Roth sensitivity analysis. If parallel trends holds only
 after controlling for a covariate that is itself affected by treatment,
 Caetano, Callaway, Payne and Sant’Anna (2026) point out that simply
 dropping it is often wrong. You can argue that its pre-treatment value
-alone suffices (which is the CS estimator with covariates), or, under an
-unconfoundedness condition on the covariate, switch to imputation and
-DML estimators (the R package badcontrols).</p>
+alone suffices (which is the CS estimator with covariates). Or you can
+assume unconfoundedness of the covariate: given its pre-treatment value
+and other pre-treatment variables, the distribution the covariate would
+have had in the treated group without treatment equals that in the
+control group. Then you first estimate, in the control group, the
+average outcome change given the covariate’s path, then use the control
+group to recover the counterfactual distribution of the treated group’s
+covariate and average the former over it, which gives the treated
+group’s counterfactual trend; the imputation estimator makes both steps
+linear regressions, while the DML (double/debiased machine learning)
+estimator rests on a doubly robust score and can estimate these
+conditional means and the propensity score by machine learning (see
+Sections 4.2, 6.1 and 6.2 of the same paper; the R package
+badcontrols).</p>
 <p>Taken together, these failure modes show that the credibility of DiD
 lies not in the ingenuity of the regression specification but in the
 design itself: why treatment happens to these units at these times, and

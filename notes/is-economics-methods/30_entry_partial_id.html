@@ -579,11 +579,31 @@ class="math inline">\Theta_I</span>; the other is to cover the true
 parameter <span class="math inline">\theta_0</span> inside the
 identified set. The latter is generally smaller, because it need only
 cover one point rather than the whole set. Imbens and Manski (2004)
-pointed out this distinction, and Chernozhukov, Hong, and Tamer (2007),
-as well as Andrews and Soares (2010), among others, developed systematic
-inference methods. In practice you must be clear about which confidence
-set you report, because the two differ in both interpretation and size.
-In addition, the identified set itself has to be estimated by simulation
+pointed out this distinction. Both kinds of confidence set are obtained
+by inverting a test: for each parameter, compute a statistic that
+measures how much the moment inequalities are violated (for example, the
+sample version of the criterion of Section 4.4 times the sample size),
+and keep the parameters whose statistic does not exceed a critical
+value; the two differ in how the critical value is set. To cover the
+whole identified set, the critical value is a quantile of “the largest
+value of this statistic over the identified set”, which can be estimated
+by subsampling: on each subsample, take the largest value of the
+criterion over a preliminary estimate of the set, then take a quantile
+of these largest values (see Chernozhukov, Hong and Tamer 2007,
+working-paper version, Sections 3.4 and 3.5). To cover the true
+parameter, each candidate parameter is tested on its own, with the
+critical value set by generalized moment selection; in its simplest
+version, first compute a t statistic for each moment inequality; the
+inequalities whose t statistic exceeds a threshold that grows slowly
+with the sample size, and which are thus clearly far from binding, are
+left out of the critical value, and the rest are treated as binding, so
+the critical value is smaller than when all inequalities are treated as
+binding and the test has more power (see Andrews and Soares 2010,
+working-paper version, Section 4.1). Section 6.4 of this chapter only
+keeps grid points under a fixed tolerance and constructs no confidence
+set. In practice you must be clear about which confidence set you
+report, because the two differ in both interpretation and size. In
+addition, the identified set itself has to be estimated by simulation
 (the two bounds are not analytic functions of the parameters), so
 finite-sample and simulation error both enter the inference (Section 4.5
 of Chapter 23 also warns that estimated bounds contain sampling error
@@ -978,11 +998,15 @@ of its boundary.</p>
 <h3 id="ciliberto-and-tamer-2009">5.3 Ciliberto and Tamer (2009)</h3>
 <div class="case">
 <p>Paper: “Market Structure and Multiple Equilibria in Airline Markets,”
-Econometrica. It extends Tamer’s (2003) incomplete model to many
-heterogeneous firms and uses simulation to make the two bounds
-estimable. It embraces multiplicity head-on, uses moment inequalities to
-confine the parameters to an identified set, and is the direct source of
-Sections 3.4 and 4.4 of this chapter.</p>
+Econometrica. Tamer (2003) studies incomplete simultaneous discrete
+response models with multiple equilibria, and the simultaneous entry
+game of Section 2 is such a model: multiple equilibria make it deliver
+only a set of possible outcomes, the incomplete model of Section 3.1;
+this paper extends this class of models to many heterogeneous firms and
+uses simulation to make the two bounds estimable. It embraces
+multiplicity head-on, uses moment inequalities to confine the parameters
+to an identified set, and is the direct source of Sections 3.4 and 4.4
+of this chapter.</p>
 <p>Method: a complete-information entry game that allows firm-specific
 competitive effects (the amount by which one rival lowers profit can
 depend on who it is), so that the equilibrium number is no longer unique
@@ -1081,17 +1105,19 @@ class="math inline">1.419</span>, and the cut points are <span
 class="math inline">-0.633</span>, <span
 class="math inline">1.341</span>, <span
 class="math inline">3.319</span>, monotonically increasing and almost
-evenly spaced. Converting them into per-firm thresholds with the
-Bresnahan-Reiss formula gives <span class="math inline">s_3/s_2 =
-1.65</span>, but the ratio is meaningless here. The size index has mean
-zero and no natural origin, and the first threshold <span
-class="math inline">s_1</span> is even negative. Adding a constant to
-the index leaves the spacing of the cut points unchanged but changes
-<span class="math inline">s_3/s_2</span>, which falls below 1 once the
-constant is large enough. Threshold ratios are meaningful only for a
-size variable with a natural zero, such as population. Here the cut
-points are point-identified, and none of the information about who
-enters is used.</p>
+evenly spaced. Converting them into per-firm thresholds the
+Bresnahan-Reiss way, dividing each cut point by the size coefficient to
+get the market size needed to support 1, 2, and 3 firms and then
+dividing each by its number of firms, gives <span
+class="math inline">s_3/s_2 = 1.65</span>, but the ratio is meaningless
+here. The size index has mean zero and no natural origin, and the first
+threshold <span class="math inline">s_1</span> is even negative. Adding
+a constant to the index leaves the spacing of the cut points unchanged
+but changes <span class="math inline">s_3/s_2</span>, which falls below
+1 once the constant is large enough. Threshold ratios are meaningful
+only for a size variable with a natural zero, such as population. Here
+the cut points are point-identified, and none of the information about
+who enters is used.</p>
 <h3 id="multiplicity-and-partial-identification">6.4 Multiplicity and
 Partial Identification</h3>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># enumerate the 8 entry profiles, decide which are Nash equilibria; count the equilibria per market</span></span>

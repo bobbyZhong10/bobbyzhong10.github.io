@@ -1291,7 +1291,24 @@ roughly 46.6 percentage points consists of compliers, and the remaining
 roughly 11.2% are never-takers. To describe what the compliers look
 like, one can use the <span class="math inline">\kappa</span> weighting
 of Abadie (2003), which computes the mean of any observable
-characteristic in the complier subpopulation.</p>
+characteristic in the complier subpopulation. Write <span
+class="math inline">q = \Pr(Z = 1)</span>; the weight is <span
+class="math inline">\kappa = 1 - D(1 - Z)/(1 - q) - (1 - D)Z/q</span>.
+With defiers ruled out (A4), only three types remain: always-takers
+always adopt, so <span class="math inline">\kappa = 1 - (1 - Z)/(1 -
+q)</span>; never-takers never adopt, so <span class="math inline">\kappa
+= 1 - Z/q</span>; compliers have <span class="math inline">D = Z</span>,
+so both numerators equal <span class="math inline">Z(1 - Z)</span>,
+which is always zero, and <span class="math inline">\kappa = 1</span>.
+Being a coin flip, the encouragement satisfies A2 and is also jointly
+independent of compliance type and <span class="math inline">W</span>,
+so the mean of <span class="math inline">\kappa</span> is zero for the
+first two types; hence <span class="math inline">\mathbb{E}[\kappa W] =
+\Pr(\text{complier})\,\mathbb{E}[W \mid \text{complier}]</span> and
+<span class="math inline">\mathbb{E}[\kappa] =
+\Pr(\text{complier})</span>, and their ratio is the mean of <span
+class="math inline">W</span> among the compliers. The code below
+replaces expectations with sample means.</p>
 <div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>pz <span class="ot">&lt;-</span> <span class="fu">mean</span>(Z)</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>kappa <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="sc">-</span> D <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> Z) <span class="sc">/</span> (<span class="dv">1</span> <span class="sc">-</span> pz) <span class="sc">-</span> (<span class="dv">1</span> <span class="sc">-</span> D) <span class="sc">*</span> Z <span class="sc">/</span> pz</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>w_complier <span class="ot">&lt;-</span> <span class="fu">sum</span>(kappa <span class="sc">*</span> W) <span class="sc">/</span> <span class="fu">sum</span>(kappa)        <span class="co"># E[W | complier]</span></span></code></pre></div>
@@ -1718,14 +1735,20 @@ in the paper, with a whole paragraph making clear by what right this
 instrument is excluded.</p>
 <p>Monotonicity failure means defiers exist, and the Wald ratio loses
 its LATE reading. It is reasonable in many settings (one more push will
-not make anyone dig in and refuse out of spite), but it can also fail
-(de Chaisemartin 2017 discusses the “tolerating defiers” case). The
-classic hazard appears when the instrument itself has a heterogeneous
-direction: an encouragement design that is an incentive for some clients
-but an annoyance for others (frequently pestered clients simply churn
-and refuse to adopt) manufactures defiers. Judging monotonicity rests on
-a substantive understanding of the instrument’s mechanism, not on a
-statistical test.</p>
+not make anyone dig in and refuse out of spite), but it can also fail.
+The classic hazard appears when the instrument itself has a
+heterogeneous direction: an encouragement design that is an incentive
+for some clients but an annoyance for others (frequently pestered
+clients simply churn and refuse to adopt) manufactures defiers. Judging
+monotonicity rests on a substantive understanding of the instrument’s
+mechanism, not on a statistical test. When defiers exist, the Wald ratio
+still has a fallback: if a subgroup of compliers can be found with the
+same population share and the same average effect as the defiers, the
+two groups cancel in the Wald ratio, and the ratio is the average effect
+of the remaining compliers, whose share is exactly the first stage; such
+a subgroup always exists if, at every value of the effect, compliers are
+at least as many as defiers (see de Chaisemartin 2017, Section 2.1,
+Theorems 2.1 and 2.2).</p>
 <p>LATE’s extrapolation limitation is the property most in need of an
 honest reckoning, and it is the through-line of this chapter. IV
 estimates the effect on the compliers, and the compliers are in turn
@@ -1756,9 +1779,25 @@ is also worth mentioning. Under heteroskedasticity, 2SLS is still
 consistent but not optimal, and the effective F is the right yardstick
 for instrument strength in this case. When many-instrument bias is
 severe, LIML is approximately median-unbiased and has better
-weak-instrument properties (at the cost of fatter tails), the Fuller
-(1977) correction can bound its moments, and JIVE removes each unit’s
-own overfitting by leaving that unit out; all of these are more robust
+weak-instrument properties, at the cost of fatter tails: in finite
+samples it does not even have a mean. The Fuller (1977) correction
+addresses exactly this. 2SLS and LIML both belong to the k-class: IV
+estimation with <span class="math inline">\mathbf{X} -
+k\hat{\mathbf{V}}</span> as instruments, where <span
+class="math inline">\hat{\mathbf{V}}</span> is the first-stage residual
+(the residual from regressing the regressors on all instruments and
+exogenous variables); with <span class="math inline">k = 1</span> the
+instruments are the fitted values, which is 2SLS, and LIML computes its
+<span class="math inline">k</span> from the data. The Fuller correction
+lowers LIML’s <span class="math inline">k</span> by <span
+class="math inline">b/(n - K)</span> (<span class="math inline">K</span>
+is the total number of instruments and exogenous variables; usually
+<span class="math inline">b = 1</span>; Section 4.3 of Chapter 9 writes
+<span class="math inline">k</span> as <span
+class="math inline">\kappa</span> and <span class="math inline">K</span>
+as <span class="math inline">r</span>), and the resulting estimator has
+a finite mean, so its bias is defined. JIVE removes each unit’s own
+overfitting by leaving that unit out. All of these are more robust
 choices than 2SLS.</p>
 <p>Taken together, these failure modes show that the credibility of IV
 rests ultimately not on the mechanics of 2SLS but on two things: whether

@@ -252,17 +252,24 @@ first-order condition sufficient (footnote 6); under D.2 it amounts to
 the revenue function <span class="math inline">p(q)\,q</span> being
 concave. Strongly convex demand can break it, and then the first-order
 condition may find a local minimum or a suboptimal point. Log-concave
-demand is another common sufficient condition; MWG does not use it, and
-it reappears in Section 4.4 for the existence of differentiated Bertrand
-equilibrium. D.2 rules out capacity constraints and marginal cost that
-varies with output: digital services with near-zero reproduction cost
-have roughly constant marginal cost and satisfy it (the economies of
-scale that a fixed cost brings do not enter the first-order condition
-for pricing and matter only for entry), and it fails when capacity binds
-(Section 4.3). Cirrus’s <span class="math inline">p = 12 - q</span> and
-<span class="math inline">c = 2</span> satisfy both: <span
-class="math inline">q^0 = 10</span>, and profit <span
-class="math inline">(10 - q)\,q</span> is concave.</p>
+demand is another common sufficient condition: write demand as a
+function of price, <span class="math inline">x(p)</span>; if <span
+class="math inline">\ln x(p)</span> is concave in <span
+class="math inline">p</span>, then for <span class="math inline">p &gt;
+c</span> so is <span class="math inline">\ln[(p - c)\,x(p)] = \ln(p - c)
++ \ln x(p)</span>, profit has a single peak, and the first-order
+condition gives the optimal price. This chapter uses D.1 because it is
+stated directly in output; a generalization of the condition returns in
+Section 4.4 for the existence of differentiated Bertrand equilibrium
+(see Caplin and Nalebuff 1991). D.2 rules out capacity constraints and
+marginal cost that varies with output: digital services with near-zero
+reproduction cost have roughly constant marginal cost and satisfy it
+(the economies of scale that a fixed cost brings do not enter the
+first-order condition for pricing and matter only for entry), and it
+fails when capacity binds (Section 4.3). Cirrus’s <span
+class="math inline">p = 12 - q</span> and <span class="math inline">c =
+2</span> satisfy both: <span class="math inline">q^0 = 10</span>, and
+profit <span class="math inline">(10 - q)\,q</span> is concave.</p>
 <div class="theorem">
 <p><strong>Theorem 1 (the monopoly first-order condition and the Lerner
 inverse-elasticity rule; MWG 12.B, equations (12.B.3) and (12.B.4),
@@ -656,17 +663,17 @@ so welfare must fall. Under general demand only a necessary condition
 remains: for welfare to rise, total output must rise, and a rise in
 output does not guarantee a rise in welfare; Aguirre, Cowan and Vickers
 (2010) give conditions that use the demand curvature of each market to
-sign the changes in output and welfare, and this book only points to
-their existence. The most common rise in output comes from opening a new
-market, so the conclusion is determined by the curvature of each
-market’s demand and by which markets the uniform price serves. The
-implication for platforms is direct: when rolling out personalized
-pricing, first check whether the number of people served has increased;
-the test needs only the quantities under the two pricing schemes, while
-judging the magnitude takes demand estimates market by market. Cirrus’s
-numbers: the two pairs of segments above are exactly case (ii) and the
-case of “opening a new market”; in C2, fine segmentation lifts the share
-of merchants served from 0.550 to 0.686.</p>
+sign the changes in output and welfare. The most common rise in output
+comes from opening a new market, so the conclusion is determined by the
+curvature of each market’s demand and by which markets the uniform price
+serves. The implication for platforms is direct: when rolling out
+personalized pricing, first check whether the number of people served
+has increased; the test needs only the quantities under the two pricing
+schemes, while judging the magnitude takes demand estimates market by
+market. Cirrus’s numbers: the two pairs of segments above are exactly
+case (ii) and the case of “opening a new market”; in C2, fine
+segmentation lifts the share of merchants served from 0.550 to
+0.686.</p>
 <p>One step further: if any segmentation at all is allowed, how far can
 third-degree price discrimination push welfare? The next result answers
 this question completely.</p>
@@ -1250,11 +1257,17 @@ and quasiconcave in its own strategy.</p>
 is not compact; once output is restricted to <span
 class="math inline">[0, q^0]</span> (beyond <span
 class="math inline">q^0</span> price is below cost, MWG footnote 5), the
-first two conditions hold. Quasiconcavity is not automatic: MWG Figure
-12.C.3 gives an example in which profit is not quasiconcave, the best
-response jumps, and no pure-strategy equilibrium exists; there the two
-firms’ costs differ. With linear demand, profit is concave in own
-output, and O.1 holds.</p>
+first two conditions hold. Quasiconcavity is not automatic: profit that
+is not quasiconcave in own output can have two peaks, a change in the
+rival’s output can make the higher peak switch from one to the other,
+and the best response then jumps; if one firm’s best response jumps
+exactly where it would have crossed the other firm’s best-response
+curve, the two curves have no point in common and no pure-strategy
+equilibrium exists. This requires the two firms’ costs to differ: with
+identical costs that are increasing and convex, the best response can
+only jump upward, and a symmetric pure-strategy equilibrium always
+exists (see MWG, Section 12.C, Figure 12.C.3 and Exercise 12.C.8). With
+linear demand, profit is concave in own output, and O.1 holds.</p>
 <div class="theorem">
 <p><strong>Theorem 7 (Cournot equilibrium: existence, uniqueness with
 linear demand, and convergence to competition as the number of firms
@@ -1295,12 +1308,13 @@ only two firms, so the uniqueness argument for <span
 class="math inline">n</span> firms is supplied here. Step three (D.1,
 D.2): under symmetry, combining the first-order condition <span
 class="math inline">p&#39;(Q)\,q_j + p(Q) = c</span> with <span
-class="math inline">q_j = Q/n</span> gives (12.C.6), and <span
-class="math inline">p&#39; &lt; 0</span> puts the price above <span
-class="math inline">c</span>. Step four (D.1: <span
-class="math inline">p&#39;</span> is continuous on the compact set <span
-class="math inline">[0, q^0]</span>, hence bounded): <span
-class="math inline">Q^\ast &lt; q^0</span>, so <span
+class="math inline">q_j = Q/n</span> gives the condition in (iii), <span
+class="math inline">p&#39;(Q^\ast)\,Q^\ast/n + p(Q^\ast) = c</span> (see
+MWG, equation (12.C.6)), and <span class="math inline">p&#39; &lt;
+0</span> puts the price above <span class="math inline">c</span>. Step
+four (D.1: <span class="math inline">p&#39;</span> is continuous on the
+compact set <span class="math inline">[0, q^0]</span>, hence bounded):
+<span class="math inline">Q^\ast &lt; q^0</span>, so <span
 class="math inline">p&#39;(Q^\ast)\,Q^\ast/n \to 0</span> and the price
 tends to <span class="math inline">c</span>.</p>
 <p>In words: under O.1 and D.2, Cournot is a mild form of competition:
@@ -1355,7 +1369,24 @@ whole market at a positive profit by quoting slightly below its rival;
 when the lowest price equals <span class="math inline">c</span> and the
 other firm’s is above <span class="math inline">c</span>, the firm at
 <span class="math inline">c</span> can raise its price slightly and earn
-a positive profit. So there is no other equilibrium.</p>
+a positive profit. So there is no other equilibrium. Uniqueness in mixed
+strategies is only sketched here, and it uses the fact that demand is
+zero above some finite price. If a firm’s expected profit is positive,
+its prices stay some distance above <span class="math inline">c</span>,
+and the rival can earn a sure profit by pricing just below the lowest of
+them, so both firms’ profits are positive and all their prices are below
+that finite price. Now look at the tops of the two firms’ price ranges:
+the firm with the higher top sells nothing near it; if the tops
+coincide, then either both firms put probability mass on the top, and
+cutting the price slightly is strictly better, or some firm’s
+probability of making a sale near the top goes to zero; both cases
+contradict positive profit. So both profits are zero, and then if one
+firm prices above <span class="math inline">c</span> with positive
+probability, the other earns a positive profit by pricing slightly above
+<span class="math inline">c</span>; hence both price at <span
+class="math inline">c</span> with probability one (a price below <span
+class="math inline">c</span> loses money whenever it wins; see MWG,
+Exercise 12.C.2).</p>
 <p>In words: under the four conditions of a homogeneous product, equal
 costs, no capacity constraint, and one-shot play, two firms reproduce
 perfect competition. Each condition is an exit from the paradox:
@@ -1388,13 +1419,24 @@ of the two-stage game is the Cournot outcome, under several conditions.
 The one MWG names in the text of 12.C, p. 395, is efficient rationing,
 that is, the demand of high-valuation buyers is served first by the
 low-price firm; the other conditions include a concave demand curve and
-requirements on the shape of capacity costs. For the details, see the
-original paper. MWG states the result in words only, without proof, and
-this book does the same. It gives Cournot a more realistic reading:
-quantity competition stands for the long-run choice of capacity, and
-price competition takes place in the short run, given capacity. If the
-rationing rule is switched to random rationing or queuing, the
-conclusion may fail.</p>
+requirements on the shape of capacity costs. This book only states the
+result. The intuition lies in the price subgame: when neither firm’s
+capacity exceeds its Cournot best response (the optimal output given the
+rival’s capacity), both firms pricing at the price that sells all
+capacity, <span class="math inline">p(q_1^{\mathrm{cap}} +
+q_2^{\mathrm{cap}})</span>, is an equilibrium, because a price cut sells
+no more and a price rise amounts to cutting output below the best
+response given the rival’s capacity, so the first stage works like the
+Cournot quantity game. The proof is not given because, when some firm’s
+capacity exceeds its best response, the price subgame has no
+pure-strategy equilibrium, and showing that no firm wants to build more
+capacity in the first stage requires the payoffs of the mixed equilibria
+of those subgames, which takes a long argument (see MWG, Section 12.C,
+p. 395, and Exercise 12.C.11). The result gives Cournot a more realistic
+reading: quantity competition stands for the long-run choice of
+capacity, and price competition takes place in the short run, given
+capacity. If the rationing rule is switched to random rationing or
+queuing, the conclusion may fail.</p>
 <h3 id="product-differentiation-hotelling-and-logit">4.4 Product
 Differentiation: Hotelling and Logit</h3>
 <p>The second exit from the Bertrand paradox is differentiation: when
@@ -1434,8 +1476,18 @@ p_2 - p_1)M/(2t)</span>, and the first-order condition gives the best
 response <span class="math inline">p_1 = (t + p_2 + c)/2</span> (the
 middle part of MWG equation (12.C.12)). Step three (symmetry): <span
 class="math inline">p = (t + p + c)/2</span>, that is, <span
-class="math inline">p = c + t</span>; MWG further shows that there is no
-asymmetric equilibrium.</p>
+class="math inline">p = c + t</span>; nor is there an asymmetric
+equilibrium: when both firms are in the middle range, subtracting the
+two best responses gives <span class="math inline">p_1 - p_2 = -(p_1 -
+p_2)/2</span>, so <span class="math inline">p_1 = p_2</span>; when one
+firm prices above <span class="math inline">c + 3t</span>, the rival’s
+best response is to price <span class="math inline">t</span> below it
+and take the whole market, and the first firm then wants to cut its
+price; when one firm prices below <span class="math inline">c -
+t</span>, the rival prices <span class="math inline">t</span> above it
+and sells nothing, and the first firm then wants to raise its price, so
+neither corner can last (see MWG, Example 12.C.2, equation
+(12.C.12)).</p>
 <p>In words: with the ends fixed and everyone buying, the markup exactly
 equals the degree of differentiation <span class="math inline">t</span>:
 the more buyers care about mismatch, the less firms fear a rival’s price
@@ -1485,15 +1537,44 @@ own-price elasticity is <span class="math inline">\mathcal{E}_{jj} =
 class="math inline">1/\lvert\mathcal{E}_{jj}\rvert</span>.</p>
 </div>
 <p>The proof sketch has two steps; the existence and uniqueness of
-equilibrium need additional conditions, which this book only mentions:
-Caplin and Nalebuff (1991) obtain existence from concavity-type
-conditions on the distribution of preferences (a generalization of
-log-concavity), and for the uniqueness conditions, see the original
-paper. Step one (logit): <span class="math inline">\partial s_j/\partial
-p_j = -\alpha s_j(1 - s_j)</span>. Step two (D.2, single product): firm
-<span class="math inline">j</span> maximizes <span
-class="math inline">(p_j - c_j)\,s_j</span>, with first-order condition
-<span class="math inline">s_j + (p_j - c_j)\,\partial s_j/\partial p_j =
+equilibrium need a separate argument. For general differentiated
+Bertrand competition this book only states the result: if utility is
+linear in the preference parameters and their density is <span
+class="math inline">\rho</span>-concave with <span
+class="math inline">\rho = -1/(r + 1)</span> (<span
+class="math inline">r</span> is the dimension of the preference
+parameters; <span class="math inline">\rho = 0</span> is log-concavity,
+and a smaller <span class="math inline">\rho</span> is a weaker
+condition), a pure-strategy equilibrium exists; uniqueness is shown in
+three cases (all assuming differentiability): two firms with a
+log-concave density, one-dimensional preferences with a log-concave
+density (where it is unique given the set of firms with positive
+demand), and the logit (see Caplin and Nalebuff 1991). The logit of this
+theorem can also be checked directly: write <span
+class="math inline">m_j = p_j - c_j</span>; the derivative of <span
+class="math inline">(p_j - c_j)\,s_j</span> with respect to <span
+class="math inline">p_j</span> is <span class="math inline">s_j\big[1 -
+\alpha m_j(1 - s_j)\big]</span>, which is positive for <span
+class="math inline">p_j \leq c_j</span>, and for <span
+class="math inline">p_j &gt; c_j</span> the bracket strictly decreases
+in <span class="math inline">p_j</span>, so the first-order condition
+<span class="math inline">\alpha m_j(1 - s_j) = 1</span> gives the
+unique best response; given the share <span
+class="math inline">s_0</span> of not buying, it pins down a unique
+<span class="math inline">m_j</span>, and <span
+class="math inline">m_j</span> rises with <span
+class="math inline">s_0</span>, so <span class="math inline">s_j = 1 -
+1/(\alpha m_j)</span> also rises with <span
+class="math inline">s_0</span>; thus <span class="math inline">s_0 +
+\sum_j s_j</span> strictly increases in <span
+class="math inline">s_0</span>, from below 1 to above 1, exactly one
+<span class="math inline">s_0</span> makes it equal 1, and the
+equilibrium exists and is unique (derived here). Step one (logit): <span
+class="math inline">\partial s_j/\partial p_j = -\alpha s_j(1 -
+s_j)</span>. Step two (D.2, single product): firm <span
+class="math inline">j</span> maximizes <span class="math inline">(p_j -
+c_j)\,s_j</span>, with first-order condition <span
+class="math inline">s_j + (p_j - c_j)\,\partial s_j/\partial p_j =
 0</span>, and substituting gives the markup; the elasticity is <span
 class="math inline">(\partial s_j/\partial p_j)(p_j/s_j) = -\alpha p_j(1
 - s_j)</span>, and the markup divided by the price is exactly <span
@@ -1754,14 +1835,18 @@ own pass-through alone cannot identify conduct: different demand shapes
 can give the same number (a monopoly with linear demand and a logit
 monopoly with a share of exactly one half both give 0.5), and the mode
 of competition barely changes it (the true values in C1 below: 0.592
-under Bertrand and 0.613 under joint pricing). Weyl and Fabinger (2013)
-extend these results into general principles of tax incidence under
-imperfect competition (they write pass-through as <span
-class="math inline">\rho</span>; this book writes PT), and this book
-states only the three closed forms above; Miklós-Thal and Shaffer (2021)
-point out that some of Weyl and Fabinger’s formulas hold only under
-specific conditions, and their comment should be read before citing Weyl
-and Fabinger’s conclusions on price discrimination and exogenous entry.
+under Bertrand and 0.613 under joint pricing). Pass-through also
+determines tax incidence: for a monopoly, when a unit tax <span
+class="math inline">\tau</span> rises marginally, consumer surplus falls
+at the rate <span class="math inline">q\,\mathrm{PT}</span> and, by the
+envelope theorem, profit falls at the rate <span
+class="math inline">q</span>, so the ratio of the consumers’ burden to
+the firm’s burden is exactly the pass-through rate (derived here); Weyl
+and Fabinger (2013) extend these results into general principles of tax
+incidence under imperfect competition (they write pass-through as <span
+class="math inline">\rho</span>; this book writes PT), and Miklós-Thal
+and Shaffer (2021) point out that some of their formulas on price
+discrimination and exogenous entry hold only under specific conditions.
 To distinguish conduct, either pin down the shape of demand or use
 variables that rotate the demand curve (Bresnahan 1982), as Sections 3.3
 and 3.4 of Chapter 29 develop. With several products, the difference
@@ -2111,20 +2196,28 @@ produces more (Stackelberg, that is, the accommodation point of Theorem
 11), and in undifferentiated Bertrand moving first brings no advantage.
 The conclusion is determined by the timing of moves, the ability to
 commit, and the slope of the best response. Brown and MacKay (2023)
-carry this logic over to pricing algorithms: when firms reprice at
-different frequencies and algorithms respond to rivals automatically,
-they find, in Markov perfect equilibrium, that simple pricing algorithms
-can raise the price level (as the abstract puts it; for the exact
-propositions, see the original paper). The division of labor with the
+carry this logic over to pricing algorithms: a firm that reprices slowly
+knows that a faster rival will follow along its Bertrand best response
+at its next price update, so it maximizes a weighted sum of its profit
+under simultaneous pricing and its profit as a price leader, with more
+weight on the latter the faster the rival can react; in Markov perfect
+equilibrium, prices lie on the faster firm’s best-response curve between
+the simultaneous and the sequential pricing equilibria, and when the
+products are substitutes and prices are strategic complements both
+prices exceed their simultaneous-pricing levels, again without any
+collusion (see Brown and MacKay 2023). The division of labor with the
 Q-learning collusion of Section 2.1 of Chapter 34 is that this section
 covers commitment and timing, while Chapter 34 covers learning; in the
 data, telling the two apart means looking at the timing of price changes
 and the response to shocks. Cirrus’s numbers: when Cirrus sets its price
 first the two prices are 3.807 and 3.326, and when Garnet goes first
 they are 3.765 and 3.425, all below the joint-pricing 4.163; when Cirrus
-leads, Garnet’s profit rises 2.58% and Cirrus’s only 0.10%; that the
-follower gains more is only this example’s number, not a proposition of
-Brown and MacKay.</p>
+leads, Garnet’s profit rises 2.58% and Cirrus’s only 0.10%: the follower
+gains more, in line with Brown and MacKay, who find that with strategic
+complements the faster firm (the follower here) earns the higher profit;
+their example, however, has firms that are otherwise identical, while
+the two firms here differ in quality and the comparison is of gains
+relative to simultaneous pricing (see Brown and MacKay 2023).</p>
 <h2 id="anchoring-papers">5 Anchoring Papers</h2>
 <p>Three studies take this chapter’s theory to real markets: price
 discrimination in Broadway theaters, collusion and price wars in a
@@ -2146,9 +2239,9 @@ theater’s profit and consumer welfare change under a uniform price or
 other alternatives.</p>
 <p>Results: relative to a uniform price, the observed discrimination
 raises the theater’s profit and has little effect on aggregate consumer
-welfare, and most of the gain in profit is not a transfer from consumers
-(see the paper for magnitudes). The welfare effect of price
-discrimination has to be estimated, not presumed.</p>
+welfare, and most of the gain in profit is not a transfer from
+consumers. The welfare effect of price discrimination has to be
+estimated, not presumed.</p>
 <p>Limitations: the conclusions depend on the functional form of demand
 and the specification of heterogeneity; Theorem 3 says welfare cannot
 rise unless output rises, and the change in output in the

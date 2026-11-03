@@ -577,12 +577,16 @@ still acceptable; by five dimensions it drops to <span
 class="math inline">n^{-4/9}</span>; in ten dimensions it barely moves.
 Put differently, to reach in high dimensions the same precision as in
 low dimensions, the required sample size explodes exponentially with
-dimension. Silverman has a famous table: to estimate the value of a
-standard normal density at the origin to a fixed precision, one
-dimension needs just 4 observations, five dimensions need 768, and ten
-dimensions need 840,000. This is the fearsome face of the curse of
-dimensionality: purely nonparametric methods are basically unusable
-beyond three or four regressors.</p>
+dimension. Silverman has a famous table: to estimate the value at the
+origin of the standard normal density of the corresponding dimension
+with a normal kernel and the bandwidth that minimizes the MSE there,
+keeping the relative MSE (the MSE divided by the square of the true
+density value) at or below 0.1, one dimension needs just 4 observations,
+five dimensions need 768, and ten dimensions need 840,000 (see Silverman
+1986; under this criterion the numbers follow directly from the exact
+expression for the MSE under a normal kernel). This is the fearsome face
+of the curse of dimensionality: purely nonparametric methods are
+basically unusable beyond three or four regressors.</p>
 <div class="intuition">
 <p>The curse of dimensionality forces a pragmatic division of labor. If
 you have ten regressors but truly care about the effect of only one,
@@ -769,16 +773,26 @@ nonparametric version of Theorem 6 (i) in Section 3.6 of Chapter 5
 (<span class="math inline">\Gamma_0 = 0</span>): the derivative of the
 second-step score with respect to the two conditional expectations has
 expectation zero. The first step, however, is nonparametric and does not
-satisfy TS.1 of that chapter, so the result relies on the extension in
-Newey (1994) and on the condition in the theorem box that the first step
-converges faster than <span class="math inline">n^{-1/4}</span>. So you
-have neither forced a possibly wrong functional form on the price effect
-(<span class="math inline">g</span> bends freely) nor lost parametric
-precision for the advertising coefficient, and the curse of
-dimensionality is sidestepped. Section 6 will show that under repeated
-sampling, the estimate that controls for price linearly averages 0.758
-(systematically low), while the Robinson double-residual estimate
-averages 0.800, right on the true value.</p>
+satisfy TS.1 of that chapter, so the argument has to work when the first
+step estimates functions: if the derivative of the second-step score
+with respect to the first-step functions has conditional mean zero given
+price (as the double-residual score does), the first-step estimation
+error does not enter the asymptotic variance of the advertising
+coefficient to first order. Besides the smoothness, bandwidth, and
+trimming conditions in the parentheses of the theorem box, a remainder
+must be controlled: it is quadratic in the first-step errors, so when
+the first step converges faster than <span
+class="math inline">n^{-1/4}</span>, the square converges faster than
+the parametric rate, vanishes faster than the sampling error of the
+advertising coefficient, and can be ignored; this is exactly the
+condition in the theorem box (see Newey 1994). So you have neither
+forced a possibly wrong functional form on the price effect (<span
+class="math inline">g</span> bends freely) nor lost parametric precision
+for the advertising coefficient, and the curse of dimensionality is
+sidestepped. Section 6 will show that under repeated sampling, the
+estimate that controls for price linearly averages 0.758 (systematically
+low), while the Robinson double-residual estimate averages 0.800, right
+on the true value.</p>
 <p>A neighboring family of semiparametric ideas is the single-index
 model, which compresses several regressors (here <span
 class="math inline">x</span> is a vector) into a single linear index
@@ -926,13 +940,20 @@ theoretical restrictions such as the downward slope and symmetry
 Energy’s household surveys of 1979 to 1981, containing gasoline demand,
 price, and income.</p>
 <p>Results: the estimated demand curve is nonlinear in price, and this
-nonlinearity substantively changes the welfare calculation; the average
-deadweight loss of a gasoline tax is a considerable fraction of tax
-revenue, and the nonparametric estimate differs markedly from the
-conclusion implied by a traditional parametric (such as log-linear)
-specification. This is a benchmark illustration of “flexible
-nonparametric demand estimation changes substantive economic
-conclusions.”</p>
+nonlinearity substantively changes the welfare calculation, with the
+change concentrated in deadweight loss. The nonparametric estimate of
+consumer surplus (the equivalent variation) is almost the same as the
+one from a traditional parametric (log-linear) specification; deadweight
+loss depends on second-order properties of the demand curve, and the two
+specifications’ estimates of it differ substantially, by 40% to 50% in
+the authors’ summary: the nonparametric estimate seems to be larger for
+the smaller tax increase and smaller for the larger one, so the ratio of
+deadweight loss to tax revenue varies widely across specifications, and
+the differences are also statistically significant (see Hausman and
+Newey 1995; the content and figures here follow Section 5 of the
+December 1992 revision of its working paper). This is a benchmark
+illustration of “flexible nonparametric demand estimation changes
+substantive economic conclusions.”</p>
 <p>Limitations: cross-sectional identification requires price variation
 to be exogenous; the nonparametric welfare functionals are data-hungry;
 and the curse of dimensionality limits the number of covariates that can

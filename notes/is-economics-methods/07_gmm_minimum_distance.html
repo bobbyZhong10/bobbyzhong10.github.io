@@ -674,17 +674,38 @@ class="math inline">D_0&#39;S_0^{-1}S_0S_0^{-1}D_0</span> equals the
 bread <span class="math inline">D_0&#39;S_0^{-1}D_0</span> and the
 sandwich collapses, by the same mechanism through which the information
 matrix equality of Section 3.3 of Chapter 6 collapses the sandwich. Step
-two (Wooldridge 2010 Theorem 14.3): GMM with weight <span
-class="math inline">W</span> amounts to an estimator whose score is
-<span class="math inline">D_0&#39;Wg</span> and whose “bread” is <span
-class="math inline">D_0&#39;WD_0</span>; it and the estimator with <span
-class="math inline">W = S_0^{-1}</span> satisfy <span
+two (Theorem 2): GMM with weight <span class="math inline">W</span>
+amounts to an estimator whose score is <span
+class="math inline">D_0&#39;Wg</span> and whose “bread” is <span
+class="math inline">D_0&#39;WD_0</span>; by Theorem 2, <span
+class="math inline">\sqrt n(\hat\theta_W - \theta_0) = \Lambda_W\sqrt
+n\,\bar g_n(\theta_0) + o_p(1)</span>, where <span
+class="math inline">\Lambda_W = -(D_0&#39;WD_0)^{-1}D_0&#39;W</span> is
+Theorem 2’s <span class="math inline">\Lambda_0</span>, and the
+efficient weight <span class="math inline">W = S_0^{-1}</span> gives
+<span class="math inline">\Lambda_{\mathrm{eff}} =
+-(D_0&#39;S_0^{-1}D_0)^{-1}D_0&#39;S_0^{-1}</span>. For all <span
+class="math inline">W</span>, <span
 class="math inline">\mathbb{E}[(D_0&#39;Wg)(D_0&#39;S_0^{-1}g)&#39;] =
-D_0&#39;WD_0</span> for all <span class="math inline">W</span>, which is
-the condition of equation (14.51) in Theorem 14.3 (with the
-proportionality constant equal to 1); the argument is of a piece with
-the proof of the efficiency of MLE in Theorem 4 of Chapter 6, and (i)
-follows. Step three (Theorem 1, GMM.2, and the moment condition on <span
+D_0&#39;WD_0</span> (<span class="math inline">g</span> evaluated at
+<span class="math inline">\theta_0</span>): the covariance between the
+score of any of these estimators and the score of the efficient one
+equals the former’s bread. Hence the asymptotic covariance of the two
+linear representations, <span
+class="math inline">\Lambda_WS_0\Lambda_{\mathrm{eff}}&#39; =
+(D_0&#39;S_0^{-1}D_0)^{-1}</span>, is exactly the asymptotic variance of
+the efficient estimator, and so <span
+class="math inline">\mathrm{Var}(\Lambda_Wg - \Lambda_{\mathrm{eff}}g) =
+\Lambda_WS_0\Lambda_W&#39; - (D_0&#39;S_0^{-1}D_0)^{-1}</span>. The left
+side is a variance matrix and hence positive semidefinite, and the right
+side is the difference in (i), so (i) holds. This is the general
+efficiency condition: within a class of estimators, an estimator is the
+most efficient if the covariance of its score with the score of every
+member equals that member’s bread (the general form allows a common
+positive multiple; here it is 1); the proof of the efficiency of MLE in
+Theorem 4 of Chapter 6 uses the same argument (see Wooldridge 2010,
+Section 14.4.1, Lemma 14.1 and Theorem 14.3, equation (14.51)). Step
+three (Theorem 1, GMM.2, and the moment condition on <span
 class="math inline">\mathcal{U}</span> in the theorem, the standard
 regularity condition needed for <span class="math inline">\hat
 S_n</span> to be consistent): <span
@@ -1939,11 +1960,11 @@ the differences in both the estimate and J fall below <span
 class="math inline">10^{-8}</span>, leaving only rounding error.</p>
 <div class="theorem">
 <p><strong>Theorem 8 (the asymptotic equivalence of MD and GMM; the
-general statement and proof are this chapter’s own; for the Chamberlain
-model, Wooldridge 2010 §14.6.2, p. 551, notes that MD is asymptotically
-equivalent to the GMM of §11.1.2 and says that this can be derived from
-Angrist and Newey 1991)</strong> Suppose the reduced-form parameters are
-estimated from exactly identifying moment conditions <span
+general statement and proof are this chapter’s own; for the equivalence
+in the Chamberlain model, see Wooldridge 2010 §11.1.2 and §14.6.2,
+p. 551, the latter saying that it can be derived from Angrist and Newey
+1991)</strong> Suppose the reduced-form parameters are estimated from
+exactly identifying moment conditions <span
 class="math inline">\mathbb{E}[g(w,\pi_0)] = 0</span> (<span
 class="math inline">r</span> moments, <span class="math inline">r</span>
 parameters), <span class="math inline">\hat\pi</span> is the
@@ -2062,8 +2083,14 @@ asymptotically normal; and the overidentification statistic follows a
 <span class="math inline">\chi^2</span> with <span
 class="math inline">\dim\pi - \dim\theta = (T - 1)(1 + Tk) - k</span>
 degrees of freedom, and what it tests is strict exogeneity (Wooldridge
-2010 p. 551). Section 3.5 of Chapter 10 will use this machinery on panel
-data.</p>
+2010 p. 551). One can also skip <span
+class="math inline">\hat\pi</span>: substitute the projection and, with
+<span class="math inline">(1, X_{i1}, \ldots, X_{iT})</span> as
+instruments for every period, run optimal GMM directly on the <span
+class="math inline">T</span> equations; this GMM is asymptotically
+equivalent to the MD above, which is exactly the case of Theorem 8 (see
+Wooldridge 2010, Sections 11.1.2 and 14.6.2). Section 3.5 of Chapter 10
+will use this machinery on panel data.</p>
 <h2 id="estimation-and-practice">4 Estimation and Practice</h2>
 <h3 id="implementing-two-step-gmm">4.1 Implementing Two-Step GMM</h3>
 <p>With linear moment conditions every step has a closed-form solution,
@@ -2341,12 +2368,25 @@ satisfy a set of restrictions determined by the structural parameters
 so inference is carried out for the linear projection, based on the
 asymptotic distribution of sample moment functions; the restrictions are
 imposed by minimum distance, which the author points out is generally
-more efficient than conventional estimators. The overidentification test
-is a test of strict exogeneity.</p>
-<p>Data: the method is aimed at panels with many units and few periods.
-Wooldridge (2010) p. 551 attributes the empirical examples that test
-“the individual effect is unrelated to the regressors” in the MD
-framework to the same author’s handbook chapter, Chamberlain (1984).</p>
+more efficient than conventional estimators. In this chapter’s
+framework, the reason is that the optimal weight is the inverse of the
+robust variance of the period-by-period OLS (Section 3.8), which absorbs
+arbitrary heteroskedasticity and serial correlation of the errors,
+whereas estimators that rely on second-moment assumptions such as
+homoskedasticity are efficient only when those assumptions hold (see
+Wooldridge 2010, Sections 11.1.1 and 14.6.2). The overidentification
+test is a test of strict exogeneity. The MD framework also yields a test
+that the individual effect is unrelated to the regressors: this null is
+<span class="math inline">\xi_1 = \cdots = \xi_T = 0</span>; impose it,
+run MD again with the same <span
+class="math inline">\hat\Sigma_\pi</span>, and the difference between
+the two J statistics (Theorem 7) is asymptotically <span
+class="math inline">\chi^2_{Tk}</span> under the null (see Wooldridge
+2010, Section 14.6.2, and Section 14.5, equation (14.71)).</p>
+<p>Data: the method is aimed at panels with many units and few periods;
+the same author’s handbook chapter, Chamberlain (1984), gives an
+empirical example of the test above (see Wooldridge 2010, Section
+14.6.2, p. 551).</p>
 <p>Results: the paper provides a framework for panel estimation and
 testing that does not rely on homoskedastic or independent errors, which
 Wooldridge (2010) §11.1.2 and §14.6.2 present as standard textbook

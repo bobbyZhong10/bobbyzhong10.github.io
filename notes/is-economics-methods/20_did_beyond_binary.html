@@ -779,11 +779,16 @@ a change in composition.</p>
 \mathbb{E}(D_{01}) \neq \mathbb{E}(D_{00}) &lt; 1</span>. (i) If A3’
 holds and the outcome is bounded, <span
 class="math inline">\mathrm{LATE}_{sw}</span> lies within the TC bounds;
-(ii) if A7, A8, and a moment condition hold, <span
+(ii) if A7 and A8 hold and the upper and lower bounding distribution
+functions used to construct the CIC bounds (<span class="math inline">d
+= 0, 1</span>) have finite first absolute moments, <span
 class="math inline">\mathrm{LATE}_{sw}</span> lies within the CIC
-bounds, and under a further monotonicity condition these bounds are
-sharp. When the support of the outcome is unbounded, the TC bounds are
-always infinite.</p>
+bounds; if, in addition, the distribution function of the outcome in
+each cell is continuously differentiable with a positive derivative on
+the interior of the support, and the candidate distribution functions
+built in the construction are increasing on the support, these bounds
+are sharp, that is, they cannot be narrowed. When the support of the
+outcome is unbounded, the TC bounds are always infinite.</p>
 </div>
 <p>The proof sketch has two steps. Step one (A1): when the control
 group’s treatment rate moves, the two treatment cells no longer contain
@@ -826,8 +831,14 @@ bias with large-sample cell means, “the change in composition of the
 non-enrolled cell” contributes 5.460 and “the change in composition of
 the enrolled cell” contributes <span class="math inline">-0.156</span>.
 In A′ the outcome is unbounded and the control group’s untreated share
-is falling, so the TC bounds are infinite, and the CIC bounds do not
-fall under the case in which the paper guarantees finiteness either.</p>
+is falling, so the TC bounds are infinite; the bounding distribution
+functions for <span class="math inline">d = 0</span> used to construct
+the CIC bounds are also missing some probability mass (the later <span
+class="math inline">Y(0)</span> of the couriers who left the untreated
+cell is not observed; see dCDH 2018, the discussion after Theorem 4).
+This chapter infers from it that, on an unbounded support, this mass can
+sit arbitrarily far out, so the CIC bounds are not a finite interval
+either.</p>
 <div class="warning">
 <p>A6 is not a technicality; it is the precondition for point
 identification by Wald-TC and Wald-CIC. Before using these two
@@ -1032,15 +1043,20 @@ population’s actual change minus it is the average effect, and dividing
 by the average dose gives (ii).</p>
 <p>In words: with stayers, the stayers play the counterfactual; without
 stayers, cities with near-zero doses play the quasi-untreated. WAS is
-the quantity needed for cost-benefit analysis; AS is the average slope,
-and under a concave or convex dose response it can bound the effects of
-other dose changes (dCDH-PSV 2026 §3.1). The true values in Tessera’s
-block B are AS 2.923 and WAS 3.038. The no-stayer variant turns the 130
-zero-dose cities into cities with tiny doses between $0.005 and $0.25,
-with a true WAS of 3.059. HAD is most likely to fail in two places: the
-cities with the lowest doses are themselves marginal markets (A12
-fails), or even a tiny dose already has a sizable effect (an extensive
-margin), so the assumption of bounded effects does not hold.</p>
+the quantity needed for cost-benefit analysis; AS is the switchers’
+average slope between their two periods’ doses, and it also bounds other
+dose changes: if the dose response <span class="math inline">d \mapsto
+Y_2(d)</span> is convex, the per-unit effect of raising the dose further
+from <span class="math inline">D_2</span> is at least AS, and the
+per-unit effect of lowering it from <span class="math inline">D_1</span>
+is at most AS; if it is concave, both inequalities flip (dCDH-PSV 2026
+§3.1). The true values in Tessera’s block B are AS 2.923 and WAS 3.038.
+The no-stayer variant turns the 130 zero-dose cities into cities with
+tiny doses between $0.005 and $0.25, with a true WAS of 3.059. HAD is
+most likely to fail in two places: the cities with the lowest doses are
+themselves marginal markets (A12 fails), or even a tiny dose already has
+a sizable effect (an extensive margin), so the assumption of bounded
+effects does not hold.</p>
 <h3 id="non-absorbing-non-binary-treatments-from-did_m-to-did_ell">3.7
 Non-Absorbing, Non-Binary Treatments: From <span
 class="math inline">DID_M</span> to <span
@@ -1293,14 +1309,23 @@ dose to 0/1. When the number of knots grows with the sample, this curve
 is the series estimator of Chapter 14, and the specification in this
 chapter is the special case of fixed order. Confidence bands use the
 multiplier bootstrap and can be pointwise or uniform.</p>
-<p>The estimators of AS and WAS are doubly robust (dCDH-PSV Theorems 1
-and 4) and are implemented in the R package DIDmultiplegtSTAT. The HAD
-estimator is implemented in DIDHAD: it estimates <span
-class="math inline">\lim_{d \downarrow 0} \mathbb{E}[\Delta Y \mid D_2
-\leq d]</span> by local linear regression at zero dose, with an
-MSE-optimal bandwidth and the bias-corrected robust confidence interval
-of Calonico, Cattaneo and Farrell (2018); the rate of convergence is
-<span class="math inline">n^{-2/5}</span>, with <span
+<p>The estimators of AS and WAS are doubly robust: the conditional mean
+<span class="math inline">\mathbb{E}(\Delta Y \mid D_1, D_2 =
+D_1)</span> of Theorem 6 is used for regression adjustment, and a second
+function, the ratio of switchers to stayers given the baseline dose (in
+WAS, switchers up and down enter with opposite signs; in AS, they are
+also weighted by the inverse of the dose change), is used for
+propensity-score-type reweighting; as long as one of the two is
+correctly specified, the identifying expression still equals AS (or WAS)
+(dCDH-PSV Theorems 1 and 4). In estimation, both functions can be
+estimated nonparametrically with cross-fitting. The estimators are
+implemented in the R package DIDmultiplegtSTAT. The HAD estimator is
+implemented in DIDHAD: it estimates <span class="math inline">\lim_{d
+\downarrow 0} \mathbb{E}[\Delta Y \mid D_2 \leq d]</span> by local
+linear regression at zero dose, with an MSE-optimal bandwidth and the
+bias-corrected robust confidence interval of Calonico, Cattaneo and
+Farrell (2018); the rate of convergence is <span
+class="math inline">n^{-2/5}</span>, with <span
 class="math inline">n</span> the number of cities, slower than the
 parametric rate. Whether quasi-untreated cities really exist can be
 tested: the statistic is the smallest dose divided by the gap between
@@ -2741,11 +2766,26 @@ that dose assignment is unrelated to gains, or simply report only
 quantities such as <span class="math inline">\mathrm{ATT}(d \mid
 d)</span> and WAS that are identified under A9 alone.</p>
 <p>Without zero-dose units, run the quasi-untreated test first; when it
-rejects, the HAD estimator cannot be used, and all one can do is test
-the linearity condition on which TWFE relies (the Stute or Yatchew
-test), while acknowledging that only one of its implications has been
-tested. HAD intervals are inherently wide, and in modest samples HAD may
-fail to detect even a sizable effect.</p>
+rejects, the HAD estimator cannot be used, and one falls back on TWFE. A
+sufficient condition for the TWFE coefficient to equal WAS is that
+cities at every dose share the same untreated trend and that the average
+effect per unit of dose does not vary with the dose (a homogeneous and
+linear effect); together these make <span
+class="math inline">\mathbb{E}(\Delta Y \mid D_2)</span> a linear
+function of <span class="math inline">D_2</span>, which is the
+implication one can test. The Stute test regresses <span
+class="math inline">\Delta Y</span> on <span
+class="math inline">D_2</span> and cumulates the residuals of the cities
+with dose at most <span class="math inline">d</span> into a function of
+<span class="math inline">d</span>: under linearity it is only noise,
+otherwise it builds up at some doses; the statistic is the average of
+its square at the cities’ doses, with critical values approximated by
+the wild bootstrap (see the HAD paper, Sections 4.1 to 4.3). The Yatchew
+test targets the same linearity hypothesis. Without quasi-untreated
+cities, linearity is only an implication of the homogeneous and linear
+effect, not equivalent to it, so a test that does not reject has checked
+only one of its implications. HAD intervals are inherently wide, and in
+modest samples HAD may fail to detect even a sizable effect.</p>
 <p>With switching treatments, the threat comes from dynamics. Paths on
 which treatment crosses the status quo carry no sign guarantee for their
 effects and should be dropped; when there are few kinds of paths,

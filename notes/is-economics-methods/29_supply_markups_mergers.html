@@ -435,18 +435,34 @@ But this check is soft, able only to rule out grossly outlandish conduct
 and unable to distinguish two assumptions that both yield positive
 costs. To truly identify conduct, you need more structure.</p>
 <p>To distinguish conduct, the classic idea is Bresnahan’s (1982) demand
-rotation. Different conducts respond differently to the same demand
-curve, and an exogenous variable that rotates the demand curve around
-some point (a demand rotator) drives apart the optimal prices under
-different conducts, which distinguishes them. The modern approach turns
-this into a formal test: given an instrument that only affects cost or
-only rotates demand, without entering the other side directly, check
-under which conduct assumption a cost model better explains the
-backed-out cost. Section 6 will follow this idea and compare the fit of
-Bertrand and collusion. The core idea to establish here is that conduct
-is an assumption that needs a positive defense or a formal test, not a
-setting you can adopt by default; defaulting to Bertrand without a test
-is as groundless as defaulting to collusion.</p>
+rotation. With constant marginal cost, shifting demand is enough: the
+competitive price equals cost and does not move with demand, while the
+monopoly price does. The difficulty arises when marginal cost varies
+with output. Let inverse demand be <span class="math inline">P = a -
+bq</span> and marginal cost <span class="math inline">c_0 + c_1
+q</span>; the monopoly first-order condition gives <span
+class="math inline">P = c_0 + (c_1 + b)q</span>, and perfect competition
+gives <span class="math inline">P = c_0 + c_1 q</span>. If the exogenous
+variable only shifts demand (moves only <span
+class="math inline">a</span>), the data trace out a price-quantity
+relation with an unchanging slope, which reads equally well as monopoly
+or as competition with a marginal-cost slope of exactly <span
+class="math inline">c_1 + b</span>, so the two cannot be told apart. If
+the exogenous variable also changes the slope <span
+class="math inline">b</span>, rotating the demand curve around some
+point (such a variable is called a demand rotator), the monopoly markup
+<span class="math inline">bq</span> at a given quantity changes with it
+while the competitive price depends only on quantity, and the
+predictions of the two conducts separate (a direct derivation in the
+linear case). The modern approach turns this into a formal test: given
+an instrument that only affects cost or only rotates demand, without
+entering the other side directly, check under which conduct assumption a
+cost model better explains the backed-out cost. Section 6 will follow
+this idea and compare the fit of Bertrand and collusion. The core idea
+to establish here is that conduct is an assumption that needs a positive
+defense or a formal test, not a setting you can adopt by default;
+defaulting to Bertrand without a test is as groundless as defaulting to
+collusion.</p>
 <h3 id="what-variation-testing-conduct-requires">3.4 What Variation
 Testing Conduct Requires</h3>
 <p>Since conduct must be identified through external variation, we
@@ -471,7 +487,21 @@ misspecified, the Rivers-Vuong test still gives interpretable
 conclusions, whereas tests of a single model’s absolute fit reject every
 candidate model once noise is low enough. They also show that with weak
 instruments the Rivers-Vuong test degenerates and inference becomes
-invalid, and they provide a diagnostic for weak instruments. The
+invalid. Degeneracy means that the asymptotic variance of the difference
+in the two models’ fit is zero, which happens exactly when the
+instruments falsify neither candidate conduct; the test statistic is
+then no longer approximately normal, its size can be distorted, and its
+power stays below one even in large samples. The diagnostic follows the
+weak-instrument F test for 2SLS in Chapter 9, Section 3.5: for each
+candidate conduct, subtract that conduct’s markup from price (giving the
+cost it backs out), partial out the cost shifters, and regress the
+result on the instruments; then form an F statistic for the joint
+hypothesis that the instrument coefficients in both regressions are
+zero, and compare it with two kinds of critical values. If F falls below
+the one set by worst-case size, a rejection may be spurious; if it falls
+below the one set by best-case power, a failure to reject may only mean
+that the instruments are too weak to tell the two models apart (see
+Duarte, Magnolfi, Sølvsten and Sullivan 2024, Section 5). The
 identification condition these tests share is that the instrument must
 predict the difference between the two conducts’ markups beyond what the
 cost shifters predict (relevance), and must not enter the cost equation

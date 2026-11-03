@@ -1074,22 +1074,45 @@ weighted sum of the observed values.</p>
 <div class="warning">
 <p>Abadie and Imbens (2006) derived the large-sample distribution of
 nearest-neighbor matching with replacement and a consistent analytic
-variance estimator, which requires an additional within-group
-nearest-neighbor variance estimate; the ordinary regression
-standard-error formula is wrong here. Worse, Abadie and Imbens (2008)
-proved that the bootstrap is invalid for nearest-neighbor matching with
-a fixed number of matches: the matching functional is not smooth, the
-number of times a given unit is used as a neighbor does not converge to
-a smooth limit, and the bootstrap standard error is therefore
-inconsistent. The correct practice is to use the Abadie-Imbens analytic
-variance (directly available from <code>Matching::Match</code>;
-<code>MatchIt</code> only does the matching and does not report this
-variance) and not to wrap a matching estimator in <code>boot</code>.
-Section 6 will show that in Northwind the Abadie-Imbens SE is 0.021
-while running OLS directly on the matched sample gives an SE of 0.025;
-this time the two happen to be numerically close, but that is luck. What
-matters is which one is methodologically sound, not how much they
-differ.</p>
+variance estimator, called the AI variance below. Let <span
+class="math inline">K_M(i)</span> be the number of times unit <span
+class="math inline">i</span> is used as someone else’s neighbor, and
+<span class="math inline">\sigma^2(X_i, D_i)</span> the conditional
+variance of its outcome given covariates and treatment status. For the
+ATT, given all covariates and treatment statuses, the variance of the
+matching estimator is <span
+class="math inline">\frac{1}{N_1^2}\sum_{i=1}^{N}\big(D_i - (1 -
+D_i)K_M(i)/M\big)^2\,\sigma^2(X_i, D_i)</span>, where <span
+class="math inline">N</span> is the sample size and <span
+class="math inline">N_1</span> the number of adopters: each adopter
+counts once, and the weight of each non-adopter grows with the square of
+the number of times it is reused. As an estimator of the population ATT
+(not conditional on the covariates), its variance also includes the part
+due to the variation of the treatment effect with <span
+class="math inline">X</span> among adopters. <span
+class="math inline">\sigma^2(X_i, D_i)</span> comes from an additional
+within-group nearest-neighbor estimate: find unit <span
+class="math inline">i</span>’s nearest neighbors within its own
+treatment group and use as its estimate the squared difference between
+<span class="math inline">Y_i</span> and the mean outcome of these
+neighbors, scaled by a factor that removes the variability of the
+neighbors’ mean, so that the estimate is unbiased when the neighbors’
+covariates equal those of unit <span class="math inline">i</span> (see
+Abadie and Imbens 2006, Sections 3.2 and 4). The ordinary regression
+standard-error formula ignores this reuse and is wrong here. Worse,
+Abadie and Imbens (2008) proved that the bootstrap is invalid for
+nearest-neighbor matching with a fixed number of matches: the matching
+functional is not smooth, the number of times a given unit is used as a
+neighbor does not converge to a smooth limit, and the bootstrap standard
+error is therefore inconsistent. The correct practice is to use the
+Abadie-Imbens analytic variance (directly available from
+<code>Matching::Match</code>; <code>MatchIt</code> only does the
+matching and does not report this variance) and not to wrap a matching
+estimator in <code>boot</code>. Section 6 will show that in Northwind
+the Abadie-Imbens SE is 0.021 while running OLS directly on the matched
+sample gives an SE of 0.025; this time the two happen to be numerically
+close, but that is luck. What matters is which one is methodologically
+sound, not how much they differ.</p>
 </div>
 <h3 id="propensity-score-matching-and-ipw">4.4 Propensity Score Matching
 and IPW</h3>
@@ -1870,15 +1893,25 @@ dropped, and to state clearly who the remaining population is.</p>
 matching with replacement, both the ordinary regression SE and the
 bootstrap are wrong, the former because it ignores the correlation
 induced by reusing matches, the latter because the matching functional
-is not smooth, which makes it inconsistent. What is valid is the
-Abadie-Imbens analytic variance; if the matching is on an estimated
-propensity, it also needs the Abadie-Imbens (2016) correction, which
-lowers the ATE variance or leaves it unchanged and can move the ATT
-variance in either direction. In Northwind the two SEs happen to be
-close, but this must not be taken to mean either one will do, since in
-real data they can differ by a good deal. Whenever you report the
-standard error of a matching estimate, first confirm that it is the AI
-variance and not whatever the software reports by default.</p>
+is not smooth, which makes it inconsistent. What is valid is the AI
+variance (Section 4.3). If the matching is on an estimated propensity,
+the sampling error from estimating the propensity in the first step must
+also be taken into account, and this is the Abadie-Imbens (2016)
+correction: for the ATE it subtracts from the AI variance a nonnegative
+quadratic form built from the covariance between the covariates and the
+outcome given the propensity and treatment status and from the Fisher
+information matrix of the propensity model (such as a logit), so the ATE
+variance falls or stays the same; for the ATT it can move in either
+direction. Each of these pieces can be estimated from the sample (the
+covariance, too, with within-group nearest neighbors), but the matching
+function used in Section 6.5 gives only the 2006 AI variance and ignores
+the estimation error in the propensity, so the AI-SE reported there does
+not include this correction (see Abadie and Imbens 2016). In Northwind
+the two SEs happen to be close, but this must not be taken to mean
+either one will do, since in real data they can differ by a good deal.
+Whenever you report the standard error of a matching estimate, first
+confirm that it is the AI variance and not whatever the software reports
+by default.</p>
 <p>The CIA is untestable, which is the deepest weakness of the whole
 method, and it must be handled squarely in the argument rather than
 dodged. All you can do is provide indirect evidence: balance tests check

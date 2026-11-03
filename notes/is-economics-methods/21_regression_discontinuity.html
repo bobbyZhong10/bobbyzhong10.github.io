@@ -489,15 +489,24 @@ class="math inline">\mathbb{E}[Y_i(d) \mid X_i = x] = \int
 \mathbb{E}[Y_i(d) \mid X_i = x, U_i = u]\, f_{X \mid U = u}(x)\, dF_U(u)
 / f_X(x)</span>, and since the outcome and the density of every type are
 continuous at <span class="math inline">c</span>, the whole conditional
-mean is continuous. The assumption also has two testable implications:
-<span class="math inline">f_X</span> is continuous at <span
-class="math inline">c</span>, and the conditional distribution of
-covariates fixed before treatment, <span
-class="math inline">\mathbf{W}_i</span>, is continuous at <span
-class="math inline">c</span> (Corollaries 1 and 2 of Card, Lee, Pei and
-Weber 2015 give the kink version of the same argument). The original
-test of McCrary (2008) first bins the data, then smooths on each side,
-and tests the difference in the log densities on the two sides:</p>
+mean is continuous. The assumption also has two testable implications,
+both from the same Bayes formula. First, <span
+class="math inline">f_X(x) = \int f_{X \mid U = u}(x)\, dF_U(u)</span>,
+and since the density of every type is continuous at <span
+class="math inline">c</span>, so is <span
+class="math inline">f_X</span>. Second, if covariates fixed before
+treatment, <span class="math inline">\mathbf{W}_i</span>, are determined
+by type alone, then in <span class="math inline">\Pr(\mathbf{W}_i \leq
+\mathbf{w} \mid X_i = x) = \int \Pr(\mathbf{W}_i \leq \mathbf{w} \mid
+U_i = u)\, f_{X \mid U = u}(x)\, dF_U(u) / f_X(x)</span> only the
+densities vary with <span class="math inline">x</span>, and the
+conditional distribution of <span
+class="math inline">\mathbf{W}_i</span> is continuous at <span
+class="math inline">c</span> as well (Corollaries 1 and 2 of Card, Lee,
+Pei and Weber 2015 give the kink version of the same argument). The
+original test of McCrary (2008) first bins the data, then smooths on
+each side, and tests the difference in the log densities on the two
+sides:</p>
 <p><span class="math display">\theta = \ln\Big(\lim_{x\downarrow c}
 f_X(x)\Big) - \ln\Big(\lim_{x\uparrow c} f_X(x)\Big), \qquad H_0:\
 \theta = 0.</span></p>
@@ -617,19 +626,31 @@ treatment effect within the window; a bare <span
 class="math inline">\tau</span> in this chapter is always a treatment
 effect parameter, never a quantile level. A3 is much stronger than
 continuity: within the window the conditional mean is not merely
-continuous but does not vary with the score at all, and the paper
-describes it as an approximation to the continuity condition. It allows
+continuous but does not vary with the score at all. It can also be seen
+as an approximation to the continuity condition: the continuity
+framework approximates the conditional mean near the cutoff by a line,
+and A3 by a constant; when the rate at which potential outcomes change
+with the score is bounded, the error of this approximation is of the
+order of the window width, so the narrower the window, the better (see
+Cattaneo, Frandsen and Titiunik 2015, Sections 2 and 6.5). A3 allows
 outcomes outside the window to vary arbitrarily with the score; the
 price is that the window is usually very narrow and the sample small, so
 inference must use finite-sample exact methods. For choosing the window,
 the criterion in §3 of Cattaneo, Frandsen and Titiunik (2015) is to run
 balance tests on predetermined covariates and take the largest window
-within which no nested window is rejected (Assumptions 4 and 5 of the
-same paper give the conditions under which this procedure is valid). The
-paper’s algorithm starts from the full sample and narrows step by step;
-<code>rdwinselect</code> works the other way, widening step by step from
-the narrowest window and taking the window just before the first
-rejection. Both use the same criterion.</p>
+within which no nested window is rejected. The criterion rests on two
+conditions: inside the true window <span
+class="math inline">\mathcal{W}_0</span> the treatment has no effect on
+the covariate (automatic for a predetermined covariate), and outside
+<span class="math inline">\mathcal{W}_0</span> the covariate is
+associated with the score; so every window wider than <span
+class="math inline">\mathcal{W}_0</span> takes in some of that
+association, and with enough power the balance test rejects (see
+Assumptions 4 and 5 of the same paper). The paper’s algorithm starts
+from the full sample and narrows step by step; <code>rdwinselect</code>
+works the other way, widening step by step from the narrowest window and
+taking the window just before the first rejection. Both use the same
+criterion.</p>
 <div class="theorem">
 <p><strong>Proposition 1 (Fisher exact test and test inversion; written
 by this book from Cattaneo, Frandsen and Titiunik 2015 §2.2 and
@@ -777,8 +798,14 @@ version v4)</strong> Let <span class="math inline">(Y_i, X_i)</span>,
 class="math inline">X_i</span> taking finitely many values, and let the
 local linear estimator <span class="math inline">\hat\tau</span> with
 bandwidth <span class="math inline">h</span> use <span
-class="math inline">N_h</span> observations (the paper’s Assumptions 1
-and 2 give the moment and identifiability conditions).</p>
+class="math inline">N_h</span> observations; the fourth moments of the
+errors given the score are uniformly bounded (the moment condition),
+<span class="math inline">N_h \to \infty</span>, and the support points
+within the bandwidth on the two sides suffice for the local linear
+regression to be identified: the determinant of the design matrix,
+normalized by the bandwidth, stays away from zero, plus regularity
+conditions such as bounded specification errors (see Kolesár and Rothe
+2018, Appendix A, Assumptions 1 and 2).</p>
 <ol type="i">
 <li><p>If the number of support points within the bandwidth does not
 change with the sample size and, in the framework of §4 of Kolesár and
@@ -817,7 +844,7 @@ conditional mean functions satisfying A5 (the paper’s equation
 </div>
 <p>The proof sketch has three steps (§4 and §5.1 of Kolesár and Rothe
 2018, and its Appendices A and B). Step one (i.i.d. sampling and the
-moment conditions of the paper’s Assumption 2): split the <span
+moment condition of Theorem 3): split the <span
 class="math inline">t</span>-statistic into two terms. Let <span
 class="math inline">\bar\tau = \mathbb{E}[\hat\tau \mid X_1, \ldots,
 X_n]</span> be the conditional expectation of <span
@@ -1300,8 +1327,14 @@ Lee, Pei and Weber 2015 Proposition 1)</strong> Under A8,</p>
 u)\,\frac{f_{X \mid U = u}(c)}{f_X(c)}\,dF_U(u),</span></p>
 <p>that is, the average of the marginal effects of the types of sellers
 at the cutoff, weighted by the relative density with which each type
-falls near <span class="math inline">c</span>; the paper calls it the TT
-(treatment on the treated) parameter.</p>
+falls near <span class="math inline">c</span>. The quantity is called
+the TT (treatment-on-the-treated) parameter because it averages the
+marginal effect over the sellers who actually sit at the cutoff: when
+the score is strongly correlated with type, it speaks only for the types
+whose scores tend to land near the cutoff; when the score is independent
+of type, the weights are equal and TT is the average marginal effect of
+all sellers (see Card, Lee, Pei and Weber 2015, Sections 2.1 and 2.2 and
+Remark 1).</p>
 </div>
 <p>The proof sketch has three steps (§2.2 of Card, Lee, Pei and Weber
 2015). Step one (Bayes): <span class="math inline">\mathbb{E}[Y_i \mid
@@ -1590,11 +1623,14 @@ how many sellers of each category sit near their own threshold; the
 researcher does not choose them.</p>
 <p>Aster’s block R4 has 24,000 sellers. The true effects at the three
 cutoffs are 0.40, 0.25, and 0.10, estimated at 0.404, 0.263, and 0.093.
-The sample weights are the sample version of the Lemma 1 weights, namely
-each category’s share among all sellers within 4.80 points of their own
-cutoff (the MSE-optimal bandwidth of the pooled RD): 0.567, 0.306, and
-0.127. Weighting by these, the Lemma 1 weighted estimator is 0.322 with
-95% interval [0.294, 0.361]; running the pooled RD directly on the
+The sample weights are the sample version of the Theorem 6 weights <span
+class="math inline">\varpi(c)</span>, namely each category’s share among
+all sellers within 4.80 points of their own cutoff (the MSE-optimal
+bandwidth of the pooled RD): 0.567, 0.306, and 0.127. Averaging the
+three cutoff estimates with these weights gives what the figures and
+tables below call the Lemma 1 weighted estimator (Theorem 6 is Lemma 1
+in Cattaneo, Keele, Titiunik and Vazquez-Bare 2016): 0.322 with 95%
+interval [0.294, 0.361]; running the pooled RD directly on the
 normalized score gives 0.293 with interval [0.223, 0.369]. Both target
 the truth weighted by the sample weights, 0.316; with the population
 weights 0.571, 0.307, and 0.122, the population target of Theorem 6 is
@@ -2863,10 +2899,16 @@ Imbens and Kalyanaraman (2012) estimate the unknown curvature <span
 class="math inline">m&#39;&#39;(c)</span> and the error variance from
 the data and substitute them back into the optimal formula, obtaining
 the plug-in bandwidth <span class="math inline">h_{\mathrm{IK}}</span>;
-the <code>mserd</code> of Calonico, Cattaneo and Titiunik (2014) is an
-improved version of the same idea. In Aster’s block R1 this bandwidth is
-1.876, so only sellers between 78.124 and 81.876 are used. Whether the
-intervals built with it are correct depends on the theorem below.</p>
+the <code>mserd</code> of Calonico, Cattaneo and Titiunik (2014) follows
+the same optimal formula and adds the same regularization term against
+small denominators, but differs in two ways: estimating the variance
+constant does not require separate estimates of the conditional
+variances on the two sides and of the score density, and the pilot
+bandwidth used to estimate the curvature is itself chosen to be
+MSE-optimal (see Calonico, Cattaneo and Titiunik 2014, Remark 11). In
+Aster’s block R1 this bandwidth is 1.876, so only sellers between 78.124
+and 81.876 are used. Whether the intervals built with it are correct
+depends on the theorem below.</p>
 <div class="assumption">
 <p><strong>A12 (Calonico, Cattaneo and Titiunik 2014 Assumptions 1 and
 2)</strong> In a neighborhood of the cutoff: <span

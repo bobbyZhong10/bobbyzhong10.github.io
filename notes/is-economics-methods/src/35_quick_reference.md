@@ -43,7 +43,7 @@ In words: with $u$ continuous and C.3 and C.4(b) in force (Theorem 6), the price
 ::: {.theorem data-label="Welfare measures CV / EV · Chapter 1 §4.1"}
 $$\mathrm{CV} = e(p^1, u^0) - e(p^1, u^1) = e(p^1, u^0) - w, \qquad \mathrm{EV} = e(p^0, u^0) - e(p^0, u^1) = w - e(p^0, u^1)$$
 
-In words: CV, EV, and $\Delta\mathrm{CS}$ (the loss in consumer surplus) are all signed as losses, the opposite of MWG's sign; CV is priced at the new prices and EV at the old ones. With $u$ continuous, C.3 and C.4(b) holding, and only $p_1$ changing (Theorem 10), CV and EV are areas under Hicksian demand; for a normal good, $\mathrm{EV} \leq \Delta\mathrm{CS} \leq \mathrm{CV}$ for price increases and decreases alike, the ordering reverses for an inferior good, and with no income effect the three are equal.
+In words: CV, EV, and $\Delta\mathrm{CS}$ (the loss in consumer surplus) are all signed as losses, positive for a price increase; Mas-Colell, Whinston and Green use the opposite convention, signing them as gains, negative for a price increase (see Mas-Colell, Whinston and Green 1995, Section 3.I, equations (3.I.1) and (3.I.2)); CV is priced at the new prices and EV at the old ones. With $u$ continuous, C.3 and C.4(b) holding, and only $p_1$ changing (Theorem 10), CV and EV are areas under Hicksian demand; for a normal good, $\mathrm{EV} \leq \Delta\mathrm{CS} \leq \mathrm{CV}$ for price increases and decreases alike, the ordering reverses for an inferior good, and with no income effect the three are equal.
 :::
 
 ::: {.theorem data-label="Arrow-Pratt risk aversion · Chapter 1 §4.3"}

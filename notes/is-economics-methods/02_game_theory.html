@@ -631,13 +631,15 @@ separately in MWG 8.E, see footnote 7, p. 255)</strong> Let types be
 drawn from a common prior and seen only by their owner, and let a
 strategy be a decision rule <span
 class="math inline">s_i(\theta_i)</span>. Under G.1, (i) when types are
-finite (for infinitely many types, see MWG footnote 8, p. 256), a
-profile of decision rules is a BNE, that is, a Nash equilibrium of the
-game among types, if and only if every type <span
-class="math inline">\theta_i</span> that occurs with positive
-probability chooses optimally given the conditional distribution of the
-others’ types and the others’ decision rules; (ii) when types and
-actions are both finite, a BNE in mixed decision rules exists.</p>
+finite (with infinitely many types, the optimality condition is required
+only for almost every type, that is, on a set of types with probability
+one; see MWG, Section 8.E, footnote 8, p. 256), a profile of decision
+rules is a BNE, that is, a Nash equilibrium of the game among types, if
+and only if every type <span class="math inline">\theta_i</span> that
+occurs with positive probability chooses optimally given the conditional
+distribution of the others’ types and the others’ decision rules; (ii)
+when types and actions are both finite, a BNE in mixed decision rules
+exists.</p>
 </div>
 <p>The proof sketch has two steps. Step one (the common prior of
 G.1(b)): ex ante expected payoff equals the sum, over types, of the
@@ -918,12 +920,21 @@ acts there is irrelevant to Nash equilibrium; at information sets with
 positive probability, conditional optimality computed with Bayes beliefs
 is equivalent to ex ante optimality, which is (i); (ii) adds sequential
 rationality at off-path information sets on top of (i), so it is still a
-Nash equilibrium, while off-path beliefs are unconstrained, and MWG
-Example 9.C.5 (p. 289) gives a weak PBE that is not an SPE. Step two
-(G.1(a)): completely mixed strategies reach every information set, so
-consistent beliefs are, in every subgame, derived from the strategies
-themselves by Bayes’ rule, and sequential rationality then gives a Nash
-equilibrium in every subgame, which is (iii) (MWG p. 291).</p>
+Nash equilibrium, while off-path beliefs are unconstrained, so it need
+not be an SPE: in an entry game, for example, the entrant first decides
+whether to enter, and after entry both firms simultaneously choose
+“fight” or “accommodate”; the unique Nash equilibrium of this subgame is
+that both accommodate. The entrant staying out (accommodating if in) and
+the incumbent fighting, together with the incumbent’s belief that the
+entrant chose “fight”, is a weak PBE, because the incumbent’s
+information set is off the path, so the belief can be set freely, and
+under it fighting is optimal; yet these strategies are not a Nash
+equilibrium in the post-entry subgame (see MWG, Section 9.C, Example
+9.C.5, p. 289; the entry game is Example 9.B.3). Step two (G.1(a)):
+completely mixed strategies reach every information set, so consistent
+beliefs are, in every subgame, derived from the strategies themselves by
+Bayes’ rule, and sequential rationality then gives a Nash equilibrium in
+every subgame, which is (iii) (MWG p. 291).</p>
 <p>In words: these refinements share SPE’s motive, requiring off-path
 actions to be genuinely worth carrying out under some belief; weak PBE
 leaves off-path beliefs completely free and is too weak, while
@@ -1448,10 +1459,9 @@ r_2)</span>, whoever proposes first: this is the generalized Nash
 solution with disagreement point <span class="math inline">(0, 0)</span>
 and weights inversely proportional to the discount rates.</p>
 </div>
-<p>The proof sketch has three steps; for (i) the sketch follows MWG’s
-sup-and-inf argument (Shaked and Sutton 1984) with <span
-class="math inline">\delta_1 = \delta_2 = \delta</span>, and MWG leaves
-the unequal case as Exercise 9.B.12 (p. 303). Let <span
+<p>The proof sketch has three steps; for (i) it uses the sup-and-inf
+argument (Shaked and Sutton 1984), written below first with <span
+class="math inline">\delta_1 = \delta_2 = \delta</span>. Let <span
 class="math inline">M</span> and <span class="math inline">m</span> be
 the supremum and infimum of the first proposer’s payoff over all SPE;
 the subgame from the second period on is isomorphic to the original game
@@ -1468,11 +1478,22 @@ most <span class="math inline">\delta(1 - m) \leq 1 - \delta m</span>,
 so <span class="math inline">M \leq 1 - \delta m</span>. Combining the
 two, <span class="math inline">M \leq 1 - \delta(1 - \delta M)</span>,
 that is <span class="math inline">M \leq 1/(1+\delta) \leq m</span>, and
-the supremum and infimum coincide. Step three (<span
-class="math inline">\delta_i = \exp(-r_i \Delta)</span>): take the limit
-of the share in (i); expanding the numerator and denominator of <span
-class="math inline">\{1 - \exp(-r_2 \Delta)\}/\{1 - \exp(-(r_1 +
-r_2)\Delta)\}</span> to first order in <span
+the supremum and infimum coincide. When the discount factors differ,
+record for each player the supremum and infimum <span
+class="math inline">M_i</span> and <span class="math inline">m_i</span>
+of that player’s payoff as proposer; the responder’s continuation value
+is discounted with the responder’s own discount factor, and the same two
+steps give <span class="math inline">m_1 \geq 1 - \delta_2 M_2</span>,
+<span class="math inline">M_1 \leq 1 - \delta_2 m_2</span>, and the two
+inequalities with the roles swapped, which together yield <span
+class="math inline">M_1 \leq (1 - \delta_2)/(1 - \delta_1 \delta_2) \leq
+m_1</span>, so again the supremum and infimum coincide (see MWG, Section
+9.AA, Example 9.AA.2, pp. 298-299, and Exercise 9.B.12, p. 303; the four
+inequalities for unequal discount factors are derived here). Step three
+(<span class="math inline">\delta_i = \exp(-r_i \Delta)</span>): take
+the limit of the share in (i); expanding the numerator and denominator
+of <span class="math inline">\{1 - \exp(-r_2 \Delta)\}/\{1 - \exp(-(r_1
++ r_2)\Delta)\}</span> to first order in <span
 class="math inline">\Delta</span>, the ratio tends to <span
 class="math inline">r_2/(r_1 + r_2)</span>, which is (ii).</p>
 <p>In words: under the rules of alternating offers, patience is
@@ -1616,14 +1637,19 @@ games; Milgrom and Roberts 1990; Vives 1990)</strong> Let each <span
 class="math inline">\mathcal{S}_i</span> be a compact lattice, and let
 <span class="math inline">u_i</span> be supermodular in the player’s own
 <span class="math inline">s_i</span> and have increasing differences in
-<span class="math inline">(s_i, s_{-i})</span> (for the semicontinuity
-conditions, see the original papers). Then (i) the set of pure-strategy
-Nash equilibria is nonempty, with a smallest equilibrium <span
-class="math inline">s^{\min}</span> and a largest equilibrium <span
-class="math inline">s^{\max}</span>, and all other equilibria lie
-between the two; (ii) if <span class="math inline">u_i</span> also has
-increasing differences in <span class="math inline">(s_i,
-\theta)</span>, both <span class="math inline">s^{\min}</span> and <span
+<span class="math inline">(s_i, s_{-i})</span> (in addition, <span
+class="math inline">u_i</span> is upper semicontinuous in the player’s
+own <span class="math inline">s_i</span>, continuous in <span
+class="math inline">s_{-i}</span>, and bounded above, where both kinds
+of continuity are required only along monotone chains of strategies; see
+Milgrom and Roberts 1990, Section 2, condition (A2)). Then (i) the set
+of pure-strategy Nash equilibria is nonempty, with a smallest
+equilibrium <span class="math inline">s^{\min}</span> and a largest
+equilibrium <span class="math inline">s^{\max}</span>, and all other
+equilibria lie between the two; (ii) if <span
+class="math inline">u_i</span> also has increasing differences in <span
+class="math inline">(s_i, \theta)</span>, both <span
+class="math inline">s^{\min}</span> and <span
 class="math inline">s^{\max}</span> are nondecreasing in <span
 class="math inline">\theta</span>.</p>
 </div>
@@ -1691,17 +1717,18 @@ class="math inline">m_{\mathrm{pub}}</span> and standard deviation <span
 class="math inline">\sigma_{\mathrm{pub}}</span>.</p>
 <div class="theorem">
 <p><strong>Theorem 15 (unique threshold equilibrium of the global game;
-Carlsson and van Damme 1993; Morris and Shin 1998; the precision
-condition is a direct derivation for this chapter’s setting)</strong> In
-the setting above, let <span class="math inline">m(x)</span> be the
-posterior mean that the signal <span class="math inline">x</span>
-implies for <span class="math inline">\theta</span>, and let <span
+Carlsson and van Damme 1993; Morris and Shin 1998, Lemma 3; the
+precision condition is a direct derivation for this chapter’s
+setting)</strong> In the setting above, let <span
+class="math inline">m(x)</span> be the posterior mean that the signal
+<span class="math inline">x</span> implies for <span
+class="math inline">\theta</span>, and let <span
 class="math inline">\Phi</span> be the standard normal distribution
 function. (i) If <span class="math inline">\sigma^2(\sigma^2 +
 \sigma_{\mathrm{pub}}^2) &lt; 2\pi\,\sigma_{\mathrm{pub}}^4(\sigma^2 +
-2\sigma_{\mathrm{pub}}^2)</span>, the threshold equilibrium is unique: a
-merchant joins when its signal is at least <span
-class="math inline">x^*</span>, where <span
+2\sigma_{\mathrm{pub}}^2)</span>, the equilibrium is unique and is a
+threshold equilibrium: a merchant joins when its signal is at least
+<span class="math inline">x^*</span>, where <span
 class="math inline">x^*</span> is the unique root of <span
 class="math inline">m(x^*) + \Phi\big((m(x^*) - x^*)/\sqrt{\sigma^2 +
 (\sigma_{\mathrm{pub}}^{-2} + \sigma^{-2})^{-1}}\big) - 1 = 0</span>,
@@ -1713,12 +1740,11 @@ class="math inline">\theta^* \to 1/2</span>; (iii) without a public
 signal, for every <span class="math inline">\sigma</span>, <span
 class="math inline">\theta^* = 1/2</span>.</p>
 </div>
-<p>The proof sketch has three steps; ruling out equilibria that are not
-of threshold form requires iterated deletion, and for the idea, see
-Carlsson and van Damme (1993) and Morris and Shin (1998). Step one
-(normal signals): when everyone else uses the threshold <span
-class="math inline">x^*</span>, the share that joins at fundamental
-<span class="math inline">\theta</span> is <span
+<p>The proof sketch has four steps: the first three solve within
+threshold strategies, and the fourth rules out equilibria that are not
+of threshold form. Step one (normal signals): when everyone else uses
+the threshold <span class="math inline">x^*</span>, the share that joins
+at fundamental <span class="math inline">\theta</span> is <span
 class="math inline">\Phi((\theta - x^*)/\sigma)</span>; the marginal
 merchant’s posterior is normal with mean <span
 class="math inline">m(x^*)</span>, and taking the expectation of the
@@ -1738,7 +1764,34 @@ class="math inline">m(x^*) - x^*</span> is a small quantity of order
 <span class="math inline">\sigma^2</span> and the denominator is of
 order <span class="math inline">\sigma</span>, so the ratio tends to
 zero and the expected share tends to <span
-class="math inline">1/2</span>, which is (ii).</p>
+class="math inline">1/2</span>, which is (ii). Step four (the precision
+condition in (i), plus a payoff from joining that increases in <span
+class="math inline">\ell</span>): take any equilibrium, and let <span
+class="math inline">x_{\mathrm{lo}}</span> be the lowest signal at which
+someone joins and <span class="math inline">x_{\mathrm{hi}}</span> the
+highest signal at which someone does not join (when <span
+class="math inline">m(x) &lt; 0</span> not joining is strictly better
+and when <span class="math inline">m(x) &gt; 1</span> joining is, so
+both are finite), so <span class="math inline">x_{\mathrm{lo}} \leq
+x_{\mathrm{hi}}</span>. Everyone with a signal above <span
+class="math inline">x_{\mathrm{hi}}</span> joins, so at every
+fundamental the share joining in this equilibrium is at least the share
+when everyone uses the threshold <span
+class="math inline">x_{\mathrm{hi}}</span>; the expected payoff from
+joining for a merchant with signal <span
+class="math inline">x_{\mathrm{hi}}</span> in the latter case is the
+left-hand side of the equation in step two evaluated at <span
+class="math inline">x_{\mathrm{hi}}</span>, which is no higher than the
+expected payoff from joining in this equilibrium, and the latter is not
+positive (by continuity, the merchant is at least weakly willing not to
+join). The left-hand side is strictly increasing and zero at <span
+class="math inline">x^*</span>, so <span
+class="math inline">x_{\mathrm{hi}} \leq x^*</span>; the same argument
+for <span class="math inline">x_{\mathrm{lo}}</span> gives <span
+class="math inline">x_{\mathrm{lo}} \geq x^*</span>. Hence <span
+class="math inline">x_{\mathrm{lo}} = x_{\mathrm{hi}} = x^*</span>, and
+every equilibrium is this threshold equilibrium (see Morris and Shin
+1998, Section II, Lemmas 1 to 3, pp. 592-593).</p>
 <p>In words: when private information is precise enough relative to
 public information, the global game gives a unique tipping prediction:
 whether the standard is adopted depends only on whether the fundamental
@@ -2316,20 +2369,31 @@ N_{\mathrm{pun}}/(1 + \zeta N_{\mathrm{pun}})</span>.</p>
 <p>The proof sketch has three steps. Step one (stationarity): the
 rival’s actions depend only on the public price, so each firm faces a
 stationary dynamic program with only two public states, “normal” and
-“price war” (original p. 92), and <span
-class="math inline">V_{\mathrm{c}}</span> is given by the recursion of
-the original’s equations (2) and (3). Step two (the same argument as for
+“price war.” In a normal period the firm earns <span
+class="math inline">\pi(q_{\mathrm{col}}, q_{\mathrm{col}})</span> and
+the price falls below the trigger price with probability <span
+class="math inline">\zeta</span>, in which case a price war starts the
+next period, so <span class="math inline">V_{\mathrm{c}} =
+\pi(q_{\mathrm{col}}, q_{\mathrm{col}}) + \delta\,[(1 - \zeta)
+V_{\mathrm{c}} + \zeta V_{\mathrm{w}}]</span>; a price war first pays
+the stage-game Cournot profit for <span
+class="math inline">N_{\mathrm{pun}}</span> periods and then returns to
+normal, so <span class="math inline">V_{\mathrm{w}}</span> is the
+discounted sum of those profits plus <span
+class="math inline">\delta^{N_{\mathrm{pun}}} V_{\mathrm{c}}</span>;
+solving the two equations together gives <span
+class="math inline">V_{\mathrm{c}}</span> (see Green and Porter 1984,
+equations (2) and (3), p. 92). Step two (the same argument as for
 Theorem 6, applied to the public states): the continuation after a
 price-war period does not depend on today’s output, so the stage Cournot
 output is optimal; in a normal period only a one-shot deviation needs
-checking, which is (i), corresponding to the original’s equations (4) to
-(6). Step three (<span class="math inline">z_t</span> i.i.d.): on the
-path everyone produces <span
-class="math inline">q_{\mathrm{col}}</span>, so a price below the
-trigger can only come from a demand shock, with probability <span
-class="math inline">\zeta</span> (original p. 93); the normal state and
-each period of a price war form a Markov chain, and its stationary
-distribution gives (ii).</p>
+checking, which is (i) (see equations (4) to (6) of the same paper).
+Step three (<span class="math inline">z_t</span> i.i.d.): on the path
+everyone produces <span class="math inline">q_{\mathrm{col}}</span>, so
+a price below the trigger can only come from a demand shock, with
+probability <span class="math inline">\zeta</span> (see the same paper,
+p. 93); the normal state and each period of a price war form a Markov
+chain, and its stationary distribution gives (ii).</p>
 <p>In words: in the Green-Porter equilibrium, price wars are part of
 collusion, not its breakdown: a low price is triggered by bad demand,
 and the firms know full well that no one betrayed, yet they must punish
@@ -2339,10 +2403,21 @@ happen; with noise, how often they happen depends on which equilibrium
 is selected: block G2 takes the trigger price that maximizes the value
 of collusion, and the rise in price-war frequency with noise is a
 property of this choice; with another trigger price or punishment
-length, the frequency differs. Abreu, Pearce and Stacchetti (1990)
-characterize the equilibrium payoff set of this class of games. In block
-G2, the larger the noise, the more often price wars break out and the
-smaller the loss from a price war, <span
+length, the frequency differs. The pure-strategy equilibrium payoff set
+of such games can be found as in dynamic programming: split a payoff
+profile into today’s actions plus a schedule of continuation payoffs
+that is paid according to the public price and takes values in some set,
+and require that no one wants to deviate today; every payoff in a
+bounded set that generates itself in this way is an equilibrium payoff,
+and the equilibrium payoff set is the largest bounded fixed point of
+this set-valued map. When action sets are finite, restricting
+continuation payoffs to the extreme points of the set loses no
+generality, and in symmetric equilibria payoffs are one-dimensional, the
+only extreme points are the highest and the lowest, and continuation
+payoffs only switch between the two; continuous actions, such as the
+quantities of block G2, need further conditions (see Abreu, Pearce and
+Stacchetti 1990). In block G2, the larger the noise, the more often
+price wars break out and the smaller the loss from a price war, <span
 class="math inline">V_{\mathrm{c}} - V_{\mathrm{w}}</span> (at the
 margin, the effect of a deviation on the probability of a price war in
 fact rises slightly), so punishment deters less and the colluders can

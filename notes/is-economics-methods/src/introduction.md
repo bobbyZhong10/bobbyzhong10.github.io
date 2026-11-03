@@ -26,7 +26,7 @@ The series has thirty-five numbered modules, grouped into five parts, plus this 
 - Chapter 3, Information Economics, Contracts, and Mechanism Design. Adverse selection, signaling, screening, moral hazard, the revelation principle and the Myerson lemma, VCG, information design, auction theory and recovering values from bids (GPV), and matching.
 - Chapter 4, Pricing, Monopoly, and Imperfect Competition. The Lerner index, price discrimination and its welfare effects, bundling, the Coase conjecture, Cournot/Bertrand/Hotelling/logit, collusion, vertical relations, entry deterrence, pass-through, and price leadership.
 
-**Part II, The Econometric Core**: the machinery of estimation and inference, written at the level of the theorems in Wooldridge (2010) and cited by many later chapters.
+**Part II, The Econometric Core**: the machinery of estimation and inference; Chapters 5 through 7 and 9 through 13 write consistency, asymptotic distributions and variance estimation as theorems with proof sketches, at the depth of a graduate econometrics textbook such as Wooldridge (2010), and the part is cited by many later chapters.
 
 - Chapter 5, M-Estimation and Nonlinear Regression. The unified M-estimation framework, consistency and asymptotic normality, the sandwich variance, NLS (nonlinear least squares) and Gauss-Newton, two-step M-estimation, log(1+y), and Poisson PML.
 - Chapter 6, Maximum Likelihood. The information matrix equality; conditional, partial, and two-step MLE (maximum likelihood estimation); QMLE (quasi-maximum likelihood estimation) and the sandwich; the theory of the LR, Wald, and LM tests; and censoring and Tobit.
@@ -59,7 +59,7 @@ The series has thirty-five numbered modules, grouped into five parts, plus this 
 - Chapter 27, Discrete Choice: From RUM (Random Utility Models) to Mixed Logit. The structural meaning of random utility and its two normalizations, IIA (independence of irrelevant alternatives) and substitution patterns, nested/GEV, mixed logit, endogeneity, and the control function. The chapter treats the structural RUM; the reduced-form logit is in Chapter 12.
 - Chapter 28, Demand Estimation: Berry Inversion and BLP. Berry inversion, the contraction, NFXP (nested fixed point) and MPEC, instruments, micro-BLP, identification, and zero shares.
 - Chapter 29, The Supply Side: Markups, Conduct, Mergers, and Welfare. The multiproduct Bertrand FOC (first-order condition), markup recovery, GUPPI/UPP (upward pricing pressure), merger simulation, and conduct testing.
-- Chapter 30, Entry, Market Structure, and Partial Identification. Bresnahan-Reiss thresholds, Berry 1992, Seim, Ciliberto-Tamer, and moment inequalities.
+- Chapter 30, Entry, Market Structure, and Partial Identification. Bresnahan-Reiss thresholds, Berry 1992 entry with heterogeneous firms, Seim's entry under incomplete information, and Ciliberto-Tamer partial identification under multiple equilibria with moment inequalities.
 - Chapter 31, Dynamic Structural Models. Bellman, Rust NFXP, Hotz-Miller CCP (conditional choice probabilities), and dynamic demand, with pointers to the two-step CCP literature on dynamic games.
 
 **Part V, Topics in the Digital Economy**: brings all three legs to bear on the phenomena of the field.

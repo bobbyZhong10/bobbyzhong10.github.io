@@ -402,14 +402,17 @@ sketches of two to six steps, each step naming the assumptions it uses.
 Finally, an “In words” paragraph answers four questions: under which
 assumptions it estimates which quantity, what it estimates when the
 specification is wrong, who sets the weights, and what Nimbus’s numbers
-say. Wooldridge (2010) §11.6 has numbered equations but no numbered
-theorems. For Nickell bias, it gives only the order <span
-class="math inline">O(1/T)</span> and the sign (p. 323), not the exact
-formula; the Windmeijer correction and bias correction are not in the
-book, and the initial conditions of system GMM receive a single sentence
-(p. 374). The theorem boxes therefore cite equation numbers, pages, and
-the original papers, and the theorem numbering is this chapter’s own.
-Except in Section 3.8, the large-sample theory is always <span
+say. Theorem numbers are this chapter’s own, and each theorem box names
+the Wooldridge (2010) equation numbers and pages it rests on (the
+theorem on instrument proliferation in Section 3.6 is this chapter’s
+own, in statement and proof); the exact Nickell bias, the Windmeijer
+correction, the bias corrections, and the initial conditions of system
+GMM are not worked out in that book, so for these the boxes cite the
+original papers (see Wooldridge 2010, Section 10.7.1, p. 323, and
+Section 11.6.2, p. 374: the former gives only the order <span
+class="math inline">O(1/T)</span> and the sign of the Nickell bias, and
+the latter gives the initial conditions a single sentence). Except in
+Section 3.8, the large-sample theory is always <span
 class="math inline">N \to \infty</span> with <span
 class="math inline">T</span> fixed.</p>
 <h3
@@ -671,15 +674,18 @@ is the worst case. What happens when the specification is wrong: the
 exact expression relies on a stationary start and iid errors, and with a
 nonstationary start or heteroskedastic errors the size of the bias
 changes, but the mechanism, “demeaning mixes the current shock into the
-lag,” does not, and FE is still generally inconsistent; beyond
-contemporaneous exogeneity (equation (10.74), which holds automatically
-under DC.1), the <span class="math inline">O(1/T)</span> result of
-Wooldridge (2010) equation (10.76) requires only that the process be
-stable and weakly dependent. The weights are set by within-unit
-variation: each merchant’s contribution is weighted by its own sum of
-squared demeaned lags, and the bias comes from the mean over <span
-class="math inline">T</span> months inside each unit, so it shrinks at
-rate <span class="math inline">1/T</span>, not <span
+lag,” does not, and FE is still generally inconsistent; more generally,
+as long as the regressor is uncorrelated with the current error, <span
+class="math inline">\mathbb{E}[Y_{i,t-1}\varepsilon_{it}] = 0</span>
+(contemporaneous exogeneity, which holds automatically under DC.1), and
+the process is stable and weakly dependent, the inconsistency of FE is
+<span class="math inline">O(1/T)</span>, as Theorem 4 (iii) of Chapter
+10 states (see Wooldridge 2010, Section 10.7.1, equations (10.74) and
+(10.76)). The weights are set by within-unit variation: each merchant’s
+contribution is weighted by its own sum of squared demeaned lags, and
+the bias comes from the mean over <span class="math inline">T</span>
+months inside each unit, so it shrinks at rate <span
+class="math inline">1/T</span>, not <span
 class="math inline">1/N</span>. Back to Nimbus: D1’s sample estimate is
 0.425, and its merchant-clustered interval [0.388, 0.461] covers the
 limit 0.416 but not 0.70; in D1p, with <span class="math inline">\rho =
@@ -971,7 +977,15 @@ periods apart, so <span
 class="math inline">\mathrm{Var}(\Delta\boldsymbol\varepsilon_i) =
 \sigma_\varepsilon^2\mathbf{H}</span>, and <span
 class="math inline">W^{(1)}</span> is proportional to the inverse of the
-variance of the moments (the 3SLS form of Wooldridge 2010 p. 372).</p>
+variance of the moments. This is the 3SLS weight: treat the <span
+class="math inline">T-1</span> differenced equations as a system; 3SLS
+in Section 3.7 of Chapter 9 uses <span
+class="math inline">\big(N^{-1}\sum_i
+\mathbf{Z}_i&#39;\hat\Omega\mathbf{Z}_i\big)^{-1}</span>, and here the
+structure of the error variance matrix is known, so <span
+class="math inline">\hat\Omega</span> can be replaced by <span
+class="math inline">\mathbf{H}</span>, and a constant factor does not
+change the estimator (see Wooldridge 2010, Section 11.6.2, p. 372).</p>
 <p>In words: under DC.1, Anderson-Hsiao and Arellano-Bond estimate the
 same <span class="math inline">\rho</span>, with no assumption about
 <span class="math inline">\alpha_i</span> and none about the initial
@@ -1136,10 +1150,20 @@ Y_{i,t-1} = (\rho - 1)\big(Y_{i,t-2} - \alpha_i/(1-\rho)\big) +
 \varepsilon_{i,t-1}</span>; past levels can predict only the first term,
 and when <span class="math inline">\rho</span> is close to 1 the factor
 <span class="math inline">\rho - 1</span> squeezes that term to very
-little; what remains is the unpredictable shock. Blundell and Bond
-(1998), building on Arellano and Bover (1995), add a new set of moment
-conditions: turn things around and use past changes as instruments for
-the levels equation.</p>
+little; what remains is the unpredictable shock. The remedy is a new set
+of moment conditions: turn things around and use past changes as
+instruments for the levels equation, and estimate them together with the
+moment conditions of the differenced equation; this is system GMM. The
+approach originates in Arellano and Bover (1995) and requires changes in
+the instrument to be uncorrelated with the individual effect; Blundell
+and Bond (1998) derive, for the lagged dependent variable, the initial
+condition under which the levels moment conditions hold (BB.1 below),
+and show by simulation that difference GMM performs poorly when the
+series is close to a random walk; when <span
+class="math inline">\rho</span> is close to 1, these moment conditions
+markedly improve precision (see Roodman 2009a, Section 3.4; Roodman
+2009b, working-paper version, Section IV; Wooldridge 2010, Section
+11.6.2).</p>
 <div class="assumption">
 <p><strong>BB.1 (mean-stationary initial conditions; Blundell and Bond
 1998; statement following Roodman 2009b, working-paper version, equation
@@ -2083,10 +2107,26 @@ FE and pooled OLS use <code>plm</code> with the <code>within</code> and
 <code>vcovHC(fit, method = "arellano", type = "HC0", cluster = "group")</code>.
 The Stata counterparts are <code>xtabond2</code> (Roodman 2009a) and the
 official <code>xtabond</code> and <code>xtdpdsys</code>. Alternative
-estimators include the maximum likelihood of Moral-Benito, Allison and
-Williams (2019), whose finite-sample performance may be better when
-<span class="math inline">N</span> is small and the series is
-persistent, and the LSDVC of Kiviet (1995).</p>
+estimators include the LSDVC of Kiviet (1995) and the maximum likelihood
+estimator of Moral-Benito, Allison and Williams (2019). The latter
+writes the dynamic equation of every period, together with equations for
+the initial value <span class="math inline">Y_{i0}</span> and for the
+regressor in each period, as a system of simultaneous equations and
+writes down its likelihood under joint normality; the restrictions of
+SX.2 go into the covariance matrix of the errors (no serial correlation
+in the errors, while the current error may be correlated with later
+regressors), and the correlation of <span
+class="math inline">\alpha_i</span> with the initial value and the
+regressors is left unrestricted, so BB.1 is not needed. It is
+asymptotically equivalent to Arellano-Bond augmented with the moment
+conditions from the absence of serial correlation in the errors, and it
+remains consistent when the errors are not normal; in the paper’s
+simulations its bias is far smaller than that of Arellano-Bond when
+<span class="math inline">N</span> is small, its advantage in root mean
+square error grows as the series becomes more persistent, and the two
+are close when <span class="math inline">N</span> is very large (see
+Moral-Benito, Allison and Williams 2019, Sections 2 and 3, following its
+2018 author version).</p>
 <h2 id="anchoring-papers">5 Anchoring Papers</h2>
 <p>Each of the three anchoring papers corresponds to one thread of the
 chapter: where difference GMM and its specification tests come from, how
@@ -2104,13 +2144,14 @@ it.</p>
 <p>Method: first-difference the individual effect out of the dynamic
 equation, use every available lagged level as an instrument for the
 differenced equation, with the instrument set growing over time (Theorem
-3), and combine these moment conditions by one-step and two-step GMM;
-the paper also proposes the accompanying tests for first-order and
-second-order serial correlation in the differenced residuals (<span
+3), and combine these moment conditions by one-step and two-step GMM
+(see Wooldridge 2010, Section 11.6.2, whose treatment of the
+lagged-dependent-variable model follows this paper); the paper also
+proposes the accompanying tests for first-order and second-order serial
+correlation in the differenced residuals (<span
 class="math inline">m_1</span> and <span
 class="math inline">m_2</span>), which judge the specification together
-with the overidentification test. The treatment in Wooldridge (2010)
-§11.6.2 takes this paper as its blueprint.</p>
+with the overidentification test.</p>
 <p>Data: an employment panel of UK firms. As Roodman (2009a) describes
 it, the sample is 140 UK firms surveyed once a year from 1976 to 1984,
 an unbalanced panel; the equation is a dynamic regression of a firm’s
@@ -2216,13 +2257,32 @@ estimate the short-run and long-run returns to pharmaceutical sales
 representatives’ visits to physicians: prescriptions depend on last
 period’s prescriptions (a lagged dependent variable), and the number of
 visits is a predetermined regressor (visit plans take past prescriptions
-into account). The authors point out that when the error is serially
-correlated the usual dynamic panel moment conditions fail, while the
-usual serial correlation tests have weak power, so researchers may use
-invalid moment conditions without realizing it; they give moment
-conditions that are more robust for both the lagged dependent variable
-and the predetermined regressor, and illustrate them with theoretical
-examples and Monte Carlo simulations.</p>
+into account). The idea of goodwill can be illustrated with the model of
+SX.2, the special case with serially uncorrelated errors (<span
+class="math inline">Y_{it}</span> is prescriptions, <span
+class="math inline">X_{it}</span> is visits, <span
+class="math inline">|\rho| &lt; 1</span>, and the process has been
+running for a long time): repeated substitution of the lag gives <span
+class="math inline">Y_{it} = \beta\sum_{k \ge 0}\rho^k X_{i,t-k} +
+\alpha_i/(1-\rho) + \sum_{k \ge 0}\rho^k\varepsilon_{i,t-k}</span>, so
+prescriptions depend on the stock of past visits, each retained at rate
+<span class="math inline">\rho</span> per period; this stock plays the
+role of goodwill and decays at rate <span class="math inline">1 -
+\rho</span> per period. The current-period effect of a visit is <span
+class="math inline">\beta</span>, and its long-run effect is the <span
+class="math inline">\beta/(1-\rho)</span> of Section 3.7 (derived here).
+The authors point out that when the error is serially correlated the
+usual dynamic panel moment conditions fail, while the usual serial
+correlation tests have weak power, so researchers may use invalid moment
+conditions without realizing it; they give moment conditions that are
+more robust for both the lagged dependent variable and the predetermined
+regressor, and illustrate them with theoretical examples and Monte Carlo
+simulations. Which moment conditions survive serial correlation in the
+errors is shown most simply by the MA(1) case of Section 3.1: among the
+moment conditions that use <span class="math inline">Y_{i,t-s}</span> as
+an instrument for the differenced equation, the one with <span
+class="math inline">s = 2</span> fails and those with <span
+class="math inline">s \ge 3</span> still hold.</p>
 <p>Data: visits by pharmaceutical sales representatives to different
 types of physicians and physician-level sales outcomes (monthly
 prescriptions in the working-paper version), forming a physician-level

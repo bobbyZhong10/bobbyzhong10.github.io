@@ -230,7 +230,7 @@ the two main routes to estimation, Rust’s nested fixed point and
 Hotz-Miller’s CCP method, the latter cleverly sidestepping the inner
 fixed point. Section 6 will run all of this on the Nimbus data, showing
 how the myopic errors get corrected one by one, and how the
-counterfactual gets computed credibly.</p>
+counterfactual is computed and what its credibility rests on.</p>
 <h2 id="the-economic-model-and-the-estimand">2 The Economic Model and
 the Estimand</h2>
 <p>Before rolling up our sleeves, let us write down the dynamic decision
@@ -614,13 +614,15 @@ class="math inline">0.053</span>; using the dynamically estimated
 parameters, it rises by <span class="math inline">0.053</span>, matching
 the truth; using the myopic model’s parameters, it rises by <span
 class="math inline">0.076</span>, overstating by forty percent. The
-credibility of the counterfactual rests entirely on whether the
-structural parameters are estimated correctly and on the assumption that
-the parameters really do not change after the policy change. The reason
-the dynamic model is worth that large computational cost is precisely
-that it builds in forward-looking behavior, so it can credibly predict
-how a forward-looking decision-maker would respond to a new policy,
-while the myopic model errs systematically at this step.</p>
+credibility of the counterfactual rests on whether the structural
+parameters are estimated correctly and on the assumption that the
+parameters really do not change after the policy change; this
+proportional cost cut also rests on the normalization that keeping the
+tool costs nothing at <span class="math inline">x = 0</span> (Section
+7). The reason the dynamic model is worth that large computational cost
+is precisely that it builds in forward-looking behavior, so it can
+credibly predict how a forward-looking decision-maker would respond to a
+new policy, while the myopic model errs systematically at this step.</p>
 <p>The route of this section is now complete: NFXP does outer maximum
 likelihood and inner fixed-point solving; MPEC turns the fixed point
 into a constraint, the same estimator with another algorithm;
@@ -699,10 +701,20 @@ realistically sized models.”</p>
 estimated accurately, and rarely visited states are noisy; the two-step
 estimator generally has worse finite-sample precision than NFXP; and the
 inversion depends on the same CI and distributional assumptions as
-Rust’s model. The later nested pseudo-likelihood (NPL) of Aguirregabiria
-and Mira (2002) connects CCP and NFXP in a spectrum that trades off
-finite-sample precision against computation (all members of the family
-share the MLE’s asymptotic distribution).</p>
+Rust’s model. The later nested pseudo-likelihood (NPL) connects CCP and
+NFXP in a spectrum: starting from CCPs estimated from the data, it uses
+the Hotz-Miller representation to write the choice probabilities as
+functions of the parameters, maximizes the resulting pseudo-likelihood
+to obtain the parameters, then uses the new parameters to update the
+CCPs once (one policy iteration), and repeats. One round is
+Hotz-Miller’s two-step estimator, and iterating to convergence gives the
+same MLE as NFXP; every number of iterations in between gives an
+estimator with the MLE’s asymptotic distribution. In Aguirregabiria and
+Mira’s Monte Carlo simulations, two rounds (one more than Hotz-Miller)
+already give markedly better precision and come close to the MLE, so the
+family trades off finite-sample precision against computation (see
+Aguirregabiria and Mira 2002, working-paper version, Sections 3 to
+5).</p>
 </div>
 <h3 id="gowrisankaran-and-rysman-2012">5.3 Gowrisankaran and Rysman
 (2012)</h3>
@@ -968,13 +980,15 @@ upgrade rate, on a different footing from the finite-sample upgrade rate
 <span class="math inline">0.146</span> obtained in Section 6.1 by
 starting from <span class="math inline">x=0</span> and simulating only
 30 periods). Using the dynamically estimated parameters, it rises by
-<span class="math inline">0.053</span>, matching the truth. Using the
-myopic model’s parameters, it rises by <span
-class="math inline">0.076</span>, overstating the subsidy’s effect by
-forty percent. This is the payoff of structural estimation: the correct
-dynamic model not only estimates the parameters right but also gives a
-credible prediction for the policy counterfactual, while the myopic
-model errs at both ends, parameters and counterfactual.</p>
+<span class="math inline">0.053</span>, matching the truth, a match that
+also presupposes the normalization that keeping the tool costs nothing
+at <span class="math inline">x = 0</span> (Section 7). Using the myopic
+model’s parameters, it rises by <span class="math inline">0.076</span>,
+overstating the subsidy’s effect by forty percent. This is the payoff of
+structural estimation: the correct dynamic model not only estimates the
+parameters right but, under this normalization, also reproduces the true
+counterfactual, while the myopic model errs at both ends, parameters and
+counterfactual.</p>
 <figure>
 <svg xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' viewBox='0 0 590.40 316.80' role="img" aria-label="The myopic model’s twofold error. Left: it estimates the friction cost of obsolescence \theta_1 as 0.42, while the truth is only 0.15, and the dynamic model estimates it back at 0.15. Right: it predicts a 30\% upgrade subsidy raises the upgrade rate by 0.076, while the truth is 0.053, and the dynamic model computes 0.053. Cut out foresight, and both parameter estimation and the counterfactual are systematically biased." style="max-width:100%;height:auto;display:block;margin:0 auto">
 <g class='svglite'>
@@ -1174,12 +1188,28 @@ form expectations, or changes an unmodeled part of the environment, the
 parameters need not be stable, and the counterfactual prediction fails
 accordingly. More subtly, even when limits on identification leave the
 flow utility only partially determined, some counterfactuals may still
-be identified while others are not; Kalouptsidi, Scott and
-Souza-Rodrigues (2021) characterize which counterfactuals are immune to
-the unidentified utility. The remedy is to restrict counterfactuals to
-the range in which there is reason for the parameters to stay fixed, and
-to state clearly which assumptions, untested by the data, the
-counterfactual depends on.</p>
+be identified while others are not. One identified class adds amounts
+fixed in advance to utility (for example, a fixed subsidy of some units
+of utility per upgrade): the counterfactual choice probabilities depend
+only on the difference between the discounted values of “always choosing
+this action” and “always choosing that one” and on the discounted value
+of the subsidy itself; the former can be read off the CCPs and
+transitions in the data and the latter is known in advance, so neither
+depends on which normalization of Section 3.3 is used. Changing one
+action’s utility proportionally is generally not identified, because the
+result uses the level of utility, and the level is exactly what the
+normalization sets. The <span class="math inline">30\%</span> cut in the
+upgrade cost in Section 6.5 belongs to the second class: it relies on
+the normalization that keeping the tool costs nothing at <span
+class="math inline">x = 0</span>, and in the Nimbus simulation the
+counterfactual matches the truth because the model that generated the
+data and defines the truth satisfies this same normalization, which the
+estimator also imposes; the counterfactual in Rust’s bus model that
+changes the replacement cost proportionally is likewise not identified
+(see Kalouptsidi, Scott and Souza-Rodrigues 2021, Sections 3.2 to 3.4).
+The remedy is to restrict counterfactuals to the range in which there is
+reason for the parameters to stay fixed, and to state clearly which
+assumptions, untested by the data, the counterfactual depends on.</p>
 <p>There are a few more concrete gates. The state space must be
 discretized, and too few notches lose the dynamics while too many make
 computation explode; the curse of dimensionality is the perennial
@@ -1192,11 +1222,24 @@ In finite samples, the choice probabilities at rarely visited states are
 noisy, and CCP’s first step needs smoothing or more data. Finally, this
 chapter has covered only single-agent dynamics, while real platform
 competition is a multi-agent dynamic game where each firm’s optimal
-policy depends on the rivals’ policies, the equilibrium is a Markov
-perfect equilibrium, and estimation uses the two-step CCP methods of
-Bajari-Benkard-Levin or Aguirregabiria-Mira, extending this chapter’s
-Hotz-Miller idea to games, at the frontier of dynamic structural
-methods.</p>
+policy depends on the rivals’ policies, and the equilibrium is a Markov
+perfect equilibrium. Estimation uses two-step CCP methods, extending
+this chapter’s Hotz-Miller idea to games. The first step estimates from
+the data each firm’s choice probabilities in every state (that is, the
+rivals’ strategies) and the state transitions; the second step treats
+the rivals’ strategies as known, so that each firm’s problem reduces to
+this chapter’s single-agent dynamic choice, and estimates the structural
+parameters from it, without solving for an equilibrium even once. The
+second step comes in two forms. One forward-simulates each firm’s value
+under the estimated strategies, requires the observed strategy to do no
+worse than any deviation, and estimates the parameters by minimizing the
+sum of squared violations of these optimality inequalities (see Bajari,
+Benkard and Levin 2007, Sections 3 and 4); the other builds a
+pseudo-likelihood from each firm’s best-response probabilities and
+extends the NPL iteration of Section 5.2 to games, to reduce the
+small-sample bias that an imprecise first step causes (see
+Aguirregabiria and Mira 2007, working-paper version, Section 3). This is
+the frontier of dynamic structural methods.</p>
 <p>Stringing these failure modes together, the credibility of a dynamic
 structural model comes down to two things: whether the discount factor
 and the identification restrictions are confronted head-on, and whether
