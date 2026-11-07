@@ -2,7 +2,7 @@
 permalink: /research-projects/
 title: "Research"
 excerpt: ""
-description: "Research by Yunzhou (Bobby) Zhong on digital platforms, platform competition, human-AI interaction, social media, and online word of mouth."
+description: "Research by Yunzhou (Bobby) Zhong on digital platforms, two-sided markets, the economics of AI, human–AI interaction, and online word of mouth."
 newsreader_font: true
 ---
 
@@ -18,7 +18,7 @@ newsreader_font: true
 <section class="content-card content-card--research-focus" markdown="1">
 ## Research Interests
 
-- **Topics:** Digital Platforms, Platform Competition, Human-AI Interaction, Social Media, Online Word of Mouth
+- **Topics:** Digital Platforms, Two-Sided Markets, Economics of AI, Human–AI Interaction, Online Word of Mouth
 - **Methods:** Econometrics, Text Analysis, Natural Experiments, Field and Laboratory Experiments, Machine Learning
 </section>
 
