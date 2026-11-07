@@ -103,26 +103,16 @@ newsreader_font: true
 <section class="research-section" markdown="1">
 ### Presentations
 
+{% comment %}Generated from _data/talks.yml, which also feeds the map on the Notes page. Edit talks there.{% endcomment %}
 <ul class="research-entry-list research-entry-list--presentations">
+{%- for paper in site.data.talks.papers %}
   <li class="research-entry">
-    <div class="research-entry__title"><em>Too Neat to Be True? AI-Generated Review Summary Discrepancies and Consumer Response</em></div>
-    <div class="research-entry__meta">POMS Annual Conference · Orlando, FL · Apr. 2027 (scheduled)</div>
-    <div class="research-entry__meta">Conference on Artificial Intelligence, Machine Learning, and Business Analytics · Philadelphia, PA · Dec. 2026 (scheduled)</div>
-    <div class="research-entry__meta">OSU Fisher AI in Business Conference · Columbus, OH · Oct. 2026</div>
-    <div class="research-entry__meta">INFORMS Annual Meeting · Atlanta, GA · Oct. 2025</div>
+    <div class="research-entry__title"><em>{{ paper.title }}</em></div>
+    {%- for talk in paper.talks %}
+    <div class="research-entry__meta">{{ talk.venue }} · {{ talk.city }} · {{ talk.date }}{% if talk.scheduled %} (scheduled){% endif %}</div>
+    {%- endfor %}
   </li>
-  <li class="research-entry">
-    <div class="research-entry__title"><em>When Personalization Backfires: Skepticism and Decision Confidence in Platform-Mediated Information</em></div>
-    <div class="research-entry__meta">Americas Conference on Information Systems · Reno, NV · Aug. 2026</div>
-  </li>
-  <li class="research-entry">
-    <div class="research-entry__title"><em>How Are We Mobilized to Express on Social Media? Identity, Persuasion, and Social Norms</em></div>
-    <div class="research-entry__meta">Academy of Management Annual Meeting · Philadelphia, PA · Aug. 2026</div>
-  </li>
-  <li class="research-entry">
-    <div class="research-entry__title"><em>Evaluating the Impact of Anthropomorphic Emojis on Digital Sustainability Content Engagement</em></div>
-    <div class="research-entry__meta">Pacific Asia Conference on Information Systems · Kuala Lumpur, Malaysia · Jul. 2025</div>
-  </li>
+{%- endfor %}
 </ul>
 </section>
 

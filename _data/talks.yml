@@ -1,0 +1,109 @@
+# Talks and conferences. This one file feeds two places:
+#   - the Presentations list on the Research page (_pages/research-projects.md)
+#   - the map on the Notes page (_includes/talks-map.html)
+#
+# papers:   one entry per paper, in the order the Research page lists them.
+#           List each paper's talks newest first.
+# attended: conferences attended without presenting. These appear on the map only.
+#
+# Fields for each talk (and each attended conference):
+#   venue      conference name, as printed
+#   city       "City, ST" or "City, Country"; talks in the same city share one map pin
+#   date       three-letter month and year, as printed ("Oct. 2026", "May 2027")
+#   scheduled  true until the conference has happened; adds "(scheduled)" and draws a hollow pin
+#   lat, lng   coordinates of the city
+#   photo      optional; a compressed copy in images/talks/ (800 px wide, EXIF/GPS removed, otherwise unedited).
+#              Full-size originals go in images/talks/_originals/, which git and Jekyll ignore.
+#   photo_alt  what the photo shows; required whenever photo is set
+
+papers:
+  - title: "Too Neat to Be True? AI-Generated Review Summary Discrepancies and Consumer Response"
+    talks:
+      - venue: "POMS Annual Conference"
+        city: "Orlando, FL"
+        date: "Apr. 2027"
+        scheduled: true
+        lat: 28.5384
+        lng: -81.3789
+      - venue: "Conference on Artificial Intelligence, Machine Learning, and Business Analytics"
+        city: "Philadelphia, PA"
+        date: "Dec. 2026"
+        scheduled: true
+        lat: 39.9526
+        lng: -75.1652
+      - venue: "OSU Fisher AI in Business Conference"
+        city: "Columbus, OH"
+        date: "Oct. 2026"
+        lat: 39.9612
+        lng: -82.9988
+        photo: /images/talks/osu-fisher-2026.jpg
+        photo_alt: "Title slide of “Too Neat to Be True?” on the screen at the OSU Fisher AI in Business Conference"
+      - venue: "INFORMS Annual Meeting"
+        city: "Atlanta, GA"
+        date: "Oct. 2025"
+        lat: 33.7490
+        lng: -84.3880
+        photo: /images/talks/informs-2025.jpg
+        photo_alt: "Name badges from the 2025 INFORMS Annual Meeting and the Conference on Information Systems and Technology"
+
+  - title: "When Personalization Backfires: Skepticism and Decision Confidence in Platform-Mediated Information"
+    talks:
+      - venue: "Americas Conference on Information Systems"
+        city: "Reno, NV"
+        date: "Aug. 2026"
+        lat: 39.5296
+        lng: -119.8138
+        photo: /images/talks/amcis-2026.jpg
+        photo_alt: "Title slide of “When Personalization Backfires” on the screen at AMCIS 2026 in Reno"
+
+  - title: "How Are We Mobilized to Express on Social Media? Identity, Persuasion, and Social Norms"
+    talks:
+      - venue: "Academy of Management Annual Meeting"
+        city: "Philadelphia, PA"
+        date: "Aug. 2026"
+        lat: 39.9526
+        lng: -75.1652
+        photo: /images/talks/aom-2026.jpg
+        photo_alt: "Name badge for the AOM 2026 Annual Meeting in Philadelphia"
+
+  - title: "Evaluating the Impact of Anthropomorphic Emojis on Digital Sustainability Content Engagement"
+    talks:
+      - venue: "Pacific Asia Conference on Information Systems"
+        city: "Kuala Lumpur, Malaysia"
+        date: "Jul. 2025"
+        lat: 3.1390
+        lng: 101.6869
+        photo: /images/talks/pacis-2025.jpg
+        photo_alt: "Presenting the emoji paper at PACIS 2025 in Kuala Lumpur"
+
+# Newest first.
+attended:
+  - venue: "Conference on Information Systems and Technology"
+    city: "San Francisco, CA"
+    date: "Oct. 2026"
+    lat: 37.7749
+    lng: -122.4194
+  - venue: "Conference on Information Systems and Technology"
+    city: "Atlanta, GA"
+    date: "Oct. 2025"
+    lat: 33.7490
+    lng: -84.3880
+  - venue: "VINS Annual Conference, NYU Shanghai"
+    city: "Shanghai, China"
+    date: "Dec. 2024"
+    lat: 31.2304
+    lng: 121.4737
+  - venue: "China International Conference in Finance"
+    city: "Beijing, China"
+    date: "Jul. 2024"
+    lat: 39.9042
+    lng: 116.4074
+    photo: /images/talks/cicf-2024.jpg
+    photo_alt: "Name badge for the 2024 China International Conference in Finance in Beijing"
+  - venue: "VINS Annual Conference, NYU Shanghai"
+    city: "Shanghai, China"
+    date: "Nov. 2023"
+    lat: 31.2304
+    lng: 121.4737
+    photo: /images/talks/vins-2023.jpg
+    photo_alt: "With Robert Engle at the 2023 VINS Annual Conference and Festschrift in his honor"

@@ -30,6 +30,11 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;1,6..72,400&display=swap" rel="stylesheet">
 {% endif %}
+{%- if page.talks_map %}
+  {% comment %} Leaflet's stylesheet for the talks map (_includes/talks-map.html); it loads before main.css so the site's map styles win. {% endcomment %}
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" integrity="sha384-c6Rcwz4e4CITMbu/NBmnNS8yN2sC3cUElMEMfP3vqqKFp7GOYaaBBCqmaWBjmkjb" crossorigin="anonymous" referrerpolicy="no-referrer">
+  <link rel="preconnect" href="https://basemaps.cartocdn.com">
+{% endif %}
 
 <link rel="icon" type="image/svg+xml" href="{{ '/images/brand-mark.svg' | relative_url }}">
 <link rel="apple-touch-icon" sizes="180x180" href="{{ '/images/apple-touch-icon.png' | relative_url }}">

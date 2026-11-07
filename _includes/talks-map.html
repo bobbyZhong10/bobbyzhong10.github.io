@@ -1,0 +1,27 @@
+{% comment %}
+  Map of talks and conferences for the Notes page. Data: _data/talks.yml (the Research
+  page's Presentations list reads the same file). Script: assets/js/talks-map.js.
+  The Leaflet stylesheet loads in head.html when the page sets talks_map: true.
+{% endcomment %}
+{%- assign talks = site.data.talks -%}
+<section class="notes-collection talks-map-card" aria-labelledby="talks-map-heading">
+  <div class="notes-collection__header">
+    <h2 id="talks-map-heading">Talks and Conferences</h2>
+    <p class="notes-intro">Conferences where I have presented my research, along with a few I attended. Select a pin for details and photos.</p>
+    <ul class="talks-map-legend" aria-label="Map key">
+      <li><span class="talks-map-pin" aria-hidden="true"></span>Presented</li>
+      <li><span class="talks-map-pin talks-map-pin--scheduled" aria-hidden="true"></span>Scheduled</li>
+      {%- if talks.attended.size > 0 %}
+      <li><span class="talks-map-pin talks-map-pin--attended" aria-hidden="true"></span>Attended</li>
+      {%- endif %}
+    </ul>
+  </div>
+  <div class="talks-map-card__body">
+    <div id="talks-map" class="talks-map" role="region" aria-label="Map of talks and conferences. Select a pin for details." data-tiles-key="{{ site.carto_basemaps_key }}"></div>
+  </div>
+  <script type="application/json" id="talks-map-data">{{ talks | jsonify }}</script>
+</section>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js" integrity="sha384-NElt3Op+9NBMCYaef5HxeJmU4Xeard/Lku8ek6hoPTvYkQPh3zLIrJP7KiRocsxO" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+{%- comment %} Groups nearby pins at low zoom; the map still works (ungrouped) if this fails to load. {% endcomment %}
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.5.3/leaflet.markercluster.js" integrity="sha384-eXVCORTRlv4FUUgS/xmOyr66XBVraen8ATNLMESp92FKXLAMiKkerixTiBvXriZr" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script defer src="{{ '/assets/js/talks-map.js' | relative_url }}?v={{ site.time | date: '%s' }}"></script>

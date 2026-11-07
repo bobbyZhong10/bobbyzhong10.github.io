@@ -1,3 +1,5 @@
 _site/
 push.sh
 .DS_Store
+# Full-size talk photos; the site serves the compressed copies in images/talks/
+images/talks/_originals/

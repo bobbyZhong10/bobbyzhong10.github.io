@@ -840,7 +840,6 @@ html[data-theme="dark"] #theme-toggle-icon {
 .award-entry__meta {
   font-feature-settings: "tnum" 1;
 }
-
 .service-review-list__heading {
   margin: 4px 0 6px;
   color: var(--ink);
@@ -939,7 +938,12 @@ html[data-theme="dark"] #theme-toggle-icon {
 /* Notes
    ========================================================================== */
 
+// A column with a gap rather than sibling margins: the talks map include ends
+// with <script> tags, which would break a .notes-collection + .notes-collection rule.
 .notes-collections {
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
   margin-top: 26px;
 }
 
@@ -1026,6 +1030,346 @@ html[data-theme="dark"] #theme-toggle-icon {
   color: var(--navy);
   font-size: 13.5px;
   font-weight: 600;
+}
+
+/* Talks map (Notes page; _includes/talks-map.html, assets/js/talks-map.js)
+   ========================================================================== */
+
+// Without JavaScript the map can't draw, so the card stays out of the way.
+.no-js .talks-map-card {
+  display: none;
+}
+
+.talks-map-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 22px;
+  margin: 16px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.talks-map-legend li {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  color: var(--muted);
+  font-size: 13.5px;
+  line-height: 1.4;
+}
+
+// Pins: a talk is a navy dot, a talk still to come is a navy ring, and a
+// conference attended without a talk is a smaller grey dot. A city with
+// several events shows the count.
+.talks-map-pin {
+  --pin: var(--navy);
+  --pin-size: 15px;
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: var(--pin-size);
+  height: var(--pin-size);
+  border: 2.5px solid var(--panel);
+  border-radius: 50%;
+  background: var(--pin);
+  box-shadow: 0 1px 3px rgba(16, 25, 40, 0.35);
+  color: var(--panel);
+  font-size: 11px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.talks-map-pin--scheduled {
+  border-color: var(--pin);
+  background: var(--panel);
+  box-shadow: 0 0 0 2px var(--panel), 0 1px 3px rgba(16, 25, 40, 0.35);
+  color: var(--pin);
+}
+
+.talks-map-pin--attended {
+  --pin: var(--muted);
+  --pin-size: 12px;
+  border-width: 2px;
+}
+
+.talks-map-pin--count {
+  --pin-size: 22px;
+  border-width: 2px;
+}
+
+.talks-map-pin--attended.talks-map-pin--count {
+  --pin-size: 19px;
+  font-size: 10px;
+}
+
+// Several nearby cities folded into one pin (zoomed out): larger, with a soft
+// outer ring so it reads as a group. Selecting it zooms in.
+.talks-map-pin--cluster {
+  --pin-size: 28px;
+  font-size: 12px;
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--pin) 22%, transparent), 0 1px 3px rgba(16, 25, 40, 0.35);
+}
+
+.talks-map-pin--attended.talks-map-pin--cluster {
+  --pin-size: 25px;
+  font-size: 11px;
+}
+
+// Leaflet.markercluster slides pins as groups split and merge.
+.talks-map .leaflet-cluster-anim .leaflet-marker-icon {
+  transition: transform 0.3s ease-out, opacity 0.3s ease-in;
+}
+
+// Shown for a moment when someone scrolls over the map before clicking it.
+.talks-map-hint {
+  position: absolute;
+  z-index: 1000;
+  top: 50%;
+  left: 50%;
+  padding: 8px 14px;
+  border-radius: 8px;
+  background: color-mix(in srgb, var(--ink) 84%, transparent);
+  color: var(--panel);
+  font-size: 13.5px;
+  font-weight: 600;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transform: translate(-50%, -50%);
+  transition: opacity 0.2s ease;
+}
+
+.talks-map-hint.is-visible {
+  opacity: 1;
+}
+
+.talks-map .talks-map-reset {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.talks-map {
+  position: relative;
+  z-index: 0; // keeps Leaflet's own z-indexes below the sticky masthead
+  height: 440px;
+  // The basemap's sea colour (CARTO Positron; Dark Matter below), so any space past
+  // the tiles' top edge reads as sea.
+  background: #d4dadc;
+}
+
+html[data-theme="dark"] .talks-map {
+  background: #2c353c;
+}
+
+.talks-map.leaflet-container {
+  font-family: inherit;
+  font-size: 14px;
+}
+
+// At in-between zoom levels Leaflet scales the tiles and hairlines show along their
+// edges. Leaflet's own fix (mix-blend-mode: plus-lighter) leaves faint light lines on
+// these tiles, so draw each tile 1px larger instead and blend normally: each tile
+// simply covers its neighbour's edge.
+.talks-map.leaflet-container img.leaflet-tile {
+  width: 257px !important;
+  height: 257px !important;
+  mix-blend-mode: normal;
+}
+
+.talks-map-marker {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+}
+
+.talks-map-marker:hover .talks-map-pin,
+.talks-map-marker:focus-visible .talks-map-pin,
+.talks-map-marker.is-active .talks-map-pin {
+  transform: scale(1.2);
+}
+
+// The pin whose popup is open keeps a soft halo.
+.talks-map-marker.is-active .talks-map-pin {
+  box-shadow: 0 0 0 4px color-mix(in srgb, var(--pin) 26%, transparent), 0 1px 3px rgba(16, 25, 40, 0.35);
+}
+
+.talks-map-marker:focus-visible {
+  outline: 2px solid var(--navy);
+  outline-offset: 2px;
+}
+
+// City name on hover (desktop only; phones go straight to the popup).
+.talks-map .leaflet-tooltip.talks-map-tooltip {
+  padding: 4px 9px;
+  border: 0;
+  border-radius: 6px;
+  background: var(--ink);
+  box-shadow: 0 2px 8px rgba(16, 25, 40, 0.22);
+  color: var(--panel);
+  font-size: 12.5px;
+  font-weight: 600;
+  line-height: 1.3;
+  white-space: nowrap;
+}
+
+.talks-map .leaflet-tooltip-top.talks-map-tooltip::before {
+  border-top-color: var(--ink);
+}
+
+// The site's link underline (.page__content a:not(...)) would land on Leaflet's
+// zoom buttons and the popup close button, so repeat that selector to opt out.
+.page__content .talks-map a:not(.btn):not(.cv-button):not(.notes-link):not(.research-entry__button) {
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.page__content .talks-map a:not(.btn):not(.cv-button):not(.notes-link):not(.research-entry__button):hover {
+  box-shadow: none;
+}
+
+.talks-map .leaflet-bar {
+  overflow: hidden;
+  border: 1px solid var(--panel-border);
+  border-radius: 8px;
+  background: var(--panel);
+  box-shadow: var(--panel-shadow);
+}
+
+.talks-map .leaflet-bar a {
+  border-bottom-color: var(--hairline);
+  background: var(--panel);
+  color: var(--ink);
+}
+
+.talks-map .leaflet-control-attribution {
+  background: color-mix(in srgb, var(--panel) 82%, transparent);
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.talks-map .leaflet-control-attribution a {
+  color: var(--muted);
+}
+
+.talks-map .leaflet-popup-content-wrapper,
+.talks-map .leaflet-popup-tip {
+  background: var(--panel);
+  color: var(--ink);
+  box-shadow: 0 6px 20px rgba(16, 25, 40, 0.2);
+}
+
+.talks-map .leaflet-popup-content-wrapper {
+  border: 1px solid var(--panel-border);
+  border-radius: 10px;
+}
+
+.talks-map .leaflet-popup-content {
+  margin: 14px 16px 15px;
+  line-height: 1.45;
+}
+
+.talks-map a.leaflet-popup-close-button {
+  color: var(--muted);
+}
+
+.talks-map .talks-map-popup p {
+  margin: 0;
+}
+
+.talks-map .talks-map-popup__city {
+  margin-bottom: 9px;
+  padding-right: 18px;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.talks-map-popup__event[hidden] {
+  display: none;
+}
+
+.talks-map-popup__photo {
+  display: block;
+  width: 100%;
+  height: auto;
+  margin-bottom: 9px;
+  aspect-ratio: 3 / 2;
+  border-radius: 6px;
+  background: var(--hairline);
+  object-fit: cover;
+}
+
+// Pager for a city with several events: previous, "1 / 2", next.
+.talks-map-popup__pager {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px solid var(--hairline);
+}
+
+.talks-map-popup__step {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  border: 1px solid var(--panel-border);
+  border-radius: 50%;
+  background: var(--panel);
+  color: var(--ink);
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+
+.talks-map-popup__step:hover:not(:disabled) {
+  border-color: var(--navy);
+  color: var(--navy);
+}
+
+.talks-map-popup__step:focus-visible {
+  outline: 2px solid var(--navy);
+  outline-offset: 2px;
+}
+
+.talks-map-popup__step:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+
+.talks-map .talks-map-popup__count {
+  color: var(--muted);
+  font-size: 12.5px;
+  font-variant-numeric: tabular-nums;
+}
+
+.talks-map .talks-map-popup__venue {
+  color: var(--ink);
+  font-size: 14.5px;
+  font-weight: 600;
+  line-height: 1.35;
+}
+
+.talks-map .talks-map-popup__date {
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.talks-map .talks-map-popup__paper {
+  margin-top: 5px;
+  color: var(--ink-2);
+  font-size: 13px;
+  line-height: 1.4;
 }
 
 /* Footer
@@ -1205,6 +1549,11 @@ html[data-theme="dark"] .visitor-counter img {
   .notes-collection h2 {
     font-size: 21px;
   }
+
+  // Tall enough for a popup with a photo to open without scrolling.
+  .talks-map {
+    height: 420px;
+  }
 }
 
 @media (max-width: 37.5em) {
@@ -1226,6 +1575,10 @@ html[data-theme="dark"] .visitor-counter img {
   .home-hero__links a[data-tooltip]::after,
   .cv-button,
   .notes-link,
+  .talks-map-pin,
+  .talks-map-popup__step,
+  .talks-map-hint,
+  .talks-map .leaflet-cluster-anim .leaflet-marker-icon,
   .research-entry__button,
   .research-entry__button::after {
     transition: none;

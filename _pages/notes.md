@@ -3,11 +3,14 @@ permalink: /notes/
 title: "Notes"
 excerpt: ""
 description: "Notes on information systems economics, empirical methods, and structural estimation for digital platform research."
+talks_map: true
 ---
 
 # Notes
 
 <section class="notes-collections" aria-label="Note collections">
+  {% include talks-map.html %}
+
   <section class="notes-collection" aria-labelledby="research-notes-heading">
     <div class="notes-collection__header">
       <h2 id="research-notes-heading">Research Notes: Methods &amp; Applications</h2>
