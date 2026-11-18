@@ -62,7 +62,7 @@ newsreader_font: true
 
 <ul class="research-entry-list">
   <li class="research-entry">
-    <div class="research-entry__title"><em>Who Pays for Idle Time? Access Control under New York City’s Minimum Pay Rule</em></div>
+    <div class="research-entry__title"><em>Who Pays for Idle Time? Access Control and Pay Regulation in Ride-Hailing</em></div>
     <div class="research-entry__authors"><strong>Yunzhou Zhong</strong>, <a href="https://oid.wharton.upenn.edu/profile/lhitt/">Lorin Hitt</a></div>
     <div class="research-entry__meta">Work in progress</div>
   </li>
