@@ -27,7 +27,8 @@
       </article>
     </div>
 
-    {% if current_url == "/" %}
+    {% comment %} Like analytics, the counter loads only on the live site, so local previews don't add hits. {% endcomment %}
+    {% if current_url == "/" and jekyll.environment == "production" %}
       <div class="visitor-counter">
         <img src="https://hits.sh/bobbyzhong10.github.io.svg?style=plastic&amp;label=Visitors&amp;extraCount=1990&amp;color=011F5B&amp;labelColor=990000" alt="Visitor count">
       </div>

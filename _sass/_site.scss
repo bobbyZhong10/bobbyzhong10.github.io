@@ -43,10 +43,13 @@ html[data-theme="dark"] {
 /* Base
    ========================================================================== */
 
+// scrollbar-gutter keeps the layout from shifting sideways between short pages
+// (no scrollbar) and long ones where scrollbars take up room (Windows, some Linux).
 html {
   background: var(--bg);
   font-size: 16px;
   color-scheme: light;
+  scrollbar-gutter: stable;
 }
 
 html[data-theme="dark"] {
@@ -434,9 +437,10 @@ html[data-theme="dark"] #theme-toggle-icon {
   border-left: 3px solid var(--crimson);
 }
 
+// The dot sits on the first line, so it stays put when the badge wraps on phones.
 .phd-callout__badge {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   gap: 9px;
   margin: 0 0 9px;
   padding: 0;
@@ -444,15 +448,17 @@ html[data-theme="dark"] #theme-toggle-icon {
   font-size: 13px;
   font-weight: 600;
   letter-spacing: 0.02em;
+  line-height: 1.5;
 }
 
 .phd-callout__badge::before {
   content: "";
+  flex: none;
   width: 7px;
   height: 7px;
+  margin-top: calc(0.75em - 3.5px);
   border-radius: 999px;
   background: var(--crimson);
-  transform: rotate(45deg);
 }
 
 .phd-callout p {
@@ -657,7 +663,7 @@ html[data-theme="dark"] #theme-toggle-icon {
 .research-entry__meta {
   margin-top: 5px;
   color: var(--muted);
-  font-size: 12px;
+  font-size: 13px;
 }
 
 .research-entry__authors strong,
@@ -751,6 +757,11 @@ html[data-theme="dark"] #theme-toggle-icon {
   font-size: 14.5px;
   line-height: 1.65;
   text-align: justify;
+  // Hyphenation keeps justified lines from opening wide gaps between words;
+  // only words of 7+ letters split, with at least 3 letters on each side.
+  -webkit-hyphens: auto;
+  hyphens: auto;
+  hyphenate-limit-chars: 7 3 3;
 }
 
 .research-entry__abstract p {
@@ -849,6 +860,12 @@ html[data-theme="dark"] #theme-toggle-icon {
 
 .service-review-list__heading:not(:first-child) {
   margin-top: 20px;
+}
+
+// Reviewer rows match the Professional Memberships list below them.
+.service-review-list .academic-entry {
+  padding: 9px 0;
+  line-height: 1.55;
 }
 
 .page-awards-services .content-card ul {
